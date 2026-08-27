@@ -2,69 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>VaultTrade - Secure Deriv Trading Platform</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230A1628'/%3E%3Cpath d='M12 42L24 22l8 13 7-10 13 17H12z' fill='%23D4AF37'/%3E%3Ctext x='32' y='38' text-anchor='middle' font-family='Arial' font-size='18' font-weight='800' fill='%23fff'%3EVT%3C/text%3E%3C/svg%3E" />
-    
-    <meta name="description" content="VaultTrade - Premium Deriv trading platform with free bots, AI scanning, and automated trading tools." />
-    <meta name="theme-color" content="#0A1628" />
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="VaultTrade - Secure Deriv Trading Platform" />
-    <meta property="og:description" content="Free Deriv bots, automation, charts, and trading tools. Secure your trades. Unlock your profits." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://vaulttrade.com" />
-    <meta property="og:site_name" content="VaultTrade" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TradeNovaX - Deriv Trading Platform</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230A1628'/%3E%3Cpath d='M12 42L24 22l8 13 7-10 13 17H12z' fill='%23D4AF37'/%3E%3Ctext x='32' y='38' text-anchor='middle' font-family='Arial' font-size='18' font-weight='800' fill='%23fff'%3ETN%3C/text%3E%3C/svg%3E" />
 
     <style>
-        /* ============================================================
-           CSS RESET & ROOT VARIABLES
-           ============================================================ */
-        *, *::before, *::after {
+        /* ===== RESET ===== */
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
         :root {
-            --vt-gold: #D4AF37;
-            --vt-gold-dark: #B8960F;
-            --vt-gold-light: #E8CD6E;
-            --vt-navy: #0A1628;
-            --vt-navy-light: #1A2A4A;
-            --vt-bg: #060E1E;
-            --vt-card: rgba(10, 22, 40, 0.92);
-            --vt-text: #FFFFFF;
-            --vt-text-muted: #8899BB;
-            --vt-border: rgba(212, 175, 55, 0.15);
-            --vt-green: #00C853;
-            --vt-red: #FF1744;
-            --sidebar-width: 240px;
+            --gold: #D4AF37;
+            --gold-dark: #B8960F;
+            --gold-light: #E8CD6E;
+            --navy: #0A1628;
+            --navy-light: #1A2A4A;
+            --bg: #060E1E;
+            --card: rgba(10, 22, 40, 0.9);
+            --text: #FFFFFF;
+            --text-muted: #8899BB;
+            --border: rgba(212, 175, 55, 0.15);
+            --green: #00C853;
+            --red: #FF1744;
         }
 
-        html { font-size: 62.5%; scroll-behavior: smooth; }
+        html {
+            font-size: 62.5%;
+            scroll-behavior: smooth;
+        }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: var(--vt-bg);
-            color: var(--vt-text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.6;
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* ============================================================
-           SCROLLBAR
-           ============================================================ */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--vt-navy); }
-        ::-webkit-scrollbar-thumb { background: var(--vt-gold); border-radius: 10px; }
-
-        /* ============================================================
-           ANIMATED BACKGROUND
-           ============================================================ */
+        /* ===== ANIMATED BACKGROUND ===== */
         .bg-canvas {
             position: fixed;
             top: 0;
@@ -117,54 +96,54 @@
         }
 
         @keyframes floatOrb {
-            0% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(60px, -40px) scale(1.1); }
-            66% { transform: translate(-30px, 30px) scale(0.9); }
-            100% { transform: translate(20px, -60px) scale(1.05); }
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(60px, -40px) scale(1.1);
+            }
+            66% {
+                transform: translate(-30px, 30px) scale(0.9);
+            }
+            100% {
+                transform: translate(20px, -60px) scale(1.05);
+            }
         }
 
+        /* ===== GLOW LINE ===== */
         .glow-line {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
             height: 3px;
-            background: linear-gradient(90deg, transparent, var(--vt-gold), var(--vt-gold), transparent);
+            background: linear-gradient(90deg, transparent, var(--gold), var(--gold), transparent);
             z-index: 1;
             animation: glowPulse 3s ease-in-out infinite;
             box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
         }
 
         @keyframes glowPulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
+            0%,
+            100% {
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 1;
+            }
         }
 
         /* ============================================================
-           PAGE CONTAINER
-           ============================================================ */
-        .page {
-            display: none;
-            position: relative;
-            z-index: 5;
-            min-height: 100vh;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        /* ============================================================
-           HEADER (Home Page)
+           HEADER - EXACT MATCH
            ============================================================ */
         header {
             position: relative;
             z-index: 10;
-            padding: 2rem 5%;
+            padding: 1.5rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
             backdrop-filter: blur(10px);
             background: rgba(6, 14, 30, 0.85);
         }
@@ -174,128 +153,145 @@
             align-items: center;
             gap: 1.2rem;
             text-decoration: none;
-            cursor: pointer;
         }
 
         .logo-icon {
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(135deg, var(--vt-gold), var(--vt-gold-dark));
-            border-radius: 12px;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            color: #0A1628;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.25);
+            color: var(--navy);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
         }
 
         .logo-text {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #FFFFFF 30%, var(--vt-gold-light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #fff;
             letter-spacing: -0.5px;
         }
 
         .logo-text span {
-            font-weight: 300;
-            -webkit-text-fill-color: var(--vt-text-muted);
+            color: var(--gold);
         }
 
-        nav {
+        .header-actions {
             display: flex;
-            gap: 2.5rem;
+            gap: 1.5rem;
             align-items: center;
         }
 
-        nav a {
-            color: var(--vt-text-muted);
-            text-decoration: none;
-            font-size: 1.4rem;
-            font-weight: 500;
-            transition: color 0.3s ease;
-            position: relative;
+        .btn-login {
+            padding: 0.7rem 2rem;
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 25px;
+            font-size: 1.3rem;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
         }
 
-        nav a:hover { color: var(--vt-gold-light); }
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--vt-gold);
-            transition: width 0.3s ease;
+        .btn-login:hover {
+            border-color: var(--gold);
+            color: #fff;
         }
-        nav a:hover::after { width: 100%; }
 
-        .btn-nav {
-            padding: 0.8rem 2.2rem;
-            background: linear-gradient(135deg, var(--vt-gold), var(--vt-gold-dark));
-            color: #0A1628 !important;
-            border-radius: 30px;
-            font-weight: 700;
+        .btn-get-started {
+            padding: 0.7rem 2rem;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--navy);
             border: none;
+            border-radius: 25px;
+            font-size: 1.3rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.3s ease;
-            font-size: 1.4rem;
+            transition: all 0.3s ease;
             text-decoration: none;
-            display: inline-block;
         }
 
-        .btn-nav:hover {
+        .btn-get-started:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
-            color: #0A1628 !important;
         }
-        .btn-nav::after { display: none; }
 
         /* ============================================================
-           HERO (Home Page)
+           TICKER - EXACT MATCH
+           ============================================================ */
+        .ticker {
+            position: relative;
+            z-index: 5;
+            padding: 1rem 0;
+            background: rgba(10, 22, 40, 0.6);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.05);
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .ticker-track {
+            display: inline-block;
+            animation: tickerScroll 30s linear infinite;
+        }
+
+        .ticker-item {
+            display: inline-block;
+            margin: 0 2.5rem;
+            font-size: 1.3rem;
+            color: var(--text-muted);
+        }
+
+        .ticker-item .positive {
+            color: var(--green);
+        }
+
+        .ticker-item .negative {
+            color: var(--red);
+        }
+
+        @keyframes tickerScroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* ============================================================
+           HERO - EXACT MATCH
            ============================================================ */
         .hero {
-            padding: 10rem 5% 8rem;
+            position: relative;
+            z-index: 5;
+            padding: 8rem 5% 6rem;
             text-align: center;
-            max-width: 900px;
+            max-width: 800px;
             margin: 0 auto;
         }
 
-        .hero-badge {
-            display: inline-block;
-            padding: 0.5rem 1.8rem;
-            background: rgba(212, 175, 55, 0.12);
-            border: 1px solid rgba(212, 175, 55, 0.25);
-            border-radius: 30px;
-            font-size: 1.2rem;
-            color: var(--vt-gold-light);
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            margin-bottom: 2.5rem;
-            backdrop-filter: blur(5px);
-        }
-
         .hero h1 {
-            font-size: 5.5rem;
+            font-size: 5rem;
             font-weight: 800;
             line-height: 1.1;
-            margin-bottom: 2rem;
-            background: linear-gradient(135deg, #FFFFFF 30%, var(--vt-gold-light) 70%, var(--vt-gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 span {
+            color: var(--gold);
         }
 
         .hero p {
-            font-size: 2rem;
-            color: var(--vt-text-muted);
-            max-width: 700px;
-            margin: 0 auto 3.5rem;
+            font-size: 1.8rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 3rem;
             line-height: 1.7;
         }
 
@@ -306,33 +302,33 @@
             flex-wrap: wrap;
         }
 
-        .btn-primary {
-            padding: 1.4rem 4rem;
-            background: linear-gradient(135deg, var(--vt-gold), var(--vt-gold-dark));
-            color: #0A1628;
+        .btn-hero-primary {
+            padding: 1.2rem 3.5rem;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--navy);
             border: none;
             border-radius: 50px;
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
             box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
         }
 
-        .btn-primary:hover {
+        .btn-hero-primary:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 35px rgba(212, 175, 55, 0.5);
         }
 
-        .btn-secondary {
-            padding: 1.4rem 4rem;
+        .btn-hero-secondary {
+            padding: 1.2rem 3.5rem;
             background: transparent;
-            color: #FFFFFF;
-            border: 2px solid rgba(212, 175, 55, 0.35);
+            color: #fff;
+            border: 2px solid rgba(212, 175, 55, 0.3);
             border-radius: 50px;
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -340,731 +336,350 @@
             display: inline-block;
         }
 
-        .btn-secondary:hover {
+        .btn-hero-secondary:hover {
             background: rgba(212, 175, 55, 0.1);
-            border-color: var(--vt-gold);
+            border-color: var(--gold);
             transform: translateY(-3px);
         }
 
         /* ============================================================
-           FEATURES (Home Page)
-           ============================================================ */
-        .features {
-            padding: 5rem 5% 8rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .features h2 {
-            text-align: center;
-            font-size: 3.6rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-        }
-        .features h2 span { color: var(--vt-gold); }
-
-        .features-sub {
-            text-align: center;
-            color: var(--vt-text-muted);
-            font-size: 1.8rem;
-            margin-bottom: 5rem;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2.5rem;
-        }
-
-        .feature-card {
-            background: var(--vt-card);
-            padding: 3rem 2.5rem;
-            border-radius: 20px;
-            border: 1px solid rgba(212, 175, 55, 0.1);
-            backdrop-filter: blur(10px);
-            transition: all 0.4s ease;
-            cursor: default;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--vt-gold);
-            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.1);
-        }
-
-        .feature-icon { font-size: 3.6rem; margin-bottom: 1.5rem; display: block; }
-        .feature-card h3 { font-size: 2rem; font-weight: 600; margin-bottom: 1rem; }
-        .feature-card h3 span { color: var(--vt-gold); }
-        .feature-card p { color: var(--vt-text-muted); font-size: 1.5rem; line-height: 1.7; }
-
-        /* ============================================================
-           STATS (Home Page)
-           ============================================================ */
-        .stats {
-            padding: 4rem 5%;
-            max-width: 1000px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 2rem;
-            text-align: center;
-            border-top: 1px solid rgba(212, 175, 55, 0.1);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
-            background: rgba(6, 14, 30, 0.4);
-        }
-
-        .stat-item h4 {
-            font-size: 3.6rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--vt-gold-light), var(--vt-gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .stat-item p { color: var(--vt-text-muted); font-size: 1.4rem; margin-top: 0.3rem; }
-
-        /* ============================================================
-           TESTIMONIALS (Home Page)
+           TESTIMONIALS - EXACT MATCH
            ============================================================ */
         .testimonials {
-            padding: 5rem 5% 8rem;
+            position: relative;
+            z-index: 5;
+            padding: 5rem 5% 6rem;
             max-width: 1200px;
             margin: 0 auto;
         }
 
         .testimonials h2 {
             text-align: center;
-            font-size: 3.6rem;
+            font-size: 3rem;
             font-weight: 700;
             margin-bottom: 4rem;
         }
-        .testimonials h2 span { color: var(--vt-gold); }
+
+        .testimonials h2 span {
+            color: var(--gold);
+        }
 
         .testimonial-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2.5rem;
+            gap: 2rem;
         }
 
         .testimonial-card {
-            background: var(--vt-card);
-            padding: 2.5rem;
-            border-radius: 20px;
-            border: 1px solid rgba(212, 175, 55, 0.1);
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(212, 175, 55, 0.08);
             transition: all 0.3s ease;
         }
 
         .testimonial-card:hover {
-            border-color: var(--vt-gold);
+            border-color: rgba(212, 175, 55, 0.2);
             transform: translateY(-4px);
         }
 
-        .testimonial-card .stars { color: var(--vt-gold); font-size: 1.8rem; margin-bottom: 1rem; }
-        .testimonial-card .quote { font-size: 1.5rem; color: var(--vt-text-muted); font-style: italic; margin-bottom: 1.5rem; }
-        .testimonial-card .author { display: flex; align-items: center; gap: 1rem; }
-        .testimonial-card .author-avatar {
+        .testimonial-card .author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .testimonial-card .avatar {
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--vt-gold), var(--vt-gold-dark));
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            color: var(--vt-bg);
+            color: var(--navy);
             font-size: 1.4rem;
+            flex-shrink: 0;
         }
-        .testimonial-card .author-name { font-weight: 600; font-size: 1.3rem; }
-        .testimonial-card .author-role { font-size: 1.1rem; color: var(--vt-text-muted); }
+
+        .testimonial-card .name {
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        .testimonial-card .stars {
+            color: var(--gold);
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .testimonial-card .quote {
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            line-height: 1.6;
+        }
 
         /* ============================================================
-           CTA (Home Page)
+           STATS BAR - EXACT MATCH
            ============================================================ */
-        .cta {
-            padding: 6rem 5% 8rem;
+        .stats-bar {
+            position: relative;
+            z-index: 5;
+            padding: 3rem 5%;
+            background: rgba(10, 22, 40, 0.4);
+            border-top: 1px solid rgba(212, 175, 55, 0.08);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.08);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 2rem;
             text-align: center;
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
         }
 
-        .cta h2 { font-size: 3.6rem; font-weight: 700; margin-bottom: 1.5rem; }
-        .cta h2 span { color: var(--vt-gold); }
-        .cta p { font-size: 1.8rem; color: var(--vt-text-muted); margin-bottom: 3rem; }
+        .stats-bar .stat-item h4 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--gold);
+        }
+
+        .stats-bar .stat-item p {
+            color: var(--text-muted);
+            font-size: 1.3rem;
+            margin-top: 0.3rem;
+        }
 
         /* ============================================================
-           FOOTER (Home Page)
+           FEATURES - EXACT MATCH
+           ============================================================ */
+        .features-section {
+            position: relative;
+            z-index: 5;
+            padding: 5rem 5% 6rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features-section h2 {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .features-section .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.6rem;
+            margin-bottom: 4rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-item {
+            background: var(--card);
+            padding: 2.5rem 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(212, 175, 55, 0.08);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .feature-item:hover {
+            border-color: rgba(212, 175, 55, 0.2);
+            transform: translateY(-4px);
+        }
+
+        .feature-item .icon {
+            font-size: 3.6rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .feature-item h4 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-item p {
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            line-height: 1.6;
+        }
+
+        /* ============================================================
+           RISK DISCLAIMER - EXACT MATCH
+           ============================================================ */
+        .risk-disclaimer {
+            position: relative;
+            z-index: 5;
+            padding: 2rem 5%;
+            background: rgba(10, 22, 40, 0.3);
+            border-top: 1px solid rgba(212, 175, 55, 0.05);
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .risk-disclaimer p {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            line-height: 1.8;
+            opacity: 0.7;
+        }
+
+        .risk-disclaimer strong {
+            color: var(--text);
+            opacity: 1;
+        }
+
+        /* ============================================================
+           FOOTER - EXACT MATCH
            ============================================================ */
         footer {
-            padding: 4rem 5% 3rem;
-            border-top: 1px solid rgba(212, 175, 55, 0.08);
+            position: relative;
+            z-index: 5;
+            padding: 3rem 5% 2rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        footer p { color: var(--vt-text-muted); font-size: 1.3rem; }
-        footer .footer-links { display: flex; gap: 2rem; flex-wrap: wrap; }
-        footer .footer-links a { color: var(--vt-text-muted); text-decoration: none; font-size: 1.3rem; transition: color 0.3s ease; }
-        footer .footer-links a:hover { color: var(--vt-gold-light); }
-
-        /* ============================================================
-           DASHBOARD SIDEBAR
-           ============================================================ */
-        .sidebar {
-            width: var(--sidebar-width);
-            height: 100vh;
-            background: var(--vt-navy);
-            border-right: 1px solid var(--vt-border);
-            display: flex;
-            flex-direction: column;
-            padding: 2rem 1.5rem;
-            position: fixed;
-            left: 0;
-            top: 0;
-            z-index: 100;
-            transition: transform 0.3s ease;
-        }
-
-        .sidebar-brand {
-            display: flex;
-            align-items: center;
-            gap: 1.2rem;
-            margin-bottom: 3rem;
-            padding-bottom: 2rem;
-            border-bottom: 1px solid var(--vt-border);
-        }
-
-        .sidebar-brand .logo-icon-sm {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--vt-gold), var(--vt-gold-dark));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--vt-navy);
-            flex-shrink: 0;
-        }
-
-        .sidebar-brand .brand-text {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #fff, var(--vt-gold-light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .sidebar-nav {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .sidebar-nav .nav-label {
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--vt-text-muted);
-            padding: 1rem 1.2rem 0.5rem;
-            font-weight: 600;
-        }
-
-        .sidebar-nav a {
-            display: flex;
-            align-items: center;
-            gap: 1.2rem;
-            padding: 1rem 1.2rem;
-            border-radius: 10px;
-            color: var(--vt-text-muted);
-            text-decoration: none;
-            font-size: 1.4rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .sidebar-nav a:hover {
-            background: rgba(212, 175, 55, 0.08);
-            color: #fff;
-        }
-
-        .sidebar-nav a.active {
-            background: rgba(212, 175, 55, 0.15);
-            color: var(--vt-gold);
-        }
-
-        .sidebar-nav a .icon { font-size: 1.8rem; width: 2.4rem; text-align: center; }
-        .sidebar-nav a .badge {
-            margin-left: auto;
-            background: var(--vt-gold);
-            color: var(--vt-navy);
-            font-size: 1rem;
-            font-weight: 700;
-            padding: 0.2rem 0.8rem;
-            border-radius: 20px;
-        }
-
-        .sidebar-footer {
-            padding-top: 2rem;
-            border-top: 1px solid var(--vt-border);
-            margin-top: auto;
-        }
-
-        .sidebar-footer .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 0.8rem 1.2rem;
-        }
-
-        .sidebar-footer .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--vt-gold), var(--vt-gold-dark));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: var(--vt-navy);
-            font-size: 1.4rem;
-        }
-        .sidebar-footer .user-name { font-size: 1.3rem; font-weight: 600; }
-        .sidebar-footer .user-status { font-size: 1.1rem; color: var(--vt-green); }
-
-        .sidebar-footer .back-home {
-            display: block;
-            text-align: center;
-            color: var(--vt-text-muted);
-            text-decoration: none;
+        footer p {
+            color: var(--text-muted);
             font-size: 1.2rem;
-            padding: 0.8rem;
-            margin-top: 0.5rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            cursor: pointer;
         }
 
-        .sidebar-footer .back-home:hover {
-            background: rgba(212, 175, 55, 0.1);
-            color: #fff;
-        }
-
-        /* ============================================================
-           DASHBOARD MAIN
-           ============================================================ */
-        .dashboard-main {
-            margin-left: var(--sidebar-width);
-            flex: 1;
-            height: 100vh;
-            overflow-y: auto;
-            padding: 2rem 3rem;
-            position: relative;
-        }
-
-        /* ============================================================
-           TOP BAR (Dashboard)
-           ============================================================ */
-        .topbar {
+        footer .footer-links {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 2rem;
-            border-bottom: 1px solid var(--vt-border);
-            margin-bottom: 2.5rem;
+            gap: 2rem;
             flex-wrap: wrap;
-            gap: 1rem;
         }
 
-        .topbar-left {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .topbar-left h1 { font-size: 2.2rem; font-weight: 700; }
-        .topbar-left h1 span { color: var(--vt-gold); }
-        .topbar-left .page-sub { font-size: 1.3rem; color: var(--vt-text-muted); }
-
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .topbar-right .market-status {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.6rem 1.4rem;
-            background: rgba(0, 200, 83, 0.1);
-            border-radius: 30px;
-            border: 1px solid rgba(0, 200, 83, 0.2);
+        footer .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
             font-size: 1.2rem;
+            transition: color 0.3s ease;
         }
 
-        .topbar-right .market-status .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--vt-green);
-            animation: pulse 2s infinite;
+        footer .footer-links a:hover {
+            color: var(--gold-light);
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        .topbar-right .btn-top {
-            padding: 0.7rem 1.8rem;
-            background: linear-gradient(135deg, var(--vt-gold), var(--vt-gold-dark));
-            color: var(--vt-navy);
-            border: none;
-            border-radius: 30px;
-            font-weight: 700;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .topbar-right .btn-top:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
-        }
-
-        .topbar-right .btn-top-outline {
-            background: transparent;
-            color: #fff;
-            border: 1px solid var(--vt-border);
-        }
-
-        .topbar-right .btn-top-outline:hover {
-            background: rgba(212, 175, 55, 0.1);
-            border-color: var(--vt-gold);
-            box-shadow: none;
-        }
-
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 2.4rem;
-            cursor: pointer;
-            padding: 0.5rem;
-        }
-
-        .sidebar-overlay {
+        /* ============================================================
+           MODAL (Deriv Login)
+           ============================================================ */
+        .modal-overlay {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 99;
-        }
-
-        /* ============================================================
-           DASHBOARD GRID
-           ============================================================ */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.8rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .stat-card {
-            background: var(--vt-card);
-            border: 1px solid var(--vt-border);
-            border-radius: 16px;
-            padding: 1.8rem 2rem;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            border-color: var(--vt-gold);
-            transform: translateY(-2px);
-        }
-
-        .stat-card .stat-label {
-            font-size: 1.2rem;
-            color: var(--vt-text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-card .stat-value {
-            font-size: 2.8rem;
-            font-weight: 800;
-            margin-top: 0.3rem;
-        }
-
-        .stat-card .stat-value.gold { color: var(--vt-gold); }
-        .stat-card .stat-value.green { color: var(--vt-green); }
-        .stat-card .stat-value.red { color: var(--vt-red); }
-
-        .stat-card .stat-change {
-            font-size: 1.2rem;
-            margin-top: 0.5rem;
-        }
-        .stat-card .stat-change.positive { color: var(--vt-green); }
-        .stat-card .stat-change.negative { color: var(--vt-red); }
-
-        /* ============================================================
-           TWO COLUMN (Dashboard)
-           ============================================================ */
-        .two-col {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 2rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .card {
-            background: var(--vt-card);
-            border: 1px solid var(--vt-border);
-            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
             padding: 2rem;
         }
 
-        .card .card-header {
+        .modal-overlay.active {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
         }
 
-        .card .card-header h3 { font-size: 1.6rem; font-weight: 600; }
-
-        .card .card-header .card-actions {
-            display: flex;
-            gap: 0.8rem;
-        }
-
-        .card .card-header .card-actions button {
-            background: rgba(212, 175, 55, 0.1);
-            border: 1px solid var(--vt-border);
-            color: var(--vt-text-muted);
-            padding: 0.4rem 1.2rem;
+        .modal-box {
+            background: var(--card);
+            border: 1px solid var(--gold);
             border-radius: 20px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .card .card-header .card-actions button:hover {
-            background: rgba(212, 175, 55, 0.2);
-            color: #fff;
-        }
-
-        .card .card-header .card-actions button.active {
-            background: rgba(212, 175, 55, 0.2);
-            color: var(--vt-gold);
-            border-color: var(--vt-gold);
-        }
-
-        /* ============================================================
-           CHART
-           ============================================================ */
-        .chart-container {
-            height: 280px;
-            background: rgba(212, 175, 55, 0.03);
-            border-radius: 12px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            padding: 1rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .chart-bar {
-            flex: 1;
-            margin: 0 2px;
-            border-radius: 4px 4px 0 0;
-            min-height: 10px;
-            transition: height 0.5s ease;
-            position: relative;
-        }
-
-        .chart-bar.bullish {
-            background: linear-gradient(180deg, var(--vt-green), rgba(0, 200, 83, 0.3));
-        }
-        .chart-bar.bearish {
-            background: linear-gradient(180deg, var(--vt-red), rgba(255, 23, 68, 0.3));
-        }
-
-        .chart-bar .bar-label {
-            position: absolute;
-            bottom: -18px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.8rem;
-            color: var(--vt-text-muted);
-        }
-
-        .chart-bar .bar-value {
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.8rem;
-            color: var(--vt-text-muted);
-            font-weight: 600;
-        }
-
-        /* ============================================================
-           TRADE LIST
-           ============================================================ */
-        .trade-list { max-height: 280px; overflow-y: auto; }
-
-        .trade-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.8rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        }
-
-        .trade-item:last-child { border-bottom: none; }
-
-        .trade-item .trade-info { display: flex; flex-direction: column; }
-        .trade-item .trade-symbol { font-weight: 600; font-size: 1.3rem; }
-        .trade-item .trade-time { font-size: 1rem; color: var(--vt-text-muted); }
-        .trade-item .trade-amount { font-weight: 700; font-size: 1.4rem; }
-        .trade-item .trade-amount.win { color: var(--vt-green); }
-        .trade-item .trade-amount.loss { color: var(--vt-red); }
-
-        /* ============================================================
-           BOT GRID
-           ============================================================ */
-        .bot-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.8rem;
-            margin-top: 1.5rem;
-        }
-
-        .bot-card {
-            background: var(--vt-card);
-            border: 1px solid var(--vt-border);
-            border-radius: 16px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .bot-card:hover {
-            border-color: var(--vt-gold);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.08);
-        }
-
-        .bot-card .bot-icon { font-size: 2.8rem; margin-bottom: 1rem; }
-        .bot-card .bot-name { font-size: 1.6rem; font-weight: 600; }
-        .bot-card .bot-desc { font-size: 1.3rem; color: var(--vt-text-muted); margin: 0.5rem 0 1rem; }
-
-        .bot-card .bot-status {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .bot-card .bot-status .status-badge {
-            padding: 0.3rem 1.2rem;
-            border-radius: 20px;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .bot-card .bot-status .status-badge.running {
-            background: rgba(0, 200, 83, 0.15);
-            color: var(--vt-green);
-        }
-        .bot-card .bot-status .status-badge.stopped {
-            background: rgba(255, 23, 68, 0.15);
-            color: var(--vt-red);
-        }
-        .bot-card .bot-status .status-badge.paused {
-            background: rgba(212, 175, 55, 0.15);
-            color: var(--vt-gold);
-        }
-
-        .btn-bot {
-            padding: 0.4rem 1.6rem;
-            border: 1px solid var(--vt-gold);
-            background: transparent;
-            color: var(--vt-gold);
-            border-radius: 20px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-bot:hover {
-            background: var(--vt-gold);
-            color: var(--vt-navy);
-        }
-
-        /* ============================================================
-           BOT BUILDER
-           ============================================================ */
-        .builder-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-top: 1.5rem;
-        }
-
-        .builder-grid select,
-        .builder-grid input {
+            padding: 3rem;
+            max-width: 440px;
             width: 100%;
-            padding: 0.8rem 1.2rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--vt-border);
-            border-radius: 10px;
+            text-align: center;
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-box .modal-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-box h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-box p {
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            margin-bottom: 2rem;
+        }
+
+        .modal-box .btn-deriv-login {
+            display: block;
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, #2a7de1, #1a5bb5);
             color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .modal-box .btn-deriv-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(42, 125, 225, 0.3);
+        }
+
+        .modal-box .btn-modal-close {
+            margin-top: 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
             font-size: 1.3rem;
-            margin-bottom: 0.8rem;
-            outline: none;
-            transition: border 0.3s ease;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
         }
 
-        .builder-grid select:focus,
-        .builder-grid input:focus {
-            border-color: var(--vt-gold);
+        .modal-box .btn-modal-close:hover {
+            color: #fff;
         }
 
-        .builder-grid select option { background: var(--vt-navy); }
-
-        .builder-grid .param-row {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .builder-grid .param-row > * { flex: 1; }
-
-        /* ============================================================
-           TAB CONTENT
-           ============================================================ */
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .tab-content.active { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .modal-box .commission-info {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(212, 175, 55, 0.08);
+            border-radius: 10px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            font-size: 1.2rem;
+            color: var(--gold-light);
         }
 
         /* ============================================================
@@ -1074,8 +689,8 @@
             position: fixed;
             bottom: 2rem;
             right: 2rem;
-            background: var(--vt-card);
-            border: 1px solid var(--vt-gold);
+            background: var(--card);
+            border: 1px solid var(--gold);
             border-radius: 12px;
             padding: 1.2rem 2rem;
             color: #fff;
@@ -1092,97 +707,97 @@
             opacity: 1;
         }
 
-        .toast .toast-icon { margin-right: 0.8rem; }
+        .toast .toast-icon {
+            margin-right: 0.8rem;
+        }
 
         /* ============================================================
            RESPONSIVE
            ============================================================ */
-        @media (max-width: 1024px) {
-            .two-col { grid-template-columns: 1fr; }
-            .builder-grid { grid-template-columns: 1fr; }
-        }
-
         @media (max-width: 768px) {
-            :root { --sidebar-width: 280px; }
-
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
-            .sidebar-overlay.show {
-                display: block;
-            }
-
-            .menu-toggle {
-                display: block;
-            }
-
-            .dashboard-main {
-                margin-left: 0;
-                padding: 1.5rem;
-            }
-
-            .topbar-left h1 { font-size: 1.8rem; }
-            .topbar-left .page-sub { display: none; }
-            .topbar-right .market-status { font-size: 1rem; padding: 0.4rem 1rem; }
-
-            .dashboard-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 1rem;
-            }
-
-            .stat-card .stat-value { font-size: 2.2rem; }
-            .bot-grid { grid-template-columns: 1fr; }
-
             header {
                 flex-direction: column;
                 gap: 1.5rem;
                 padding: 1.5rem 5%;
             }
 
-            nav {
+            .header-actions {
                 flex-wrap: wrap;
                 justify-content: center;
-                gap: 1.5rem;
             }
 
-            .hero h1 { font-size: 3.6rem; }
-            .hero p { font-size: 1.6rem; }
+            .hero h1 {
+                font-size: 3.2rem;
+            }
 
-            .btn-primary, .btn-secondary {
-                padding: 1.2rem 2.8rem;
-                font-size: 1.4rem;
+            .hero p {
+                font-size: 1.5rem;
+            }
+
+            .btn-hero-primary,
+            .btn-hero-secondary {
+                padding: 1rem 2.5rem;
+                font-size: 1.3rem;
                 width: 100%;
                 text-align: center;
             }
 
-            .hero-buttons { flex-direction: column; align-items: center; }
-            .features h2 { font-size: 2.8rem; }
-            .stats { grid-template-columns: 1fr 1fr; }
-            .stat-item h4 { font-size: 2.8rem; }
-            .cta h2 { font-size: 2.8rem; }
-            .testimonials h2 { font-size: 2.8rem; }
-            footer { flex-direction: column; text-align: center; }
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
 
-            .testimonial-grid { grid-template-columns: 1fr; }
+            .testimonials h2 {
+                font-size: 2.4rem;
+            }
+
+            .testimonial-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-bar {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .stats-bar .stat-item h4 {
+                font-size: 2.2rem;
+            }
+
+            .features-section h2 {
+                font-size: 2.4rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            footer {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .ticker-item {
+                font-size: 1rem;
+                margin: 0 1.5rem;
+            }
         }
 
         @media (max-width: 480px) {
-            .logo-text { font-size: 1.8rem; }
-            .hero h1 { font-size: 2.8rem; }
-            .features-grid { grid-template-columns: 1fr; }
-            .stats { grid-template-columns: 1fr; }
-            .dashboard-grid { grid-template-columns: 1fr; }
-            .topbar { flex-direction: column; align-items: stretch; }
-            .topbar-right { flex-wrap: wrap; }
-            .topbar-right .market-status { flex: 1; justify-content: center; }
+            .logo-text {
+                font-size: 1.6rem;
+            }
+
+            .hero h1 {
+                font-size: 2.6rem;
+            }
+
+            .stats-bar {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <!-- ===== ANIMATED BACKGROUND ===== -->
@@ -1194,450 +809,321 @@
     <div class="glow-line"></div>
 
     <!-- ============================================================
-    PAGE 1: HOME / LANDING
+    HEADER - EXACT MATCH
     ============================================================ -->
-    <div class="page active" id="page-home">
+    <header>
+        <a href="#" class="logo">
+            <div class="logo-icon">TN</div>
+            <div class="logo-text">Trade<span>NovaX</span></div>
+        </a>
+        <div class="header-actions">
+            <a href="#" class="btn-login" onclick="openDerivModal()">Log In</a>
+            <a href="#" class="btn-get-started" onclick="openDerivModal()">Get Started</a>
+        </div>
+    </header>
 
-        <!-- HEADER -->
-        <header>
-            <a class="logo" onclick="goHome()">
-                <div class="logo-icon">VT</div>
-                <div class="logo-text">Vault<span>Trade</span></div>
-            </a>
-            <nav>
-                <a onclick="goHome()">Home</a>
-                <a onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Features</a>
-                <a onclick="document.getElementById('testimonials').scrollIntoView({behavior:'smooth'})">Testimonials</a>
-                <a onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Get Started</a>
-                <a class="btn-nav" onclick="goDashboard()">Launch App →</a>
-            </nav>
-        </header>
-
-        <!-- HERO -->
-        <section class="hero">
-            <div class="hero-badge">🔒 Secure &bull; Smart &bull; Profitable</div>
-            <h1>Secure Your Trades.<br>Unlock Your Profits.</h1>
-            <p>
-                Free Deriv bots, AI market scanning, automated and manual trading tools —
-                built for traders who value security, precision, and consistent results.
-            </p>
-            <div class="hero-buttons">
-                <a class="btn-primary" onclick="goDashboard()">🚀 Start Trading Free</a>
-                <a class="btn-secondary" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">📊 Explore Tools</a>
-            </div>
-        </section>
-
-        <!-- FEATURES -->
-        <section class="features" id="features">
-            <h2>Built for <span>Security</span> &amp; <span>Performance</span></h2>
-            <p class="features-sub">Everything you need to trade smarter on Deriv</p>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <span class="feature-icon">🤖</span>
-                    <h3>Free <span>Deriv Bots</span></h3>
-                    <p>Pre-built and customizable bots for Volatility, Boom &amp; Crash, Step Index, and more — zero code required.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">🧠</span>
-                    <h3>AI <span>Market Scanner</span></h3>
-                    <p>Real-time pattern detection and trend analysis to help you spot high-probability setups instantly.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">📊</span>
-                    <h3>Manual <span>Trading Tools</span></h3>
-                    <p>Professional-grade charts, order management, and execution tools for hands-on traders.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">📈</span>
-                    <h3>Strategy <span>Templates</span></h3>
-                    <p>Ready-to-use strategies for rise/fall, even/odd, over/under, and digit trading — deploy in seconds.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">🛡️</span>
-                    <h3>Advanced <span>Risk Management</span></h3>
-                    <p>Built-in stop-loss, take-profit, and position sizing tools to help you protect your capital.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">⚡</span>
-                    <h3>Lightning <span>Execution</span></h3>
-                    <p>Low-latency order routing and real-time market data to keep you ahead of the curve.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- STATS -->
-        <section class="stats">
-            <div class="stat-item">
-                <h4>50+</h4>
-                <p>Bot Templates</p>
-            </div>
-            <div class="stat-item">
-                <h4>24/7</h4>
-                <p>Market Coverage</p>
-            </div>
-            <div class="stat-item">
-                <h4>0%</h4>
-                <p>Commission Fees</p>
-            </div>
-            <div class="stat-item">
-                <h4>10K+</h4>
-                <p>Active Traders</p>
-            </div>
-        </section>
-
-        <!-- TESTIMONIALS -->
-        <section class="testimonials" id="testimonials">
-            <h2>What <span>Traders</span> Say</h2>
-            <div class="testimonial-grid">
-                <div class="testimonial-card">
-                    <div class="stars">★★★★★</div>
-                    <p class="quote">"VaultTrade completely changed my trading game. The bots are incredibly reliable and the AI scanner helps me find winning trades I would've missed."</p>
-                    <div class="author">
-                        <div class="author-avatar">JD</div>
-                        <div>
-                            <div class="author-name">John D.</div>
-                            <div class="author-role">Deriv Trader, 3 years</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="stars">★★★★★</div>
-                    <p class="quote">"I've tried many trading platforms, but VaultTrade stands out. The security features give me peace of mind, and the bot builder is incredibly intuitive."</p>
-                    <div class="author">
-                        <div class="author-avatar">SM</div>
-                        <div>
-                            <div class="author-name">Sarah M.</div>
-                            <div class="author-role">Full-time Trader</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="stars">★★★★★</div>
-                    <p class="quote">"Started with zero experience. VaultTrade's templates and guides helped me go from beginner to profitable in just 2 weeks. Highly recommended!"</p>
-                    <div class="author">
-                        <div class="author-avatar">AK</div>
-                        <div>
-                            <div class="author-name">Alex K.</div>
-                            <div class="author-role">Beginner Trader</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- CTA -->
-        <section class="cta" id="cta">
-            <h2>Ready to <span>Secure</span> Your Trading?</h2>
-            <p>Join thousands of traders who trust VaultTrade for their Deriv trading needs. Get started free today.</p>
-            <a class="btn-primary" onclick="goDashboard()">🚀 Get Started Now</a>
-        </section>
-
-        <!-- FOOTER -->
-        <footer>
-            <p>&copy; 2026 <strong>VaultTrade</strong>. All rights reserved.</p>
-            <div class="footer-links">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">Contact</a>
-                <a href="#">Support</a>
-            </div>
-        </footer>
+    <!-- ============================================================
+    TICKER - EXACT MATCH
+    ============================================================ -->
+    <div class="ticker">
+        <div class="ticker-track">
+            <span class="ticker-item">Volatility 75 <span class="positive">+2.34%</span></span>
+            <span class="ticker-item">Boom 1000 Index <span class="positive">+1.82%</span></span>
+            <span class="ticker-item">Crash 500 Index <span class="negative">-0.94%</span></span>
+            <span class="ticker-item">Step Index <span class="positive">+0.41%</span></span>
+            <span class="ticker-item">Range Break 100 <span class="positive">+1.17%</span></span>
+            <span class="ticker-item">Jump 100 Index <span class="negative">-0.63%</span></span>
+            <span class="ticker-item">Volatility 25 <span class="positive">+0.88%</span></span>
+            <span class="ticker-item">Bear Market Index <span class="positive">+2.09%</span></span>
+            <span class="ticker-item">Bull Market Index <span class="negative">-0.31%</span></span>
+            <span class="ticker-item">Volatility 100 <span class="positive">+3.14%</span></span>
+            <!-- Duplicate for seamless loop -->
+            <span class="ticker-item">Volatility 75 <span class="positive">+2.34%</span></span>
+            <span class="ticker-item">Boom 1000 Index <span class="positive">+1.82%</span></span>
+            <span class="ticker-item">Crash 500 Index <span class="negative">-0.94%</span></span>
+            <span class="ticker-item">Step Index <span class="positive">+0.41%</span></span>
+            <span class="ticker-item">Range Break 100 <span class="positive">+1.17%</span></span>
+            <span class="ticker-item">Jump 100 Index <span class="negative">-0.63%</span></span>
+            <span class="ticker-item">Volatility 25 <span class="positive">+0.88%</span></span>
+            <span class="ticker-item">Bear Market Index <span class="positive">+2.09%</span></span>
+            <span class="ticker-item">Bull Market Index <span class="negative">-0.31%</span></span>
+            <span class="ticker-item">Volatility 100 <span class="positive">+3.14%</span></span>
+        </div>
     </div>
 
     <!-- ============================================================
-    PAGE 2: DASHBOARD
+    HERO - EXACT MATCH
     ============================================================ -->
-    <div class="page" id="page-dashboard" style="display:flex;">
+    <section class="hero">
+        <h1>Trade <span>with better</span> structure</h1>
+        <p>
+            Use manual trading, charts, copy tools, automation, and market analysis
+            without jumping between separate apps.
+        </p>
+        <div class="hero-buttons">
+            <a href="#" class="btn-hero-primary" onclick="openDerivModal()">Log In and Trade</a>
+            <a href="#" class="btn-hero-secondary" onclick="openDerivModal()">Create Free Account</a>
+        </div>
+    </section>
 
-        <!-- SIDEBAR OVERLAY (mobile) -->
-        <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-        <!-- SIDEBAR -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-brand">
-                <div class="logo-icon-sm">VT</div>
-                <div class="brand-text">Vault<span style="-webkit-text-fill-color: var(--vt-gold);">Trade</span></div>
-            </div>
-
-            <nav class="sidebar-nav">
-                <div class="nav-label">Main</div>
-                <a class="active" data-tab="dashboard">
-                    <span class="icon">📊</span> Dashboard
-                </a>
-                <a data-tab="bots">
-                    <span class="icon">🤖</span> My Bots
-                    <span class="badge">3</span>
-                </a>
-                <a data-tab="builder">
-                    <span class="icon">🔧</span> Bot Builder
-                </a>
-                <a data-tab="trades">
-                    <span class="icon">📈</span> Trades
-                </a>
-
-                <div class="nav-label" style="margin-top: 2rem;">Tools</div>
-                <a data-tab="scanner">
-                    <span class="icon">🧠</span> AI Scanner
-                </a>
-                <a data-tab="analytics">
-                    <span class="icon">📉</span> Analytics
-                </a>
-            </nav>
-
-            <div class="sidebar-footer">
-                <div class="user-info">
-                    <div class="user-avatar">VT</div>
+    <!-- ============================================================
+    TESTIMONIALS - EXACT MATCH
+    ============================================================ -->
+    <section class="testimonials">
+        <h2>What <span>Traders</span> Are Saying</h2>
+        <div class="testimonial-grid">
+            <div class="testimonial-card">
+                <div class="author">
+                    <div class="avatar">JO</div>
                     <div>
-                        <div class="user-name">VaultTrader</div>
-                        <div class="user-status">● Online</div>
+                        <div class="name">James Ochieng</div>
+                        <div class="stars">★★★★★</div>
                     </div>
                 </div>
-                <div class="back-home" onclick="goHome()">← Back to Home</div>
+                <p class="quote">"This platform completely changed how I trade. The free bots alone are worth it - I went from manual trading to fully automated in a single day."</p>
             </div>
-        </aside>
 
-        <!-- DASHBOARD MAIN -->
-        <div class="dashboard-main">
-
-            <!-- TOP BAR -->
-            <header class="topbar">
-                <div class="topbar-left">
-                    <button class="menu-toggle" id="menuToggle">☰</button>
-                    <h1 id="dashTitle">Dashboard <span>Overview</span></h1>
-                    <span class="page-sub" id="dashSub">Real-time trading workspace</span>
-                </div>
-                <div class="topbar-right">
-                    <div class="market-status">
-                        <span class="dot"></span>
-                        <span>Markets Live</span>
-                    </div>
-                    <button class="btn-top" onclick="connectDeriv()">🔗 Connect Deriv</button>
-                    <button class="btn-top btn-top-outline" onclick="goHome()">🏠 Home</button>
-                </div>
-            </header>
-
-            <!-- TAB: DASHBOARD -->
-            <section class="tab-content active" id="tab-dashboard">
-                <div class="dashboard-grid">
-                    <div class="stat-card">
-                        <div class="stat-label">Balance</div>
-                        <div class="stat-value gold">$12,847.50</div>
-                        <div class="stat-change positive">▲ +2.4% today</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Total P&L</div>
-                        <div class="stat-value green">+$847.50</div>
-                        <div class="stat-change positive">▲ +7.2% this week</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Active Bots</div>
-                        <div class="stat-value">3</div>
-                        <div class="stat-change" style="color: var(--vt-gold);">⚡ 2 running</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Win Rate</div>
-                        <div class="stat-value gold">68.4%</div>
-                        <div class="stat-change positive">▲ +3.1%</div>
+            <div class="testimonial-card">
+                <div class="author">
+                    <div class="avatar">AH</div>
+                    <div>
+                        <div class="name">Amina Hassan</div>
+                        <div class="stars">★★★★★</div>
                     </div>
                 </div>
+                <p class="quote">"The Smart AI recovery bot is absolutely insane. It pulled me out of a losing streak twice this week. Never seen anything like it."</p>
+            </div>
 
-                <div class="two-col">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>📊 Price Chart</h3>
-                            <div class="card-actions">
-                                <button class="active" onclick="setChartRange('1H')">1H</button>
-                                <button onclick="setChartRange('4H')">4H</button>
-                                <button onclick="setChartRange('1D')">1D</button>
-                                <button onclick="setChartRange('1W')">1W</button>
-                            </div>
-                        </div>
-                        <div class="chart-container" id="chartContainer"></div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>🔄 Recent Trades</h3>
-                            <span style="font-size:1.2rem; color: var(--vt-text-muted);">Live</span>
-                        </div>
-                        <div class="trade-list" id="tradeList"></div>
+            <div class="testimonial-card">
+                <div class="author">
+                    <div class="avatar">DM</div>
+                    <div>
+                        <div class="name">David Mwangi</div>
+                        <div class="stars">★★★★★</div>
                     </div>
                 </div>
+                <p class="quote">"Copy Trader feature is a game changer. I copy the top performer and just let it run. My account grew 40% in the first month."</p>
+            </div>
 
-                <div style="margin-top: 2rem;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                        <h3 style="font-size:1.8rem;">🤖 Your Bots</h3>
-                        <a href="#" onclick="switchTab('bots')" style="color:var(--vt-gold); text-decoration:none; font-size:1.3rem;">View All →</a>
-                    </div>
-                    <div class="bot-grid" id="botGridPreview"></div>
-                </div>
-            </section>
-
-            <!-- TAB: BOTS -->
-            <section class="tab-content" id="tab-bots">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
-                    <h2 style="font-size:2.4rem;">🤖 My <span style="color:var(--vt-gold);">Bots</span></h2>
-                    <button class="btn-top" onclick="switchTab('builder')">+ Create Bot</button>
-                </div>
-                <div class="bot-grid" id="botGridFull"></div>
-            </section>
-
-            <!-- TAB: BUILDER -->
-            <section class="tab-content" id="tab-builder">
-                <h2 style="font-size:2.4rem; margin-bottom:0.5rem;">🔧 Bot <span style="color:var(--vt-gold);">Builder</span></h2>
-                <p style="color:var(--vt-text-muted); font-size:1.4rem; margin-bottom:2rem;">Configure your custom Deriv trading bot</p>
-
-                <div class="builder-grid">
-                    <div class="card">
-                        <h4 style="margin-bottom:1rem;">📈 Strategy</h4>
-                        <select id="strategySelect">
-                            <option value="volatility75">Volatility 75</option>
-                            <option value="volatility100">Volatility 100</option>
-                            <option value="boom500">Boom 500</option>
-                            <option value="crash500">Crash 500</option>
-                            <option value="stepindex">Step Index</option>
-                        </select>
-
-                        <h4 style="margin-bottom:1rem;">📊 Indicators</h4>
-                        <select id="indicatorSelect">
-                            <option value="rsi">RSI</option>
-                            <option value="macd">MACD</option>
-                            <option value="ma">Moving Average</option>
-                            <option value="bollinger">Bollinger Bands</option>
-                            <option value="none">None</option>
-                        </select>
-
-                        <h4 style="margin-bottom:1rem;">⏱️ Timeframe</h4>
-                        <select id="timeframeSelect">
-                            <option value="1m">1 Minute</option>
-                            <option value="5m">5 Minutes</option>
-                            <option value="15m">15 Minutes</option>
-                            <option value="30m">30 Minutes</option>
-                            <option value="1h">1 Hour</option>
-                        </select>
-                    </div>
-
-                    <div class="card">
-                        <h4 style="margin-bottom:1rem;">💰 Risk Parameters</h4>
-                        <div class="param-row">
-                            <div>
-                                <label style="font-size:1.1rem; color:var(--vt-text-muted);">Amount ($)</label>
-                                <input type="number" id="tradeAmount" value="10" min="1" step="1" />
-                            </div>
-                            <div>
-                                <label style="font-size:1.1rem; color:var(--vt-text-muted);">Max trades/day</label>
-                                <input type="number" id="maxTrades" value="20" min="1" step="1" />
-                            </div>
-                        </div>
-                        <div class="param-row">
-                            <div>
-                                <label style="font-size:1.1rem; color:var(--vt-text-muted);">Stop Loss (%)</label>
-                                <input type="number" id="stopLoss" value="5" min="1" step="0.5" />
-                            </div>
-                            <div>
-                                <label style="font-size:1.1rem; color:var(--vt-text-muted);">Take Profit (%)</label>
-                                <input type="number" id="takeProfit" value="10" min="1" step="0.5" />
-                            </div>
-                        </div>
-
-                        <label style="font-size:1.1rem; color:var(--vt-text-muted);">Bot Name</label>
-                        <input type="text" id="botName" value="My VaultBot" />
-
-                        <button class="btn-top" onclick="deployBot()" style="width:100%; padding:1rem; font-size:1.4rem;">🚀 Deploy Bot</button>
-                        <div id="deployStatus" style="margin-top:1rem; font-size:1.3rem; color:var(--vt-gold);"></div>
+            <div class="testimonial-card">
+                <div class="author">
+                    <div class="avatar">FA</div>
+                    <div>
+                        <div class="name">Fatima Al-Rashid</div>
+                        <div class="stars">★★★★★</div>
                     </div>
                 </div>
+                <p class="quote">"The analysis tools here are on another level. Dcircles gives me exact entry points I never had before."</p>
+            </div>
 
-                <div style="margin-top:2rem; padding:1.5rem; background:rgba(212,175,55,0.05); border-radius:12px; border:1px solid var(--vt-border);">
-                    <div style="display:flex; align-items:center; gap:1rem;">
-                        <span style="font-size:2rem;">💡</span>
-                        <div>
-                            <div style="font-weight:600; font-size:1.4rem;">Pro Tip</div>
-                            <div style="color:var(--vt-text-muted); font-size:1.3rem;">Start with a small amount ($5-$10) and test your strategy before scaling up.</div>
-                        </div>
+            <div class="testimonial-card">
+                <div class="author">
+                    <div class="avatar">PK</div>
+                    <div>
+                        <div class="name">Peter Kamau</div>
+                        <div class="stars">★★★★★</div>
                     </div>
                 </div>
-            </section>
+                <p class="quote">"Speedbot is incredible. It catches signals faster than I can manually click. Completely transformed my vol 75 strategy."</p>
+            </div>
 
-            <!-- TAB: TRADES -->
-            <section class="tab-content" id="tab-trades">
-                <h2 style="font-size:2.4rem; margin-bottom:2rem;">📈 Trade <span style="color:var(--vt-gold);">History</span></h2>
-                <div class="card" style="padding:1.5rem;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
-                        <div style="display:flex; gap:1rem;">
-                            <select style="background:rgba(255,255,255,0.05); border:1px solid var(--vt-border); color:#fff; padding:0.5rem 1rem; border-radius:8px; font-size:1.2rem;">
-                                <option>All Instruments</option>
-                                <option>Volatility 75</option>
-                                <option>Boom 500</option>
-                                <option>Step Index</option>
-                            </select>
-                            <select style="background:rgba(255,255,255,0.05); border:1px solid var(--vt-border); color:#fff; padding:0.5rem 1rem; border-radius:8px; font-size:1.2rem;">
-                                <option>All Status</option>
-                                <option>Won</option>
-                                <option>Lost</option>
-                            </select>
-                        </div>
-                        <span style="color:var(--vt-text-muted); font-size:1.2rem;">Showing last 20 trades</span>
-                    </div>
-                    <div id="tradeHistoryFull"></div>
-                </div>
-            </section>
-
-            <!-- TAB: SCANNER -->
-            <section class="tab-content" id="tab-scanner">
-                <h2 style="font-size:2.4rem; margin-bottom:0.5rem;">🧠 AI Market <span style="color:var(--vt-gold);">Scanner</span></h2>
-                <p style="color:var(--vt-text-muted); font-size:1.4rem; margin-bottom:2rem;">Real-time pattern detection and trend analysis</p>
-
-                <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
-                    <div class="card" style="border-left: 3px solid var(--vt-green);">
-                        <div style="font-size:1.2rem; color:var(--vt-text-muted);">Signal</div>
-                        <div style="font-size:1.8rem; font-weight:700; margin:0.5rem 0;">📈 BUY</div>
-                        <div style="color:var(--vt-text-muted); font-size:1.2rem;">Volatility 75 • Confidence 87%</div>
-                        <div style="margin-top:0.8rem; font-size:1.2rem; color:var(--vt-green);">⚡ Price expected to rise</div>
-                    </div>
-                    <div class="card" style="border-left: 3px solid var(--vt-red);">
-                        <div style="font-size:1.2rem; color:var(--vt-text-muted);">Signal</div>
-                        <div style="font-size:1.8rem; font-weight:700; margin:0.5rem 0;">📉 SELL</div>
-                        <div style="color:var(--vt-text-muted); font-size:1.2rem;">Boom 500 • Confidence 72%</div>
-                        <div style="margin-top:0.8rem; font-size:1.2rem; color:var(--vt-red);">⚠️ Potential reversal</div>
-                    </div>
-                    <div class="card" style="border-left: 3px solid var(--vt-gold);">
-                        <div style="font-size:1.2rem; color:var(--vt-text-muted);">Signal</div>
-                        <div style="font-size:1.8rem; font-weight:700; margin:0.5rem 0;">⏳ WAIT</div>
-                        <div style="color:var(--vt-text-muted); font-size:1.2rem;">Step Index • Confidence 55%</div>
-                        <div style="margin-top:0.8rem; font-size:1.2rem; color:var(--vt-gold);">🔍 No clear pattern yet</div>
+            <div class="testimonial-card">
+                <div class="author">
+                    <div class="avatar">GN</div>
+                    <div>
+                        <div class="name">Grace Njeri</div>
+                        <div class="stars">★★★★★</div>
                     </div>
                 </div>
+                <p class="quote">"I was a complete beginner. The free course + bot builder tutorial had me running my first bot in 2 hours. Zero experience needed."</p>
+            </div>
 
-                <div class="card" style="margin-top:2rem;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-                        <span style="font-size:1.4rem;">🔍 Scanning in real-time...</span>
-                        <button class="btn-top" onclick="runScanner()" style="background:rgba(255,255,255,0.08); color:#fff;">Refresh</button>
+            <div class="testimonial-card">
+                <div class="author">
+                    <div class="avatar">EO</div>
+                    <div>
+                        <div class="name">Emmanuel Owusu</div>
+                        <div class="stars">★★★★★</div>
                     </div>
-                    <div style="margin-top:1rem; display:flex; gap:0.8rem; flex-wrap:wrap;">
-                        <span style="background:rgba(212,175,55,0.1); padding:0.3rem 1rem; border-radius:20px; font-size:1.1rem; border:1px solid var(--vt-border);">✅ 3 patterns detected</span>
-                        <span style="background:rgba(212,175,55,0.1); padding:0.3rem 1rem; border-radius:20px; font-size:1.1rem; border:1px solid var(--vt-border);">📊 12 instruments scanned</span>
-                        <span style="background:rgba(212,175,55,0.1); padding:0.3rem 1rem; border-radius:20px; font-size:1.1rem; border:1px solid var(--vt-border);">🔄 Last scan: 2s ago</span>
+                </div>
+                <p class="quote">"The Apex Bot 2026 is seriously on another level. It adapts, it recovers, and it profits. Best bot I have ever used on Deriv."</p>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="author">
+                    <div class="avatar">MW</div>
+                    <div>
+                        <div class="name">Mercy Wanjiku</div>
+                        <div class="stars">★★★★★</div>
                     </div>
                 </div>
-            </section>
+                <p class="quote">"The live charts with full technical indicators make me feel like a professional. I have been using it every single day for 6 months."</p>
+            </div>
 
-            <!-- TAB: ANALYTICS -->
-            <section class="tab-content" id="tab-analytics">
-                <h2 style="font-size:2.4rem; margin-bottom:2rem;">📉 Performance <span style="color:var(--vt-gold);">Analytics</span></h2>
-                <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
-                    <div class="stat-card"><div class="stat-label">Total Trades</div><div class="stat-value gold">142</div></div>
-                    <div class="stat-card"><div class="stat-label">Win Rate</div><div class="stat-value green">68.4%</div></div>
-                    <div class="stat-card"><div class="stat-label">Avg Win</div><div class="stat-value green">+$24.50</div></div>
-                    <div class="stat-card"><div class="stat-label">Avg Loss</div><div class="stat-value red">-$12.30</div></div>
+            <div class="testimonial-card">
+                <div class="author">
+                    <div class="avatar">ID</div>
+                    <div>
+                        <div class="name">Ibrahim Diallo</div>
+                        <div class="stars">★★★★★</div>
+                    </div>
                 </div>
-                <div class="card" style="padding:3rem; text-align:center;">
-                    <span style="font-size:4rem;">📊</span>
-                    <p style="color:var(--vt-text-muted); font-size:1.4rem; margin-top:1rem;">Full analytics dashboard coming soon</p>
-                    <p style="color:var(--vt-text-muted); font-size:1.2rem;">Connect your Deriv account for live data</p>
-                </div>
-            </section>
+                <p class="quote">"Bot Builder is so intuitive. I built a custom Martingale strategy in 30 minutes, tested it on demo, and went live the same day."</p>
+            </div>
 
+            <div class="testimonial-card">
+                <div class="author">
+                    <div class="avatar">SA</div>
+                    <div>
+                        <div class="name">Stella Achieng</div>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                </div>
+                <p class="quote">"What I love most is everything is in one place. No switching between apps. Charts, bots, copy trading - all right here."</p>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="author">
+                    <div class="avatar">KA</div>
+                    <div>
+                        <div class="name">Kofi Asante</div>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                </div>
+                <p class="quote">"The community channel on Telegram led me here and I have never looked back. Real signals, real tools, real results."</p>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="author">
+                    <div class="avatar">PS</div>
+                    <div>
+                        <div class="name">Priya Sharma</div>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                </div>
+                <p class="quote">"Customer support guided me through everything. Within a week I was profitable. The free resources here are unmatched."</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    STATS BAR - EXACT MATCH
+    ============================================================ -->
+    <section class="stats-bar">
+        <div class="stat-item">
+            <h4>10</h4>
+            <p>Digit outcomes</p>
+        </div>
+        <div class="stat-item">
+            <h4>24/7</h4>
+            <p>Synthetic market access</p>
+        </div>
+        <div class="stat-item">
+            <h4>Live</h4>
+            <p>Analysis workspace</p>
+        </div>
+        <div class="stat-item">
+            <h4>Live</h4>
+            <p>Market status</p>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    FEATURES - EXACT MATCH
+    ============================================================ -->
+    <section class="features-section">
+        <h2>Everything in one workspace — <span style="color: var(--gold);">free to use</span></h2>
+        <p class="subtitle">All the tools you need to trade smarter</p>
+        <div class="features-grid">
+            <div class="feature-item">
+                <span class="icon">📚</span>
+                <h4>Free Bot Library</h4>
+                <p>Load proven strategies instantly. No coding needed.</p>
+            </div>
+            <div class="feature-item">
+                <span class="icon">🧠</span>
+                <h4>Smart AI Recovery</h4>
+                <p>Adaptive AI that responds to live market conditions.</p>
+            </div>
+            <div class="feature-item">
+                <span class="icon">📊</span>
+                <h4>Market Analysis</h4>
+                <p>Dcircles patterns, tick analysis, and live signals.</p>
+            </div>
+            <div class="feature-item">
+                <span class="icon">⚡</span>
+                <h4>Speedbot</h4>
+                <p>Ultra-fast execution engine. React to signals instantly.</p>
+            </div>
+            <div class="feature-item">
+                <span class="icon">📈</span>
+                <h4>Pro Charts</h4>
+                <p>Full technical analysis suite with 50+ indicators.</p>
+            </div>
+            <div class="feature-item">
+                <span class="icon">🔧</span>
+                <h4>Bot Builder</h4>
+                <p>Visual drag-and-drop bot builder. Ship strategies fast.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    RISK DISCLAIMER - EXACT MATCH
+    ============================================================ -->
+    <section class="risk-disclaimer">
+        <p>
+            <strong>Risk Disclaimer:</strong> Deriv offers complex derivatives, such as options and contracts for difference ("CFDs").
+            These products may not be suitable for all clients, and trading them puts you at risk.
+            Please make sure that you understand the following risks before trading Deriv products:
+            <br><br>
+            <strong>a)</strong> You may lose some or all of the money you invest in the trade.<br>
+            <strong>b)</strong> If your trade involves currency conversion, exchange rates will affect your profit and loss.
+            <br><br>
+            You should never trade with borrowed money or with money that you cannot afford to lose.
+        </p>
+    </section>
+
+    <!-- ============================================================
+    FOOTER
+    ============================================================ -->
+    <footer>
+        <p>&copy; 2026 <strong>TradeNovaX</strong>. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Contact</a>
+            <a href="#">Support</a>
+            <a href="#">Affiliate Program</a>
+        </div>
+    </footer>
+
+    <!-- ============================================================
+    DERIV CONNECT MODAL
+    ============================================================ -->
+    <div class="modal-overlay" id="derivModal">
+        <div class="modal-box">
+            <div class="modal-icon">🔗</div>
+            <h2>Connect to Deriv</h2>
+            <p>Login to your Deriv account to start trading and earning commissions.</p>
+
+            <!-- ===== DERIV OAUTH LOGIN ===== -->
+            <!-- 
+                IMPORTANT: Replace these values with your actual Deriv app credentials:
+                - YOUR_APP_ID: Your Deriv App ID from the API Dashboard
+                - YOUR_AFFILIATE_TOKEN: Your affiliate token from Deriv Partners
+            -->
+            <a href="https://oauth.deriv.com/oauth2/authorize?app_id=YOUR_APP_ID&affiliate_token=YOUR_AFFILIATE_TOKEN&utm_campaign=tradenovax&redirect_uri=https://tradenovax.co.ke"
+               class="btn-deriv-login"
+               target="_blank">
+                🚀 Login with Deriv
+            </a>
+
+            <button class="btn-modal-close" onclick="closeDerivModal()">Cancel</button>
+
+            <div class="commission-info">
+                💰 <strong>Earn 5% Commission</strong> on every trade made by your referred clients
+            </div>
         </div>
     </div>
 
@@ -1648,316 +1134,25 @@
         <span class="toast-icon">✅</span>
         <span id="toastMessage">Success!</span>
     </div>
-<script src="code-protection.js"></script>
 
     <!-- ============================================================
     JAVASCRIPT
     ============================================================ -->
     <script>
         // ============================================================
-        // PAGE NAVIGATION
+        // DERIV MODAL
         // ============================================================
-        function goHome() {
-            document.getElementById('page-home').classList.add('active');
-            document.getElementById('page-home').style.display = 'block';
-            document.getElementById('page-dashboard').classList.remove('active');
-            document.getElementById('page-dashboard').style.display = 'none';
-            document.body.style.overflow = 'auto';
+        function openDerivModal() {
+            document.getElementById('derivModal').classList.add('active');
         }
 
-        function goDashboard() {
-            document.getElementById('page-home').classList.remove('active');
-            document.getElementById('page-home').style.display = 'none';
-            document.getElementById('page-dashboard').classList.add('active');
-            document.getElementById('page-dashboard').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-            // Re-init dashboard components if needed
-            setTimeout(() => {
-                renderChart();
-                renderTrades('tradeList', tradesData);
-                renderBots('botGridPreview', botsData.slice(0, 3));
-                renderBots('botGridFull', botsData);
-                renderFullHistory();
-            }, 100);
+        function closeDerivModal() {
+            document.getElementById('derivModal').classList.remove('active');
         }
 
-        // ============================================================
-        // DATA
-        // ============================================================
-        const tradesData = [
-            { symbol: 'Volatility 75', amount: '+$24.50', time: '2 min ago', win: true },
-            { symbol: 'Boom 500', amount: '-$10.00', time: '15 min ago', win: false },
-            { symbol: 'Step Index', amount: '+$18.20', time: '32 min ago', win: true },
-            { symbol: 'Crash 500', amount: '+$32.80', time: '1h ago', win: true },
-            { symbol: 'Volatility 100', amount: '-$15.50', time: '1.5h ago', win: false },
-        ];
-
-        const botsData = [
-            { id: 1, name: 'Gold Scalper', desc: 'Scalping on Volatility 75', icon: '⚡', status: 'running' },
-            { id: 2, name: 'Trend Hunter', desc: 'Trend following on Boom 500', icon: '📈', status: 'running' },
-            { id: 3, name: 'Steady Profit', desc: 'Grid trading on Step Index', icon: '📊', status: 'paused' },
-            { id: 4, name: 'AI Swing', desc: 'AI-driven swing trades', icon: '🧠', status: 'stopped' },
-            { id: 5, name: 'Martingale Pro', desc: 'Martingale strategy on V100', icon: '🎯', status: 'paused' },
-        ];
-
-        // ============================================================
-        // CHART
-        // ============================================================
-        function renderChart() {
-            const container = document.getElementById('chartContainer');
-            if (!container) return;
-            let html = '';
-            for (let i = 0; i < 24; i++) {
-                const height = 20 + Math.random() * 80;
-                const isBullish = Math.random() > 0.45;
-                const cls = isBullish ? 'bullish' : 'bearish';
-                const label = (i % 4 === 0) ? (i / 4) + ':00' : '';
-                const value = Math.round(10 + Math.random() * 90);
-                html += `<div class="chart-bar ${cls}" style="height:${height}%;">
-                            ${label ? `<span class="bar-label">${label}</span>` : ''}
-                            <span class="bar-value">${value}</span>
-                         </div>`;
-            }
-            container.innerHTML = html;
-        }
-
-        // ============================================================
-        // RENDER TRADES
-        // ============================================================
-        function renderTrades(listId, data) {
-            const container = document.getElementById(listId);
-            if (!container) return;
-            let html = '';
-            data.forEach(t => {
-                const cls = t.win ? 'win' : 'loss';
-                html += `<div class="trade-item">
-                            <div class="trade-info">
-                                <span class="trade-symbol">${t.symbol}</span>
-                                <span class="trade-time">${t.time}</span>
-                            </div>
-                            <span class="trade-amount ${cls}">${t.amount}</span>
-                        </div>`;
-            });
-            container.innerHTML = html;
-        }
-
-        // ============================================================
-        // RENDER BOTS
-        // ============================================================
-        function renderBots(containerId, data) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            let html = '';
-            data.forEach(bot => {
-                const statusMap = {
-                    running: '🟢 Running',
-                    paused: '🟡 Paused',
-                    stopped: '🔴 Stopped'
-                };
-                html += `<div class="bot-card">
-                            <div class="bot-icon">${bot.icon}</div>
-                            <div class="bot-name">${bot.name}</div>
-                            <div class="bot-desc">${bot.desc}</div>
-                            <div class="bot-status">
-                                <span class="status-badge ${bot.status}">${statusMap[bot.status]}</span>
-                                <button class="btn-bot" onclick="toggleBot(${bot.id})">
-                                    ${bot.status === 'running' ? '⏸ Pause' : bot.status === 'paused' ? '▶️ Resume' : '▶️ Start'}
-                                </button>
-                            </div>
-                        </div>`;
-            });
-            container.innerHTML = html;
-        }
-
-        // ============================================================
-        // RENDER FULL HISTORY
-        // ============================================================
-        function renderFullHistory() {
-            const container = document.getElementById('tradeHistoryFull');
-            if (!container) return;
-            let html =
-                `<div style="display:flex; justify-content:space-between; font-weight:600; padding:0.8rem 0; border-bottom:1px solid var(--vt-border); color:var(--vt-text-muted); font-size:1.1rem;">
-                            <span>Symbol</span><span>Amount</span><span>Time</span><span>Result</span>
-                        </div>`;
-            const fullData = [
-                ...tradesData,
-                { symbol: 'Volatility 75', amount: '+$15.30', time: '2.5h ago', win: true },
-                { symbol: 'Boom 500', amount: '-$8.00', time: '3h ago', win: false },
-                { symbol: 'Step Index', amount: '+$42.10', time: '4h ago', win: true },
-                { symbol: 'Crash 500', amount: '+$12.50', time: '5h ago', win: true },
-                { symbol: 'Volatility 100', amount: '-$22.00', time: '6h ago', win: false },
-            ];
-            fullData.forEach(t => {
-                const cls = t.win ? 'win' : 'loss';
-                html += `<div class="trade-item">
-                            <span class="trade-symbol">${t.symbol}</span>
-                            <span class="trade-amount ${cls}">${t.amount}</span>
-                            <span class="trade-time">${t.time}</span>
-                            <span style="font-size:1.2rem;">${t.win ? '✅' : '❌'}</span>
-                        </div>`;
-            });
-            container.innerHTML = html;
-        }
-
-        // ============================================================
-        // TAB SWITCHING (Dashboard)
-        // ============================================================
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            const target = document.getElementById(`tab-${tabId}`);
-            if (target) target.classList.add('active');
-
-            document.querySelectorAll('.sidebar-nav a').forEach(el => el.classList.remove('active'));
-            const link = document.querySelector(`.sidebar-nav a[data-tab="${tabId}"]`);
-            if (link) link.classList.add('active');
-
-            closeSidebar();
-
-            const titles = {
-                dashboard: 'Dashboard Overview',
-                bots: 'My Bots',
-                builder: 'Bot Builder',
-                trades: 'Trade History',
-                scanner: 'AI Scanner',
-                analytics: 'Analytics'
-            };
-            const titleEl = document.getElementById('dashTitle');
-            const subEl = document.getElementById('dashSub');
-            if (titleEl) titleEl.innerHTML = titles[tabId] || 'Dashboard';
-            if (subEl) subEl.textContent = tabId === 'dashboard' ? 'Real-time trading workspace' : '';
-        }
-
-        // ============================================================
-        // SIDEBAR (mobile)
-        // ============================================================
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('sidebarOverlay').classList.toggle('show');
-        }
-
-        function closeSidebar() {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('show');
-        }
-
-        // ============================================================
-        // CHART RANGE
-        // ============================================================
-        function setChartRange(range) {
-            const btns = document.querySelectorAll('.card-actions button');
-            btns.forEach(b => b.classList.remove('active'));
-            if (window.event && window.event.target) window.event.target.classList.add('active');
-            renderChart();
-            showToast(`📊 Chart updated to ${range}`);
-        }
-
-        // ============================================================
-        // TOGGLE BOT
-        // ============================================================
-        function toggleBot(id) {
-            const bot = botsData.find(b => b.id === id);
-            if (!bot) return;
-            const statusMap = { running: 'paused', paused: 'running', stopped: 'running' };
-            bot.status = statusMap[bot.status] || 'running';
-            renderBots('botGridPreview', botsData.slice(0, 3));
-            renderBots('botGridFull', botsData);
-            showToast(`🤖 ${bot.name}: ${bot.status === 'running' ? '▶️ Started' : '⏸ Paused'}`);
-        }
-
-        // ============================================================
-        // DEPLOY BOT
-        // ============================================================
-        function deployBot() {
-            const name = document.getElementById('botName').value || 'My VaultBot';
-            const strategy = document.getElementById('strategySelect').value;
-            const indicator = document.getElementById('indicatorSelect').value;
-            const amount = document.getElementById('tradeAmount').value || 10;
-
-            const status = document.getElementById('deployStatus');
-            status.textContent = '⏳ Deploying...';
-            status.style.color = 'var(--vt-gold)';
-
-            setTimeout(() => {
-                const newBot = {
-                    id: Date.now(),
-                    name: name,
-                    desc: `${strategy} with ${indicator}`,
-                    icon: '🚀',
-                    status: 'running'
-                };
-                botsData.unshift(newBot);
-                renderBots('botGridPreview', botsData.slice(0, 3));
-                renderBots('botGridFull', botsData);
-                status.textContent = `✅ "${name}" deployed successfully! Starting with $${amount} per trade.`;
-                status.style.color = 'var(--vt-green)';
-                showToast(`✅ Bot "${name}" deployed!`);
-            }, 1500);
-        }
-
-        // ============================================================
-        // RUN SCANNER
-        // ============================================================
-        function runScanner() {
-            showToast('🧠 Scanning markets...');
-            const signals = ['BUY', 'SELL', 'WAIT'];
-            const confidences = [82, 76, 91, 65, 88];
-            const instruments = ['Volatility 75', 'Boom 500', 'Step Index', 'Crash 500', 'Volatility 100'];
-
-            const scanResults = document.querySelectorAll('.card[style*="border-left"]');
-            scanResults.forEach((card, i) => {
-                if (i < 3) {
-                    const signal = signals[Math.floor(Math.random() * signals.length)];
-                    const confidence = confidences[Math.floor(Math.random() * confidences.length)];
-                    const instr = instruments[Math.floor(Math.random() * instruments.length)];
-                    const title = card.querySelector('div[style*="font-size:1.8rem"]');
-                    const sub = card.querySelector('div[style*="color:var(--vt-text-muted)"]');
-                    const status = card.querySelector('div[style*="margin-top:0.8rem"]');
-
-                    if (title) title.textContent = signal === 'BUY' ? '📈 BUY' : signal === 'SELL' ? '📉 SELL' : '⏳ WAIT';
-                    if (sub) sub.textContent = `${instr} • Confidence ${confidence}%`;
-                    if (status) {
-                        const msgs = {
-                            'BUY': '⚡ Price expected to rise',
-                            'SELL': '⚠️ Potential reversal',
-                            'WAIT': '🔍 No clear pattern yet'
-                        };
-                        status.textContent = msgs[signal] || '📊 Analyzing...';
-                        status.style.color = signal === 'BUY' ? 'var(--vt-green)' : signal === 'SELL' ? 'var(--vt-red)' :
-                            'var(--vt-gold)';
-                    }
-                }
-            });
-        }
-
-        // ============================================================
-        // CONNECT DERIV
-        // ============================================================
-        function connectDeriv() {
-            const btn = document.querySelector('.topbar-right .btn-top:not(.btn-top-outline)');
-            if (!btn) return;
-            btn.textContent = '⏳ Connecting...';
-            btn.disabled = true;
-
-            setTimeout(() => {
-                btn.textContent = '✅ Connected!';
-                btn.style.background = 'var(--vt-green)';
-                btn.style.color = '#fff';
-                showToast('🔗 Successfully connected to Deriv!');
-                // ===== DERIV API INTEGRATION (UNCOMMENT WHEN READY) =====
-                /*
-                fetch('https://api.deriv.com/v1/account/balance', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token: 'YOUR_API_TOKEN' })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    document.querySelector('.stat-value.gold').textContent = `$${data.balance.toFixed(2)}`;
-                })
-                .catch(err => console.error('Deriv API Error:', err));
-                */
-            }, 2000);
-        }
+        document.getElementById('derivModal').addEventListener('click', function(e) {
+            if (e.target === this) closeDerivModal();
+        });
 
         // ============================================================
         // TOAST
@@ -1972,58 +1167,35 @@
         }
 
         // ============================================================
-        // EVENT LISTENERS
-        // ============================================================
-        document.querySelectorAll('.sidebar-nav a[data-tab]').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                switchTab(this.dataset.tab);
-            });
-        });
-
-        const menuToggle = document.getElementById('menuToggle');
-        if (menuToggle) {
-            menuToggle.addEventListener('click', toggleSidebar);
-        }
-
-        const overlay = document.getElementById('sidebarOverlay');
-        if (overlay) {
-            overlay.addEventListener('click', closeSidebar);
-        }
-
-        // ============================================================
         // KEYBOARD SHORTCUTS
         // ============================================================
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeSidebar();
-            if (e.ctrlKey && e.key === 'b') switchTab('builder');
-            if (e.ctrlKey && e.key === 'd') switchTab('dashboard');
-            if (e.ctrlKey && e.key === 't') switchTab('trades');
-            if (e.ctrlKey && e.key === 'h') goHome();
+            if (e.key === 'Escape') closeDerivModal();
         });
+
+        // ============================================================
+        // CHECK DERIV LOGIN
+        // ============================================================
+        function checkDerivLogin() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            const login = urlParams.get('login');
+
+            if (token && login) {
+                showToast(`✅ Welcome back! Connected to Deriv as ${login}`);
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
 
         // ============================================================
         // INIT
         // ============================================================
-        // Home page is shown by default
-        console.log('%c🏦 VaultTrade Website Loaded', 'font-size:20px; color:#D4AF37; font-weight:bold;');
-        console.log('%c📊 Home + Dashboard in one file', 'font-size:14px; color:#8899BB;');
-        console.log('%c🔑 Ready for Deriv API integration', 'font-size:14px; color:#8899BB;');
-        console.log('%c⌨️ Shortcuts: Ctrl+D (Dashboard), Ctrl+H (Home), Ctrl+B (Builder)', 'font-size:12px; color:#8899BB;');
+        checkDerivLogin();
 
-        // Check if we should show dashboard on load (if URL has #dashboard)
-        if (window.location.hash === '#dashboard') {
-            goDashboard();
-        }
+        console.log('%c🚀 TradeNovaX Loaded', 'font-size:20px; color:#D4AF37; font-weight:bold;');
+        console.log('%c🔑 Update YOUR_APP_ID and YOUR_AFFILIATE_TOKEN', 'font-size:14px; color:#8899BB;');
 
-        // Pre-initialize dashboard components
-        setTimeout(() => {
-            renderChart();
-            renderTrades('tradeList', tradesData);
-            renderBots('botGridPreview', botsData.slice(0, 3));
-            renderBots('botGridFull', botsData);
-            renderFullHistory();
-        }, 500);
+        setTimeout(() => showToast('🚀 Welcome to TradeNovaX! Connect your Deriv account to start trading.'), 1000);
     </script>
 
 </body>

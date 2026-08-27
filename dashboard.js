@@ -1,5 +1,5 @@
 // ============================================================
-// TRADENOVAX DASHBOARD - COMPLETE BOT ENGINE
+// TRADENOVAX DASHBOARD - DEMO MODE (No Supabase Auth Required)
 // ============================================================
 
 // ============================================================
@@ -12,31 +12,35 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 window.supabase = supabase
 
 // ============================================================
-// STATE
+// DEMO USER - Auto-creates without Supabase Auth
 // ============================================================
-let currentUser = null
-let allBots = []
-let derivWs = null
-let currentPrices = {}
+function getDemoUser() {
+    let demoUser = localStorage.getItem('tradenovax_demo_user')
+    if (!demoUser) {
+        demoUser = {
+            id: 'demo-' + Date.now(),
+            email: 'demo@tradenovax.com',
+            user_metadata: { full_name: 'Demo Trader' }
+        }
+        localStorage.setItem('tradenovax_demo_user', JSON.stringify(demoUser))
+    }
+    return JSON.parse(demoUser)
+}
 
 // ============================================================
-// AUTH FUNCTIONS
+// AUTH FUNCTIONS (Demo Mode)
 // ============================================================
 async function getCurrentUser() {
-    const { data: { user }, error } = await supabase.auth.getUser()
-    if (error) throw error
-    currentUser = user
-    return user
+    return getDemoUser()
 }
 
 async function logout() {
-    const { error } = await supabase.auth.signOut()
-    if (error) throw error
+    localStorage.removeItem('tradenovax_demo_user')
     window.location.href = '/index.html'
 }
 
 // ============================================================
-// BOT CRUD OPERATIONS
+// BOT CRUD OPERATIONS (LIVE Supabase)
 // ============================================================
 async function getBots(userId) {
     const { data, error } = await supabase
@@ -45,8 +49,7 @@ async function getBots(userId) {
         .eq('user_id', userId)
         .order('created_at', { ascending: false })
     if (error) throw error
-    allBots = data
-    return data
+    return data || []
 }
 
 async function createBot(userId, botData) {
@@ -79,7 +82,7 @@ async function deleteBot(botId) {
 }
 
 // ============================================================
-// TRADE CRUD OPERATIONS
+// TRADE CRUD OPERATIONS (LIVE Supabase)
 // ============================================================
 async function getTrades(userId) {
     const { data, error } = await supabase
@@ -89,7 +92,7 @@ async function getTrades(userId) {
         .order('created_at', { ascending: false })
         .limit(20)
     if (error) throw error
-    return data
+    return data || []
 }
 
 async function createTrade(userId, tradeData) {
@@ -103,415 +106,242 @@ async function createTrade(userId, tradeData) {
 }
 
 // ============================================================
-// DERIV CONNECTION
+// BOT TEMPLATES
 // ============================================================
-async function getDerivConnection(userId) {
-    const { data, error } = await supabase
-        .from('deriv_connections')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('is_active', true)
-        .single()
-    if (error && error.code !== 'PGRST116') throw error
-    return data
-}
-
-// ============================================================
-// DERIV PRICE FEED - REAL TIME
-// ============================================================
-async function connectDerivWebSocket() {
-    try {
-        const user = await getCurrentUser()
-        if (!user) return
-
-        const deriv = await getDerivConnection(user.id)
-        if (!deriv) {
-            document.getElementById('derivStatus').textContent = '🔗 Not connected'
-            document.getElementById('derivStatus').style.color = 'var(--text-muted)'
-            return
-        }
-
-        document.getElementById('derivStatus').textContent = '🟢 Connected'
-        document.getElementById('derivStatus').style.color = 'var(--green)'
-
-        // WebSocket connection to Deriv
-        derivWs = new WebSocket('wss://ws.deriv.com/websockets/v3')
-
-        derivWs.onopen = () => {
-            derivWs.send(JSON.stringify({
-                authorize: deriv.deriv_access_token
-            }))
-            derivWs.send(JSON.stringify({
-                subscribe: 1,
-                ticks: ['R_75', 'BOOM_500', 'CRASH_500', 'STEP_INDEX']
-            }))
-            showToast('🔗 Connected to Deriv price feed')
-        }
-
-        derivWs.onmessage = (event) => {
-            const response = JSON.parse(event.data)
-            if (response.msg_type === 'tick') {
-                currentPrices[response.ticks.symbol] = response.ticks.quote
-                updatePriceDisplay(response.ticks.symbol, response.ticks.quote)
-            }
-        }
-
-        derivWs.onerror = (error) => {
-            console.error('WebSocket error:', error)
-            document.getElementById('derivStatus').textContent = '⚠️ Connection error'
-            document.getElementById('derivStatus').style.color = 'var(--red)'
-        }
-
-    } catch (error) {
-        console.error('Deriv connection error:', error)
+const BOT_TEMPLATES = [
+    {
+        id: 'vertex-digits',
+        name: 'Vertex Digits',
+        type: 'quick',
+        strategy: 'over_under',
+        description: 'Extreme-digit Over/Under strategy for the Volatility 100 Index with recovery and risk controls.',
+        icon: '⚡',
+        symbol: 'R_100',
+        amount: 0.5,
+        max_trades: 20,
+        stop_loss: 5,
+        take_profit: 10,
+        status: 'stopped'
+    },
+    {
+        id: 'profits-miner',
+        name: 'PROFITS MINER BOT',
+        type: 'premium',
+        strategy: 'rise_fall',
+        description: '⭐ Premium automated trading bot with advanced algorithms.',
+        icon: '🚀',
+        symbol: 'R_75',
+        amount: 1,
+        max_trades: 30,
+        stop_loss: 10,
+        take_profit: 20,
+        status: 'stopped'
+    },
+    {
+        id: 'sv7-2025',
+        name: 'Mkorean SV7 2025',
+        type: 'free',
+        strategy: 'even_odd',
+        description: 'Automate your trades with this efficient bot strategy.',
+        icon: '🤖',
+        symbol: 'R_100',
+        amount: 0.5,
+        max_trades: 15,
+        stop_loss: 3,
+        take_profit: 8,
+        status: 'stopped'
+    },
+    {
+        id: 'no-loss',
+        name: 'NO LOSS BOT',
+        type: 'free',
+        strategy: 'matches_differs',
+        description: 'Automate your trades with this efficient bot strategy.',
+        icon: '🛡️',
+        symbol: 'R_100',
+        amount: 0.5,
+        max_trades: 10,
+        stop_loss: 2,
+        take_profit: 5,
+        status: 'stopped'
+    },
+    {
+        id: 'ultimate-sv8',
+        name: 'Ultimate SV 8 BOT 2025',
+        type: 'free',
+        strategy: 'digit_range_reversal',
+        description: 'Automate your trades with this efficient bot strategy.',
+        icon: '🎯',
+        symbol: 'R_75',
+        amount: 0.5,
+        max_trades: 20,
+        stop_loss: 5,
+        take_profit: 12,
+        status: 'stopped'
+    },
+    {
+        id: 'quantum-edge',
+        name: 'Quantum Edge AI',
+        type: 'quick',
+        strategy: 'parity_reversal',
+        description: '🥉 Ready-made Quick Bot strategy with trade parameters, analysis, recovery, and risk controls.',
+        icon: '🧠',
+        symbol: 'R_100',
+        amount: 0.5,
+        max_trades: 25,
+        stop_loss: 8,
+        take_profit: 15,
+        status: 'stopped'
+    },
+    {
+        id: 'smart-recovery',
+        name: 'Smart Recovery AI',
+        type: 'smart',
+        strategy: 'direction_reversal',
+        description: 'Pattern-led entries with automatic multi-market recovery.',
+        icon: '🔄',
+        symbol: 'R_75',
+        amount: 1,
+        max_trades: 40,
+        stop_loss: 15,
+        take_profit: 25,
+        status: 'stopped'
     }
-}
-
-function updatePriceDisplay(symbol, price) {
-    // Update any price displays on the page
-    const priceElements = document.querySelectorAll(`[data-symbol="${symbol}"]`)
-    priceElements.forEach(el => {
-        el.textContent = price.toFixed(2)
-    })
-}
+]
 
 // ============================================================
-// BOT STRATEGIES - REAL TRADING LOGIC
+// BOT STRATEGIES (Demo Trading)
 // ============================================================
 const BOT_STRATEGIES = {
-    volatility75: {
-        name: 'Volatility 75',
-        symbol: 'R_75',
+    even_odd: {
+        name: 'Even/Odd',
         execute: async (bot) => {
-            const price = await getDerivPrice('R_75')
-            const trend = await detectTrend('R_75')
-            
-            if (trend === 'bullish') {
-                return await placeTrade({
-                    symbol: 'R_75',
-                    type: 'CALL',
-                    amount: bot.amount,
-                    duration: 60,
-                    stopLoss: bot.stop_loss,
-                    takeProfit: bot.take_profit,
-                    bot_id: bot.id
-                })
-            } else if (trend === 'bearish') {
-                return await placeTrade({
-                    symbol: 'R_75',
-                    type: 'PUT',
-                    amount: bot.amount,
-                    duration: 60,
-                    stopLoss: bot.stop_loss,
-                    takeProfit: bot.take_profit,
-                    bot_id: bot.id
-                })
-            }
-            return null
+            const isWin = Math.random() > 0.45
+            const profit = isWin ? bot.amount * (0.5 + Math.random() * 0.8) : -bot.amount * (0.3 + Math.random() * 0.7)
+            return await executeDemoTrade(bot, isWin, profit)
         }
     },
-    volatility100: {
-        name: 'Volatility 100',
-        symbol: 'R_100',
+    over_under: {
+        name: 'Over/Under',
         execute: async (bot) => {
-            const price = await getDerivPrice('R_100')
-            const momentum = await detectMomentum('R_100')
-            
-            if (momentum === 'up') {
-                return await placeTrade({
-                    symbol: 'R_100',
-                    type: 'CALL',
-                    amount: bot.amount,
-                    duration: 90,
-                    stopLoss: bot.stop_loss,
-                    takeProfit: bot.take_profit,
-                    bot_id: bot.id
-                })
-            } else if (momentum === 'down') {
-                return await placeTrade({
-                    symbol: 'R_100',
-                    type: 'PUT',
-                    amount: bot.amount,
-                    duration: 90,
-                    stopLoss: bot.stop_loss,
-                    takeProfit: bot.take_profit,
-                    bot_id: bot.id
-                })
-            }
-            return null
+            const isWin = Math.random() > 0.45
+            const profit = isWin ? bot.amount * (0.5 + Math.random() * 0.8) : -bot.amount * (0.3 + Math.random() * 0.7)
+            return await executeDemoTrade(bot, isWin, profit)
         }
     },
-    boom500: {
-        name: 'Boom 500',
-        symbol: 'BOOM_500',
+    rise_fall: {
+        name: 'Rise/Fall',
         execute: async (bot) => {
-            const price = await getDerivPrice('BOOM_500')
-            const momentum = await detectMomentum('BOOM_500')
-            
-            if (momentum === 'up') {
-                return await placeTrade({
-                    symbol: 'BOOM_500',
-                    type: 'CALL',
-                    amount: bot.amount,
-                    duration: 120,
-                    stopLoss: bot.stop_loss,
-                    takeProfit: bot.take_profit,
-                    bot_id: bot.id
-                })
-            } else if (momentum === 'down') {
-                return await placeTrade({
-                    symbol: 'BOOM_500',
-                    type: 'PUT',
-                    amount: bot.amount,
-                    duration: 120,
-                    stopLoss: bot.stop_loss,
-                    takeProfit: bot.take_profit,
-                    bot_id: bot.id
-                })
-            }
-            return null
+            const isWin = Math.random() > 0.45
+            const profit = isWin ? bot.amount * (0.5 + Math.random() * 0.8) : -bot.amount * (0.3 + Math.random() * 0.7)
+            return await executeDemoTrade(bot, isWin, profit)
         }
     },
-    crash500: {
-        name: 'Crash 500',
-        symbol: 'CRASH_500',
+    matches_differs: {
+        name: 'Matches/Differs',
         execute: async (bot) => {
-            const support = await findSupport('CRASH_500')
-            const price = await getDerivPrice('CRASH_500')
-            
-            if (price < support * 1.01) {
-                return await placeTrade({
-                    symbol: 'CRASH_500',
-                    type: 'CALL',
-                    amount: bot.amount,
-                    duration: 90,
-                    stopLoss: bot.stop_loss,
-                    takeProfit: bot.take_profit,
-                    bot_id: bot.id
-                })
-            }
-            return null
+            const isWin = Math.random() > 0.45
+            const profit = isWin ? bot.amount * (0.5 + Math.random() * 0.8) : -bot.amount * (0.3 + Math.random() * 0.7)
+            return await executeDemoTrade(bot, isWin, profit)
         }
     },
-    stepindex: {
-        name: 'Step Index',
-        symbol: 'STEP_INDEX',
+    parity_reversal: {
+        name: 'Parity Reversal',
         execute: async (bot) => {
-            const rsi = await calculateRSI('STEP_INDEX')
-            const price = await getDerivPrice('STEP_INDEX')
-            
-            if (rsi < 30) {
-                return await placeTrade({
-                    symbol: 'STEP_INDEX',
-                    type: 'CALL',
-                    amount: bot.amount,
-                    duration: 60,
-                    stopLoss: bot.stop_loss,
-                    takeProfit: bot.take_profit,
-                    bot_id: bot.id
-                })
-            } else if (rsi > 70) {
-                return await placeTrade({
-                    symbol: 'STEP_INDEX',
-                    type: 'PUT',
-                    amount: bot.amount,
-                    duration: 60,
-                    stopLoss: bot.stop_loss,
-                    takeProfit: bot.take_profit,
-                    bot_id: bot.id
-                })
-            }
-            return null
+            const isWin = Math.random() > 0.45
+            const profit = isWin ? bot.amount * (0.5 + Math.random() * 0.8) : -bot.amount * (0.3 + Math.random() * 0.7)
+            return await executeDemoTrade(bot, isWin, profit)
+        }
+    },
+    digit_range_reversal: {
+        name: 'Digit Range Reversal',
+        execute: async (bot) => {
+            const isWin = Math.random() > 0.45
+            const profit = isWin ? bot.amount * (0.5 + Math.random() * 0.8) : -bot.amount * (0.3 + Math.random() * 0.7)
+            return await executeDemoTrade(bot, isWin, profit)
+        }
+    },
+    direction_reversal: {
+        name: 'Direction Reversal',
+        execute: async (bot) => {
+            const isWin = Math.random() > 0.45
+            const profit = isWin ? bot.amount * (0.5 + Math.random() * 0.8) : -bot.amount * (0.3 + Math.random() * 0.7)
+            return await executeDemoTrade(bot, isWin, profit)
         }
     }
 }
 
 // ============================================================
-// TRADING INDICATORS
+// EXECUTE DEMO TRADE
 // ============================================================
-async function getDerivPrice(symbol) {
-    if (currentPrices[symbol]) {
-        return currentPrices[symbol]
-    }
-    
+async function executeDemoTrade(bot, isWin, profitLoss) {
     try {
-        const response = await fetch('https://api.deriv.com/v1/tick', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ticks: symbol, subscribe: 0 })
-        })
-        const data = await response.json()
-        return data?.tick?.quote || 0
-    } catch (error) {
-        return 0
-    }
-}
-
-async function getHistoricalPrices(symbol, count) {
-    try {
-        const response = await fetch('https://api.deriv.com/v1/ticks_history', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                ticks_history: symbol,
-                end: 'latest',
-                start: new Date(Date.now() - 3600000).toISOString(),
-                subscribe: 0,
-                granularity: 60
-            })
-        })
-        const data = await response.json()
-        return data?.candles?.map(c => c.close) || []
-    } catch (error) {
-        return []
-    }
-}
-
-function calculateSMA(prices, period) {
-    if (prices.length < period) return prices.reduce((a, b) => a + b, 0) / prices.length
-    const slice = prices.slice(-period)
-    return slice.reduce((a, b) => a + b, 0) / period
-}
-
-async function detectTrend(symbol) {
-    const prices = await getHistoricalPrices(symbol, 20)
-    if (prices.length < 10) return 'neutral'
-    
-    const sma5 = calculateSMA(prices, 5)
-    const sma10 = calculateSMA(prices, 10)
-    
-    if (sma5 > sma10 * 1.005) return 'bullish'
-    if (sma5 < sma10 * 0.995) return 'bearish'
-    return 'neutral'
-}
-
-async function detectMomentum(symbol) {
-    const prices = await getHistoricalPrices(symbol, 10)
-    if (prices.length < 2) return 'neutral'
-    
-    const change = (prices[prices.length - 1] - prices[0]) / prices[0]
-    if (change > 0.005) return 'up'
-    if (change < -0.005) return 'down'
-    return 'neutral'
-}
-
-async function calculateRSI(symbol) {
-    const prices = await getHistoricalPrices(symbol, 14)
-    if (prices.length < 14) return 50
-    
-    let gains = 0, losses = 0
-    for (let i = 1; i < prices.length; i++) {
-        const diff = prices[i] - prices[i-1]
-        if (diff > 0) gains += diff
-        else losses += Math.abs(diff)
-    }
-    
-    const avgGain = gains / 14
-    const avgLoss = losses / 14
-    
-    if (avgLoss === 0) return 100
-    const rs = avgGain / avgLoss
-    return 100 - (100 / (1 + rs))
-}
-
-async function findSupport(symbol) {
-    const prices = await getHistoricalPrices(symbol, 50)
-    return Math.min(...prices)
-}
-
-// ============================================================
-// EXECUTE TRADE - REAL DERIV TRADING
-// ============================================================
-async function placeTrade(tradeParams) {
-    try {
-        const user = await getCurrentUser()
-        if (!user) {
-            showToast('⚠️ Please log in first')
-            return null
-        }
-
-        const deriv = await getDerivConnection(user.id)
-        if (!deriv) {
-            showToast('⚠️ Please connect your Deriv account')
-            return null
-        }
-
-        // Get proposal from Deriv
-        const proposalResponse = await fetch('https://api.deriv.com/v1/proposal', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                token: deriv.deriv_access_token,
-                proposal: 1,
-                amount: tradeParams.amount,
-                contract_type: tradeParams.type === 'CALL' ? 'CALL' : 'PUT',
-                duration: tradeParams.duration,
-                duration_unit: 's',
-                symbol: tradeParams.symbol,
-                basis: 'stake',
-                currency: 'USD'
-            })
-        })
+        const user = getCurrentUser()
         
-        const proposalData = await proposalResponse.json()
-        
-        if (proposalData.error) {
-            showToast('❌ Trade failed: ' + proposalData.error.message)
-            return null
-        }
-
-        // Buy contract
-        const buyResponse = await fetch('https://api.deriv.com/v1/buy', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                token: deriv.deriv_access_token,
-                buy: proposalData.proposal.id,
-                price: proposalData.proposal.ask_price
-            })
-        })
-        
-        const buyData = await buyResponse.json()
-        
-        if (buyData.error) {
-            showToast('❌ Buy failed: ' + buyData.error.message)
-            return null
-        }
-
-        // Save trade to Supabase
         const tradeRecord = {
             user_id: user.id,
-            bot_id: tradeParams.bot_id || null,
-            symbol: tradeParams.symbol,
-            type: tradeParams.type,
-            amount: tradeParams.amount,
-            price: proposalData.proposal.spot,
-            status: 'pending',
-            contract_id: buyData.buy.contract_id
+            bot_id: bot.id || null,
+            symbol: bot.symbol || 'R_75',
+            type: isWin ? 'CALL' : 'PUT',
+            amount: bot.amount || 1,
+            price: 100 + Math.random() * 50,
+            profit_loss: parseFloat(profitLoss.toFixed(2)),
+            status: isWin ? 'won' : 'lost',
+            is_demo: true
         }
-
-        await createTrade(user.id, tradeRecord)
-        showToast(`✅ Trade placed: ${tradeParams.type} on ${tradeParams.symbol}`)
-        return buyData
-
+        
+        await supabase.from('trades').insert(tradeRecord)
+        
+        showToast(`🎮 Demo Trade: ${isWin ? '✅ WIN' : '❌ LOSS'} $${Math.abs(profitLoss.toFixed(2))}`)
+        return { success: true, isWin, profitLoss }
+        
     } catch (error) {
-        console.error('Trade error:', error)
-        showToast('❌ Trade error: ' + error.message)
+        console.error('Demo trade error:', error)
         return null
     }
 }
 
 // ============================================================
-// RUN BOT ENGINE
+// PLACE TRADE (Demo Mode)
 // ============================================================
-async function runBotEngine() {
-    const user = await getCurrentUser()
-    if (!user) return
+async function placeTrade(tradeParams) {
+    const user = getCurrentUser()
+    const isWin = Math.random() > 0.45
+    const profitLoss = isWin 
+        ? tradeParams.amount * (0.5 + Math.random() * 0.8) 
+        : -tradeParams.amount * (0.3 + Math.random() * 0.7)
+    
+    const tradeRecord = {
+        user_id: user.id,
+        bot_id: tradeParams.bot_id || null,
+        symbol: tradeParams.symbol || 'R_75',
+        type: tradeParams.type || 'CALL',
+        amount: tradeParams.amount || 1,
+        price: 100 + Math.random() * 50,
+        profit_loss: parseFloat(profitLoss.toFixed(2)),
+        status: isWin ? 'won' : 'lost',
+        is_demo: true
+    }
+    
+    await supabase.from('trades').insert(tradeRecord)
+    showToast(`🎮 ${isWin ? '✅ WIN' : '❌ LOSS'} $${Math.abs(profitLoss.toFixed(2))}`)
+    return { success: true, isWin, profitLoss }
+}
 
+// ============================================================
+// BOT ENGINE - RUN ALL ACTIVE BOTS
+// ============================================================
+let botEngineRunning = false
+
+async function startBotEngine() {
+    if (botEngineRunning) return
+    botEngineRunning = true
+    
+    const user = getCurrentUser()
     const bots = await getBots(user.id)
-    const runningBots = bots.filter(b => b.status === 'running')
+    const activeBots = bots.filter(b => b.status === 'running')
 
-    for (const bot of runningBots) {
+    for (const bot of activeBots) {
         try {
             const strategy = BOT_STRATEGIES[bot.strategy]
             if (strategy) {
@@ -522,8 +352,40 @@ async function runBotEngine() {
         }
     }
 
-    // Run every 60 seconds
-    setTimeout(runBotEngine, 60000)
+    botEngineRunning = false
+}
+
+async function runBotEngine() {
+    await startBotEngine()
+    setTimeout(runBotEngine, 30000) // Run every 30 seconds
+}
+
+function toggleBotExecution() {
+    const runBtn = document.getElementById('runBotBtn')
+    const isRunning = runBtn.classList.contains('running')
+    
+    if (isRunning) {
+        stopBotEngine()
+    } else {
+        startBotEngine()
+        runBtn.classList.add('running')
+        runBtn.querySelector('.run-text').textContent = 'Stop'
+        runBtn.querySelector('.run-icon').textContent = '⏹'
+        document.getElementById('botStatusText').textContent = 'Running'
+        document.getElementById('botStatusDot').className = 'status-dot running'
+        showToast('🤖 Bot engine started')
+    }
+}
+
+function stopBotEngine() {
+    const runBtn = document.getElementById('runBotBtn')
+    runBtn.classList.remove('running')
+    runBtn.querySelector('.run-text').textContent = 'Run'
+    runBtn.querySelector('.run-icon').textContent = '▶'
+    document.getElementById('botStatusText').textContent = 'Stopped'
+    document.getElementById('botStatusDot').className = 'status-dot stopped'
+    botEngineRunning = false
+    showToast('⏹ Bot engine stopped')
 }
 
 // ============================================================
@@ -558,7 +420,8 @@ function renderBots(bots) {
         const typeMap = {
             quick: 'QUICK BOT',
             premium: 'PREMIUM',
-            free: 'FREE'
+            free: 'FREE',
+            smart: 'SMART AI'
         }
         const botType = typeMap[bot.type] || 'FREE'
 
@@ -618,18 +481,13 @@ function renderTrades(trades) {
 // ============================================================
 async function toggleBot(botId, currentStatus) {
     try {
-        const user = await getCurrentUser()
-        if (!user) return
-
+        const user = getCurrentUser()
         const newStatus = currentStatus === 'running' ? 'paused' :
                          currentStatus === 'paused' ? 'running' : 'running'
 
         await updateBot(botId, { status: newStatus })
-        
-        // Refresh data
         const bots = await getBots(user.id)
         renderBots(bots)
-        
         showToast(`✅ Bot ${newStatus === 'running' ? 'started' : 'paused'}`)
     } catch (error) {
         showToast('❌ Error: ' + error.message)
@@ -639,10 +497,8 @@ async function toggleBot(botId, currentStatus) {
 async function loadBot(botId) {
     try {
         showToast('📥 Loading bot...')
-        // Find the bot
-        const bot = allBots.find(b => b.id === botId)
+        const bot = BOT_TEMPLATES.find(b => b.id === botId)
         if (bot) {
-            // Load bot config into builder
             document.getElementById('strategySelect').value = bot.strategy || 'volatility75'
             document.getElementById('indicatorSelect').value = bot.indicator || 'rsi'
             document.getElementById('tradeAmount').value = bot.amount || 10
@@ -650,8 +506,7 @@ async function loadBot(botId) {
             document.getElementById('stopLoss').value = bot.stop_loss || 5
             document.getElementById('takeProfit').value = bot.take_profit || 10
             document.getElementById('botName').value = bot.name || 'My Bot'
-            
-            showToast(`✅ Bot "${bot.name}" loaded!`)
+            showToast(`✅ "${bot.name}" loaded!`)
         }
     } catch (error) {
         showToast('❌ Error loading bot: ' + error.message)
@@ -663,12 +518,7 @@ async function loadBot(botId) {
 // ============================================================
 async function deployBot() {
     try {
-        const user = await getCurrentUser()
-        if (!user) {
-            showToast('⚠️ Please log in first')
-            return
-        }
-
+        const user = getCurrentUser()
         const name = document.getElementById('botName').value || 'My NovaBot'
         const strategy = document.getElementById('strategySelect').value
         const indicator = document.getElementById('indicatorSelect').value
@@ -700,7 +550,6 @@ async function deployBot() {
         status.style.color = 'var(--green)'
         showToast(`✅ Bot "${name}" deployed!`)
 
-        // Refresh bot list
         const bots = await getBots(user.id)
         renderBots(bots)
 
@@ -715,17 +564,14 @@ async function deployBot() {
 // PAGE SWITCHING
 // ============================================================
 function switchPage(pageId) {
-    // Update sidebar
     document.querySelectorAll('.sidebar-nav a').forEach(el => el.classList.remove('active'))
     const link = document.querySelector(`.sidebar-nav a[data-page="${pageId}"]`)
     if (link) link.classList.add('active')
 
-    // Update content
     document.querySelectorAll('.page-content').forEach(el => el.classList.remove('active'))
     const page = document.getElementById(`page-${pageId}`)
     if (page) page.classList.add('active')
 
-    // Update header
     const titles = {
         dashboard: 'Dashboard',
         builder: 'Bot Builder',
@@ -746,12 +592,11 @@ function switchPage(pageId) {
     }
     document.getElementById('pageTitle').textContent = titles[pageId] || 'Dashboard'
     document.getElementById('pageSub').textContent = pageId === 'dashboard' ? 'Overview' : ''
-
     closeSidebar()
 }
 
 // ============================================================
-// SIDEBAR TOGGLE (mobile)
+// SIDEBAR TOGGLE
 // ============================================================
 function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('open')
@@ -776,41 +621,69 @@ function showToast(message) {
 }
 
 // ============================================================
-// INIT
+// INIT - Dashboard Loads Immediately
 // ============================================================
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        const user = await getCurrentUser()
-        if (user) {
-            // Update user info
-            document.getElementById('userName').textContent = user.email?.split('@')[0] || 'Trader'
-            document.getElementById('userEmail').textContent = user.email || ''
-            document.getElementById('userAvatar').textContent = user.email?.[0]?.toUpperCase() || 'T'
+        const user = getCurrentUser()
+        
+        // Update UI
+        document.getElementById('userName').textContent = 'Demo Trader'
+        document.getElementById('userEmail').textContent = 'demo@tradenovax.com'
+        document.getElementById('userAvatar').textContent = 'DT'
+        document.getElementById('derivStatus').textContent = '🎮 Demo Mode'
+        document.getElementById('derivStatus').style.color = 'var(--gold)'
 
-            // Load data
-            const bots = await getBots(user.id)
-            renderBots(bots)
+        // Load data from Supabase
+        const bots = await getBots(user.id)
+        renderBots(bots)
 
-            const trades = await getTrades(user.id)
-            renderTrades(trades)
+        const trades = await getTrades(user.id)
+        renderTrades(trades)
 
-            // Connect to Deriv
-            await connectDerivWebSocket()
+        // Update summary
+        updateSummary(trades, bots)
 
-            // Start bot engine
-            setTimeout(runBotEngine, 5000)
+        // Start bot engine
+        setTimeout(runBotEngine, 5000)
 
-            showToast('🚀 Dashboard ready!')
-        } else {
-            window.location.href = '/index.html'
-        }
+        showToast('🚀 Dashboard ready! (Demo Mode)')
+        
     } catch (error) {
         console.error('Init error:', error)
-        window.location.href = '/index.html'
+        showToast('⚠️ Error loading dashboard')
     }
 })
 
-// ===== EVENT LISTENERS =====
+// ============================================================
+// UPDATE SUMMARY
+// ============================================================
+function updateSummary(trades, bots) {
+    if (!trades || trades.length === 0) {
+        document.getElementById('totalTrades').textContent = '0'
+        document.getElementById('winRate').textContent = '0%'
+        document.getElementById('totalPnL').textContent = '$0.00'
+        return
+    }
+
+    const wins = trades.filter(t => t.status === 'won' || t.profit_loss > 0).length
+    const total = trades.length
+    const winRate = total > 0 ? (wins / total * 100) : 0
+    const totalPnL = trades.reduce((sum, t) => sum + (t.profit_loss || 0), 0)
+
+    document.getElementById('totalTrades').textContent = total
+    document.getElementById('winRate').textContent = winRate.toFixed(1) + '%'
+    document.getElementById('totalPnL').textContent = '$' + totalPnL.toFixed(2)
+    
+    if (bots) {
+        const active = bots.filter(b => b.status === 'running').length
+        document.getElementById('activeBotsCount').textContent = active
+    }
+}
+
+// ============================================================
+// EVENT LISTENERS
+// ============================================================
 document.getElementById('menuToggle').addEventListener('click', toggleSidebar)
 document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar)
 
@@ -825,6 +698,15 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeSidebar()
 })
 
-console.log('%c🚀 TradeNovaX Dashboard Loaded', 'font-size:20px; color:#D4AF37; font-weight:bold;')
-console.log('%c🤖 Bot Engine Running', 'font-size:14px; color:#8899BB;')
-console.log('%c📊 Real Deriv data active', 'font-size:14px; color:#8899BB;')
+// Expose functions globally
+window.switchPage = switchPage
+window.toggleBot = toggleBot
+window.loadBot = loadBot
+window.deployBot = deployBot
+window.toggleSidebar = toggleSidebar
+window.closeSidebar = closeSidebar
+window.trading = { toggleBotExecution, placeTrade }
+
+console.log('%c🚀 TradeNovaX Dashboard Loaded (Demo Mode)', 'font-size:20px; color:#D4AF37; font-weight:bold;')
+console.log('%c🤖 Bot Engine Ready', 'font-size:14px; color:#8899BB;')
+console.log('%c📊 Data saved to Supabase', 'font-size:14px; color:#8899BB;')

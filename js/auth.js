@@ -1,25 +1,17 @@
 // ============================================================
-// TRADENOVAX - AUTH (DEMO LOGIN ONLY)
+// TRADENOVAX - AUTH (DEMO LOGIN ONLY - NO SUPABASE)
 // ============================================================
 
-const SUPABASE_URL = 'https://qbfwvtoabfewhjnmfkxb.supabase.co'
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZnd2dG9hYmZld2hqbm1ma3hiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4MzQ4ODcsImV4cCI6MjEwMzQxMDg4N30.Y0UAdvtTOD7vc3V7ZSOa6PTEKOQRQaiEIX1A56jb2H0'
-
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-window.supabase = supabase
-
 // ============================================================
-// DEMO LOGIN - Auto-creates user 
+// DEMO LOGIN - Auto-creates user
 // ============================================================
 
 async function getCurrentUser() {
-    // Check if we have a stored demo user
     let demoUser = localStorage.getItem('tradenovax_demo_user')
     if (demoUser) {
         return JSON.parse(demoUser)
     }
     
-    // Create new demo user
     const newUser = {
         id: 'demo-' + Date.now(),
         email: 'demo@tradenovax.com',
@@ -38,10 +30,6 @@ async function signOut() {
 async function isLoggedIn() {
     return !!localStorage.getItem('tradenovax_demo_user')
 }
-
-// ============================================================
-// AUTH UI HELPERS
-// ============================================================
 
 function updateUserUI(user) {
     if (user) {
@@ -67,16 +55,11 @@ function updateUserUI(user) {
     }
 }
 
-// ============================================================
-// EXPORTS
-// ============================================================
-
 window.auth = {
-    supabase,
     getCurrentUser,
     signOut,
     isLoggedIn,
     updateUserUI
 }
 
-console.log('🔐 Auth loaded (Demo Login)')
+console.log('🔐 Auth loaded (Demo Login - No Supabase)')

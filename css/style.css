@@ -395,6 +395,14 @@ body {
     background: rgba(0, 200, 83, 0.15);
     color: var(--green);
 }
+.bot-card .bot-badge.smart {
+    background: #6A4C93;
+    color: #fff;
+}
+.bot-card .bot-badge.automated {
+    background: #2196F3;
+    color: #fff;
+}
 
 .bot-card .bot-icon {
     font-size: 3rem;
@@ -786,6 +794,88 @@ body {
     margin-top: 0.3rem;
 }
 
+/* ===== DCIRCLES (Analysis & Bulk Trader) ===== */
+.dcircles-container {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.dcircles-digits {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.dcircles-digit {
+    text-align: center;
+    min-width: 30px;
+}
+
+.dcircles-digit .number {
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.dcircles-digit .number.even {
+    color: var(--green);
+}
+.dcircles-digit .number.odd {
+    color: var(--red);
+}
+
+.dcircles-digit .percent {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.dcircles-stats {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.8rem;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+}
+
+/* ===== SMART AI CARDS ===== */
+.smart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.smart-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.smart-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+}
+
+/* ===== AUTOMATED STRATEGY CARDS ===== */
+.strategy-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    border-left: 4px solid var(--gold);
+}
+
+.strategy-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     :root {
@@ -832,6 +922,10 @@ body {
         grid-template-columns: 1fr;
     }
 
+    .smart-grid {
+        grid-template-columns: 1fr;
+    }
+
     .summary-grid {
         grid-template-columns: 1fr 1fr;
     }
@@ -839,6 +933,13 @@ body {
     .btn-run {
         padding: 0.8rem 2rem;
         font-size: 1.4rem;
+    }
+
+    .dcircles-digits {
+        gap: 0.3rem;
+    }
+    .dcircles-digit {
+        min-width: 24px;
     }
 }
 
@@ -852,5 +953,17 @@ body {
     }
     .summary-grid {
         grid-template-columns: 1fr;
+    }
+    .dcircles-digits {
+        gap: 0.2rem;
+    }
+    .dcircles-digit {
+        min-width: 20px;
+    }
+    .dcircles-digit .number {
+        font-size: 1rem;
+    }
+    .dcircles-digit .percent {
+        font-size: 0.7rem;
     }
 }

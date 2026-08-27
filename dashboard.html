@@ -5,666 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>TradeNovaX - Dashboard</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230A1628'/%3E%3Cpath d='M12 42L24 22l8 13 7-10 13 17H12z' fill='%23D4AF37'/%3E%3Ctext x='32' y='38' text-anchor='middle' font-family='Arial' font-size='18' font-weight='800' fill='%23fff'%3ETN%3C/text%3E%3C/svg%3E" />
-
+    
     <!-- ===== SUPABASE ===== -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
     </script>
-
-    <!-- ===== DASHBOARD JAVASCRIPT ===== -->
-    <script src="dashboard.js"></script>
-
-    <style>
-        /* ============================================================
-           COMPLETE STYLES
-           ============================================================ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --gold: #D4AF37;
-            --gold-dark: #B8960F;
-            --gold-light: #E8CD6E;
-            --navy: #0A1628;
-            --navy-light: #1A2A4A;
-            --bg: #060E1E;
-            --card: rgba(10, 22, 40, 0.92);
-            --text: #FFFFFF;
-            --text-muted: #8899BB;
-            --text-light: #C8D0E0;
-            --border: rgba(212, 175, 55, 0.1);
-            --green: #00C853;
-            --red: #FF1744;
-            --sidebar-width: 240px;
-        }
-
-        html {
-            font-size: 62.5%;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-            overflow: hidden;
-            height: 100vh;
-            display: flex;
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--navy);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--gold);
-            border-radius: 10px;
-        }
-
-        /* ===== SIDEBAR ===== */
-        .sidebar {
-            width: var(--sidebar-width);
-            height: 100vh;
-            background: var(--navy);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            padding: 2rem 1.5rem;
-            position: fixed;
-            left: 0;
-            top: 0;
-            z-index: 100;
-            transition: transform 0.3s ease;
-        }
-
-        .sidebar-brand {
-            display: flex;
-            align-items: center;
-            gap: 1.2rem;
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .sidebar-brand .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--navy);
-            flex-shrink: 0;
-        }
-
-        .sidebar-brand .brand-text {
-            font-size: 1.6rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #fff, var(--gold-light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .sidebar-brand .brand-text span {
-            -webkit-text-fill-color: var(--gold);
-        }
-
-        .sidebar-user {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem 0.5rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .sidebar-user .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.6rem;
-            color: var(--navy);
-            flex-shrink: 0;
-        }
-
-        .sidebar-user .user-info .name {
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-
-        .sidebar-user .user-info .email {
-            font-size: 1rem;
-            color: var(--text-muted);
-        }
-
-        .sidebar-user .user-info .status {
-            font-size: 1rem;
-            color: var(--green);
-        }
-
-        .sidebar-nav {
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .sidebar-nav .nav-label {
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            padding: 1rem 1.2rem 0.5rem;
-            font-weight: 600;
-            opacity: 0.5;
-        }
-
-        .sidebar-nav a {
-            display: flex;
-            align-items: center;
-            gap: 1.2rem;
-            padding: 0.8rem 1.2rem;
-            border-radius: 10px;
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 1.3rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .sidebar-nav a:hover {
-            background: rgba(212, 175, 55, 0.08);
-            color: #fff;
-        }
-
-        .sidebar-nav a.active {
-            background: rgba(212, 175, 55, 0.12);
-            color: var(--gold);
-        }
-
-        .sidebar-nav a .icon {
-            font-size: 1.6rem;
-            width: 2.4rem;
-            text-align: center;
-        }
-
-        .sidebar-nav a .badge {
-            margin-left: auto;
-            background: var(--gold);
-            color: var(--navy);
-            font-size: 0.9rem;
-            font-weight: 700;
-            padding: 0.1rem 0.6rem;
-            border-radius: 20px;
-        }
-
-        .sidebar-footer {
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border);
-            margin-top: auto;
-        }
-
-        .sidebar-footer .footer-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 0.6rem 1.2rem;
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-radius: 10px;
-        }
-
-        .sidebar-footer .footer-item:hover {
-            background: rgba(212, 175, 55, 0.08);
-            color: #fff;
-        }
-
-        /* ===== MAIN CONTENT ===== */
-        .main-content {
-            margin-left: var(--sidebar-width);
-            flex: 1;
-            height: 100vh;
-            overflow-y: auto;
-            padding: 2rem 3rem;
-            position: relative;
-        }
-
-        /* ===== TOP BAR ===== */
-        .topbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .topbar-left {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .topbar-left .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 2.4rem;
-            cursor: pointer;
-            padding: 0.5rem;
-        }
-
-        .topbar-left h1 {
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        .topbar-left h1 span {
-            color: var(--gold);
-        }
-
-        .topbar-left .page-sub {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-        }
-
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .topbar-right .balance {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: var(--gold);
-        }
-
-        .topbar-right .balance .currency {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            font-weight: 400;
-        }
-
-        .topbar-right .deriv-status {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            padding: 0.4rem 1.2rem;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-        }
-
-        .btn-logout {
-            padding: 0.6rem 1.6rem;
-            background: transparent;
-            color: var(--text-muted);
-            border: 1px solid var(--border);
-            border-radius: 25px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-logout:hover {
-            border-color: var(--red);
-            color: var(--red);
-        }
-
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 99;
-        }
-
-        /* ===== PAGE CONTENT ===== */
-        .page-content {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .page-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ===== BOT GRID ===== */
-        .bot-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 1.5rem;
-        }
-
-        .bot-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .bot-card:hover {
-            border-color: var(--gold);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.08);
-        }
-
-        .bot-card .bot-badge {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            font-size: 0.9rem;
-            font-weight: 700;
-            padding: 0.2rem 0.8rem;
-            border-radius: 20px;
-            letter-spacing: 0.5px;
-        }
-
-        .bot-card .bot-badge.quick {
-            background: #7B61FF;
-            color: #fff;
-        }
-        .bot-card .bot-badge.premium {
-            background: var(--gold);
-            color: var(--navy);
-        }
-        .bot-card .bot-badge.free {
-            background: rgba(0, 200, 83, 0.15);
-            color: var(--green);
-        }
-
-        .bot-card .bot-icon {
-            font-size: 3rem;
-            margin-bottom: 0.8rem;
-        }
-
-        .bot-card .bot-name {
-            font-size: 1.6rem;
-            font-weight: 600;
-            margin-bottom: 0.3rem;
-        }
-
-        .bot-card .bot-desc {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            margin-bottom: 1.2rem;
-            line-height: 1.5;
-        }
-
-        .bot-card .bot-status {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .bot-card .bot-status .status-badge {
-            padding: 0.2rem 1rem;
-            border-radius: 20px;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .bot-card .bot-status .status-badge.running {
-            background: rgba(0, 200, 83, 0.15);
-            color: var(--green);
-        }
-
-        .bot-card .bot-status .status-badge.stopped {
-            background: rgba(255, 23, 68, 0.15);
-            color: var(--red);
-        }
-
-        .bot-card .bot-status .status-badge.paused {
-            background: rgba(212, 175, 55, 0.15);
-            color: var(--gold);
-        }
-
-        .btn-bot {
-            padding: 0.3rem 1.2rem;
-            border: 1px solid var(--gold);
-            background: transparent;
-            color: var(--gold);
-            border-radius: 20px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-bot:hover {
-            background: var(--gold);
-            color: var(--navy);
-        }
-
-        .btn-load {
-            width: 100%;
-            padding: 0.6rem;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            color: var(--navy);
-            border: none;
-            border-radius: 10px;
-            font-size: 1.3rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-load:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
-        }
-
-        /* ===== TRADE LIST ===== */
-        .trade-list {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .trade-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.8rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        }
-
-        .trade-item:last-child {
-            border-bottom: none;
-        }
-
-        .trade-item .trade-symbol {
-            font-weight: 600;
-            font-size: 1.3rem;
-        }
-
-        .trade-item .trade-time {
-            font-size: 1rem;
-            color: var(--text-muted);
-        }
-
-        .trade-item .trade-amount {
-            font-weight: 700;
-            font-size: 1.4rem;
-        }
-
-        .trade-item .trade-amount.win {
-            color: var(--green);
-        }
-
-        .trade-item .trade-amount.loss {
-            color: var(--red);
-        }
-
-        /* ===== TOAST ===== */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: var(--card);
-            border: 1px solid var(--gold);
-            border-radius: 12px;
-            padding: 1.2rem 2rem;
-            color: #fff;
-            font-size: 1.3rem;
-            z-index: 200;
-            transform: translateY(120px);
-            opacity: 0;
-            transition: all 0.4s ease;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-        }
-
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .toast .toast-icon {
-            margin-right: 0.8rem;
-        }
-
-        /* ===== BUILDER ===== */
-        .builder-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-top: 1.5rem;
-        }
-
-        .builder-grid select,
-        .builder-grid input {
-            width: 100%;
-            padding: 0.8rem 1.2rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: #fff;
-            font-size: 1.3rem;
-            margin-bottom: 0.8rem;
-            outline: none;
-            transition: border 0.3s ease;
-        }
-
-        .builder-grid select:focus,
-        .builder-grid input:focus {
-            border-color: var(--gold);
-        }
-
-        .builder-grid select option {
-            background: var(--navy);
-        }
-
-        .builder-grid .param-row {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .builder-grid .param-row>* {
-            flex: 1;
-        }
-
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 2rem;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            :root {
-                --sidebar-width: 280px;
-            }
-
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
-            .sidebar-overlay.show {
-                display: block;
-            }
-
-            .topbar-left .menu-toggle {
-                display: block;
-            }
-
-            .main-content {
-                margin-left: 0;
-                padding: 1.5rem;
-            }
-
-            .topbar-left h1 {
-                font-size: 1.6rem;
-            }
-            .topbar-left .page-sub {
-                display: none;
-            }
-
-            .topbar-right .balance {
-                font-size: 1.3rem;
-            }
-
-            .bot-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .builder-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .topbar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .topbar-right {
-                flex-wrap: wrap;
-            }
-        }
-    </style>
+    
+    <!-- ===== STYLES ===== -->
+    <link rel="stylesheet" href="css/style.css" />
 </head>
-
 <body>
 
     <!-- ===== SIDEBAR OVERLAY ===== -->
@@ -682,7 +30,7 @@
             <div class="user-info">
                 <div class="name" id="userName">Trader</div>
                 <div class="email" id="userEmail">user@email.com</div>
-                <div class="status">● Online</div>
+                <div class="status" id="userStatus">● Online</div>
             </div>
         </div>
 
@@ -704,15 +52,19 @@
             <div class="nav-label">Bots</div>
             <a data-page="premium">
                 <span class="icon">⭐</span> Premium AI Bots
+                <span class="badge">1</span>
             </a>
             <a data-page="smart">
                 <span class="icon">🧠</span> Smart AI
+                <span class="badge">1</span>
             </a>
             <a data-page="free">
                 <span class="icon">🎁</span> Free Bots
+                <span class="badge">3</span>
             </a>
             <a data-page="quick">
                 <span class="icon">⚡</span> Quick Bot
+                <span class="badge">2</span>
             </a>
             <a data-page="signal">
                 <span class="icon">📡</span> Signal AI
@@ -748,7 +100,7 @@
             <div class="footer-item" onclick="window.location.href='/'">
                 <span>🏠</span> Home
             </div>
-            <div class="footer-item" onclick="logout()">
+            <div class="footer-item" onclick="window.auth.signOut()">
                 <span>🚪</span> Logout
             </div>
         </div>
@@ -771,11 +123,13 @@
                     $0.41 <span class="currency">USD</span>
                 </div>
                 <span class="deriv-status" id="derivStatus">🔗 Not connected</span>
-                <button class="btn-logout" onclick="logout()">Logout</button>
+                <button class="btn-logout" onclick="window.auth.signOut()">Logout</button>
             </div>
         </header>
 
-        <!-- ===== PAGE: DASHBOARD ===== -->
+        <!-- ============================================================
+        PAGE: DASHBOARD
+        ============================================================ -->
         <div class="page-content active" id="page-dashboard">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
                 <h2 style="font-size:2rem;">🤖 Your Bots</h2>
@@ -786,7 +140,7 @@
             <p style="color:var(--text-muted); font-size:1.3rem; margin-bottom:2rem;">Load and manage your trading bots</p>
 
             <div class="bot-grid" id="botGrid">
-                <!-- Rendered by JS -->
+                <!-- Rendered by dashboard.js -->
             </div>
 
             <h2 style="font-size:2rem; margin-top:3rem;">📈 Recent Trades</h2>
@@ -794,12 +148,85 @@
 
             <div class="card">
                 <div class="trade-list" id="tradeList">
-                    <!-- Rendered by JS -->
+                    <!-- Rendered by dashboard.js -->
+                </div>
+            </div>
+
+            <!-- ===== EXECUTION PANEL ===== -->
+            <div class="execution-panel">
+                <div class="execution-header">
+                    <h3 style="font-size:1.8rem;">🎮 Bot Control</h3>
+                    <div class="execution-status">
+                        <span class="status-dot ready" id="botStatusDot"></span>
+                        <span id="botStatusText">Ready</span>
+                    </div>
+                </div>
+
+                <div class="run-section">
+                    <button class="btn-run" id="runBotBtn" onclick="window.trading.toggleBotExecution()">
+                        <span class="run-icon">▶</span>
+                        <span class="run-text">Run</span>
+                    </button>
+                    <p class="run-hint">When you're ready to trade, hit Run. You'll be able to track your bot's performance here.</p>
+                </div>
+
+                <!-- ===== AI SCANNER ===== -->
+                <div class="ai-scanner">
+                    <div class="scanner-header">
+                        <span class="scanner-icon">🧠</span>
+                        <span style="font-weight:600;">AI Scanner</span>
+                        <button class="btn-scan" id="scanBtn" onclick="window.scanner.runAIScanner()">Click to analyze</button>
+                    </div>
+                    <div class="scanner-results" id="scannerResults">
+                        <span class="scan-status">🟢 Ready to scan</span>
+                    </div>
+                </div>
+
+                <!-- ===== EXECUTION TABS ===== -->
+                <div class="execution-tabs">
+                    <button class="tab-btn active" data-tab="summary" onclick="switchExecutionTab('summary')">Summary</button>
+                    <button class="tab-btn" data-tab="transactions" onclick="switchExecutionTab('transactions')">Transactions</button>
+                    <button class="tab-btn" data-tab="journal" onclick="switchExecutionTab('journal')">Journal</button>
+                </div>
+
+                <div class="execution-content">
+                    <div class="tab-panel active" id="panel-summary">
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span>Total Trades</span>
+                                <strong id="totalTrades">0</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>Win Rate</span>
+                                <strong id="winRate">0%</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>Total P&L</span>
+                                <strong id="totalPnL" style="color: var(--gold);">$0.00</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>Active Bots</span>
+                                <strong id="activeBotsCount">0</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-panel" id="panel-transactions">
+                        <div id="transactionList">
+                            <p style="color: var(--text-muted); text-align: center; padding: 2rem;">No transactions yet</p>
+                        </div>
+                    </div>
+                    <div class="tab-panel" id="panel-journal">
+                        <div id="journalList">
+                            <p style="color: var(--text-muted); text-align: center; padding: 2rem;">No journal entries yet</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- ===== PAGE: BUILDER ===== -->
+        <!-- ============================================================
+        PAGE: BUILDER
+        ============================================================ -->
         <div class="page-content" id="page-builder">
             <h2 style="font-size:2.4rem;">🔧 Bot <span style="color:var(--gold);">Builder</span></h2>
             <p style="color:var(--text-muted); font-size:1.4rem; margin-bottom:2rem;">Create your custom Deriv trading bot</p>
@@ -860,7 +287,7 @@
                     <label style="font-size:1.1rem; color:var(--text-muted);">Bot Name</label>
                     <input type="text" id="botName" value="My NovaBot" />
 
-                    <button class="btn-load" onclick="deployBot()" style="width:100%; padding:1rem; font-size:1.5rem;">🚀 Deploy Bot</button>
+                    <button class="btn-load" id="deployBtn" onclick="deployBot()" style="width:100%; padding:1rem; font-size:1.5rem;">🚀 Deploy Bot</button>
                     <div id="deployStatus" style="margin-top:1rem; font-size:1.3rem; color:var(--gold);"></div>
                 </div>
             </div>
@@ -876,7 +303,9 @@
             </div>
         </div>
 
-        <!-- ===== PAGE: OTHER PAGES (Placeholder) ===== -->
+        <!-- ============================================================
+        PAGE: OTHER PAGES (Placeholder)
+        ============================================================ -->
         <div class="page-content" id="page-manual">
             <h2 style="font-size:2.4rem;">✋ Manual <span style="color:var(--gold);">Trader</span></h2>
             <p style="color:var(--text-muted); font-size:1.4rem;">Manual trading tools coming soon.</p>
@@ -954,6 +383,48 @@
         <span class="toast-icon">✅</span>
         <span id="toastMessage">Success!</span>
     </div>
+
+    <!-- ============================================================
+    JAVASCRIPT
+    ============================================================ -->
+    <script>
+        // ============================================================
+        // TOAST
+        // ============================================================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toastMessage');
+            msg.textContent = message;
+            toast.classList.add('show');
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+        window.showToast = showToast;
+
+        // ============================================================
+        // EXECUTION TAB SWITCHING
+        // ============================================================
+        function switchExecutionTab(tab) {
+            document.querySelectorAll('.execution-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.execution-tabs .tab-btn[data-tab="${tab}"]`).classList.add('active');
+            
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(`panel-${tab}`).classList.add('active');
+        }
+        window.switchExecutionTab = switchExecutionTab;
+    </script>
+
+    <!-- ============================================================
+    LOAD ALL MODULES
+    ============================================================ -->
+    <script src="js/auth.js"></script>
+    <script src="js/bots.js"></script>
+    <script src="js/trading.js"></script>
+    <script src="js/strategies.js"></script>
+    <script src="js/dcircles.js"></script>
+    <script src="js/scanner.js"></script>
+    <script src="js/copy-trader.js"></script>
+    <script src="js/dashboard.js"></script>
 
 </body>
 </html>

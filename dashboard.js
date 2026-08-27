@@ -1,5 +1,5 @@
 // ============================================================
-// TRADENOVAX DASHBOARD - DEMO MODE (No Supabase Auth Required)
+// TRADENOVAX DASHBOARD - COMPLETE BOT ENGINE
 // ============================================================
 
 // ============================================================
@@ -106,7 +106,7 @@ async function createTrade(userId, tradeData) {
 }
 
 // ============================================================
-// BOT TEMPLATES
+// BOT TEMPLATES - FULL LIST
 // ============================================================
 const BOT_TEMPLATES = [
     {
@@ -121,12 +121,13 @@ const BOT_TEMPLATES = [
         max_trades: 20,
         stop_loss: 5,
         take_profit: 10,
-        status: 'stopped'
+        status: 'stopped',
+        badge: 'QUICK BOT'
     },
     {
         id: 'profits-miner',
         name: 'PROFITS MINER BOT',
-        type: 'premium',
+        type: 'quick',
         strategy: 'rise_fall',
         description: '⭐ Premium automated trading bot with advanced algorithms.',
         icon: '🚀',
@@ -135,12 +136,13 @@ const BOT_TEMPLATES = [
         max_trades: 30,
         stop_loss: 10,
         take_profit: 20,
-        status: 'stopped'
+        status: 'stopped',
+        badge: 'QUICK BOT'
     },
     {
         id: 'sv7-2025',
-        name: 'Mkorean SV7 2025',
-        type: 'free',
+        name: 'TradeNovaX SV7 2025',
+        type: 'premium',
         strategy: 'even_odd',
         description: 'Automate your trades with this efficient bot strategy.',
         icon: '🤖',
@@ -149,7 +151,23 @@ const BOT_TEMPLATES = [
         max_trades: 15,
         stop_loss: 3,
         take_profit: 8,
-        status: 'stopped'
+        status: 'stopped',
+        badge: '⭐ PREMIUM'
+    },
+    {
+        id: 'quantum-edge',
+        name: 'Quantum Edge AI',
+        type: 'free',
+        strategy: 'parity_reversal',
+        description: '🥉 Ready-made Quick Bot strategy with trade parameters, analysis, recovery, and risk controls.',
+        icon: '🧠',
+        symbol: 'R_100',
+        amount: 0.5,
+        max_trades: 25,
+        stop_loss: 8,
+        take_profit: 15,
+        status: 'stopped',
+        badge: '🎁 FREE'
     },
     {
         id: 'no-loss',
@@ -163,7 +181,8 @@ const BOT_TEMPLATES = [
         max_trades: 10,
         stop_loss: 2,
         take_profit: 5,
-        status: 'stopped'
+        status: 'stopped',
+        badge: '🎁 FREE'
     },
     {
         id: 'ultimate-sv8',
@@ -177,21 +196,8 @@ const BOT_TEMPLATES = [
         max_trades: 20,
         stop_loss: 5,
         take_profit: 12,
-        status: 'stopped'
-    },
-    {
-        id: 'quantum-edge',
-        name: 'Quantum Edge AI',
-        type: 'quick',
-        strategy: 'parity_reversal',
-        description: '🥉 Ready-made Quick Bot strategy with trade parameters, analysis, recovery, and risk controls.',
-        icon: '🧠',
-        symbol: 'R_100',
-        amount: 0.5,
-        max_trades: 25,
-        stop_loss: 8,
-        take_profit: 15,
-        status: 'stopped'
+        status: 'stopped',
+        badge: '🎁 FREE'
     },
     {
         id: 'smart-recovery',
@@ -205,7 +211,99 @@ const BOT_TEMPLATES = [
         max_trades: 40,
         stop_loss: 15,
         take_profit: 25,
-        status: 'stopped'
+        status: 'stopped',
+        badge: '🧠 SMART AI'
+    },
+    // ===== AUTOMATED BOTS =====
+    {
+        id: 'even-odd-digits',
+        name: 'Even/Odd Digits Bot',
+        type: 'automated',
+        strategy: 'even_odd',
+        description: 'Trades based on last 5 digits pattern. Re-analyze every 3 trades.',
+        icon: '🔢',
+        symbol: 'R_100',
+        amount: 0.5,
+        max_trades: 30,
+        stop_loss: 5,
+        take_profit: 10,
+        status: 'stopped',
+        badge: '🤖 AUTO'
+    },
+    {
+        id: 'even-odd-percent',
+        name: 'Even/Odd Percent Bot',
+        type: 'automated',
+        strategy: 'even_odd',
+        description: 'Trades based on Even/Odd percentage threshold (≥60%). Re-analyze every 3 trades.',
+        icon: '📊',
+        symbol: 'R_100',
+        amount: 0.5,
+        max_trades: 30,
+        stop_loss: 5,
+        take_profit: 10,
+        status: 'stopped',
+        badge: '🤖 AUTO'
+    },
+    {
+        id: 'over-under-digits',
+        name: 'Over/Under Digits Bot',
+        type: 'automated',
+        strategy: 'over_under',
+        description: 'Trades based on last 3 digits Over/Under pattern. Re-analyze every 3 trades.',
+        icon: '⬆️⬇️',
+        symbol: 'R_100',
+        amount: 0.5,
+        max_trades: 30,
+        stop_loss: 5,
+        take_profit: 10,
+        status: 'stopped',
+        badge: '🤖 AUTO'
+    },
+    {
+        id: 'over-under-percent',
+        name: 'Over/Under Percent Bot',
+        type: 'automated',
+        strategy: 'over_under',
+        description: 'Trades based on Over/Under percentage threshold (≥60%). Re-analyze every 3 trades.',
+        icon: '📈',
+        symbol: 'R_100',
+        amount: 0.5,
+        max_trades: 30,
+        stop_loss: 5,
+        take_profit: 10,
+        status: 'stopped',
+        badge: '🤖 AUTO'
+    },
+    {
+        id: 'rise-fall-auto',
+        name: 'Rise/Fall Bot',
+        type: 'automated',
+        strategy: 'rise_fall',
+        description: 'Trades based on Rise/Fall percentage threshold (≥60%). Re-analyze every 3 trades.',
+        icon: '📉📈',
+        symbol: 'R_100',
+        amount: 0.5,
+        max_trades: 30,
+        stop_loss: 5,
+        take_profit: 10,
+        status: 'stopped',
+        badge: '🤖 AUTO'
+    },
+    {
+        id: 'matches-differs-auto',
+        name: 'Matches/Differs Bot',
+        type: 'automated',
+        strategy: 'matches_differs',
+        description: 'Trades based on Matches/Differs percentage threshold (≥60%). Re-analyze every 3 trades.',
+        icon: '🎯',
+        symbol: 'R_100',
+        amount: 0.5,
+        max_trades: 30,
+        stop_loss: 5,
+        take_profit: 10,
+        status: 'stopped',
+        badge: '🤖 AUTO'
     }
 ]
 
@@ -357,7 +455,7 @@ async function startBotEngine() {
 
 async function runBotEngine() {
     await startBotEngine()
-    setTimeout(runBotEngine, 30000) // Run every 30 seconds
+    setTimeout(runBotEngine, 30000)
 }
 
 function toggleBotExecution() {
@@ -421,13 +519,22 @@ function renderBots(bots) {
             quick: 'QUICK BOT',
             premium: 'PREMIUM',
             free: 'FREE',
-            smart: 'SMART AI'
+            smart: 'SMART AI',
+            automated: '🤖 AUTO'
         }
         const botType = typeMap[bot.type] || 'FREE'
 
+        // Determine badge class
+        let badgeClass = bot.type || 'free'
+        if (badgeClass === 'quick') badgeClass = 'quick'
+        else if (badgeClass === 'premium') badgeClass = 'premium'
+        else if (badgeClass === 'smart') badgeClass = 'smart'
+        else if (badgeClass === 'automated') badgeClass = 'automated'
+        else badgeClass = 'free'
+
         html += `
             <div class="bot-card">
-                <div class="bot-badge ${bot.type || 'free'}">${botType}</div>
+                <div class="bot-badge ${badgeClass}">${botType}</div>
                 <div class="bot-icon">${bot.icon || '🤖'}</div>
                 <div class="bot-name">${bot.name || 'My Bot'}</div>
                 <div class="bot-desc">${bot.description || 'Automate your trades with this efficient bot strategy.'}</div>
@@ -698,7 +805,9 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeSidebar()
 })
 
-// Expose functions globally
+// ============================================================
+// EXPOSE FUNCTIONS GLOBALLY
+// ============================================================
 window.switchPage = switchPage
 window.toggleBot = toggleBot
 window.loadBot = loadBot
@@ -706,7 +815,49 @@ window.deployBot = deployBot
 window.toggleSidebar = toggleSidebar
 window.closeSidebar = closeSidebar
 window.trading = { toggleBotExecution, placeTrade }
+window.scanner = { runAIScanner }
+
+// ============================================================
+// AI SCANNER (Placeholder)
+// ============================================================
+async function runAIScanner() {
+    showToast('🧠 AI Scanner analyzing markets...')
+    const scanBtn = document.getElementById('scanBtn')
+    if (scanBtn) {
+        scanBtn.textContent = '⏳ Scanning...'
+        scanBtn.disabled = true
+    }
+    
+    setTimeout(() => {
+        if (scanBtn) {
+            scanBtn.textContent = '🔄 Scan Again'
+            scanBtn.disabled = false
+        }
+        const results = document.getElementById('scannerResults')
+        if (results) {
+            results.innerHTML = `
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-top:0.5rem;">
+                    <div style="background:rgba(0,200,83,0.1); padding:0.5rem; border-radius:8px; text-align:center;">
+                        <div style="color:var(--green); font-weight:700;">BUY</div>
+                        <div style="font-size:0.9rem; color:var(--text-muted);">Volatility 75 • 87%</div>
+                    </div>
+                    <div style="background:rgba(255,23,68,0.1); padding:0.5rem; border-radius:8px; text-align:center;">
+                        <div style="color:var(--red); font-weight:700;">SELL</div>
+                        <div style="font-size:0.9rem; color:var(--text-muted);">Boom 500 • 72%</div>
+                    </div>
+                    <div style="background:rgba(212,175,55,0.1); padding:0.5rem; border-radius:8px; text-align:center;">
+                        <div style="color:var(--gold); font-weight:700;">WAIT</div>
+                        <div style="font-size:0.9rem; color:var(--text-muted);">Step Index • 55%</div>
+                    </div>
+                </div>
+            `
+        }
+        showToast('🧠 AI Scanner complete!')
+    }, 2000)
+}
+window.runAIScanner = runAIScanner
 
 console.log('%c🚀 TradeNovaX Dashboard Loaded (Demo Mode)', 'font-size:20px; color:#D4AF37; font-weight:bold;')
 console.log('%c🤖 Bot Engine Ready', 'font-size:14px; color:#8899BB;')
 console.log('%c📊 Data saved to Supabase', 'font-size:14px; color:#8899BB;')
+console.log('%c🔄 ' + BOT_TEMPLATES.length + ' bot templates loaded', 'font-size:14px; color:#8899BB;')

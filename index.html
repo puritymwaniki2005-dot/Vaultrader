@@ -580,109 +580,6 @@
         }
 
         /* ============================================================
-           MODAL (Deriv Login)
-           ============================================================ */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 300;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-box {
-            background: var(--card);
-            border: 1px solid var(--gold);
-            border-radius: 20px;
-            padding: 3rem;
-            max-width: 440px;
-            width: 100%;
-            text-align: center;
-            animation: modalIn 0.3s ease;
-        }
-
-        @keyframes modalIn {
-            from {
-                transform: scale(0.9);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .modal-box .modal-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-
-        .modal-box h2 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .modal-box p {
-            color: var(--text-muted);
-            font-size: 1.4rem;
-            margin-bottom: 2rem;
-        }
-
-        .modal-box .btn-deriv-login {
-            display: block;
-            width: 100%;
-            padding: 1.2rem;
-            background: linear-gradient(135deg, #2a7de1, #1a5bb5);
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.6rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-
-        .modal-box .btn-deriv-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(42, 125, 225, 0.3);
-        }
-
-        .modal-box .btn-modal-close {
-            margin-top: 1rem;
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.3rem;
-            cursor: pointer;
-            padding: 0.5rem 1rem;
-        }
-
-        .modal-box .btn-modal-close:hover {
-            color: #fff;
-        }
-
-        .modal-box .commission-info {
-            margin-top: 1.5rem;
-            padding: 1rem;
-            background: rgba(212, 175, 55, 0.08);
-            border-radius: 10px;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            font-size: 1.2rem;
-            color: var(--gold-light);
-        }
-
-        /* ============================================================
            TOAST
            ============================================================ */
         .toast {
@@ -809,7 +706,7 @@
     <div class="glow-line"></div>
 
     <!-- ============================================================
-    HEADER - EXACT MATCH
+    HEADER - BUTTONS GO TO DASHBOARD
     ============================================================ -->
     <header>
         <a href="#" class="logo">
@@ -817,13 +714,13 @@
             <div class="logo-text">Trade<span>NovaX</span></div>
         </a>
         <div class="header-actions">
-            <a href="#" class="btn-login" onclick="openDerivModal()">Log In</a>
-            <a href="#" class="btn-get-started" onclick="openDerivModal()">Get Started</a>
+            <a href="dashboard.html" class="btn-login">Log In</a>
+            <a href="dashboard.html" class="btn-get-started">Get Started</a>
         </div>
     </header>
 
     <!-- ============================================================
-    TICKER - EXACT MATCH
+    TICKER
     ============================================================ -->
     <div class="ticker">
         <div class="ticker-track">
@@ -852,7 +749,7 @@
     </div>
 
     <!-- ============================================================
-    HERO - EXACT MATCH
+    HERO - BUTTONS GO TO DASHBOARD
     ============================================================ -->
     <section class="hero">
         <h1>Trade <span>with better</span> structure</h1>
@@ -861,13 +758,13 @@
             without jumping between separate apps.
         </p>
         <div class="hero-buttons">
-            <a href="#" class="btn-hero-primary" onclick="openDerivModal()">Log In and Trade</a>
-            <a href="#" class="btn-hero-secondary" onclick="openDerivModal()">Create Free Account</a>
+            <a href="dashboard.html" class="btn-hero-primary">Log In and Trade</a>
+            <a href="dashboard.html" class="btn-hero-secondary">Create Free Account</a>
         </div>
     </section>
 
     <!-- ============================================================
-    TESTIMONIALS - EXACT MATCH
+    TESTIMONIALS
     ============================================================ -->
     <section class="testimonials">
         <h2>What <span>Traders</span> Are Saying</h2>
@@ -1007,7 +904,7 @@
     </section>
 
     <!-- ============================================================
-    STATS BAR - EXACT MATCH
+    STATS BAR
     ============================================================ -->
     <section class="stats-bar">
         <div class="stat-item">
@@ -1029,7 +926,7 @@
     </section>
 
     <!-- ============================================================
-    FEATURES - EXACT MATCH
+    FEATURES
     ============================================================ -->
     <section class="features-section">
         <h2>Everything in one workspace — <span style="color: var(--gold);">free to use</span></h2>
@@ -1069,7 +966,7 @@
     </section>
 
     <!-- ============================================================
-    RISK DISCLAIMER - EXACT MATCH
+    RISK DISCLAIMER
     ============================================================ -->
     <section class="risk-disclaimer">
         <p>
@@ -1099,35 +996,6 @@
     </footer>
 
     <!-- ============================================================
-    DERIV CONNECT MODAL
-    ============================================================ -->
-    <div class="modal-overlay" id="derivModal">
-        <div class="modal-box">
-            <div class="modal-icon">🔗</div>
-            <h2>Connect to Deriv</h2>
-            <p>Login to your Deriv account to start trading and earning commissions.</p>
-
-            <!-- ===== DERIV OAUTH LOGIN ===== -->
-            <!-- 
-                IMPORTANT: Replace these values with your actual Deriv app credentials:
-                - YOUR_APP_ID: Your Deriv App ID from the API Dashboard
-                - YOUR_AFFILIATE_TOKEN: Your affiliate token from Deriv Partners
-            -->
-           <!-- Replace YOUR_AFFILIATE_TOKEN with your actual token -->
-<a href="https://oauth.deriv.com/oauth2/authorize?app_id=YOUR_APP_ID&affiliate_token=2PKMG53KVFH8&utm_campaign=tradenovax&redirect_uri=https://tradenovax.co.ke"
-   class="btn-deriv-login"
-   target="_blank">
-    🚀 Login with Deriv
-</a>
-            <button class="btn-modal-close" onclick="closeDerivModal()">Cancel</button>
-
-            <div class="commission-info">
-                💰 <strong>Earn 5% Commission</strong> on every trade made by your referred clients
-            </div>
-        </div>
-    </div>
-
-    <!-- ============================================================
     TOAST
     ============================================================ -->
     <div class="toast" id="toast">
@@ -1139,21 +1007,6 @@
     JAVASCRIPT
     ============================================================ -->
     <script>
-        // ============================================================
-        // DERIV MODAL
-        // ============================================================
-        function openDerivModal() {
-            document.getElementById('derivModal').classList.add('active');
-        }
-
-        function closeDerivModal() {
-            document.getElementById('derivModal').classList.remove('active');
-        }
-
-        document.getElementById('derivModal').addEventListener('click', function(e) {
-            if (e.target === this) closeDerivModal();
-        });
-
         // ============================================================
         // TOAST
         // ============================================================
@@ -1167,35 +1020,12 @@
         }
 
         // ============================================================
-        // KEYBOARD SHORTCUTS
-        // ============================================================
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeDerivModal();
-        });
-
-        // ============================================================
-        // CHECK DERIV LOGIN
-        // ============================================================
-        function checkDerivLogin() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const token = urlParams.get('token');
-            const login = urlParams.get('login');
-
-            if (token && login) {
-                showToast(`✅ Welcome back! Connected to Deriv as ${login}`);
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-        }
-
-        // ============================================================
         // INIT
         // ============================================================
-        checkDerivLogin();
-
         console.log('%c🚀 TradeNovaX Loaded', 'font-size:20px; color:#D4AF37; font-weight:bold;');
-        console.log('%c🔑 Update YOUR_APP_ID and YOUR_AFFILIATE_TOKEN', 'font-size:14px; color:#8899BB;');
+        console.log('%c📊 Click "Get Started" to enter the dashboard', 'font-size:14px; color:#8899BB;');
 
-        setTimeout(() => showToast('🚀 Welcome to TradeNovaX! Connect your Deriv account to start trading.'), 1000);
+        setTimeout(() => showToast('🚀 Welcome to TradeNovaX! Click "Get Started" to enter the dashboard.'), 1000);
     </script>
 
 </body>

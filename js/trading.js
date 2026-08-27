@@ -1,12 +1,23 @@
 // ============================================================
-// TRADENOVAX - TRADING ENGINE
+// TRADENOVAX - TRADING ENGINE (Deriv Ready)
 // ============================================================
 
+// ===== SWITCH TO FALSE WHEN YOU HAVE APP ID =====
+const USE_DERIV_REAL = false
+
 // ============================================================
-// DERIV CONNECTION
+// GET DERIV CONNECTION
 // ============================================================
 
 async function getDerivConnection(userId) {
+    if (!USE_DERIV_REAL) {
+        // Simulate connection for demo
+        return {
+            deriv_access_token: 'demo-token',
+            is_active: true
+        }
+    }
+    
     const { data, error } = await supabase
         .from('deriv_connections')
         .select('*')
@@ -18,7 +29,7 @@ async function getDerivConnection(userId) {
 }
 
 // ============================================================
-// PLACE TRADE - REAL DERIV TRADING
+// PLACE TRADE - REAL DERIV READY
 // ============================================================
 
 async function placeTrade(tradeParams) {
@@ -29,69 +40,101 @@ async function placeTrade(tradeParams) {
             return null
         }
 
-        const deriv = await getDerivConnection(user.id)
-        if (!deriv) {
-            showToast('⚠️ Please connect your Deriv account')
-            return null
-        }
+        // If using real Deriv trading
+        if (USE_DERIV_REAL) {
+            const deriv = await getDerivConnection(user.id)
+            if (!deriv) {
+                showToast('⚠️ Please connect your Deriv account')
+                return null
+            }
 
-        // Get proposal from Deriv
-        const proposalResponse = await fetch('https://api.deriv.com/v1/proposal', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                token: deriv.deriv_access_token,
-                proposal: 1,
+            // REAL DERIV API CALL
+            const proposalResponse = await fetch('https://api.deriv.com/v1/proposal', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    token: deriv.deriv_access_token,
+                    proposal: 1,
+                    amount: tradeParams.amount,
+                    contract_type: tradeParams.type === 'CALL' ? 'CALL' : 'PUT',
+                    duration: tradeParams.duration || 60,
+                    duration_unit: 's',
+                    symbol: tradeParams.symbol || 'R_75',
+                    basis: 'stake',
+                    currency: 'USD'
+                })
+            })
+            
+            const proposalData = await proposalResponse.json()
+            
+            if (proposalData.error) {
+                showToast('❌ Trade failed: ' + proposalData.error.message)
+                return null
+            }
+
+            const buyResponse = await fetch('https://api.deriv.com/v1/buy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    token: deriv.deriv_access_token,
+                    buy: proposalData.proposal.id,
+                    price: proposalData.proposal.ask_price
+                })
+            })
+            
+            const buyData = await buyResponse.json()
+            
+            if (buyData.error) {
+                showToast('❌ Buy failed: ' + buyData.error.message)
+                return null
+            }
+
+            // Save real trade to Supabase
+            const tradeRecord = {
+                user_id: user.id,
+                bot_id: tradeParams.bot_id || null,
+                symbol: tradeParams.symbol || 'R_75',
+                type: tradeParams.type || 'CALL',
                 amount: tradeParams.amount,
-                contract_type: tradeParams.type === 'CALL' ? 'CALL' : 'PUT',
-                duration: tradeParams.duration || 60,
-                duration_unit: 's',
-                symbol: tradeParams.symbol,
-                basis: 'stake',
-                currency: 'USD'
-            })
-        })
-        
-        const proposalData = await proposalResponse.json()
-        
-        if (proposalData.error) {
-            showToast('❌ Trade failed: ' + proposalData.error.message)
-            return null
+                price: proposalData.proposal.spot,
+                status: 'pending',
+                contract_id: buyData.buy.contract_id,
+                is_demo: false
+            }
+            await supabase.from('trades').insert(tradeRecord)
+            showToast(`✅ Trade placed: ${tradeParams.type} on ${tradeParams.symbol}`)
+            return buyData
         }
 
-        // Buy contract
-        const buyResponse = await fetch('https://api.deriv.com/v1/buy', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                token: deriv.deriv_access_token,
-                buy: proposalData.proposal.id,
-                price: proposalData.proposal.ask_price
-            })
-        })
-        
-        const buyData = await buyResponse.json()
-        
-        if (buyData.error) {
-            showToast('❌ Buy failed: ' + buyData.error.message)
-            return null
+        // ===== DEMO TRADING =====
+        // Simulate trade (this runs when USE_DERIV_REAL = false)
+        const isWin = Math.random() > 0.45
+        const profitLoss = isWin 
+            ? tradeParams.amount * (0.5 + Math.random() * 0.8) 
+            : -tradeParams.amount * (0.3 + Math.random() * 0.7)
+
+        const result = {
+            contract_id: 'demo-' + Date.now(),
+            profit_loss: parseFloat(profitLoss.toFixed(2)),
+            status: isWin ? 'won' : 'lost'
         }
 
-        // Save trade to Supabase
+        // Save demo trade to Supabase (LIVE database!)
         const tradeRecord = {
             user_id: user.id,
             bot_id: tradeParams.bot_id || null,
-            symbol: tradeParams.symbol,
-            type: tradeParams.type,
-            amount: tradeParams.amount,
-            price: proposalData.proposal.spot,
-            status: 'pending',
-            contract_id: buyData.buy.contract_id
+            symbol: tradeParams.symbol || 'R_75',
+            type: tradeParams.type || 'CALL',
+            amount: tradeParams.amount || 1,
+            price: 100 + Math.random() * 50,
+            profit_loss: result.profit_loss,
+            status: result.status,
+            is_demo: true
         }
+        await supabase.from('trades').insert(tradeRecord)
 
-        await window.bots.createTrade(user.id, tradeRecord)
-        showToast(`✅ Trade placed: ${tradeParams.type} on ${tradeParams.symbol}`)
-        return buyData
+        showToast(`🎮 Demo Trade: ${tradeParams.type} on ${tradeParams.symbol} → ${isWin ? '✅ WIN' : '❌ LOSS'}`)
+        return result
 
     } catch (error) {
         console.error('Trade error:', error)
@@ -101,7 +144,7 @@ async function placeTrade(tradeParams) {
 }
 
 // ============================================================
-// BOT ENGINE - RUN ALL ACTIVE BOTS
+// BOT ENGINE
 // ============================================================
 
 let botEngineRunning = false
@@ -136,7 +179,6 @@ async function startBotEngine() {
 
 async function runBotEngine() {
     await startBotEngine()
-    // Run every 60 seconds
     setTimeout(runBotEngine, 60000)
 }
 
@@ -178,7 +220,8 @@ window.trading = {
     startBotEngine,
     runBotEngine,
     toggleBotExecution,
-    stopBotEngine
+    stopBotEngine,
+    USE_DERIV_REAL
 }
 
-console.log('📊 Trading module loaded')
+console.log('📊 Trading loaded (Deriv Ready: ' + (USE_DERIV_REAL ? 'ON' : 'OFF') + ')')

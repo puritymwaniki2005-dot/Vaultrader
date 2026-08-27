@@ -9,7 +9,7 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 window.supabase = supabase
 
 // ============================================================
-// DEMO LOGIN - Auto-creates user
+// DEMO LOGIN - Auto-creates user 
 // ============================================================
 
 async function getCurrentUser() {

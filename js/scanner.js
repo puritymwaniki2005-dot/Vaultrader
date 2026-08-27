@@ -2,7 +2,7 @@
 // TRADENOVAX - AI SCANNER
 // ============================================================
 
-const SCANNER_MARKETS = [
+const SCANNER_MARKETS = [ 
     { symbol: 'R_100', name: 'Volatility 100 Index' },
     { symbol: 'R_75', name: 'Volatility 75 Index' },
     { symbol: 'R_50', name: 'Volatility 50 Index' },

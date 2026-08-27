@@ -1,6 +1,6 @@
 // ============================================================
 // TRADENOVAX - SUPABASE AUTH
-// ============================================================
+// ============================================================ 
 
 const SUPABASE_URL = 'https://qbfwvtoabfewhjnmfkxb.supabase.co'
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZnd2dG9hYmZld2hqbm1ma3hiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4MzQ4ODcsImV4cCI6MjEwMzQxMDg4N30.Y0UAdvtTOD7vc3V7ZSOa6PTEKOQRQaiEIX1A56jb2H0'

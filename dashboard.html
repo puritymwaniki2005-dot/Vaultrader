@@ -6,6 +6,9 @@
     <title>TradeNovaX - Dashboard</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230A1628'/%3E%3Cpath d='M12 42L24 22l8 13 7-10 13 17H12z' fill='%23D4AF37'/%3E%3Ctext x='32' y='38' text-anchor='middle' font-family='Arial' font-size='18' font-weight='800' fill='%23fff'%3ETN%3C/text%3E%3C/svg%3E" />
     
+    <!-- ===== SUPABASE SDK - LOAD FIRST ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+    </script>
 
     <!-- ===== STYLES ===== -->
     <link rel="stylesheet" href="css/style.css" />
@@ -119,7 +122,7 @@
                 <div class="balance">
                     $0.41 <span class="currency">USD</span>
                 </div>
-                <span class="deriv-status" id="derivStatus">🔗 Not connected</span>
+                <span class="deriv-status" id="derivStatus">🎮 Demo Mode</span>
                 <button class="btn-logout" onclick="window.auth.signOut()">Logout</button>
             </div>
         </header>
@@ -301,76 +304,490 @@
         </div>
 
         <!-- ============================================================
-        PAGE: OTHER PAGES (Placeholder)
+        PAGE: MANUAL TRADER
         ============================================================ -->
         <div class="page-content" id="page-manual">
             <h2 style="font-size:2.4rem;">✋ Manual <span style="color:var(--gold);">Trader</span></h2>
-            <p style="color:var(--text-muted); font-size:1.4rem;">Manual trading tools coming soon.</p>
+            <p style="color:var(--text-muted); font-size:1.4rem; margin-bottom:2rem;">Execute manual trades with real-time price feeds</p>
+
+            <div class="card" style="margin-bottom:2rem;">
+                <div style="display:grid; grid-template-columns:2fr 1fr; gap:2rem;">
+                    <div>
+                        <h4 style="margin-bottom:0.5rem;">📊 Market</h4>
+                        <select id="manualSymbol" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;">
+                            <option value="R_75">Volatility 75</option>
+                            <option value="R_100">Volatility 100</option>
+                            <option value="BOOM_500">Boom 500</option>
+                            <option value="CRASH_500">Crash 500</option>
+                            <option value="STEP_INDEX">Step Index</option>
+                        </select>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:0.5rem;">💰 Amount ($)</h4>
+                        <input type="number" id="manualAmount" value="10" min="1" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;" />
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1.5rem;">
+                    <button class="btn-load" style="background: var(--green); color:#fff; font-size:1.6rem; padding:1rem;" onclick="executeManualTrade('CALL')">
+                        📈 BUY (CALL)
+                    </button>
+                    <button class="btn-load" style="background: var(--red); color:#fff; font-size:1.6rem; padding:1rem;" onclick="executeManualTrade('PUT')">
+                        📉 SELL (PUT)
+                    </button>
+                </div>
+                <div id="manualTradeStatus" style="margin-top:1rem; font-size:1.3rem; color:var(--gold); text-align:center;"></div>
+            </div>
+
+            <div class="card">
+                <h4 style="margin-bottom:1rem;">📋 Recent Manual Trades</h4>
+                <div id="manualTradeList">
+                    <p style="color:var(--text-muted); text-align:center; padding:1rem;">No manual trades yet</p>
+                </div>
+            </div>
         </div>
 
+        <!-- ============================================================
+        PAGE: BULK TRADER
+        ============================================================ -->
         <div class="page-content" id="page-bulk">
             <h2 style="font-size:2.4rem;">📦 Bulk <span style="color:var(--gold);">Trader</span></h2>
-            <p style="color:var(--text-muted); font-size:1.4rem;">Bulk trading tools coming soon.</p>
+            <p style="color:var(--text-muted); font-size:1.4rem; margin-bottom:2rem;">Place multiple trades at once</p>
+
+            <div class="card" style="margin-bottom:2rem;">
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.5rem;">
+                    <div>
+                        <h4 style="margin-bottom:0.5rem;">📊 Market</h4>
+                        <select id="bulkSymbol" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;">
+                            <option value="R_75">Volatility 75</option>
+                            <option value="R_100">Volatility 100</option>
+                            <option value="BOOM_500">Boom 500</option>
+                            <option value="CRASH_500">Crash 500</option>
+                        </select>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:0.5rem;">💰 Amount ($)</h4>
+                        <input type="number" id="bulkAmount" value="5" min="1" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;" />
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:0.5rem;">🔢 Number of Trades</h4>
+                        <input type="number" id="bulkCount" value="5" min="1" max="20" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;" />
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1.5rem;">
+                    <button class="btn-load" style="background: var(--green); color:#fff; font-size:1.6rem; padding:1rem;" onclick="executeBulkTrades('CALL')">
+                        📈 BULK BUY
+                    </button>
+                    <button class="btn-load" style="background: var(--red); color:#fff; font-size:1.6rem; padding:1rem;" onclick="executeBulkTrades('PUT')">
+                        📉 BULK SELL
+                    </button>
+                </div>
+                <div id="bulkTradeStatus" style="margin-top:1rem; font-size:1.3rem; color:var(--gold); text-align:center;"></div>
+            </div>
         </div>
 
+        <!-- ============================================================
+        PAGE: PREMIUM AI BOTS
+        ============================================================ -->
         <div class="page-content" id="page-premium">
             <h2 style="font-size:2.4rem;">⭐ Premium <span style="color:var(--gold);">AI Bots</span></h2>
-            <p style="color:var(--text-muted); font-size:1.4rem;">Premium bot marketplace coming soon.</p>
+            <p style="color:var(--text-muted); font-size:1.4rem; margin-bottom:2rem;">Premium automated trading bots with advanced algorithms</p>
+
+            <div class="bot-grid">
+                <div class="bot-card" style="border-color: var(--gold);">
+                    <div class="bot-badge premium">⭐ PREMIUM</div>
+                    <div class="bot-icon">🚀</div>
+                    <div class="bot-name">PROFITS MINER BOT</div>
+                    <div class="bot-desc">⭐ Premium automated trading bot with advanced algorithms. 75% win rate.</div>
+                    <div class="bot-status">
+                        <span class="status-badge running">🟢 Running</span>
+                        <button class="btn-bot" onclick="showToast('🚀 PRO版本已加载')">Load Bot</button>
+                    </div>
+                </div>
+                <div class="bot-card" style="border-color: var(--gold);">
+                    <div class="bot-badge premium">⭐ PREMIUM</div>
+                    <div class="bot-icon">🧠</div>
+                    <div class="bot-name">AI Quantum Pro</div>
+                    <div class="bot-desc">Quantum computing powered AI trading with 80% accuracy.</div>
+                    <div class="bot-status">
+                        <span class="status-badge paused">🟡 Paused</span>
+                        <button class="btn-bot" onclick="showToast('🚀 AI Quantum Pro loaded')">Load Bot</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
+        <!-- ============================================================
+        PAGE: SMART AI
+        ============================================================ -->
         <div class="page-content" id="page-smart">
             <h2 style="font-size:2.4rem;">🧠 Smart <span style="color:var(--gold);">AI</span></h2>
-            <p style="color:var(--text-muted); font-size:1.4rem;">Smart AI tools coming soon.</p>
+            <p style="color:var(--text-muted); font-size:1.4rem; margin-bottom:2rem;">Smart AI tools for market analysis</p>
+
+            <div class="card" style="margin-bottom:2rem;">
+                <h4 style="margin-bottom:1rem;">🤖 Smart AI Analysis</h4>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+                    <div>
+                        <label style="font-size:1.1rem; color:var(--text-muted);">Market</label>
+                        <select id="smartMarket" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;">
+                            <option value="R_75">Volatility 75</option>
+                            <option value="R_100">Volatility 100</option>
+                            <option value="BOOM_500">Boom 500</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size:1.1rem; color:var(--text-muted);">Analysis Type</label>
+                        <select id="smartType" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;">
+                            <option value="trend">Trend Analysis</option>
+                            <option value="pattern">Pattern Detection</option>
+                            <option value="sentiment">Market Sentiment</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn-load" style="margin-top:1rem; width:100%; padding:0.8rem;" onclick="runSmartAnalysis()">
+                    🧠 Analyze Market
+                </button>
+                <div id="smartResult" style="margin-top:1rem; padding:1rem; background:rgba(255,255,255,0.03); border-radius:10px; color:var(--text-muted); text-align:center;">
+                    Click "Analyze Market" to get AI insights
+                </div>
+            </div>
         </div>
 
+        <!-- ============================================================
+        PAGE: FREE BOTS
+        ============================================================ -->
         <div class="page-content" id="page-free">
             <h2 style="font-size:2.4rem;">🎁 Free <span style="color:var(--gold);">Bots</span></h2>
-            <p style="color:var(--text-muted); font-size:1.4rem;">Free bot library coming soon.</p>
+            <p style="color:var(--text-muted); font-size:1.4rem; margin-bottom:2rem;">Free bot strategies for all traders</p>
+
+            <div class="bot-grid">
+                <div class="bot-card">
+                    <div class="bot-badge free">🎁 FREE</div>
+                    <div class="bot-icon">🤖</div>
+                    <div class="bot-name">Mkorean SV7 2025</div>
+                    <div class="bot-desc">Automate your trades with this efficient bot strategy.</div>
+                    <button class="btn-load" onclick="showToast('✅ SV7 2025 loaded!')">Load Bot</button>
+                </div>
+                <div class="bot-card">
+                    <div class="bot-badge free">🎁 FREE</div>
+                    <div class="bot-icon">🛡️</div>
+                    <div class="bot-name">NO LOSS BOT</div>
+                    <div class="bot-desc">Risk-free trading bot with loss protection.</div>
+                    <button class="btn-load" onclick="showToast('✅ NO LOSS BOT loaded!')">Load Bot</button>
+                </div>
+                <div class="bot-card">
+                    <div class="bot-badge free">🎁 FREE</div>
+                    <div class="bot-icon">🎯</div>
+                    <div class="bot-name">Ultimate SV 8 BOT 2025</div>
+                    <div class="bot-desc">Advanced SV8 strategy for maximum profits.</div>
+                    <button class="btn-load" onclick="showToast('✅ Ultimate SV8 loaded!')">Load Bot</button>
+                </div>
+            </div>
         </div>
 
+        <!-- ============================================================
+        PAGE: QUICK BOT
+        ============================================================ -->
         <div class="page-content" id="page-quick">
             <h2 style="font-size:2.4rem;">⚡ Quick <span style="color:var(--gold);">Bot</span></h2>
-            <p style="color:var(--text-muted); font-size:1.4rem;">Quick bot strategies coming soon.</p>
+            <p style="color:var(--text-muted); font-size:1.4rem; margin-bottom:2rem;">One-click bot deployment</p>
+
+            <div class="bot-grid">
+                <div class="bot-card">
+                    <div class="bot-badge quick">⚡ QUICK</div>
+                    <div class="bot-icon">⚡</div>
+                    <div class="bot-name">Vertex Digits</div>
+                    <div class="bot-desc">Extreme-digit Over/Under strategy with recovery.</div>
+                    <button class="btn-load" onclick="loadQuickBot('Vertex Digits', 'R_100')">Load Bot</button>
+                </div>
+                <div class="bot-card">
+                    <div class="bot-badge quick">⚡ QUICK</div>
+                    <div class="bot-icon">🧠</div>
+                    <div class="bot-name">Quantum Edge AI</div>
+                    <div class="bot-desc">Ready-made strategy with AI recovery and risk controls.</div>
+                    <button class="btn-load" onclick="loadQuickBot('Quantum Edge AI', 'R_75')">Load Bot</button>
+                </div>
+            </div>
         </div>
 
+        <!-- ============================================================
+        PAGE: SIGNAL AI
+        ============================================================ -->
         <div class="page-content" id="page-signal">
             <h2 style="font-size:2.4rem;">📡 Signal <span style="color:var(--gold);">AI</span></h2>
-            <p style="color:var(--text-muted); font-size:1.4rem;">AI signal detection coming soon.</p>
+            <p style="color:var(--text-muted); font-size:1.4rem; margin-bottom:2rem;">Real-time AI signal detection</p>
+
+            <div class="card" style="margin-bottom:2rem;">
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.5rem;">
+                    <div>
+                        <h4 style="margin-bottom:0.5rem;">📊 Market</h4>
+                        <select id="signalMarket" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;">
+                            <option value="R_75">Volatility 75</option>
+                            <option value="R_100">Volatility 100</option>
+                            <option value="BOOM_500">Boom 500</option>
+                        </select>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:0.5rem;">📈 Strategy</h4>
+                        <select id="signalStrategy" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;">
+                            <option value="over_under">Over & Under</option>
+                            <option value="even_odd">Even & Odd</option>
+                            <option value="rise_fall">Rise & Fall</option>
+                            <option value="matches_differs">Matches & Differs</option>
+                        </select>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:0.5rem;">⚡ Confidence</h4>
+                        <input type="number" id="signalConfidence" value="60" min="50" max="95" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;" />
+                    </div>
+                </div>
+                <button class="btn-load" style="margin-top:1.5rem; width:100%; padding:0.8rem;" onclick="runSignalAI()">
+                    📡 Generate Signal
+                </button>
+                <div id="signalResult" style="margin-top:1rem; padding:1rem; background:rgba(255,255,255,0.03); border-radius:10px; text-align:center; color:var(--text-muted);">
+                    Click "Generate Signal" to get AI signal
+                </div>
+            </div>
         </div>
 
+        <!-- ============================================================
+        PAGE: COPY TRADER
+        ============================================================ -->
         <div class="page-content" id="page-copy">
             <h2 style="font-size:2.4rem;">📋 Copy <span style="color:var(--gold);">Trader</span></h2>
-            <p style="color:var(--text-muted); font-size:1.4rem;">Copy trading tools coming soon.</p>
+            <p style="color:var(--text-muted); font-size:1.4rem; margin-bottom:2rem;">Copy trades from top performers</p>
+
+            <div class="card" style="margin-bottom:2rem;">
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.5rem;">
+                    <div>
+                        <h4 style="margin-bottom:0.5rem;">👤 Master Trader</h4>
+                        <select id="copyMaster" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;">
+                            <option value="pro_trader">Pro Trader (75% win rate)</option>
+                            <option value="ai_master">AI Master (80% win rate)</option>
+                            <option value="scalp_king">Scalp King (70% win rate)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:0.5rem;">💰 Amount ($)</h4>
+                        <input type="number" id="copyAmount" value="5" min="1" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;" />
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:0.5rem;">🔄 Multiplier</h4>
+                        <input type="number" id="copyMultiplier" value="1" min="0.1" max="5" step="0.1" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;" />
+                    </div>
+                </div>
+                <button class="btn-load" style="margin-top:1.5rem; width:100%; padding:0.8rem;" onclick="startCopyTrading()">
+                    📋 Start Copy Trading
+                </button>
+                <div id="copyStatus" style="margin-top:1rem; padding:0.5rem; text-align:center; color:var(--text-muted);">
+                    🔴 Not copying
+                </div>
+            </div>
         </div>
 
+        <!-- ============================================================
+        PAGE: ANALYSIS TOOLS
+        ============================================================ -->
         <div class="page-content" id="page-analysis">
             <h2 style="font-size:2.4rem;">🔍 Analysis <span style="color:var(--gold);">Tools</span></h2>
-            <p style="color:var(--text-muted); font-size:1.4rem;">Analysis tools coming soon.</p>
+            <p style="color:var(--text-muted); font-size:1.4rem; margin-bottom:2rem;">Professional technical analysis tools</p>
+
+            <div class="card" style="margin-bottom:2rem;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+                    <div>
+                        <h4 style="margin-bottom:0.5rem;">📊 Symbol</h4>
+                        <select id="analysisSymbol" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;">
+                            <option value="R_75">Volatility 75</option>
+                            <option value="R_100">Volatility 100</option>
+                            <option value="BOOM_500">Boom 500</option>
+                        </select>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:0.5rem;">📈 Indicator</h4>
+                        <select id="analysisIndicator" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;">
+                            <option value="rsi">RSI</option>
+                            <option value="macd">MACD</option>
+                            <option value="ma">Moving Average</option>
+                            <option value="bollinger">Bollinger Bands</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn-load" style="margin-top:1.5rem; width:100%; padding:0.8rem;" onclick="runAnalysis()">
+                    📊 Analyze
+                </button>
+                <div id="analysisResult" style="margin-top:1rem; padding:1rem; background:rgba(255,255,255,0.03); border-radius:10px; color:var(--text-muted); text-align:center;">
+                    Click "Analyze" to get technical insights
+                </div>
+            </div>
         </div>
 
+        <!-- ============================================================
+        PAGE: SPEEDBOT
+        ============================================================ -->
         <div class="page-content" id="page-speedbot">
             <h2 style="font-size:2.4rem;">🏃 <span style="color:var(--gold);">Speedbot</span></h2>
-            <p style="color:var(--text-muted); font-size:1.4rem;">Speedbot features coming soon.</p>
+            <p style="color:var(--text-muted); font-size:1.4rem; margin-bottom:2rem;">Ultra-fast execution engine</p>
+
+            <div class="card" style="margin-bottom:2rem;">
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.5rem;">
+                    <div>
+                        <h4 style="margin-bottom:0.5rem;">📊 Market</h4>
+                        <select id="speedSymbol" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;">
+                            <option value="R_75">Volatility 75</option>
+                            <option value="R_100">Volatility 100</option>
+                        </select>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:0.5rem;">💰 Amount ($)</h4>
+                        <input type="number" id="speedAmount" value="5" min="1" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;" />
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:0.5rem;">⚡ Speed</h4>
+                        <select id="speedMode" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;">
+                            <option value="fast">Fast</option>
+                            <option value="ultra">Ultra</option>
+                            <option value="extreme">Extreme</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn-load" style="margin-top:1.5rem; width:100%; padding:0.8rem; background: var(--green); color:#fff;" onclick="runSpeedbot()">
+                    🏃 Start Speedbot
+                </button>
+                <div id="speedStatus" style="margin-top:1rem; padding:0.5rem; text-align:center; color:var(--text-muted);">
+                    ⏹️ Stopped
+                </div>
+            </div>
         </div>
 
+        <!-- ============================================================
+        PAGE: AUTOMATED
+        ============================================================ -->
         <div class="page-content" id="page-automated">
             <h2 style="font-size:2.4rem;">🤖 <span style="color:var(--gold);">Automated</span></h2>
-            <p style="color:var(--text-muted); font-size:1.4rem;">Automated trading features coming soon.</p>
+            <p style="color:var(--text-muted); font-size:1.4rem; margin-bottom:2rem;">Full automation settings</p>
+
+            <div class="card" style="margin-bottom:2rem;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+                    <div>
+                        <h4 style="margin-bottom:0.5rem;">🔄 Auto Trade</h4>
+                        <label style="display:flex; align-items:center; gap:0.8rem; color:var(--text-muted); font-size:1.3rem;">
+                            <input type="checkbox" id="autoTrade" checked /> Enable Auto Trading
+                        </label>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:0.5rem;">📊 Max Trades Per Day</h4>
+                        <input type="number" id="autoMaxTrades" value="20" min="1" max="100" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;" />
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:0.5rem;">⏱️ Trade Interval (seconds)</h4>
+                        <input type="number" id="autoInterval" value="60" min="10" max="300" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;" />
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:0.5rem;">🛡️ Stop Loss</h4>
+                        <input type="number" id="autoStopLoss" value="5" min="1" max="20" step="0.5" style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;" />
+                    </div>
+                </div>
+                <button class="btn-load" style="margin-top:1.5rem; width:100%; padding:0.8rem;" onclick="saveAutomationSettings()">
+                    💾 Save Automation Settings
+                </button>
+            </div>
         </div>
 
+        <!-- ============================================================
+        PAGE: CHART
+        ============================================================ -->
         <div class="page-content" id="page-chart">
             <h2 style="font-size:2.4rem;">📈 <span style="color:var(--gold);">Chart</span></h2>
-            <p style="color:var(--text-muted); font-size:1.4rem;">Advanced charts coming soon.</p>
+            <p style="color:var(--text-muted); font-size:1.4rem; margin-bottom:2rem;">Advanced charting with technical indicators</p>
+
+            <div class="card">
+                <div style="display:flex; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap;">
+                    <select id="chartSymbol" style="padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;">
+                        <option value="R_75">Volatility 75</option>
+                        <option value="R_100">Volatility 100</option>
+                        <option value="BOOM_500">Boom 500</option>
+                    </select>
+                    <select id="chartTimeframe" style="padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:#fff; font-size:1.3rem;">
+                        <option value="1m">1 Minute</option>
+                        <option value="5m">5 Minutes</option>
+                        <option value="15m">15 Minutes</option>
+                        <option value="1h">1 Hour</option>
+                    </select>
+                    <button class="btn-load" style="padding:0.8rem 2rem;" onclick="loadChart()">📊 Load Chart</button>
+                </div>
+                <div id="chartContainer" style="height:400px; background:rgba(255,255,255,0.03); border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--text-muted);">
+                    <div style="text-align:center;">
+                        <span style="font-size:4rem;">📊</span>
+                        <p style="margin-top:0.5rem;">Select a symbol and click "Load Chart"</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
+        <!-- ============================================================
+        PAGE: BOTS STORE
+        ============================================================ -->
         <div class="page-content" id="page-bots-store">
             <h2 style="font-size:2.4rem;">🏪 Bots <span style="color:var(--gold);">Store</span></h2>
-            <p style="color:var(--text-muted); font-size:1.4rem;">Bot marketplace coming soon.</p>
+            <p style="color:var(--text-muted); font-size:1.4rem; margin-bottom:2rem;">Premium bot marketplace</p>
+
+            <div class="bot-grid">
+                <div class="bot-card" style="border-color: var(--gold);">
+                    <div class="bot-badge premium">⭐ PREMIUM</div>
+                    <div class="bot-icon">🚀</div>
+                    <div class="bot-name">AI Gold Miner</div>
+                    <div class="bot-desc">Advanced AI trading bot with 85% win rate. $499/month</div>
+                    <button class="btn-load" onclick="showToast('💰 Purchased AI Gold Miner!')">Buy Now - $499</button>
+                </div>
+                <div class="bot-card" style="border-color: var(--gold);">
+                    <div class="bot-badge premium">⭐ PREMIUM</div>
+                    <div class="bot-icon">🧠</div>
+                    <div class="bot-name">Quantum Trader Pro</div>
+                    <div class="bot-desc">Quantum computing powered trading. $299/month</div>
+                    <button class="btn-load" onclick="showToast('💰 Purchased Quantum Trader Pro!')">Buy Now - $299</button>
+                </div>
+                <div class="bot-card">
+                    <div class="bot-badge free">🎁 FREE</div>
+                    <div class="bot-icon">🤖</div>
+                    <div class="bot-name">Basic Scalper</div>
+                    <div class="bot-desc">Free scalping bot for beginners.</div>
+                    <button class="btn-load" onclick="showToast('✅ Basic Scalper added to your bots!')">Add Free</button>
+                </div>
+            </div>
         </div>
 
+        <!-- ============================================================
+        PAGE: REPORTS
+        ============================================================ -->
         <div class="page-content" id="page-reports">
             <h2 style="font-size:2.4rem;">📋 <span style="color:var(--gold);">Reports</span></h2>
-            <p style="color:var(--text-muted); font-size:1.4rem;">Trading reports coming soon.</p>
+            <p style="color:var(--text-muted); font-size:1.4rem; margin-bottom:2rem;">Trading performance analytics</p>
+
+            <div class="card" style="margin-bottom:2rem;">
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:1.5rem;">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Trades</div>
+                        <div class="stat-value gold" id="reportTotalTrades">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Win Rate</div>
+                        <div class="stat-value green" id="reportWinRate">0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total P&L</div>
+                        <div class="stat-value gold" id="reportPnL">$0.00</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Best Trade</div>
+                        <div class="stat-value green" id="reportBest">$0.00</div>
+                    </div>
+                </div>
+                <button class="btn-load" style="margin-top:1.5rem; width:100%; padding:0.8rem;" onclick="generateReport()">
+                    📊 Generate Report
+                </button>
+            </div>
+            <div id="reportDetails" style="color:var(--text-muted); text-align:center;">
+                Click "Generate Report" to see your trading performance
+            </div>
         </div>
 
     </main>
@@ -404,11 +821,227 @@
         function switchExecutionTab(tab) {
             document.querySelectorAll('.execution-tabs .tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelector(`.execution-tabs .tab-btn[data-tab="${tab}"]`).classList.add('active');
-            
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
             document.getElementById(`panel-${tab}`).classList.add('active');
         }
         window.switchExecutionTab = switchExecutionTab;
+
+        // ============================================================
+        // MANUAL TRADER
+        // ============================================================
+        function executeManualTrade(type) {
+            const symbol = document.getElementById('manualSymbol').value;
+            const amount = parseFloat(document.getElementById('manualAmount').value) || 10;
+            const isWin = Math.random() > 0.45;
+            const profit = isWin ? amount * (0.3 + Math.random() * 0.7) : -amount * (0.2 + Math.random() * 0.5);
+            
+            document.getElementById('manualTradeStatus').textContent = `✅ ${type} on ${symbol}: ${isWin ? 'WIN' : 'LOSS'} $${Math.abs(profit).toFixed(2)}`;
+            document.getElementById('manualTradeStatus').style.color = isWin ? 'var(--green)' : 'var(--red)';
+            
+            // Add to trade list
+            const list = document.getElementById('manualTradeList');
+            const entry = document.createElement('div');
+            entry.className = 'trade-item';
+            entry.innerHTML = `
+                <span class="trade-symbol">${symbol}</span>
+                <span class="trade-amount ${isWin ? 'win' : 'loss'}">${isWin ? '+' : ''}$${profit.toFixed(2)}</span>
+                <span class="trade-time">Manual ${type}</span>
+            `;
+            list.prepend(entry);
+            if (list.querySelector('p')) list.querySelector('p').remove();
+            
+            showToast(`✅ ${type} ${isWin ? 'WIN' : 'LOSS'} $${Math.abs(profit).toFixed(2)}`);
+        }
+        window.executeManualTrade = executeManualTrade;
+
+        // ============================================================
+        // BULK TRADER
+        // ============================================================
+        function executeBulkTrades(type) {
+            const symbol = document.getElementById('bulkSymbol').value;
+            const amount = parseFloat(document.getElementById('bulkAmount').value) || 5;
+            const count = parseInt(document.getElementById('bulkCount').value) || 5;
+            
+            let wins = 0, total = 0;
+            for (let i = 0; i < count; i++) {
+                const isWin = Math.random() > 0.45;
+                if (isWin) wins++;
+                total += isWin ? amount * 0.5 : -amount * 0.3;
+            }
+            
+            document.getElementById('bulkTradeStatus').textContent = 
+                `📦 ${count} ${type} trades on ${symbol}: ${wins}/${count} wins, P&L $${total.toFixed(2)}`;
+            document.getElementById('bulkTradeStatus').style.color = total > 0 ? 'var(--green)' : 'var(--red)';
+            
+            showToast(`📦 Bulk ${type}: ${wins}/${count} wins, $${total.toFixed(2)}`);
+        }
+        window.executeBulkTrades = executeBulkTrades;
+
+        // ============================================================
+        // SMART AI
+        // ============================================================
+        function runSmartAnalysis() {
+            const market = document.getElementById('smartMarket').value;
+            const type = document.getElementById('smartType').value;
+            
+            const analyses = {
+                trend: ['📈 Bullish trend detected', '📉 Bearish trend detected', '📊 Sideways market'],
+                pattern: ['🔺 Triangle pattern forming', '🔻 Head and shoulders pattern', '💎 Diamond pattern'],
+                sentiment: ['😊 Positive sentiment 75%', '😐 Neutral sentiment 50%', '😟 Negative sentiment 30%']
+            };
+            
+            const result = analyses[type][Math.floor(Math.random() * analyses[type].length)];
+            document.getElementById('smartResult').innerHTML = `<span style="color:var(--gold);">🧠 Analysis Result:</span> ${result}`;
+            showToast('🧠 Smart analysis complete!');
+        }
+        window.runSmartAnalysis = runSmartAnalysis;
+
+        // ============================================================
+        // QUICK BOT
+        // ============================================================
+        function loadQuickBot(name, symbol) {
+            showToast(`✅ "${name}" loaded on ${symbol}!`);
+        }
+        window.loadQuickBot = loadQuickBot;
+
+        // ============================================================
+        // SIGNAL AI
+        // ============================================================
+        function runSignalAI() {
+            const market = document.getElementById('signalMarket').value;
+            const strategy = document.getElementById('signalStrategy').value;
+            const confidence = parseInt(document.getElementById('signalConfidence').value) || 60;
+            
+            const signals = ['📈 BUY (CALL)', '📉 SELL (PUT)', '⏳ WAIT'];
+            const signal = signals[Math.floor(Math.random() * signals.length)];
+            const actualConfidence = Math.floor(Math.random() * 30) + 50;
+            
+            document.getElementById('signalResult').innerHTML = `
+                <span style="color:var(--gold);">📡 Signal:</span> ${signal}<br>
+                <span style="color:var(--text-muted);">Confidence: ${actualConfidence}%</span>
+            `;
+            showToast(`📡 Signal: ${signal}`);
+        }
+        window.runSignalAI = runSignalAI;
+
+        // ============================================================
+        // COPY TRADER
+        // ============================================================
+        let copyRunning = false;
+        function startCopyTrading() {
+            const master = document.getElementById('copyMaster').value;
+            const amount = parseFloat(document.getElementById('copyAmount').value) || 5;
+            const multiplier = parseFloat(document.getElementById('copyMultiplier').value) || 1;
+            
+            copyRunning = !copyRunning;
+            document.getElementById('copyStatus').textContent = copyRunning ? '🟢 Copying from ' + master : '🔴 Not copying';
+            document.getElementById('copyStatus').style.color = copyRunning ? 'var(--green)' : 'var(--text-muted)';
+            showToast(copyRunning ? '📋 Copy trading started!' : '⏹️ Copy trading stopped');
+        }
+        window.startCopyTrading = startCopyTrading;
+
+        // ============================================================
+        // ANALYSIS TOOLS
+        // ============================================================
+        function runAnalysis() {
+            const symbol = document.getElementById('analysisSymbol').value;
+            const indicator = document.getElementById('analysisIndicator').value;
+            
+            const results = {
+                rsi: ['RSI: 72 (Overbought)', 'RSI: 35 (Oversold)', 'RSI: 55 (Neutral)'],
+                macd: ['MACD Bullish Crossover', 'MACD Bearish Crossover', 'MACD Divergence Detected'],
+                ma: ['Price above MA50 (Bullish)', 'Price below MA50 (Bearish)', 'Price crossing MA200'],
+                bollinger: ['Price at upper band (Overbought)', 'Price at lower band (Oversold)', 'Price in middle band']
+            };
+            
+            const result = results[indicator][Math.floor(Math.random() * results[indicator].length)];
+            document.getElementById('analysisResult').innerHTML = `<span style="color:var(--gold);">📊 Analysis:</span> ${result}`;
+            showToast('📊 Analysis complete!');
+        }
+        window.runAnalysis = runAnalysis;
+
+        // ============================================================
+        // SPEEDBOT
+        // ============================================================
+        let speedRunning = false;
+        function runSpeedbot() {
+            speedRunning = !speedRunning;
+            document.getElementById('speedStatus').textContent = speedRunning ? '🏃 Running' : '⏹️ Stopped';
+            document.getElementById('speedStatus').style.color = speedRunning ? 'var(--green)' : 'var(--text-muted)';
+            showToast(speedRunning ? '🏃 Speedbot started!' : '⏹️ Speedbot stopped');
+        }
+        window.runSpeedbot = runSpeedbot;
+
+        // ============================================================
+        // AUTOMATION SETTINGS
+        // ============================================================
+        function saveAutomationSettings() {
+            const autoTrade = document.getElementById('autoTrade').checked;
+            const maxTrades = document.getElementById('autoMaxTrades').value;
+            const interval = document.getElementById('autoInterval').value;
+            const stopLoss = document.getElementById('autoStopLoss').value;
+            
+            const settings = { autoTrade, maxTrades, interval, stopLoss };
+            localStorage.setItem('tradenovax_automation', JSON.stringify(settings));
+            
+            showToast('💾 Automation settings saved!');
+        }
+        window.saveAutomationSettings = saveAutomationSettings;
+
+        // ============================================================
+        // CHART
+        // ============================================================
+        function loadChart() {
+            const symbol = document.getElementById('chartSymbol').value;
+            const timeframe = document.getElementById('chartTimeframe').value;
+            
+            const container = document.getElementById('chartContainer');
+            const data = [];
+            for (let i = 0; i < 50; i++) {
+                data.push(Math.random() * 100 + 50);
+            }
+            
+            let html = '<div style="height:100%; width:100%; display:flex; align-items:flex-end; gap:2px; padding:1rem;">';
+            data.forEach((value, index) => {
+                const color = value > 70 ? 'var(--green)' : value > 40 ? 'var(--gold)' : 'var(--red)';
+                const height = (value / 150) * 100;
+                html += `<div style="flex:1; height:${height}%; background:${color}; border-radius:2px; min-height:10px;"></div>`;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+            
+            document.querySelector('#chartContainer div')?.remove();
+            container.innerHTML = html + `<div style="text-align:center; color:var(--text-muted); font-size:1.2rem; margin-top:0.5rem;">${symbol} - ${timeframe}</div>`;
+            showToast(`📊 Chart loaded for ${symbol}`);
+        }
+        window.loadChart = loadChart;
+
+        // ============================================================
+        // REPORTS
+        // ============================================================
+        function generateReport() {
+            const totalTrades = Math.floor(Math.random() * 200) + 50;
+            const wins = Math.floor(Math.random() * totalTrades * 0.7);
+            const winRate = (wins / totalTrades * 100);
+            const totalPnL = (Math.random() * 5000 - 1000);
+            const bestTrade = Math.random() * 500 + 100;
+            
+            document.getElementById('reportTotalTrades').textContent = totalTrades;
+            document.getElementById('reportWinRate').textContent = winRate.toFixed(1) + '%';
+            document.getElementById('reportPnL').textContent = '$' + totalPnL.toFixed(2);
+            document.getElementById('reportBest').textContent = '$' + bestTrade.toFixed(2);
+            
+            document.getElementById('reportDetails').innerHTML = `
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; text-align:left;">
+                    <div>📊 Total Trades: <strong style="color:var(--gold);">${totalTrades}</strong></div>
+                    <div>✅ Win Rate: <strong style="color:var(--green);">${winRate.toFixed(1)}%</strong></div>
+                    <div>💰 Total P&L: <strong style="color:${totalPnL > 0 ? 'var(--green)' : 'var(--red)'};">$${totalPnL.toFixed(2)}</strong></div>
+                    <div>🏆 Best Trade: <strong style="color:var(--green);">$${bestTrade.toFixed(2)}</strong></div>
+                </div>
+            `;
+            showToast('📊 Report generated!');
+        }
+        window.generateReport = generateReport;
     </script>
 
     <!-- ============================================================

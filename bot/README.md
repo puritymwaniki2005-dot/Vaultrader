@@ -1,0 +1,1 @@
+# Deriv Bot Template

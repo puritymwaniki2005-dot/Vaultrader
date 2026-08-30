@@ -1,6 +1,28 @@
 // ============================================================
 // TRADENOVAX - DERIV OAUTH 2.0 WITH PKCE
 // ============================================================
+
+// ============================================================
+// TOAST FUNCTION - FIXES showToast is not defined
+// ============================================================
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    const msg = document.getElementById('toastMessage');
+    if (toast && msg) {
+        msg.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    } else {
+        console.log('🔔 Toast:', message);
+        // Try to create a temporary toast
+        const tempToast = document.createElement('div');
+        tempToast.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#0A1628;border:1px solid #D4AF37;border-radius:12px;padding:12px 24px;color:white;z-index:9999;font-size:14px;box-shadow:0 8px 30px rgba(0,0,0,0.5);';
+        tempToast.textContent = message;
+        document.body.appendChild(tempToast);
+        setTimeout(() => tempToast.remove(), 3000);
+    }
+}
+
  
 // ============================================================ 
 // SUPABASE - Safe loading with initialization check

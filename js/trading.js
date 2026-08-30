@@ -3,7 +3,7 @@
 // ============================================================
 
 // ===== 🔥 SWITCH TO TRUE FOR LIVE TRADING =====
-const USE_DERIV_REAL = true  // ← LIVE TRADING ENABLED!
+const USE_DERIV_REAL = true  // ← LIVE TRADING ENABLED! 
 
 // ============================================================
 // GET DERIV CONNECTION

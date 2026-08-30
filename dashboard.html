@@ -35,67 +35,71 @@
             </div>
         </div>
 
-        <nav class="sidebar-nav">
-            <div class="nav-label">Main</div>
-            <a class="active" data-page="dashboard">
-                <span class="icon">📊</span> Dashboard
-            </a>
-            <a data-page="builder">
-                <span class="icon">🔧</span> Bot Builder
-            </a>
-            <a data-page="manual">
-                <span class="icon">✋</span> Manual Trader
-            </a>
-            <a data-page="bulk">
-                <span class="icon">📦</span> Bulk Trader
-            </a>
+       <nav class="sidebar-nav">
+    <div class="nav-label">Main</div>
+    <a class="active" data-page="dashboard">
+        <span class="icon">📊</span> Dashboard
+    </a>
+    
+    <!-- 🔥 THIS NOW POINTS TO YOUR LIVE BOT -->
+    <a href="/bot/" data-page="bot" target="_blank" style="border-color: var(--gold);">
+        <span class="icon">🤖</span> Bot Builder
+        <span class="badge" style="background: var(--gold); color: var(--navy);">LIVE</span>
+    </a>
+    
+    <a data-page="manual">
+        <span class="icon">✋</span> Manual Trader
+    </a>
+    <a data-page="bulk">
+        <span class="icon">📦</span> Bulk Trader
+    </a>
 
-            <div class="nav-label">Bots</div>
-            <a data-page="premium">
-                <span class="icon">⭐</span> Premium AI Bots
-                <span class="badge">1</span>
-            </a>
-            <a data-page="smart">
-                <span class="icon">🧠</span> Smart AI
-                <span class="badge">1</span>
-            </a>
-            <a data-page="free">
-                <span class="icon">🎁</span> Free Bots
-                <span class="badge">3</span>
-            </a>
-            <a data-page="quick">
-                <span class="icon">⚡</span> Quick Bot
-                <span class="badge">2</span>
-            </a>
-            <a data-page="signal">
-                <span class="icon">📡</span> Signal AI
-            </a>
-            <a data-page="copy">
-                <span class="icon">📋</span> Copy Trader
-            </a>
+    <div class="nav-label">Bots</div>
+    <a data-page="premium">
+        <span class="icon">⭐</span> Premium AI Bots
+        <span class="badge">1</span>
+    </a>
+    <a data-page="smart">
+        <span class="icon">🧠</span> Smart AI
+        <span class="badge">1</span>
+    </a>
+    <a data-page="free">
+        <span class="icon">🎁</span> Free Bots
+        <span class="badge">3</span>
+    </a>
+    <a data-page="quick">
+        <span class="icon">⚡</span> Quick Bot
+        <span class="badge">2</span>
+    </a>
+    <a data-page="signal">
+        <span class="icon">📡</span> Signal AI
+    </a>
+    <a data-page="copy">
+        <span class="icon">📋</span> Copy Trader
+    </a>
 
-            <div class="nav-label">Tools</div>
-            <a data-page="analysis">
-                <span class="icon">🔍</span> Analysis Tools
-            </a>
-            <a data-page="speedbot">
-                <span class="icon">🏃</span> Speedbot
-            </a>
-            <a data-page="automated">
-                <span class="icon">🤖</span> Automated
-            </a>
-            <a data-page="chart">
-                <span class="icon">📈</span> Chart
-            </a>
+    <div class="nav-label">Tools</div>
+    <a data-page="analysis">
+        <span class="icon">🔍</span> Analysis Tools
+    </a>
+    <a data-page="speedbot">
+        <span class="icon">🏃</span> Speedbot
+    </a>
+    <a data-page="automated">
+        <span class="icon">🤖</span> Automated
+    </a>
+    <a data-page="chart">
+        <span class="icon">📈</span> Chart
+    </a>
 
-            <div class="nav-label">Store</div>
-            <a data-page="bots-store">
-                <span class="icon">🏪</span> Bots Store
-            </a>
-            <a data-page="reports">
-                <span class="icon">📋</span> Reports
-            </a>
-        </nav>
+    <div class="nav-label">Store</div>
+    <a data-page="bots-store">
+        <span class="icon">🏪</span> Bots Store
+    </a>
+    <a data-page="reports">
+        <span class="icon">📋</span> Reports
+    </a>
+</nav>
 
         <div class="sidebar-footer">
             <div class="footer-item" onclick="window.location.href='/'">
@@ -166,10 +170,10 @@
                 </div>
 
                 <div class="run-section">
-                    <button class="btn-run" id="runBotBtn" onclick="window.trading.toggleBotExecution()">
-                        <span class="run-icon">▶</span>
-                        <span class="run-text">Run</span>
-                    </button>
+                   <a href="/bot/" class="btn-run" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.8rem; background: var(--gold); color: var(--navy); padding: 1.2rem 2.5rem; border-radius: 10px; font-size: 1.6rem; font-weight: 700; transition: all 0.3s ease;">
+    <span class="run-icon">🚀</span>
+    <span class="run-text">Launch Bot Builder</span>
+</a>
                     <p class="run-hint">When you're ready to trade, hit Run. You'll be able to track your bot's performance here.</p>
                 </div>
 

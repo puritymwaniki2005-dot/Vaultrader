@@ -3,17 +3,36 @@
 // ============================================================
 
 // ============================================================ 
-// SUPABASE - Declared ONCE with a flag
+// SUPABASE - Safe loading with initialization check
 // ============================================================
-if (typeof window._supabaseInitialized === 'undefined') {
+function initSupabase() {
+    if (typeof window._supabaseInitialized !== 'undefined' && window._supabaseInitialized) {
+        console.log('ℹ️ Supabase already initialized');
+        return true;
+    }
+
+    if (typeof window.supabase === 'undefined' || !window.supabase) {
+        console.warn('⚠️ Supabase SDK not available');
+        return false;
+    }
+
+    const SUPABASE_URL = 'https://qbfwvtoabfewhjnmfkxb.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZnd2dG9hYmZld2hqbm1ma3hiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4MzQ4ODcsImV4cCI6MjEwMzQxMDg4N30.Y0UAdvtTOD7vc3V7ZSOa6PTEKOQRQaiEIX1A56jb2H0';
+
+    window.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     window._supabaseInitialized = true;
-    
-    const SUPABASE_URL = 'https://qbfwvtoabfewhjnmfkxb.supabase.co'
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZnd2dG9hYmZld2hqbm1ma3hiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4MzQ4ODcsImV4cCI6MjEwMzQxMDg4N30.Y0UAdvtTOD7vc3V7ZSOa6PTEKOQRQaiEIX1A56jb2H0'
-    
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    window.supabase = supabase;
     console.log('✅ Supabase client created');
+    return true;
+}
+
+// Try to initialize, retry if needed
+if (!initSupabase()) {
+    console.warn('⚠️ Supabase SDK not ready, retrying...');
+    setTimeout(() => {
+        if (!initSupabase()) {
+            console.error('❌ Supabase SDK failed to load. Check your internet connection.');
+        }
+    }, 1000);
 }
 
 // ============================================================
@@ -24,7 +43,7 @@ const OAUTH_CONFIG = {
     redirectUri: 'https://tradenovax.co.ke',
     authEndpoint: 'https://auth.deriv.com/oauth2/auth',
     tokenEndpoint: 'https://auth.deriv.com/oauth2/token',
-    scope: 'trade account_manage',
+    scope: 'trade account_manage user_info',  // Added user_info
     affiliateToken: '2PKMG53KVFH8',
     utmCampaign: 'tradenovax'
 };
@@ -75,7 +94,6 @@ async function generatePKCE() {
 async function buildOAuthURL() {
     try {
         const { codeChallenge, state } = await generatePKCE();
-
         const params = new URLSearchParams({
             response_type: 'code',
             client_id: OAUTH_CONFIG.clientId,
@@ -87,7 +105,6 @@ async function buildOAuthURL() {
             affiliate_token: OAUTH_CONFIG.affiliateToken,
             utm_campaign: OAUTH_CONFIG.utmCampaign
         });
-
         return `${OAUTH_CONFIG.authEndpoint}?${params.toString()}`;
     } catch (error) {
         console.error('❌ Failed to build OAuth URL:', error);
@@ -101,7 +118,6 @@ async function buildOAuthURL() {
 async function buildSignupURL() {
     try {
         const { codeChallenge, state } = await generatePKCE();
-
         const params = new URLSearchParams({
             response_type: 'code',
             client_id: OAUTH_CONFIG.clientId,
@@ -116,7 +132,6 @@ async function buildSignupURL() {
             utm_medium: 'affiliate',
             utm_source: OAUTH_CONFIG.affiliateToken
         });
-
         return `${OAUTH_CONFIG.authEndpoint}?${params.toString()}`;
     } catch (error) {
         console.error('❌ Failed to build signup URL:', error);
@@ -176,6 +191,97 @@ async function exchangeCodeForToken(code, codeVerifier) {
 }
 
 // ============================================================
+// GET DERIV USER INFO
+// ============================================================
+async function getDerivUserInfo(accessToken) {
+    try {
+        console.log('🔄 Getting Deriv user info...');
+        const response = await fetch('https://api.deriv.com/v3/user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({ user: 1 })
+        });
+        const data = await response.json();
+        console.log('✅ Deriv user info:', data);
+        return data;
+    } catch (error) {
+        console.error('❌ Error getting Deriv user info:', error);
+        return null;
+    }
+}
+
+// ============================================================
+// CREATE OR GET SUPABASE USER FROM DERIV OAUTH
+// ============================================================
+async function createSupabaseUserFromDeriv(derivTokens) {
+    try {
+        const supabase = window.supabase;
+        if (!supabase) {
+            console.error('❌ Supabase not available');
+            return null;
+        }
+
+        // Get Deriv user info from tokens
+        const userInfo = await getDerivUserInfo(derivTokens.access_token);
+        
+        if (!userInfo || !userInfo.user) {
+            console.error('❌ Could not get Deriv user info');
+            return null;
+        }
+
+        const derivUser = userInfo.user;
+        const email = derivUser.email || derivUser.username + '@deriv.com';
+        const name = derivUser.full_name || derivUser.username || 'Deriv Trader';
+        
+        console.log('📧 Creating Supabase user with email:', email);
+
+        // Try to sign in first
+        let { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: derivTokens.access_token + derivTokens.refresh_token
+        });
+
+        // If sign in fails, sign up
+        if (error && error.message.includes('Invalid login credentials')) {
+            console.log('📝 User not found, creating new account...');
+            const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+                email: email,
+                password: derivTokens.access_token + derivTokens.refresh_token,
+                options: {
+                    data: {
+                        full_name: name,
+                        deriv_account_id: derivUser.account_id || derivUser.user_id || derivTokens.account_id,
+                        deriv_username: derivUser.username || '',
+                        is_deriv_user: true
+                    }
+                }
+            });
+            
+            if (signUpError) {
+                console.error('❌ Supabase sign up error:', signUpError);
+                return null;
+            }
+            console.log('✅ Supabase user created:', signUpData.user);
+            return signUpData.user;
+        }
+
+        if (error) {
+            console.error('❌ Supabase sign in error:', error);
+            return null;
+        }
+
+        console.log('✅ Supabase user signed in:', data.user);
+        return data.user;
+    } catch (error) {
+        console.error('❌ Error creating Supabase user:', error);
+        return null;
+    }
+}
+
+// ============================================================
 // GET ACCESS TOKEN
 // ============================================================
 function getAccessToken() {
@@ -200,6 +306,7 @@ function logout() {
     localStorage.removeItem('deriv_auth_code');
     localStorage.removeItem('deriv_auth_state');
     localStorage.removeItem('deriv_tokens_backup');
+    localStorage.removeItem('supabase_user_id');
     sessionStorage.removeItem('pkce_code_verifier');
     sessionStorage.removeItem('oauth_state');
     console.log('👋 Logged out');
@@ -227,6 +334,7 @@ async function handleOAuthCallback() {
             return null;
         }
 
+        // Verify state
         const storedState = sessionStorage.getItem('oauth_state');
         if (state && storedState && state !== storedState) {
             console.error('❌ State mismatch! CSRF protection triggered.');
@@ -239,14 +347,37 @@ async function handleOAuthCallback() {
             return null;
         }
 
+        // Exchange code for tokens
         const tokenData = await exchangeCodeForToken(code, codeVerifier);
 
+        // Clean URL
         sessionStorage.removeItem('pkce_code_verifier');
         sessionStorage.removeItem('oauth_state');
         window.history.replaceState({}, document.title, window.location.pathname);
 
-        if (tokenData) {
+        if (tokenData && tokenData.access_token) {
             console.log('✅ OAuth callback handled successfully');
+            
+            // Store Deriv tokens
+            localStorage.setItem('deriv_access_token', tokenData.access_token);
+            localStorage.setItem('deriv_token_expiry', Date.now() + (tokenData.expires_in || 3600) * 1000);
+            
+            // 🔥 CREATE SUPABASE USER FROM DERIV
+            const supabaseUser = await createSupabaseUserFromDeriv(tokenData);
+            
+            if (supabaseUser) {
+                console.log('✅ Supabase user created/signed in:', supabaseUser.email);
+                localStorage.setItem('supabase_user_id', supabaseUser.id);
+            } else {
+                console.warn('⚠️ Could not create Supabase user. Check your Deriv account email.');
+                localStorage.setItem('deriv_tokens_backup', JSON.stringify(tokenData));
+            }
+            
+            // Redirect to dashboard
+            setTimeout(() => {
+                window.location.href = '/dashboard.html';
+            }, 1500);
+            
             return tokenData;
         } else {
             console.error('❌ Token exchange failed');
@@ -265,14 +396,29 @@ function checkOAuthCallback() {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
     const state = urlParams.get('state');
+    const error = urlParams.get('error');
+    const errorDescription = urlParams.get('error_description');
+
+    console.log('🔍 OAuth Check:', { code: !!code, state: !!state, error, errorDescription });
+
+    if (error) {
+        console.error('❌ OAuth Error:', error, errorDescription);
+        showToast(`❌ OAuth Error: ${error}`);
+        return;
+    }
 
     if (code && state) {
-        console.log('🔄 OAuth callback detected');
-        handleOAuthCallback().then(() => {
-            setTimeout(() => {
-                window.location.href = '/dashboard.html';
-            }, 1500);
+        console.log('🔄 OAuth callback detected with code:', code.substring(0, 10) + '...');
+        handleOAuthCallback().then((result) => {
+            console.log('✅ OAuth callback result:', result ? 'Success' : 'Failed');
+            if (result) {
+                setTimeout(() => {
+                    window.location.href = '/dashboard.html';
+                }, 1500);
+            }
         });
+    } else {
+        console.log('ℹ️ No OAuth code found in URL');
     }
 }
 
@@ -308,7 +454,9 @@ window.oauth = {
     logout,
     handleOAuthCallback,
     checkOAuthCallback,
-    OAUTH_CONFIG
+    OAUTH_CONFIG,
+    createSupabaseUserFromDeriv,
+    getDerivUserInfo
 };
 
 console.log('🔐 OAuth module loaded');

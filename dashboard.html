@@ -1776,7 +1776,6 @@ PAGE: AUTOMATED - EXACT MKOREANWWN MATCH
     <!-- ============================================================
     JAVASCRIPT
     ============================================================ -->
-    <!-- ===== OAUTH MODULE ===== -->
     <script>
         // ============================================================
         // TOAST
@@ -1790,7 +1789,28 @@ PAGE: AUTOMATED - EXACT MKOREANWWN MATCH
             toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
         }
         window.showToast = showToast;
+// ============================================================
+// CHECK DERIV CONNECTION STATUS
+// ============================================================
+function updateDerivStatus() {
+    const statusEl = document.getElementById('derivStatusText') || document.getElementById('derivStatus');
+    const code = localStorage.getItem('deriv_auth_code');
+    
+    if (statusEl) {
+        if (code) {
+            statusEl.textContent = '✅ Connected';
+            statusEl.style.color = 'var(--green)';
+        } else {
+            statusEl.textContent = '🔗 Not connected';
+            statusEl.style.color = 'var(--text-muted)';
+        }
+    }
+}
 
+// Call this when dashboard loads
+document.addEventListener('DOMContentLoaded', function() {
+    updateDerivStatus();
+});
         // ============================================================
         // EXECUTION TAB SWITCHING
         // ============================================================

@@ -1,9 +1,9 @@
 // ============================================================
-// TRADENOVAX - TRADING ENGINE (Deriv Ready)
+// TRADENOVAX - TRADING ENGINE (LIVE READY)
 // ============================================================
 
-// ===== SWITCH TO FALSE WHEN YOU HAVE APP ID =====
-const USE_DERIV_REAL = false
+// ===== 🔥 SWITCH TO TRUE FOR LIVE TRADING =====
+const USE_DERIV_REAL = true  // ← LIVE TRADING ENABLED!
 
 // ============================================================
 // GET DERIV CONNECTION
@@ -18,6 +18,7 @@ async function getDerivConnection(userId) {
         }
     }
     
+    // REAL: Get stored Deriv tokens from Supabase
     const { data, error } = await supabase
         .from('deriv_connections')
         .select('*')
@@ -29,7 +30,7 @@ async function getDerivConnection(userId) {
 }
 
 // ============================================================
-// PLACE TRADE - REAL DERIV READY
+// PLACE TRADE - REAL DERIV TRADING
 // ============================================================
 
 async function placeTrade(tradeParams) {
@@ -48,7 +49,7 @@ async function placeTrade(tradeParams) {
                 return null
             }
 
-            // REAL DERIV API CALL
+            // ===== REAL DERIV API CALL =====
             const proposalResponse = await fetch('https://api.deriv.com/v1/proposal', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -59,7 +60,7 @@ async function placeTrade(tradeParams) {
                     contract_type: tradeParams.type === 'CALL' ? 'CALL' : 'PUT',
                     duration: tradeParams.duration || 60,
                     duration_unit: 's',
-                    symbol: tradeParams.symbol || 'R_75',
+                    symbol: tradeParams.symbol || 'R_100',
                     basis: 'stake',
                     currency: 'USD'
                 })
@@ -72,6 +73,7 @@ async function placeTrade(tradeParams) {
                 return null
             }
 
+            // Buy contract
             const buyResponse = await fetch('https://api.deriv.com/v1/buy', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -93,7 +95,7 @@ async function placeTrade(tradeParams) {
             const tradeRecord = {
                 user_id: user.id,
                 bot_id: tradeParams.bot_id || null,
-                symbol: tradeParams.symbol || 'R_75',
+                symbol: tradeParams.symbol || 'R_100',
                 type: tradeParams.type || 'CALL',
                 amount: tradeParams.amount,
                 price: proposalData.proposal.spot,
@@ -102,12 +104,11 @@ async function placeTrade(tradeParams) {
                 is_demo: false
             }
             await supabase.from('trades').insert(tradeRecord)
-            showToast(`✅ Trade placed: ${tradeParams.type} on ${tradeParams.symbol}`)
+            showToast(`✅ REAL Trade placed: ${tradeParams.type} on ${tradeParams.symbol} ($${tradeParams.amount})`)
             return buyData
         }
 
-        // ===== DEMO TRADING =====
-        // Simulate trade (this runs when USE_DERIV_REAL = false)
+        // ===== DEMO TRADING (fallback) =====
         const isWin = Math.random() > 0.45
         const profitLoss = isWin 
             ? tradeParams.amount * (0.5 + Math.random() * 0.8) 
@@ -119,7 +120,6 @@ async function placeTrade(tradeParams) {
             status: isWin ? 'won' : 'lost'
         }
 
-        // Save demo trade to Supabase (LIVE database!)
         const tradeRecord = {
             user_id: user.id,
             bot_id: tradeParams.bot_id || null,
@@ -133,7 +133,7 @@ async function placeTrade(tradeParams) {
         }
         await supabase.from('trades').insert(tradeRecord)
 
-        showToast(`🎮 Demo Trade: ${tradeParams.type} on ${tradeParams.symbol} → ${isWin ? '✅ WIN' : '❌ LOSS'}`)
+        showToast(`🎮 Demo Trade: ${tradeParams.type} on ${tradeParams.symbol}`)
         return result
 
     } catch (error) {
@@ -224,4 +224,4 @@ window.trading = {
     USE_DERIV_REAL
 }
 
-console.log('📊 Trading loaded (Deriv Ready: ' + (USE_DERIV_REAL ? 'ON' : 'OFF') + ')')
+console.log('📊 Trading loaded (LIVE MODE: ' + (USE_DERIV_REAL ? 'ON' : 'OFF') + ')')

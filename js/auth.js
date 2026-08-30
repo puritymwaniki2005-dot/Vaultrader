@@ -224,16 +224,6 @@ function initializeAuth() {
         } catch (e) {}
     }
     
-    // Check for OAuth callback
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    const state = urlParams.get('state');
-    
-    if (code && state) {
-        console.log('🔄 OAuth callback detected, exchanging code...');
-        handleOAuthCallback(code, state);
-    }
-    
     // Update UI status
     updateDerivStatus();
     
@@ -241,63 +231,31 @@ function initializeAuth() {
 }
 
 // ============================================================
-// HANDLE OAUTH CALLBACK
-// ============================================================
-async function handleOAuthCallback(code, state) {
-    try {
-        // Verify state
-        const storedState = sessionStorage.getItem('oauth_state');
-        if (!state || state !== storedState) {
-            console.error('❌ State mismatch');
-            return;
-        }
-        
-        const codeVerifier = sessionStorage.getItem('pkce_code_verifier');
-        if (!codeVerifier) {
-            console.error('❌ No code verifier found');
-            return;
-        }
-        
-        // Exchange code for token
-        const tokenData = await window.oauth.exchangeCodeForToken(code, codeVerifier);
-        
-        if (tokenData) {
-            console.log('✅ Token exchange successful');
-            sessionStorage.removeItem('pkce_code_verifier');
-            sessionStorage.removeItem('oauth_state');
-            
-            // Remove code from URL
-            window.history.replaceState({}, document.title, window.location.pathname);
-            
-            // Redirect to dashboard
-            setTimeout(() => {
-                window.location.href = '/dashboard.html';
-            }, 1000);
-        }
-    } catch (error) {
-        console.error('❌ OAuth callback error:', error);
-    }
-}
-
-// ============================================================
 // ===== 🔥 LISTEN FOR OAUTH READY =====
 // ============================================================
+let authInitialized = false;
+
+function initAuthOnce() {
+    if (authInitialized) return;
+    authInitialized = true;
+    initializeAuth();
+}
+
 // Listen for the OAuth ready event
 document.addEventListener('oauth-ready', function() {
     console.log('📡 OAuth ready event received');
-    initializeAuth();
+    initAuthOnce();
 });
 
-// Also check if OAuth is already ready (loaded before auth.js)
+// Also check if OAuth is already ready
 setTimeout(function() {
     if (typeof window.oauth !== 'undefined' && window.oauth) {
         console.log('✅ OAuth already loaded, initializing...');
-        initializeAuth();
+        initAuthOnce();
     } else {
         console.log('⏳ Waiting for OAuth module...');
-        // Listen for it
         document.addEventListener('oauth-ready', function() {
-            initializeAuth();
+            initAuthOnce();
         });
     }
 }, 500);

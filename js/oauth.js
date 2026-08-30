@@ -2,6 +2,35 @@
 // TRADENOVAX - DERIV OAUTH 2.0 WITH PKCE
 // ============================================================
 
+// ============================================================
+// SUPABASE - Declared ONCE
+// ============================================================
+const SUPABASE_URL = 'https://qbfwvtoabfewhjnmfkxb.supabase.co'
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZnd2dG9hYmZld2hqbm1ma3hiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4MzQ4ODcsImV4cCI6MjEwMzQxMDg4N30.Y0UAdvtTOD7vc3V7ZSOa6PTEKOQRQaiEIX1A56jb2H0'
+
+let supabase = null;
+try {
+    if (typeof window.supabase !== 'undefined' && window.supabase) {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } else {
+        // If supabase wasn't already loaded, load it
+        console.warn('⚠️ window.supabase not found, creating from SDK');
+        // Check if the SDK is available
+        if (typeof window.supabase !== 'undefined') {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } else {
+            console.error('❌ Supabase SDK not loaded!');
+        }
+    }
+} catch (e) {
+    console.error('❌ Failed to create Supabase client:', e);
+}
+
+window.supabase = supabase;
+
+// ============================================================
+// OAUTH CONFIG
+// ============================================================
 const OAUTH_CONFIG = {
     clientId: '34g3dK2hXuNSYEMsOUlvT',
     redirectUri: 'https://tradenovax.co.ke',
@@ -15,15 +44,12 @@ const OAUTH_CONFIG = {
 // ============================================================
 // PKCE GENERATION
 // ============================================================
-
 async function generatePKCE() {
-    // 1. Generate random code_verifier (43-128 characters)
     const array = crypto.getRandomValues(new Uint8Array(64));
     const codeVerifier = Array.from(array)
         .map(v => 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~'[v % 66])
         .join('');
 
-    // 2. Derive code_challenge using SHA-256
     const encoder = new TextEncoder();
     const data = encoder.encode(codeVerifier);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
@@ -34,12 +60,10 @@ async function generatePKCE() {
         .replace(/\//g, '_')
         .replace(/=+$/, '');
 
-    // 3. Generate random state for CSRF protection
     const stateArray = crypto.getRandomValues(new Uint8Array(16));
     const state = stateArray
         .reduce((s, b) => s + b.toString(16).padStart(2, '0'), '');
 
-    // 4. Store for later use (survives redirect)
     sessionStorage.setItem('pkce_code_verifier', codeVerifier);
     sessionStorage.setItem('oauth_state', state);
 
@@ -49,7 +73,6 @@ async function generatePKCE() {
 // ============================================================
 // BUILD OAUTH URL
 // ============================================================
-
 async function buildOAuthURL() {
     const { codeChallenge, state } = await generatePKCE();
 
@@ -69,9 +92,8 @@ async function buildOAuthURL() {
 }
 
 // ============================================================
-// BUILD SIGNUP URL (with prompt=registration)
+// BUILD SIGNUP URL
 // ============================================================
-
 async function buildSignupURL() {
     const { codeChallenge, state } = await generatePKCE();
 
@@ -94,55 +116,10 @@ async function buildSignupURL() {
 }
 
 // ============================================================
-// HANDLE OAUTH CALLBACK
+// EXCHANGE CODE FOR TOKEN
 // ============================================================
-
-async function handleOAuthCallback() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    const state = urlParams.get('state');
-    const error = urlParams.get('error');
-    const errorDescription = urlParams.get('error_description');
-
-    // Check for errors
-    if (error) {
-        showToast(`❌ OAuth Error: ${error} - ${errorDescription || ''}`);
-        return null;
-    }
-
-    // Verify state (CSRF protection)
-    const storedState = sessionStorage.getItem('oauth_state');
-    if (!state || state !== storedState) {
-        showToast('❌ Security: State mismatch. Possible CSRF attack.');
-        return null;
-    }
-
-    // Get the stored code_verifier
-    const codeVerifier = sessionStorage.getItem('pkce_code_verifier');
-    if (!codeVerifier) {
-        showToast('❌ PKCE verifier not found. Please try again.');
-        return null;
-    }
-
-    // Clear stored values
-    sessionStorage.removeItem('pkce_code_verifier');
-    sessionStorage.removeItem('oauth_state');
-
-    // Exchange code for token
-    const tokenData = await exchangeCodeForToken(code, codeVerifier);
-    return tokenData;
-}
-
-// ============================================================
-// EXCHANGE CODE FOR TOKEN (Server-side in production)
-// ============================================================
-
 async function exchangeCodeForToken(code, codeVerifier) {
     try {
-        // IMPORTANT: This should be done server-side in production!
-        // For demo/testing, we'll do it client-side (but this exposes your client secret)
-        // Deriv's OAuth uses PKCE, so no client secret is needed for the exchange!
-
         const response = await fetch(OAUTH_CONFIG.tokenEndpoint, {
             method: 'POST',
             headers: {
@@ -160,36 +137,29 @@ async function exchangeCodeForToken(code, codeVerifier) {
         const data = await response.json();
 
         if (data.error) {
-            showToast(`❌ Token exchange failed: ${data.error}`);
+            console.error('❌ Token exchange error:', data.error);
             return null;
         }
 
-        // Store the access token
         localStorage.setItem('deriv_access_token', data.access_token);
         localStorage.setItem('deriv_token_expiry', Date.now() + (data.expires_in * 1000));
+        localStorage.removeItem('deriv_auth_code');
 
-        showToast('✅ Successfully connected to Deriv!');
         return data;
 
     } catch (error) {
         console.error('Token exchange error:', error);
-        showToast('❌ Failed to exchange code for token.');
         return null;
     }
 }
 
 // ============================================================
-// GET ACCESS TOKEN (with auto-refresh)
+// GET ACCESS TOKEN
 // ============================================================
-
 function getAccessToken() {
     const token = localStorage.getItem('deriv_access_token');
     const expiry = parseInt(localStorage.getItem('deriv_token_expiry') || '0');
-
-    if (!token || Date.now() > expiry) {
-        return null;
-    }
-
+    if (!token || Date.now() > expiry) return null;
     return token;
 }
 
@@ -200,69 +170,48 @@ function isLoggedIn() {
 // ============================================================
 // LOGOUT
 // ============================================================
-
 function logout() {
     localStorage.removeItem('deriv_access_token');
     localStorage.removeItem('deriv_token_expiry');
+    localStorage.removeItem('deriv_auth_code');
+    localStorage.removeItem('deriv_auth_state');
     sessionStorage.removeItem('pkce_code_verifier');
     sessionStorage.removeItem('oauth_state');
-    showToast('👋 Logged out');
     window.location.href = '/index.html';
 }
 
 // ============================================================
-// OAUTH MODAL FUNCTIONS
+// ===== 🔥 SIGNAL THAT OAUTH IS READY =====
 // ============================================================
-
-async function openDerivModal() {
-    const modal = document.getElementById('derivModal');
-    if (modal) {
-        modal.classList.add('active');
-    }
+function signalOAuthReady() {
+    // Wait a moment for everything to settle
+    setTimeout(() => {
+        try {
+            window.dispatchEvent(new CustomEvent('oauth-ready'));
+            console.log('✅ OAuth module ready');
+        } catch (e) {
+            console.warn('⚠️ Could not dispatch event, using direct callback');
+            if (typeof window._onOAuthReady === 'function') {
+                window._onOAuthReady();
+            }
+        }
+    }, 100);
 }
-
-function closeDerivModal() {
-    const modal = document.getElementById('derivModal');
-    if (modal) {
-        modal.classList.remove('active');
-    }
-}
-
-// ============================================================
-// INIT - Check OAuth Callback on Page Load
-// ============================================================
-
-document.addEventListener('DOMContentLoaded', async () => {
-    // Check if we're returning from OAuth
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    const state = urlParams.get('state');
-
-    if (code && state) {
-        await handleOAuthCallback();
-        // Remove code from URL
-        window.history.replaceState({}, document.title, window.location.pathname);
-        // Redirect to dashboard after successful login
-        setTimeout(() => {
-            window.location.href = '/dashboard.html';
-        }, 2000);
-    }
-});
 
 // ============================================================
 // EXPORTS
 // ============================================================
-
 window.oauth = {
     buildOAuthURL,
     buildSignupURL,
-    handleOAuthCallback,
+    exchangeCodeForToken,
     getAccessToken,
     isLoggedIn,
     logout,
-    openDerivModal,
-    closeDerivModal,
     OAUTH_CONFIG
 };
+
+// Signal ready
+signalOAuthReady();
 
 console.log('🔐 OAuth module loaded');

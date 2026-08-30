@@ -134,7 +134,7 @@
         }
 
         /* ============================================================
-           HEADER - EXACT MATCH
+           HEADER
            ============================================================ */
         header {
             position: relative;
@@ -225,7 +225,7 @@
         }
 
         /* ============================================================
-           TICKER - EXACT MATCH
+           TICKER
            ============================================================ */
         .ticker {
             position: relative;
@@ -267,7 +267,7 @@
         }
 
         /* ============================================================
-           HERO - EXACT MATCH
+           HERO
            ============================================================ */
         .hero {
             position: relative;
@@ -345,7 +345,7 @@
         }
 
         /* ============================================================
-           TESTIMONIALS - EXACT MATCH
+           TESTIMONIALS
            ============================================================ */
         .testimonials {
             position: relative;
@@ -424,7 +424,7 @@
         }
 
         /* ============================================================
-           STATS BAR - EXACT MATCH
+           STATS BAR
            ============================================================ */
         .stats-bar {
             position: relative;
@@ -454,7 +454,7 @@
         }
 
         /* ============================================================
-           FEATURES - EXACT MATCH
+           FEATURES
            ============================================================ */
         .features-section {
             position: relative;
@@ -517,7 +517,7 @@
         }
 
         /* ============================================================
-           RISK DISCLAIMER - EXACT MATCH
+           RISK DISCLAIMER
            ============================================================ */
         .risk-disclaimer {
             position: relative;
@@ -543,7 +543,7 @@
         }
 
         /* ============================================================
-           FOOTER - EXACT MATCH
+           FOOTER
            ============================================================ */
         footer {
             position: relative;
@@ -816,7 +816,7 @@
     <div class="glow-line"></div>
 
     <!-- ============================================================
-    HEADER - BUTTONS OPEN DERIV MODAL
+    HEADER
     ============================================================ -->
     <header>
         <a href="#" class="logo">
@@ -859,7 +859,7 @@
     </div>
 
     <!-- ============================================================
-    HERO - BUTTONS OPEN DERIV MODAL
+    HERO
     ============================================================ -->
     <section class="hero">
         <h1>Trade <span>with better</span> structure</h1>
@@ -1105,27 +1105,27 @@
         </div>
     </footer>
 
-  <!-- ============================================================
-DERIV CONNECT MODAL
-============================================================ -->
-<div class="modal-overlay" id="derivModal">
-    <div class="modal-box">
-        <div class="modal-icon">🔗</div>
-        <h2>Connect to Deriv</h2>
-        <p>Login to your Deriv account to start trading and earning commissions.</p>
+    <!-- ============================================================
+    DERIV CONNECT MODAL
+    ============================================================ -->
+    <div class="modal-overlay" id="derivModal">
+        <div class="modal-box">
+            <div class="modal-icon">🔗</div>
+            <h2>Connect to Deriv</h2>
+            <p>Login to your Deriv account to start trading and earning commissions.</p>
 
-        <!-- ===== DERIV OAUTH LOGIN ===== -->
-        <button class="btn-deriv-login" onclick="handleLoginClick()">
-            🚀 Login with Deriv
-        </button>
+            <!-- ===== DERIV OAUTH LOGIN ===== -->
+            <button class="btn-deriv-login" onclick="handleLoginClick()">
+                🚀 Login with Deriv
+            </button>
 
-        <button class="btn-modal-close" onclick="closeDerivModal()">Cancel</button>
+            <button class="btn-modal-close" onclick="closeDerivModal()">Cancel</button>
 
-        <div class="commission-info">
-            💰 <strong>Earn 3% Commission</strong> on every trade made by your referred clients
+            <div class="commission-info">
+                💰 <strong>Earn 3% Commission</strong> on every trade made by your referred clients
+            </div>
         </div>
     </div>
-</div>
 
     <!-- ============================================================
     TOAST
@@ -1135,10 +1135,19 @@ DERIV CONNECT MODAL
         <span id="toastMessage">Success!</span>
     </div>
 
-    <!-- ===== OAUTH MODULE ===== -->
-<script src="js/oauth.js"></script>
     <!-- ============================================================
-    JAVASCRIPT
+    ⚠️ CRITICAL: SCRIPTS MUST LOAD IN THIS EXACT ORDER
+    ============================================================ -->
+
+    <!-- 1️⃣ SUPABASE SDK - MUST LOAD FIRST -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+    </script>
+
+    <!-- 2️⃣ OAUTH MODULE - Depends on Supabase SDK -->
+    <script src="js/oauth.js"></script>
+
+    <!-- ============================================================
+    MAIN JAVASCRIPT
     ============================================================ -->
     <script>
         // ============================================================
@@ -1155,11 +1164,13 @@ DERIV CONNECT MODAL
         document.getElementById('derivModal').addEventListener('click', function(e) {
             if (e.target === this) closeDerivModal();
         });
-// Hides the .html extension in the URL
-if (window.location.pathname.endsWith('.html')) {
-    const cleanPath = window.location.pathname.replace(/\.html$/, '');
-    window.history.replaceState({}, '', cleanPath);
-}
+
+        // Hides the .html extension in the URL
+        if (window.location.pathname.endsWith('.html')) {
+            const cleanPath = window.location.pathname.replace(/\.html$/, '');
+            window.history.replaceState({}, '', cleanPath);
+        }
+
         // ============================================================
         // TOAST
         // ============================================================
@@ -1179,67 +1190,72 @@ if (window.location.pathname.endsWith('.html')) {
             if (e.key === 'Escape') closeDerivModal();
         });
 
-      // ============================================================
-// CHECK DERIV LOGIN (redirect after OAuth)
-// ============================================================
-function checkDerivLogin() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    const state = urlParams.get('state');
-    const error = urlParams.get('error');
-    const errorDescription = urlParams.get('error_description');
+        // ============================================================
+        // CHECK DERIV LOGIN (redirect after OAuth)
+        // ============================================================
+        function checkDerivLogin() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const state = urlParams.get('state');
+            const error = urlParams.get('error');
+            const errorDescription = urlParams.get('error_description');
 
-    // Check for errors
-    if (error) {
-        showToast(`❌ OAuth Error: ${error} - ${errorDescription || ''}`);
-        return;
-    }
+            if (error) {
+                showToast(`❌ OAuth Error: ${error} - ${errorDescription || ''}`);
+                return;
+            }
 
-    // If we have a code, OAuth was successful
-    if (code) {
-        showToast('✅ Connected to Deriv! Redirecting to dashboard...');
-        // Store the code and redirect to dashboard
-        localStorage.setItem('deriv_auth_code', code);
-        if (state) {
-            localStorage.setItem('deriv_auth_state', state);
+            if (code) {
+                showToast('✅ Connected to Deriv! Redirecting to dashboard...');
+                localStorage.setItem('deriv_auth_code', code);
+                if (state) {
+                    localStorage.setItem('deriv_auth_state', state);
+                }
+                setTimeout(() => {
+                    window.location.href = '/dashboard.html';
+                }, 1500);
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
         }
-        // Redirect to dashboard
-        setTimeout(() => {
-            window.location.href = '/dashboard.html';
-        }, 1500);
-        // Clean URL
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
-}
-// ============================================================
-// HANDLE LOGIN CLICK - Builds OAuth URL with PKCE
-// ============================================================
-async function handleLoginClick() {
-    try {
-        // Close the modal
-        closeDerivModal();
-        // Build the OAuth URL using the oauth module
-        const url = await window.oauth.buildOAuthURL();
-        // Redirect to Deriv
-        window.location.href = url;
-    } catch (error) {
-        console.error('Error building OAuth URL:', error);
-        showToast('❌ Error connecting to Deriv. Please try again.');
-    }
-}
 
-// ============================================================
-// HANDLE SIGNUP CLICK
-// ============================================================
-async function handleSignupClick() {
-    try {
-        const url = await window.oauth.buildSignupURL();
-        window.location.href = url;
-    } catch (error) {
-        console.error('Error building signup URL:', error);
-        showToast('❌ Error creating account. Please try again.');
-    }
-}
+        // ============================================================
+        // HANDLE LOGIN CLICK - Builds OAuth URL with PKCE
+        // ============================================================
+        async function handleLoginClick() {
+            try {
+                // Check if OAuth is loaded
+                if (typeof window.oauth === 'undefined' || !window.oauth) {
+                    console.error('❌ OAuth module not loaded');
+                    showToast('❌ Please wait for the page to fully load.');
+                    return;
+                }
+
+                closeDerivModal();
+                const url = await window.oauth.buildOAuthURL();
+                window.location.href = url;
+            } catch (error) {
+                console.error('Error building OAuth URL:', error);
+                showToast('❌ Error connecting to Deriv. Please try again.');
+            }
+        }
+
+        // ============================================================
+        // HANDLE SIGNUP CLICK
+        // ============================================================
+        async function handleSignupClick() {
+            try {
+                if (typeof window.oauth === 'undefined' || !window.oauth) {
+                    showToast('❌ Please wait for the page to fully load.');
+                    return;
+                }
+                const url = await window.oauth.buildSignupURL();
+                window.location.href = url;
+            } catch (error) {
+                console.error('Error building signup URL:', error);
+                showToast('❌ Error creating account. Please try again.');
+            }
+        }
+
         // ============================================================
         // INIT
         // ============================================================

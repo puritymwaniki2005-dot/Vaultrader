@@ -48,9 +48,42 @@ async function getCurrentUser() {
     }
     
     try {
-        const { data: { user }, error } = await supabase.auth.getUser()
-        if (error) throw error
-        return user
+        // First try to get the session
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!session) {
+            console.warn('⚠️ No Supabase session found');
+            // Check if we have Deriv tokens but no Supabase session
+            const derivToken = localStorage.getItem('deriv_access_token');
+            if (derivToken) {
+                console.log('ℹ️ Deriv token found but no Supabase session');
+                // Try to recover - check if we have a user id in localStorage
+                const userId = localStorage.getItem('supabase_user_id');
+                if (userId) {
+                    // Return a minimal user object
+                    return {
+                        id: userId,
+                        email: localStorage.getItem('supabase_user_email') || 'user@deriv.com',
+                        user_metadata: {
+                            full_name: localStorage.getItem('supabase_user_name') || 'Deriv Trader'
+                        }
+                    };
+                }
+            }
+            return getDemoUser();
+        }
+        
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error) throw error;
+        
+        // Store user info in localStorage for fallback
+        if (user) {
+            localStorage.setItem('supabase_user_id', user.id);
+            localStorage.setItem('supabase_user_email', user.email || '');
+            localStorage.setItem('supabase_user_name', user.user_metadata?.full_name || 'Trader');
+        }
+        
+        return user;
     } catch (error) {
         console.warn('⚠️ Auth error, using demo user:', error.message);
         return getDemoUser();
@@ -111,12 +144,18 @@ async function logout() {
     
     const { error } = await supabase.auth.signOut()
     if (error) throw error
+    
+    // Clear local storage
+    localStorage.removeItem('supabase_user_id');
+    localStorage.removeItem('supabase_user_email');
+    localStorage.removeItem('supabase_user_name');
+    window.location.href = '/index.html'
 }
 
 async function isLoggedIn() {
     try {
         const user = await getCurrentUser()
-        return !!user
+        return !!user && !user.id?.startsWith('demo-')
     } catch {
         return false
     }
@@ -160,12 +199,19 @@ function updateUserUI(user) {
         const avatarEl = document.getElementById('userAvatar')
         const statusEl = document.getElementById('userStatus')
         
+        const isDemo = user.id?.startsWith('demo-');
+        
         if (nameEl) nameEl.textContent = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Trader'
         if (emailEl) emailEl.textContent = user.email || 'demo@tradenovax.com'
         if (avatarEl) avatarEl.textContent = (user.user_metadata?.full_name || user.email || 'T')[0].toUpperCase()
         if (statusEl) {
-            statusEl.textContent = '● Online'
-            statusEl.style.color = 'var(--green)'
+            if (isDemo) {
+                statusEl.textContent = '● Demo Mode'
+                statusEl.style.color = 'var(--gold)'
+            } else {
+                statusEl.textContent = '● Online'
+                statusEl.style.color = 'var(--green)'
+            }
         }
         
         const derivStatus = document.getElementById('derivStatus')
@@ -176,9 +222,9 @@ function updateUserUI(user) {
                 derivStatus.style.color = 'var(--green)'
                 derivStatus.style.borderColor = 'var(--green)'
             } else {
-                derivStatus.textContent = '🎮 Demo Mode'
-                derivStatus.style.color = 'var(--gold)'
-                derivStatus.style.borderColor = 'var(--gold)'
+                derivStatus.textContent = isDemo ? '🎮 Demo Mode' : '🔗 Not connected'
+                derivStatus.style.color = isDemo ? 'var(--gold)' : 'var(--text-muted)'
+                derivStatus.style.borderColor = isDemo ? 'var(--gold)' : 'var(--text-muted)'
             }
         }
     }

@@ -1105,29 +1105,27 @@
         </div>
     </footer>
 
-    <!-- ============================================================
-    DERIV CONNECT MODAL
-    ============================================================ -->
-    <div class="modal-overlay" id="derivModal">
-        <div class="modal-box">
-            <div class="modal-icon">🔗</div>
-            <h2>Connect to Deriv</h2>
-            <p>Login to your Deriv account to start trading and earning commissions.</p>
+  <!-- ============================================================
+DERIV CONNECT MODAL
+============================================================ -->
+<div class="modal-overlay" id="derivModal">
+    <div class="modal-box">
+        <div class="modal-icon">🔗</div>
+        <h2>Connect to Deriv</h2>
+        <p>Login to your Deriv account to start trading and earning commissions.</p>
 
-           <!-- ===== DERIV OAUTH LOGIN - CORRECTED ===== -->
-<a href="https://oauth.deriv.com/oauth2/authorize?response_type=code&app_id=34g3dK2hXuNSYEMsOUlvT&affiliate_token=2PKMG53KVFH8&utm_campaign=tradenovax&redirect_uri=https://tradenovax.co.ke"
-   class="btn-deriv-login"
-   target="_blank">
-    🚀 Login with Deriv
-</a>
+        <!-- ===== DERIV OAUTH LOGIN ===== -->
+        <button class="btn-deriv-login" onclick="handleLoginClick()">
+            🚀 Login with Deriv
+        </button>
 
-            <button class="btn-modal-close" onclick="closeDerivModal()">Cancel</button>
+        <button class="btn-modal-close" onclick="closeDerivModal()">Cancel</button>
 
-            <div class="commission-info">
-                💰 <strong>Earn 5% Commission</strong> on every trade made by your referred clients
-            </div>
+        <div class="commission-info">
+            💰 <strong>Earn 3% Commission</strong> on every trade made by your referred clients
         </div>
     </div>
+</div>
 
     <!-- ============================================================
     TOAST

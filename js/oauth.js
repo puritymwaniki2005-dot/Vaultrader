@@ -43,7 +43,7 @@ const OAUTH_CONFIG = {
     redirectUri: 'https://tradenovax.co.ke',
     authEndpoint: 'https://auth.deriv.com/oauth2/auth',
     tokenEndpoint: 'https://auth.deriv.com/oauth2/token',
-    scope: 'trade account_manage user_info',  // Added user_info
+    scope: 'trade account_manage',
     affiliateToken: '2PKMG53KVFH8',
     utmCampaign: 'tradenovax'
 };

@@ -2,14 +2,9 @@
 // TRADENOVAX - AUTH (LIVE - WITH SUPABASE)
 // ============================================================
 
-// ============================================================
-// SUPABASE CONFIG
-// ============================================================
-const SUPABASE_URL = 'https://qbfwvtoabfewhjnmfkxb.supabase.co'
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZnd2dG9hYmZld2hqbm1ma3hiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4MzQ4ODcsImV4cCI6MjEwMzQxMDg4N30.Y0UAdvtTOD7vc3V7ZSOa6PTEKOQRQaiEIX1A56jb2H0'
-
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-window.supabase = supabase
+// ===== SUPABASE IS ALREADY DECLARED IN OAUTH.JS =====
+// DO NOT redeclare supabase here - use the existing one!
+// The supabase variable is already defined globally
 
 // ============================================================
 // 🔥 SWITCH TO REAL AUTH
@@ -40,8 +35,8 @@ async function getCurrentUser() {
         return getDemoUser()
     }
     
-    // REAL: Get user from Supabase
-    const { data: { user }, error } = await supabase.auth.getUser()
+    // REAL: Get user from Supabase (using global supabase)
+    const { data: { user }, error } = await window.supabase.auth.getUser()
     if (error) throw error
     return user
 }
@@ -53,7 +48,7 @@ async function signUp(email, password, fullName) {
         return { user }
     }
     
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error } = await window.supabase.auth.signUp({
         email,
         password,
         options: { data: { full_name: fullName } }
@@ -69,7 +64,7 @@ async function signIn(email, password) {
         return { user }
     }
     
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    const { data, error } = await window.supabase.auth.signInWithPassword({ email, password })
     if (error) throw error
     return data
 }
@@ -82,7 +77,7 @@ async function logout() {
         return
     }
     
-    const { error } = await supabase.auth.signOut()
+    const { error } = await window.supabase.auth.signOut()
     if (error) throw error
 }
 
@@ -99,7 +94,7 @@ async function isLoggedIn() {
 // SAVE DERIV TOKENS AFTER OATH LOGIN
 // ============================================================
 async function saveDerivConnection(userId, tokens) {
-    const { data, error } = await supabase
+    const { data, error } = await window.supabase
         .from('deriv_connections')
         .upsert({
             user_id: userId,
@@ -147,7 +142,6 @@ function updateUserUI(user) {
 // EXPORTS
 // ============================================================
 window.auth = {
-    supabase,
     DEMO_MODE,
     getCurrentUser,
     signUp,

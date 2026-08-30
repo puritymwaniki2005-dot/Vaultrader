@@ -1790,16 +1790,20 @@ PAGE: AUTOMATED - EXACT MKOREANWWN MATCH
         }
         window.showToast = showToast;
 // ============================================================
-// CHECK DERIV CONNECTION STATUS
+// CHECK DERIV CONNECTION STATUS (IMPROVED)
 // ============================================================
 function updateDerivStatus() {
     const statusEl = document.getElementById('derivStatusText') || document.getElementById('derivStatus');
     const code = localStorage.getItem('deriv_auth_code');
+    const token = localStorage.getItem('deriv_access_token');
     
     if (statusEl) {
-        if (code) {
+        if (token) {
             statusEl.textContent = '✅ Connected';
             statusEl.style.color = 'var(--green)';
+        } else if (code) {
+            statusEl.textContent = '⏳ Authorizing...';
+            statusEl.style.color = 'var(--gold)';
         } else {
             statusEl.textContent = '🔗 Not connected';
             statusEl.style.color = 'var(--text-muted)';

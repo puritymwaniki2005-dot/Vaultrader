@@ -1192,7 +1192,31 @@ DERIV CONNECT MODAL
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
         }
+// ============================================================
+// HANDLE LOGIN CLICK - Builds OAuth URL with PKCE
+// ============================================================
+async function handleLoginClick() {
+    try {
+        const url = await window.oauth.buildOAuthURL();
+        window.location.href = url;
+    } catch (error) {
+        console.error('Error building OAuth URL:', error);
+        showToast('❌ Error connecting to Deriv. Please try again.');
+    }
+}
 
+// ============================================================
+// HANDLE SIGNUP CLICK
+// ============================================================
+async function handleSignupClick() {
+    try {
+        const url = await window.oauth.buildSignupURL();
+        window.location.href = url;
+    } catch (error) {
+        console.error('Error building signup URL:', error);
+        showToast('❌ Error creating account. Please try again.');
+    }
+}
         // ============================================================
         // INIT
         // ============================================================

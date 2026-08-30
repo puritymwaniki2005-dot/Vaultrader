@@ -1,10 +1,6 @@
 // ============================================================
-// TRADENOVAX - AUTH (LIVE - WITH SUPABASE)
+// TRADENOVAX - AUTH (WAITS FOR OAUTH TO BE READY)
 // ============================================================
-
-// ===== SUPABASE IS ALREADY DECLARED IN OAUTH.JS =====
-// DO NOT redeclare supabase here - use the existing one!
-// The supabase variable is already defined globally
 
 // ============================================================
 // 🔥 SWITCH TO REAL AUTH
@@ -12,7 +8,7 @@
 const DEMO_MODE = false  // ← CHANGE TO false FOR LIVE!
 
 // ============================================================
-// DEMO USER (fallback when DEMO_MODE = true)
+// DEMO USER (fallback when DEMO_MODE = true or Supabase unavailable)
 // ============================================================
 function getDemoUser() {
     let demoUser = localStorage.getItem('tradenovax_demo_user')
@@ -28,6 +24,16 @@ function getDemoUser() {
 }
 
 // ============================================================
+// HELPER: Get Supabase safely
+// ============================================================
+function getSupabase() {
+    if (typeof window.supabase !== 'undefined' && window.supabase) {
+        return window.supabase;
+    }
+    return null;
+}
+
+// ============================================================
 // AUTH FUNCTIONS
 // ============================================================
 async function getCurrentUser() {
@@ -35,20 +41,35 @@ async function getCurrentUser() {
         return getDemoUser()
     }
     
-    // REAL: Get user from Supabase (using global supabase)
-    const { data: { user }, error } = await window.supabase.auth.getUser()
-    if (error) throw error
-    return user
+    const supabase = getSupabase();
+    if (!supabase) {
+        console.warn('⚠️ Supabase not available, using demo user');
+        return getDemoUser();
+    }
+    
+    try {
+        const { data: { user }, error } = await supabase.auth.getUser()
+        if (error) throw error
+        return user
+    } catch (error) {
+        console.warn('⚠️ Auth error, using demo user:', error.message);
+        return getDemoUser();
+    }
 }
 
 async function signUp(email, password, fullName) {
     if (DEMO_MODE) {
         const user = getDemoUser()
-        showToast('✅ Demo account created!')
         return { user }
     }
     
-    const { data, error } = await window.supabase.auth.signUp({
+    const supabase = getSupabase();
+    if (!supabase) {
+        console.warn('⚠️ Supabase not available, using demo');
+        return { user: getDemoUser() }
+    }
+    
+    const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: { data: { full_name: fullName } }
@@ -60,11 +81,16 @@ async function signUp(email, password, fullName) {
 async function signIn(email, password) {
     if (DEMO_MODE) {
         const user = getDemoUser()
-        showToast('✅ Welcome back! (Demo Mode)')
         return { user }
     }
     
-    const { data, error } = await window.supabase.auth.signInWithPassword({ email, password })
+    const supabase = getSupabase();
+    if (!supabase) {
+        console.warn('⚠️ Supabase not available, using demo');
+        return { user: getDemoUser() }
+    }
+    
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw error
     return data
 }
@@ -72,12 +98,18 @@ async function signIn(email, password) {
 async function logout() {
     if (DEMO_MODE) {
         localStorage.removeItem('tradenovax_demo_user')
-        showToast('👋 Logged out')
         window.location.href = '/index.html'
         return
     }
     
-    const { error } = await window.supabase.auth.signOut()
+    const supabase = getSupabase();
+    if (!supabase) {
+        localStorage.removeItem('tradenovax_demo_user')
+        window.location.href = '/index.html'
+        return
+    }
+    
+    const { error } = await supabase.auth.signOut()
     if (error) throw error
 }
 
@@ -91,16 +123,23 @@ async function isLoggedIn() {
 }
 
 // ============================================================
-// SAVE DERIV TOKENS AFTER OATH LOGIN
+// SAVE DERIV TOKENS AFTER OAUTH LOGIN
 // ============================================================
 async function saveDerivConnection(userId, tokens) {
-    const { data, error } = await window.supabase
+    const supabase = getSupabase();
+    if (!supabase) {
+        console.warn('⚠️ Supabase not available, saving to localStorage only');
+        localStorage.setItem('deriv_tokens_backup', JSON.stringify(tokens));
+        return tokens;
+    }
+    
+    const { data, error } = await supabase
         .from('deriv_connections')
         .upsert({
             user_id: userId,
             deriv_access_token: tokens.access_token,
             deriv_refresh_token: tokens.refresh_token,
-            token_expires_at: new Date(Date.now() + tokens.expires_in * 1000).toISOString(),
+            token_expires_at: new Date(Date.now() + (tokens.expires_in || 3600) * 1000).toISOString(),
             deriv_account_id: tokens.account_id,
             is_active: true
         })
@@ -125,18 +164,143 @@ function updateUserUI(user) {
         if (emailEl) emailEl.textContent = user.email || 'demo@tradenovax.com'
         if (avatarEl) avatarEl.textContent = (user.user_metadata?.full_name || user.email || 'T')[0].toUpperCase()
         if (statusEl) {
-            statusEl.textContent = DEMO_MODE ? '● Demo Mode' : '● Online'
-            statusEl.style.color = DEMO_MODE ? 'var(--gold)' : 'var(--green)'
+            statusEl.textContent = '● Online'
+            statusEl.style.color = 'var(--green)'
         }
         
         const derivStatus = document.getElementById('derivStatus')
         if (derivStatus) {
-            derivStatus.textContent = DEMO_MODE ? '🎮 Demo Mode' : '🔗 Connected'
-            derivStatus.style.color = DEMO_MODE ? 'var(--gold)' : 'var(--green)'
-            derivStatus.style.borderColor = DEMO_MODE ? 'var(--gold)' : 'var(--green)'
+            const token = localStorage.getItem('deriv_access_token');
+            if (token) {
+                derivStatus.textContent = '🔗 Connected'
+                derivStatus.style.color = 'var(--green)'
+                derivStatus.style.borderColor = 'var(--green)'
+            } else {
+                derivStatus.textContent = '🎮 Demo Mode'
+                derivStatus.style.color = 'var(--gold)'
+                derivStatus.style.borderColor = 'var(--gold)'
+            }
         }
     }
 }
+
+// ============================================================
+// UPDATE DERIV STATUS
+// ============================================================
+function updateDerivStatus() {
+    const statusEl = document.getElementById('derivStatusText') || document.getElementById('derivStatus')
+    const token = localStorage.getItem('deriv_access_token')
+    const code = localStorage.getItem('deriv_auth_code')
+    
+    if (statusEl) {
+        if (token) {
+            statusEl.textContent = '✅ Connected'
+            statusEl.style.color = 'var(--green)'
+        } else if (code) {
+            statusEl.textContent = '⏳ Authorizing...'
+            statusEl.style.color = 'var(--gold)'
+        } else {
+            statusEl.textContent = '🔗 Not connected'
+            statusEl.style.color = 'var(--text-muted)'
+        }
+    }
+}
+
+// ============================================================
+// ===== 🔥 INITIALIZATION - WAIT FOR OAUTH READY =====
+// ============================================================
+function initializeAuth() {
+    console.log('✅ Auth initializing...');
+    
+    // Load any saved tokens
+    const savedTokens = localStorage.getItem('deriv_tokens_backup');
+    if (savedTokens) {
+        try {
+            const tokens = JSON.parse(savedTokens);
+            if (tokens.access_token) {
+                localStorage.setItem('deriv_access_token', tokens.access_token);
+                localStorage.setItem('deriv_token_expiry', Date.now() + (tokens.expires_in || 3600) * 1000);
+            }
+        } catch (e) {}
+    }
+    
+    // Check for OAuth callback
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    const state = urlParams.get('state');
+    
+    if (code && state) {
+        console.log('🔄 OAuth callback detected, exchanging code...');
+        handleOAuthCallback(code, state);
+    }
+    
+    // Update UI status
+    updateDerivStatus();
+    
+    console.log('✅ Auth initialized');
+}
+
+// ============================================================
+// HANDLE OAUTH CALLBACK
+// ============================================================
+async function handleOAuthCallback(code, state) {
+    try {
+        // Verify state
+        const storedState = sessionStorage.getItem('oauth_state');
+        if (!state || state !== storedState) {
+            console.error('❌ State mismatch');
+            return;
+        }
+        
+        const codeVerifier = sessionStorage.getItem('pkce_code_verifier');
+        if (!codeVerifier) {
+            console.error('❌ No code verifier found');
+            return;
+        }
+        
+        // Exchange code for token
+        const tokenData = await window.oauth.exchangeCodeForToken(code, codeVerifier);
+        
+        if (tokenData) {
+            console.log('✅ Token exchange successful');
+            sessionStorage.removeItem('pkce_code_verifier');
+            sessionStorage.removeItem('oauth_state');
+            
+            // Remove code from URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+            
+            // Redirect to dashboard
+            setTimeout(() => {
+                window.location.href = '/dashboard.html';
+            }, 1000);
+        }
+    } catch (error) {
+        console.error('❌ OAuth callback error:', error);
+    }
+}
+
+// ============================================================
+// ===== 🔥 LISTEN FOR OAUTH READY =====
+// ============================================================
+// Listen for the OAuth ready event
+document.addEventListener('oauth-ready', function() {
+    console.log('📡 OAuth ready event received');
+    initializeAuth();
+});
+
+// Also check if OAuth is already ready (loaded before auth.js)
+setTimeout(function() {
+    if (typeof window.oauth !== 'undefined' && window.oauth) {
+        console.log('✅ OAuth already loaded, initializing...');
+        initializeAuth();
+    } else {
+        console.log('⏳ Waiting for OAuth module...');
+        // Listen for it
+        document.addEventListener('oauth-ready', function() {
+            initializeAuth();
+        });
+    }
+}, 500);
 
 // ============================================================
 // EXPORTS
@@ -149,7 +313,8 @@ window.auth = {
     logout,
     isLoggedIn,
     updateUserUI,
+    updateDerivStatus,
     saveDerivConnection
-}
+};
 
-console.log('🔐 Auth loaded (LIVE MODE: ' + (DEMO_MODE ? 'OFF' : 'ON') + ')')
+console.log('🔐 Auth module loaded (waiting for OAuth ready...)');

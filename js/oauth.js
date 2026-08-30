@@ -3,36 +3,16 @@
 // ============================================================
 
 // ============================================================ 
-// SUPABASE - USE THE EXISTING SDK (Loaded from HTML)
+// SUPABASE - Declared ONCE with const
 // ============================================================
 const SUPABASE_URL = 'https://qbfwvtoabfewhjnmfkxb.supabase.co'
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZnd2dG9hYmZld2hqbm1ma3hiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4MzQ4ODcsImV4cCI6MjEwMzQxMDg4N30.Y0UAdvtTOD7vc3V7ZSOa6PTEKOQRQaiEIX1A56jb2H0'
 
-// Check if the SDK is loaded
-let supabase = null;
-if (typeof window.supabase !== 'undefined' && window.supabase) {
-    try {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        window.supabase = supabase;
-        console.log('✅ Supabase client created successfully');
-    } catch (e) {
-        console.error('❌ Failed to create Supabase client:', e);
-    }
-} else {
-    console.warn('⚠️ Supabase SDK not loaded yet, will retry...');
-    // Retry after a short delay
-    setTimeout(() => {
-        if (typeof window.supabase !== 'undefined' && window.supabase) {
-            try {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                window.supabase = supabase;
-                console.log('✅ Supabase client created (delayed)');
-            } catch (e) {
-                console.error('❌ Failed to create Supabase client (delayed):', e);
-            }
-        }
-    }, 500);
-}
+// Create the client ONCE
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+window.supabase = supabase;
+
+console.log('✅ Supabase client created');
 
 // ============================================================
 // OAUTH CONFIG
@@ -77,7 +57,6 @@ async function generatePKCE() {
         return { codeVerifier, codeChallenge, state };
     } catch (error) {
         console.error('❌ PKCE generation error:', error);
-        // Fallback for older browsers
         const fallbackState = Math.random().toString(36).substring(2, 15);
         sessionStorage.setItem('oauth_state', fallbackState);
         return {
@@ -107,9 +86,7 @@ async function buildOAuthURL() {
             utm_campaign: OAUTH_CONFIG.utmCampaign
         });
 
-        const url = `${OAUTH_CONFIG.authEndpoint}?${params.toString()}`;
-        console.log('🔐 OAuth URL built successfully');
-        return url;
+        return `${OAUTH_CONFIG.authEndpoint}?${params.toString()}`;
     } catch (error) {
         console.error('❌ Failed to build OAuth URL:', error);
         throw error;
@@ -138,9 +115,7 @@ async function buildSignupURL() {
             utm_source: OAUTH_CONFIG.affiliateToken
         });
 
-        const url = `${OAUTH_CONFIG.authEndpoint}?${params.toString()}`;
-        console.log('🔐 Signup URL built successfully');
-        return url;
+        return `${OAUTH_CONFIG.authEndpoint}?${params.toString()}`;
     } catch (error) {
         console.error('❌ Failed to build signup URL:', error);
         throw error;
@@ -250,28 +225,22 @@ async function handleOAuthCallback() {
             return null;
         }
 
-        // Verify state
         const storedState = sessionStorage.getItem('oauth_state');
         if (state && storedState && state !== storedState) {
             console.error('❌ State mismatch! CSRF protection triggered.');
             return null;
         }
 
-        // Get code verifier
         const codeVerifier = sessionStorage.getItem('pkce_code_verifier');
         if (!codeVerifier) {
             console.error('❌ No code verifier found');
             return null;
         }
 
-        // Exchange code for token
         const tokenData = await exchangeCodeForToken(code, codeVerifier);
 
-        // Clean up
         sessionStorage.removeItem('pkce_code_verifier');
         sessionStorage.removeItem('oauth_state');
-
-        // Remove code from URL
         window.history.replaceState({}, document.title, window.location.pathname);
 
         if (tokenData) {
@@ -298,7 +267,6 @@ function checkOAuthCallback() {
     if (code && state) {
         console.log('🔄 OAuth callback detected');
         handleOAuthCallback().then(() => {
-            // Redirect to dashboard after successful login
             setTimeout(() => {
                 window.location.href = '/dashboard.html';
             }, 1500);
@@ -323,10 +291,7 @@ function signalOAuthReady() {
 // ============================================================
 // INITIALIZE
 // ============================================================
-// Check for OAuth callback immediately
 checkOAuthCallback();
-
-// Signal ready
 signalOAuthReady();
 
 // ============================================================

@@ -1,5 +1,5 @@
 // ============================================================
-// TRADENOVAX - AUTH (WAITS FOR OAUTH TO BE READY)
+// TRADENOVAX - AUTH (USES SUPABASE FROM OAUTH.JS)
 // ============================================================
 
 // ============================================================
@@ -24,7 +24,7 @@ function getDemoUser() {
 }
 
 // ============================================================
-// HELPER: Get Supabase safely
+// HELPER: Get Supabase safely (from window)
 // ============================================================
 function getSupabase() {
     if (typeof window.supabase !== 'undefined' && window.supabase) {

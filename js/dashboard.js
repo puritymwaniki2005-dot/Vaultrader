@@ -1,23 +1,53 @@
 // ============================================================
 // TRADENOVAX - DASHBOARD CONTROLLER
 // ============================================================
+
 // Hides the .html extension in the URL
 if (window.location.pathname.endsWith('.html')) {
     const cleanPath = window.location.pathname.replace(/\.html$/, '');
     window.history.replaceState({}, '', cleanPath);
 }
+
+// ============================================================ 
+// TOAST HELPER
+// ============================================================
+function showToast(message, type = 'info') {
+    const toast = document.getElementById('toast') || createToastElement();
+    const msg = document.getElementById('toastMessage') || toast.querySelector('.toast-message');
+    if (msg) msg.textContent = message;
+    toast.className = 'toast show ' + type;
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function createToastElement() {
+    const toast = document.createElement('div');
+    toast.id = 'toast';
+    toast.className = 'toast';
+    toast.innerHTML = `<span class="toast-icon">✅</span><span class="toast-message" id="toastMessage">Success!</span>`;
+    document.body.appendChild(toast);
+    return toast;
+}
+
 // ============================================================ 
 // INITIALIZATION
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
+        console.log('🚀 Dashboard initializing...');
+        
         // Check auth
         const user = await window.auth.getCurrentUser()
-        if (!user) {
-            window.location.href = '/index.html'
+        
+        // If it's a demo user or no user, redirect to login
+        if (!user || (user.id && user.id.startsWith('demo-'))) {
+            console.warn('⚠️ No valid user session, redirecting to login');
+            window.location.href = '/index.html';
             return
         }
+
+        console.log('✅ User authenticated:', user.email);
 
         // Update UI
         window.auth.updateUserUI(user)
@@ -50,6 +80,7 @@ async function loadBots(userId) {
         updateBotCount(bots)
     } catch (error) {
         console.error('Load bots error:', error)
+        // Don't show error toast for demo
     }
 }
 
@@ -60,6 +91,7 @@ async function loadTrades(userId) {
         updateTradeSummary(trades)
     } catch (error) {
         console.error('Load trades error:', error)
+        // Don't show error toast for demo
     }
 }
 
@@ -188,13 +220,21 @@ async function loadBot(botId) {
         }
 
         // Load into builder
-        document.getElementById('strategySelect').value = bot.strategy || 'volatility75'
-        document.getElementById('indicatorSelect').value = bot.indicator || 'rsi'
-        document.getElementById('tradeAmount').value = bot.amount || 10
-        document.getElementById('maxTrades').value = bot.max_trades || 20
-        document.getElementById('stopLoss').value = bot.stop_loss || 5
-        document.getElementById('takeProfit').value = bot.take_profit || 10
-        document.getElementById('botName').value = bot.name || 'My Bot'
+        const strategySelect = document.getElementById('strategySelect');
+        const indicatorSelect = document.getElementById('indicatorSelect');
+        const tradeAmount = document.getElementById('tradeAmount');
+        const maxTrades = document.getElementById('maxTrades');
+        const stopLoss = document.getElementById('stopLoss');
+        const takeProfit = document.getElementById('takeProfit');
+        const botName = document.getElementById('botName');
+        
+        if (strategySelect) strategySelect.value = bot.strategy || 'volatility75';
+        if (indicatorSelect) indicatorSelect.value = bot.indicator || 'rsi';
+        if (tradeAmount) tradeAmount.value = bot.amount || 10;
+        if (maxTrades) maxTrades.value = bot.max_trades || 20;
+        if (stopLoss) stopLoss.value = bot.stop_loss || 5;
+        if (takeProfit) takeProfit.value = bot.take_profit || 10;
+        if (botName) botName.value = bot.name || 'My Bot';
 
         // Switch to builder tab
         switchPage('builder')
@@ -225,8 +265,10 @@ async function deployBot() {
         const takeProfit = parseFloat(document.getElementById('takeProfit').value) || 10
 
         const status = document.getElementById('deployStatus')
-        status.textContent = '⏳ Deploying...'
-        status.style.color = 'var(--gold)'
+        if (status) {
+            status.textContent = '⏳ Deploying...'
+            status.style.color = 'var(--gold)'
+        }
 
         const botData = {
             name: name,
@@ -243,8 +285,10 @@ async function deployBot() {
         }
 
         await window.bots.createBot(user.id, botData)
-        status.textContent = `✅ "${name}" deployed successfully!`
-        status.style.color = 'var(--green)'
+        if (status) {
+            status.textContent = `✅ "${name}" deployed successfully!`
+            status.style.color = 'var(--green)'
+        }
         showToast(`✅ Bot "${name}" deployed!`)
 
         // Refresh bot list
@@ -252,8 +296,11 @@ async function deployBot() {
 
     } catch (error) {
         showToast('❌ Error: ' + error.message)
-        document.getElementById('deployStatus').textContent = '❌ Error: ' + error.message
-        document.getElementById('deployStatus').style.color = 'var(--red)'
+        const status = document.getElementById('deployStatus')
+        if (status) {
+            status.textContent = '❌ Error: ' + error.message
+            status.style.color = 'var(--red)'
+        }
     }
 }
 
@@ -291,8 +338,10 @@ function switchPage(pageId) {
         'bots-store': 'Bots Store',
         reports: 'Reports'
     }
-    document.getElementById('pageTitle').textContent = titles[pageId] || 'Dashboard'
-    document.getElementById('pageSub').textContent = pageId === 'dashboard' ? 'Overview' : ''
+    const titleEl = document.getElementById('pageTitle')
+    const subEl = document.getElementById('pageSub')
+    if (titleEl) titleEl.textContent = titles[pageId] || 'Dashboard'
+    if (subEl) subEl.textContent = pageId === 'dashboard' ? 'Overview' : ''
 
     closeSidebar()
 }
@@ -304,15 +353,20 @@ function switchPage(pageId) {
 function updateBotCount(bots) {
     const active = bots?.filter(b => b.status === 'running').length || 0
     const total = bots?.length || 0
-    document.getElementById('activeBotsCount').textContent = active
-    document.getElementById('totalBotsCount').textContent = total
+    const activeEl = document.getElementById('activeBotsCount')
+    const totalEl = document.getElementById('totalBotsCount')
+    if (activeEl) activeEl.textContent = active
+    if (totalEl) totalEl.textContent = total
 }
 
 function updateTradeSummary(trades) {
     if (!trades || trades.length === 0) {
-        document.getElementById('totalTrades').textContent = '0'
-        document.getElementById('winRate').textContent = '0%'
-        document.getElementById('totalPnL').textContent = '$0.00'
+        const totalEl = document.getElementById('totalTrades')
+        const winRateEl = document.getElementById('winRate')
+        const pnlEl = document.getElementById('totalPnL')
+        if (totalEl) totalEl.textContent = '0'
+        if (winRateEl) winRateEl.textContent = '0%'
+        if (pnlEl) pnlEl.textContent = '$0.00'
         return
     }
 
@@ -321,9 +375,12 @@ function updateTradeSummary(trades) {
     const winRate = total > 0 ? (wins / total * 100) : 0
     const totalPnL = trades.reduce((sum, t) => sum + (t.profit_loss || 0), 0)
 
-    document.getElementById('totalTrades').textContent = total
-    document.getElementById('winRate').textContent = winRate.toFixed(1) + '%'
-    document.getElementById('totalPnL').textContent = '$' + totalPnL.toFixed(2)
+    const totalEl = document.getElementById('totalTrades')
+    const winRateEl = document.getElementById('winRate')
+    const pnlEl = document.getElementById('totalPnL')
+    if (totalEl) totalEl.textContent = total
+    if (winRateEl) winRateEl.textContent = winRate.toFixed(1) + '%'
+    if (pnlEl) pnlEl.textContent = '$' + totalPnL.toFixed(2)
 }
 
 // ============================================================
@@ -340,8 +397,10 @@ function setupEventListeners() {
     })
 
     // Menu toggle (mobile)
-    document.getElementById('menuToggle').addEventListener('click', toggleSidebar)
-    document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar)
+    const menuToggle = document.getElementById('menuToggle')
+    const sidebarOverlay = document.getElementById('sidebarOverlay')
+    if (menuToggle) menuToggle.addEventListener('click', toggleSidebar)
+    if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar)
 
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
@@ -352,13 +411,20 @@ function setupEventListeners() {
     })
 
     // Deploy bot button
-    document.getElementById('deployBtn')?.addEventListener('click', deployBot)
+    const deployBtn = document.getElementById('deployBtn')
+    if (deployBtn) deployBtn.addEventListener('click', deployBot)
 
     // Run bot button
-    document.getElementById('runBotBtn')?.addEventListener('click', window.trading.toggleBotExecution)
+    const runBotBtn = document.getElementById('runBotBtn')
+    if (runBotBtn && window.trading) {
+        runBotBtn.addEventListener('click', window.trading.toggleBotExecution)
+    }
 
     // Scan button
-    document.getElementById('scanBtn')?.addEventListener('click', window.scanner.runAIScanner)
+    const scanBtn = document.getElementById('scanBtn')
+    if (scanBtn && window.scanner) {
+        scanBtn.addEventListener('click', window.scanner.runAIScanner)
+    }
 }
 
 // ============================================================
@@ -366,13 +432,17 @@ function setupEventListeners() {
 // ============================================================
 
 function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('open')
-    document.getElementById('sidebarOverlay').classList.toggle('show')
+    const sidebar = document.getElementById('sidebar')
+    const overlay = document.getElementById('sidebarOverlay')
+    if (sidebar) sidebar.classList.toggle('open')
+    if (overlay) overlay.classList.toggle('show')
 }
 
 function closeSidebar() {
-    document.getElementById('sidebar').classList.remove('open')
-    document.getElementById('sidebarOverlay').classList.remove('show')
+    const sidebar = document.getElementById('sidebar')
+    const overlay = document.getElementById('sidebarOverlay')
+    if (sidebar) sidebar.classList.remove('open')
+    if (overlay) overlay.classList.remove('show')
 }
 
 // ============================================================
@@ -385,6 +455,7 @@ window.loadBot = loadBot
 window.deployBot = deployBot
 window.toggleSidebar = toggleSidebar
 window.closeSidebar = closeSidebar
+window.showToast = showToast
 
 console.log('📊 Dashboard module loaded')
 console.log('🤖 TradeNovaX is ready!')

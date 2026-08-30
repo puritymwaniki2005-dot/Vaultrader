@@ -123,7 +123,9 @@
                 <div class="balance">
                     $0.41 <span class="currency">USD</span>
                 </div>
-                <span class="deriv-status" id="derivStatus">🎮 Demo Mode</span>
+                <span class="deriv-status" id="derivStatus">
+    <span id="derivStatusText">🔗 Not connected</span>
+</span>
                 <button class="btn-logout" onclick="window.auth.signOut()">Logout</button>
             </div>
         </header>
@@ -1774,6 +1776,7 @@ PAGE: AUTOMATED - EXACT MKOREANWWN MATCH
     <!-- ============================================================
     JAVASCRIPT
     ============================================================ -->
+    <!-- ===== OAUTH MODULE ===== -->
     <script>
         // ============================================================
         // TOAST
@@ -2020,6 +2023,7 @@ PAGE: AUTOMATED - EXACT MKOREANWWN MATCH
     <!-- ============================================================
     LOAD ALL MODULES
     ============================================================ -->
+    <script src="js/oauth.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/bots.js"></script>
     <script src="js/trading.js"></script>

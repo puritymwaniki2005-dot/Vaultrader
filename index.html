@@ -1176,29 +1176,48 @@ DERIV CONNECT MODAL
             if (e.key === 'Escape') closeDerivModal();
         });
 
-        // ============================================================
-        // CHECK DERIV LOGIN (redirect after OAuth)
-        // ============================================================
-        function checkDerivLogin() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const token = urlParams.get('token');
-            const login = urlParams.get('login');
+      // ============================================================
+// CHECK DERIV LOGIN (redirect after OAuth)
+// ============================================================
+function checkDerivLogin() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    const state = urlParams.get('state');
+    const error = urlParams.get('error');
+    const errorDescription = urlParams.get('error_description');
 
-            if (token && login) {
-                showToast(`✅ Welcome back! Connected to Deriv as ${login}`);
-                // Redirect to dashboard after login
-                setTimeout(() => {
-                    window.location.href = '/dashboard.html';
-                }, 1500);
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
+    // Check for errors
+    if (error) {
+        showToast(`❌ OAuth Error: ${error} - ${errorDescription || ''}`);
+        return;
+    }
+
+    // If we have a code, OAuth was successful
+    if (code) {
+        showToast('✅ Connected to Deriv! Redirecting to dashboard...');
+        // Store the code and redirect to dashboard
+        localStorage.setItem('deriv_auth_code', code);
+        if (state) {
+            localStorage.setItem('deriv_auth_state', state);
         }
+        // Redirect to dashboard
+        setTimeout(() => {
+            window.location.href = '/dashboard.html';
+        }, 1500);
+        // Clean URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+}
 // ============================================================
 // HANDLE LOGIN CLICK - Builds OAuth URL with PKCE
 // ============================================================
 async function handleLoginClick() {
     try {
+        // Close the modal
+        closeDerivModal();
+        // Build the OAuth URL using the oauth module
         const url = await window.oauth.buildOAuthURL();
+        // Redirect to Deriv
         window.location.href = url;
     } catch (error) {
         console.error('Error building OAuth URL:', error);

@@ -1,9 +1,35 @@
 {
-  "buildCommand": "echo 'No build needed'",
-  "outputDirectory": ".",
-  "installCommand": "echo 'No install needed'",
-  "framework": null,
+  "builds": [
+    {
+      "src": "bot/**",
+      "use": "@vercel/static"
+    }
+  ],
   "routes": [
+    {
+      "src": "/",
+      "dest": "/bot/index.html"
+    },
+    {
+      "src": "/static/(.*)",
+      "dest": "/bot/static/$1"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/bot/assets/$1"
+    },
+    {
+      "src": "/js/(.*)",
+      "dest": "/bot/js/$1"
+    },
+    {
+      "src": "/css/(.*)",
+      "dest": "/bot/css/$1"
+    },
+    {
+      "src": "/deriv-logo.svg",
+      "dest": "/bot/deriv-logo.svg"
+    },
     {
       "src": "/(.*)",
       "dest": "/bot/$1"

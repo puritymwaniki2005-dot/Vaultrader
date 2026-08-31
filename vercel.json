@@ -1,38 +1,19 @@
 {
+  "version": 2,
   "builds": [
     {
-      "src": "bot/**",
+      "src": "**",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/",
-      "dest": "/bot/index.html"
-    },
-    {
-      "src": "/static/(.*)",
-      "dest": "/bot/static/$1"
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "/bot/assets/$1"
-    },
-    {
-      "src": "/js/(.*)",
-      "dest": "/bot/js/$1"
-    },
-    {
-      "src": "/css/(.*)",
-      "dest": "/bot/css/$1"
-    },
-    {
-      "src": "/deriv-logo.svg",
-      "dest": "/bot/deriv-logo.svg"
+      "dest": "/index.html"
     },
     {
       "src": "/(.*)",
-      "dest": "/bot/$1"
+      "dest": "/$1"
     }
   ]
 }

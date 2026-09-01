@@ -1432,7 +1432,26 @@
     </div>
 
     <!-- ============================================================
-    JAVASCRIPT
+    JAVASCRIPT - ALL ORIGINAL FILES INCLUDED
+    ============================================================ -->
+    
+    <!-- ===== SUPABASE SDK - LOAD FIRST ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+    </script>
+
+    <!-- ===== ORIGINAL JS FILES ===== -->
+    <script src="js/oauth.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/bots.js"></script>
+    <script src="js/trading.js"></script>
+    <script src="js/strategies.js"></script>
+    <script src="js/dcircles.js"></script>
+    <script src="js/scanner.js"></script>
+    <script src="js/copy-trader.js"></script>
+    <script src="js/dashboard.js"></script>
+
+    <!-- ============================================================
+    MAIN DASHBOARD SCRIPT
     ============================================================ -->
     <script>
         // ============================================================
@@ -1441,24 +1460,38 @@
         function showToast(message) {
             const toast = document.getElementById('toast');
             const msg = document.getElementById('toastMessage');
-            msg.textContent = message;
-            toast.classList.add('show');
-            clearTimeout(toast._timer);
-            toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+            if (toast && msg) {
+                msg.textContent = message;
+                toast.classList.add('show');
+                clearTimeout(toast._timer);
+                toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+            } else {
+                console.log('🔔 Toast:', message);
+            }
         }
         window.showToast = showToast;
 
         // ============================================================
         // SIDEBAR TOGGLE (Mobile)
         // ============================================================
-        document.getElementById('menuToggle').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('sidebarOverlay').classList.toggle('active');
-        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
 
-        document.getElementById('sidebarOverlay').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('active');
+            if (menuToggle) {
+                menuToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('open');
+                    overlay.classList.toggle('active');
+                });
+            }
+
+            if (overlay) {
+                overlay.addEventListener('click', function() {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('active');
+                });
+            }
         });
 
         // ============================================================
@@ -1616,10 +1649,13 @@
                 '✅ Oversold signal on Step Index'
             ];
             const result = results[Math.floor(Math.random() * results.length)];
-            document.getElementById('scannerResults').innerHTML = `
-                <span style="color:var(--gold);">🧠 Analysis:</span> ${result}
-                <span style="color:var(--text-muted); font-size:1rem; display:block; margin-top:0.3rem;">Last scan: ${new Date().toLocaleTimeString()}</span>
-            `;
+            const scannerResults = document.getElementById('scannerResults');
+            if (scannerResults) {
+                scannerResults.innerHTML = `
+                    <span style="color:var(--gold);">🧠 Analysis:</span> ${result}
+                    <span style="color:var(--text-muted); font-size:1rem; display:block; margin-top:0.3rem;">Last scan: ${new Date().toLocaleTimeString()}</span>
+                `;
+            }
             showToast('🧠 AI scan complete!');
         }
         window.runAIScanner = runAIScanner;
@@ -1628,14 +1664,24 @@
         // MANUAL TRADER
         // ============================================================
         function executeManualTrade(type) {
-            const symbol = document.getElementById('manualSymbol').value;
-            const amount = parseFloat(document.getElementById('manualStake').value) || 10;
+            const symbol = document.getElementById('manualSymbol');
+            const stake = document.getElementById('manualStake');
+            
+            if (!symbol || !stake) {
+                showToast('⚠️ Please wait for page to load');
+                return;
+            }
+            
+            const symbolVal = symbol.value;
+            const amount = parseFloat(stake.value) || 10;
             const isWin = Math.random() > 0.45;
             const profit = isWin ? amount * (0.3 + Math.random() * 0.7) : -amount * (0.2 + Math.random() * 0.5);
 
-            document.getElementById('manualTradeStatus').textContent =
-                `✅ ${type} on ${symbol}: ${isWin ? 'WIN' : 'LOSS'} $${Math.abs(profit).toFixed(2)}`;
-            document.getElementById('manualTradeStatus').style.color = isWin ? 'var(--green)' : 'var(--red)';
+            const statusEl = document.getElementById('manualTradeStatus');
+            if (statusEl) {
+                statusEl.textContent = `✅ ${type} on ${symbolVal}: ${isWin ? 'WIN' : 'LOSS'} $${Math.abs(profit).toFixed(2)}`;
+                statusEl.style.color = isWin ? 'var(--green)' : 'var(--red)';
+            }
 
             showToast(`${type} ${isWin ? 'WIN' : 'LOSS'} $${Math.abs(profit).toFixed(2)}`);
         }
@@ -1645,23 +1691,33 @@
         // BULK TRADER
         // ============================================================
         function executeBulkTrades(type) {
-            const symbol = document.getElementById('bulkMarket').value;
-            const amount = parseFloat(document.getElementById('bulkStake').value) || 0.5;
-            const count = parseInt(document.getElementById('bulkCount').value) || 5;
+            const market = document.getElementById('bulkMarket');
+            const stake = document.getElementById('bulkStake');
+            const count = document.getElementById('bulkCount');
+            
+            if (!market || !stake || !count) {
+                showToast('⚠️ Please wait for page to load');
+                return;
+            }
+            
+            const symbol = market.value;
+            const amount = parseFloat(stake.value) || 0.5;
+            const tradeCount = parseInt(count.value) || 5;
 
-            let wins = 0,
-                total = 0;
-            for (let i = 0; i < count; i++) {
+            let wins = 0, total = 0;
+            for (let i = 0; i < tradeCount; i++) {
                 const isWin = Math.random() > 0.45;
                 if (isWin) wins++;
                 total += isWin ? amount * 0.5 : -amount * 0.3;
             }
 
-            document.getElementById('bulkTradeStatus').textContent =
-                `📦 ${count} ${type} trades on ${symbol}: ${wins}/${count} wins, P&L $${total.toFixed(2)}`;
-            document.getElementById('bulkTradeStatus').style.color = total > 0 ? 'var(--green)' : 'var(--red)';
+            const statusEl = document.getElementById('bulkTradeStatus');
+            if (statusEl) {
+                statusEl.textContent = `📦 ${tradeCount} ${type} trades on ${symbol}: ${wins}/${tradeCount} wins, P&L $${total.toFixed(2)}`;
+                statusEl.style.color = total > 0 ? 'var(--green)' : 'var(--red)';
+            }
 
-            showToast(`📦 Bulk ${type}: ${wins}/${count} wins, $${total.toFixed(2)}`);
+            showToast(`📦 Bulk ${type}: ${wins}/${tradeCount} wins, $${total.toFixed(2)}`);
         }
         window.executeBulkTrades = executeBulkTrades;
 
@@ -1669,17 +1725,25 @@
         // SIGNAL AI
         // ============================================================
         function runSignalAI() {
-            const market = document.getElementById('signalMarket').value;
-            const strategy = document.getElementById('signalStrategy').value;
+            const market = document.getElementById('signalMarket');
+            const strategy = document.getElementById('signalStrategy');
+            
+            if (!market || !strategy) {
+                showToast('⚠️ Please wait for page to load');
+                return;
+            }
 
             const signals = ['📈 BUY (CALL)', '📉 SELL (PUT)', '⏳ WAIT'];
             const signal = signals[Math.floor(Math.random() * signals.length)];
             const confidence = Math.floor(Math.random() * 30) + 50;
 
-            document.getElementById('signalResult').innerHTML = `
-                <span style="color:var(--gold);">📡 Signal:</span> ${signal}<br>
-                <span style="color:var(--text-muted);">Confidence: ${confidence}%</span>
-            `;
+            const resultEl = document.getElementById('signalResult');
+            if (resultEl) {
+                resultEl.innerHTML = `
+                    <span style="color:var(--gold);">📡 Signal:</span> ${signal}<br>
+                    <span style="color:var(--text-muted);">Confidence: ${confidence}%</span>
+                `;
+            }
             showToast(`📡 Signal: ${signal}`);
         }
         window.runSignalAI = runSignalAI;
@@ -1690,13 +1754,23 @@
         let copyRunning = false;
 
         function startCopyTrading() {
-            const master = document.getElementById('copyMaster').value;
-            const amount = parseFloat(document.getElementById('copyAmount').value) || 5;
-            const multiplier = parseFloat(document.getElementById('copyMultiplier').value) || 1;
+            const master = document.getElementById('copyMaster');
+            const amount = document.getElementById('copyAmount');
+            const multiplier = document.getElementById('copyMultiplier');
+            
+            if (!master || !amount || !multiplier) {
+                showToast('⚠️ Please wait for page to load');
+                return;
+            }
 
+            const masterVal = master.value;
             copyRunning = !copyRunning;
-            document.getElementById('copyStatus').textContent = copyRunning ? '🟢 Copying from ' + master : '🔴 Not copying';
-            document.getElementById('copyStatus').style.color = copyRunning ? 'var(--green)' : 'var(--text-muted)';
+            
+            const statusEl = document.getElementById('copyStatus');
+            if (statusEl) {
+                statusEl.textContent = copyRunning ? '🟢 Copying from ' + masterVal : '🔴 Not copying';
+                statusEl.style.color = copyRunning ? 'var(--green)' : 'var(--text-muted)';
+            }
             showToast(copyRunning ? '📋 Copy trading started!' : '⏹️ Copy trading stopped');
         }
         window.startCopyTrading = startCopyTrading;
@@ -1705,8 +1779,13 @@
         // ANALYSIS TOOLS
         // ============================================================
         function runAnalysis() {
-            const symbol = document.getElementById('analysisSymbol').value;
-            const indicator = document.getElementById('analysisIndicator').value;
+            const symbol = document.getElementById('analysisSymbol');
+            const indicator = document.getElementById('analysisIndicator');
+            
+            if (!symbol || !indicator) {
+                showToast('⚠️ Please wait for page to load');
+                return;
+            }
 
             const results = {
                 rsi: ['RSI: 72 (Overbought)', 'RSI: 35 (Oversold)', 'RSI: 55 (Neutral)'],
@@ -1715,9 +1794,11 @@
                 bollinger: ['Price at upper band (Overbought)', 'Price at lower band (Oversold)', 'Price in middle band']
             };
 
-            const result = results[indicator][Math.floor(Math.random() * results[indicator].length)];
-            document.getElementById('analysisResult').innerHTML =
-                `<span style="color:var(--gold);">📊 Analysis:</span> ${result}`;
+            const result = results[indicator.value][Math.floor(Math.random() * results[indicator.value].length)];
+            const resultEl = document.getElementById('analysisResult');
+            if (resultEl) {
+                resultEl.innerHTML = `<span style="color:var(--gold);">📊 Analysis:</span> ${result}`;
+            }
             showToast('📊 Analysis complete!');
         }
         window.runAnalysis = runAnalysis;
@@ -1729,8 +1810,11 @@
 
         function runSpeedbot() {
             speedRunning = !speedRunning;
-            document.getElementById('speedStatus').textContent = speedRunning ? '🏃 Running' : '⏹️ Stopped';
-            document.getElementById('speedStatus').style.color = speedRunning ? 'var(--green)' : 'var(--text-muted)';
+            const statusEl = document.getElementById('speedStatus');
+            if (statusEl) {
+                statusEl.textContent = speedRunning ? '🏃 Running' : '⏹️ Stopped';
+                statusEl.style.color = speedRunning ? 'var(--green)' : 'var(--text-muted)';
+            }
             showToast(speedRunning ? '🏃 Speedbot started!' : '⏹️ Speedbot stopped');
         }
         window.runSpeedbot = runSpeedbot;
@@ -1739,17 +1823,23 @@
         // CHART
         // ============================================================
         function loadChart() {
-            const symbol = document.getElementById('chartSymbol').value;
-            const timeframe = document.getElementById('chartTimeframe').value;
+            const symbol = document.getElementById('chartSymbol');
+            const timeframe = document.getElementById('chartTimeframe');
+            
+            if (!symbol || !timeframe) {
+                showToast('⚠️ Please wait for page to load');
+                return;
+            }
 
             const container = document.getElementById('chartContainer');
+            if (!container) return;
+
             const data = [];
             for (let i = 0; i < 50; i++) {
                 data.push(Math.random() * 100 + 50);
             }
 
-            let html =
-            '<div style="height:100%; width:100%; display:flex; align-items:flex-end; gap:2px; padding:1rem;">';
+            let html = '<div style="height:100%; width:100%; display:flex; align-items:flex-end; gap:2px; padding:1rem;">';
             data.forEach((value) => {
                 const color = value > 70 ? 'var(--green)' : value > 40 ? 'var(--gold)' : 'var(--red)';
                 const height = (value / 150) * 100;
@@ -1757,8 +1847,8 @@
             });
             html += '</div>';
             container.innerHTML = html +
-                `<div style="text-align:center; color:var(--text-muted); font-size:1.2rem; margin-top:0.5rem;">${symbol} - ${timeframe}</div>`;
-            showToast(`📊 Chart loaded for ${symbol}`);
+                `<div style="text-align:center; color:var(--text-muted); font-size:1.2rem; margin-top:0.5rem;">${symbol.value} - ${timeframe.value}</div>`;
+            showToast(`📊 Chart loaded for ${symbol.value}`);
         }
         window.loadChart = loadChart;
 
@@ -1772,19 +1862,27 @@
             const totalPnL = (Math.random() * 5000 - 1000);
             const bestTrade = Math.random() * 500 + 100;
 
-            document.getElementById('reportTotalTrades').textContent = totalTrades;
-            document.getElementById('reportWinRate').textContent = winRate.toFixed(1) + '%';
-            document.getElementById('reportPnL').textContent = '$' + totalPnL.toFixed(2);
-            document.getElementById('reportBest').textContent = '$' + bestTrade.toFixed(2);
+            const totalEl = document.getElementById('reportTotalTrades');
+            const winEl = document.getElementById('reportWinRate');
+            const pnlEl = document.getElementById('reportPnL');
+            const bestEl = document.getElementById('reportBest');
 
-            document.getElementById('reportDetails').innerHTML = `
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; text-align:left;">
-                    <div>📊 Total Trades: <strong style="color:var(--gold);">${totalTrades}</strong></div>
-                    <div>✅ Win Rate: <strong style="color:var(--green);">${winRate.toFixed(1)}%</strong></div>
-                    <div>💰 Total P&L: <strong style="color:${totalPnL > 0 ? 'var(--green)' : 'var(--red)'};">$${totalPnL.toFixed(2)}</strong></div>
-                    <div>🏆 Best Trade: <strong style="color:var(--green);">$${bestTrade.toFixed(2)}</strong></div>
-                </div>
-            `;
+            if (totalEl) totalEl.textContent = totalTrades;
+            if (winEl) winEl.textContent = winRate.toFixed(1) + '%';
+            if (pnlEl) pnlEl.textContent = '$' + totalPnL.toFixed(2);
+            if (bestEl) bestEl.textContent = '$' + bestTrade.toFixed(2);
+
+            const detailsEl = document.getElementById('reportDetails');
+            if (detailsEl) {
+                detailsEl.innerHTML = `
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; text-align:left;">
+                        <div>📊 Total Trades: <strong style="color:var(--gold);">${totalTrades}</strong></div>
+                        <div>✅ Win Rate: <strong style="color:var(--green);">${winRate.toFixed(1)}%</strong></div>
+                        <div>💰 Total P&L: <strong style="color:${totalPnL > 0 ? 'var(--green)' : 'var(--red)'};">$${totalPnL.toFixed(2)}</strong></div>
+                        <div>🏆 Best Trade: <strong style="color:var(--green);">$${bestTrade.toFixed(2)}</strong></div>
+                    </div>
+                `;
+            }
             showToast('📊 Report generated!');
         }
         window.generateReport = generateReport;
@@ -1811,12 +1909,14 @@
         function updateDerivStatus() {
             const statusEl = document.getElementById('derivStatus');
             const token = localStorage.getItem('deriv_access_token');
-            if (token) {
-                statusEl.textContent = '✅ Connected';
-                statusEl.style.color = 'var(--green)';
-            } else {
-                statusEl.textContent = '🔗 Not connected';
-                statusEl.style.color = 'var(--text-muted)';
+            if (statusEl) {
+                if (token) {
+                    statusEl.textContent = '✅ Connected';
+                    statusEl.style.color = 'var(--green)';
+                } else {
+                    statusEl.textContent = '🔗 Not connected';
+                    statusEl.style.color = 'var(--text-muted)';
+                }
             }
         }
 
@@ -1835,6 +1935,9 @@
         console.log('%c🤖 Bot URL: https://bot.tradenovax.co.ke/', 'font-size:14px; color:#8899BB;');
         console.log('%c📊 Click "Bot Builder" to start trading!', 'font-size:14px; color:#8899BB;');
     </script>
+
+</body>
+</html>
 
 </body>
 </html>

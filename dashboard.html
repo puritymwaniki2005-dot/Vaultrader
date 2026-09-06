@@ -484,6 +484,45 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* ===== ACCOUNT TYPE SELECTOR ===== */
+        .account-selector {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            background: rgba(255,255,255,0.05);
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        .account-selector label {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        .account-btn {
+            padding: 0.4rem 1.2rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+        }
+        .account-btn.active-live {
+            border-color: var(--green);
+            color: var(--green);
+            background: rgba(0,200,83,0.1);
+        }
+        .account-btn.active-demo {
+            border-color: #FFC107;
+            color: #FFC107;
+            background: rgba(255,193,7,0.1);
+        }
+        .account-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
         .templates-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -573,6 +612,9 @@
             }
             .bot-grid {
                 grid-template-columns: 1fr;
+            }
+            .account-selector {
+                flex-wrap: wrap;
             }
         }
         @media (max-width: 480px) {
@@ -776,7 +818,7 @@
                 </div>
 
                 <div class="run-section">
-                    <a href="https://bot.tradenovax.co.ke/" target="_blank" class="btn-run">
+                    <a href="#" class="btn-run" onclick="switchPage('bot'); return false;">
                         <span class="run-icon">🚀</span>
                         <span class="run-text">Launch Bot Builder</span>
                     </a>
@@ -852,7 +894,7 @@
         </div>
 
         <!-- ============================================================
-        PAGE: BOT BUILDER (EMBEDDED)
+        PAGE: BOT BUILDER (EMBEDDED WITH AUTH)
         ============================================================ -->
         <div class="page-content" id="page-bot">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; flex-wrap:wrap; gap:1rem;">
@@ -860,15 +902,27 @@
                     <h2 style="font-size:2.4rem;">🤖 <span style="color:var(--gold);">Bot Builder</span></h2>
                     <p style="color:var(--text-muted); font-size:1.3rem;">Build, test, and deploy your Deriv trading bots</p>
                 </div>
-                <a href="https://bot.tradenovax.co.ke/" target="_blank" class="btn-load" style="padding:0.6rem 1.5rem; background:rgba(255,255,255,0.05); color:var(--text-muted); border:1px solid var(--border); font-size:1.1rem; text-decoration:none;">
-                    🔗 Open in new tab
-                </a>
+                <div style="display:flex; gap:1rem; align-items:center; flex-wrap:wrap;">
+                    <!-- ACCOUNT TYPE SELECTOR -->
+                    <div class="account-selector" id="accountSelector">
+                        <label>📊 Account:</label>
+                        <button class="account-btn active-live" id="btnLive" onclick="switchAccountType('live')">
+                            🟢 Live
+                        </button>
+                        <button class="account-btn" id="btnDemo" onclick="switchAccountType('demo')">
+                            🟡 Demo
+                        </button>
+                    </div>
+                    <a href="https://bot.tradenovax.co.ke/" target="_blank" class="btn-load" style="padding:0.6rem 1.5rem; background:rgba(255,255,255,0.05); color:var(--text-muted); border:1px solid var(--border); font-size:1.1rem; text-decoration:none;">
+                        🔗 Open in new tab
+                    </a>
+                </div>
             </div>
 
-            <!-- ===== EMBEDDED BOT IFRAME ===== -->
+            <!-- ===== EMBEDDED BOT IFRAME WITH AUTH ===== -->
             <div class="bot-iframe-wrapper">
                 <iframe 
-                    src="https://bot.tradenovax.co.ke/" 
+                    src="about:blank"
                     allow="clipboard-read; clipboard-write; payment; camera; microphone; geolocation"
                     id="botIframe"
                     loading="lazy"
@@ -876,6 +930,7 @@
                 <div class="bot-loading-overlay" id="botLoadingOverlay">
                     <div class="bot-loading-spinner"></div>
                     <span style="color:var(--text-muted); font-size:1.2rem;">Loading Bot Builder...</span>
+                    <span style="color:var(--text-muted); font-size:1rem;" id="botLoadStatus">Connecting to Deriv...</span>
                 </div>
             </div>
 
@@ -1432,28 +1487,24 @@
     </div>
 
     <!-- ============================================================
-    JAVASCRIPT - ALL ORIGINAL FILES INCLUDED
+    JAVASCRIPT
     ============================================================ -->
-    
-    <!-- ===== SUPABASE SDK - LOAD FIRST ===== -->
+
+    <!-- ===== SUPABASE SDK ===== -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
     </script>
 
-    <!-- ===== ORIGINAL JS FILES ===== -->
-    <script src="js/oauth.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/bots.js"></script>
-    <script src="js/trading.js"></script>
-    <script src="js/strategies.js"></script>
-    <script src="js/dcircles.js"></script>
-    <script src="js/scanner.js"></script>
-    <script src="js/copy-trader.js"></script>
-    <script src="js/dashboard.js"></script>
-
     <!-- ============================================================
-    MAIN DASHBOARD SCRIPT
+    MAIN DASHBOARD SCRIPT (ALL FIXES INCLUDED)
     ============================================================ -->
     <script>
+        // ============================================================
+        // CONFIGURATION
+        // ============================================================
+        const BOT_BUILDER_URL = 'https://bot.tradenovax.co.ke/';
+        let currentAccountType = 'live';
+        let botIframeReady = false;
+
         // ============================================================
         // TOAST
         // ============================================================
@@ -1470,6 +1521,211 @@
             }
         }
         window.showToast = showToast;
+
+        // ============================================================
+        // GET ACCESS TOKEN
+        // ============================================================
+        function getAccessToken() {
+            const token = localStorage.getItem('deriv_access_token');
+            const expiry = parseInt(localStorage.getItem('deriv_token_expiry') || '0');
+            if (!token || Date.now() > expiry) {
+                return null;
+            }
+            return token;
+        }
+
+        // ============================================================
+        // ACCOUNT TYPE SWITCHING
+        // ============================================================
+        function switchAccountType(type) {
+            currentAccountType = type;
+            
+            // Update button styles
+            const btnLive = document.getElementById('btnLive');
+            const btnDemo = document.getElementById('btnDemo');
+            
+            if (type === 'live') {
+                btnLive.className = 'account-btn active-live';
+                btnDemo.className = 'account-btn';
+                showToast('🟢 Switched to LIVE account');
+            } else {
+                btnLive.className = 'account-btn';
+                btnDemo.className = 'account-btn active-demo';
+                showToast('🟡 Switched to DEMO account');
+            }
+            
+            // Reload the iframe with new account type
+            loadBotIframe();
+        }
+        window.switchAccountType = switchAccountType;
+
+        // ============================================================
+        // LOAD BOT IFRAME WITH AUTH
+        // ============================================================
+        function loadBotIframe() {
+            const iframe = document.getElementById('botIframe');
+            const overlay = document.getElementById('botLoadingOverlay');
+            const statusText = document.getElementById('botLoadStatus');
+            const token = getAccessToken();
+
+            if (!token) {
+                overlay.querySelector('span:last-child').textContent = '⚠️ Please login to Deriv first';
+                overlay.classList.remove('hidden');
+                showToast('⚠️ Please login with Deriv first');
+                return;
+            }
+
+            // Build URL with authentication parameters
+            const url = new URL(BOT_BUILDER_URL);
+            
+            // Pass token and account type as URL parameters
+            url.searchParams.set('token', token);
+            url.searchParams.set('account_type', currentAccountType);
+            url.searchParams.set('platform', 'tradenovax');
+            url.searchParams.set('embedded', 'true');
+            
+            // Also pass as hash for some apps that prefer it
+            url.hash = `token=${token}&account_type=${currentAccountType}`;
+
+            console.log('🔗 Loading bot iframe with:', {
+                url: url.toString(),
+                accountType: currentAccountType,
+                hasToken: !!token
+            });
+
+            // Set the iframe src
+            iframe.src = url.toString();
+            
+            // Update status
+            if (statusText) {
+                statusText.textContent = `Connecting to Deriv (${currentAccountType.toUpperCase()})...`;
+            }
+            
+            overlay.classList.remove('hidden');
+        }
+
+        // ============================================================
+        // BOT IFRAME EVENTS
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const iframe = document.getElementById('botIframe');
+            const overlay = document.getElementById('botLoadingOverlay');
+
+            if (iframe) {
+                // When iframe loads
+                iframe.addEventListener('load', function() {
+                    botIframeReady = true;
+                    console.log('✅ Bot iframe loaded');
+                    
+                    // Send authentication to the iframe via postMessage
+                    sendAuthToIframe();
+                    
+                    // Hide overlay after a moment
+                    setTimeout(function() {
+                        overlay.classList.add('hidden');
+                    }, 1500);
+                });
+
+                // Handle iframe errors
+                iframe.addEventListener('error', function() {
+                    console.error('❌ Failed to load bot iframe');
+                    overlay.classList.add('hidden');
+                    showToast('⚠️ Failed to load Bot Builder. Try opening in new tab.');
+                });
+            }
+
+            // Load the iframe after checking auth
+            setTimeout(loadBotIframe, 1000);
+        });
+
+        // ============================================================
+        // SEND AUTH TO IFRAME VIA POSTMESSAGE
+        // ============================================================
+        function sendAuthToIframe() {
+            const iframe = document.getElementById('botIframe');
+            const token = getAccessToken();
+            
+            if (!iframe || !token) return;
+
+            try {
+                // Send authentication data to the iframe
+                const authData = {
+                    type: 'AUTH',
+                    token: token,
+                    accountType: currentAccountType,
+                    platform: 'tradenovax',
+                    action: 'login',
+                    // Include user info if available
+                    user: {
+                        email: localStorage.getItem('deriv_user_email') || '',
+                        name: localStorage.getItem('deriv_user_name') || 'Trader'
+                    }
+                };
+
+                console.log('📤 Sending auth to iframe:', authData);
+                iframe.contentWindow.postMessage(authData, BOT_BUILDER_URL);
+            } catch (e) {
+                console.log('ℹ️ Cannot send postMessage yet, will retry on load');
+            }
+        }
+
+        // ============================================================
+        // LISTEN FOR MESSAGES FROM BOT IFRAME
+        // ============================================================
+        window.addEventListener('message', function(event) {
+            // Only accept messages from the bot domain
+            if (event.origin !== new URL(BOT_BUILDER_URL).origin) {
+                return;
+            }
+
+            console.log('📨 Message from bot:', event.data);
+
+            switch (event.data.type) {
+                case 'BOT_READY':
+                    botIframeReady = true;
+                    document.getElementById('botLoadingOverlay').classList.add('hidden');
+                    showToast('🤖 Bot Builder ready!');
+                    // Send auth again when bot says it's ready
+                    sendAuthToIframe();
+                    break;
+
+                case 'AUTH_SUCCESS':
+                    showToast('✅ Connected to Deriv successfully!');
+                    document.getElementById('derivStatus').textContent = '✅ Connected';
+                    document.getElementById('derivStatus').style.color = 'var(--green)';
+                    break;
+
+                case 'AUTH_ERROR':
+                    showToast('❌ Auth error: ' + (event.data.message || 'Unknown error'));
+                    break;
+
+                case 'ACCOUNT_SWITCHED':
+                    showToast(`📊 Switched to ${event.data.accountType} account`);
+                    currentAccountType = event.data.accountType;
+                    break;
+
+                case 'TRADE_EXECUTED':
+                    console.log('📊 Trade executed:', event.data);
+                    showToast(`📊 Trade: ${event.data.direction} $${event.data.amount}`);
+                    break;
+
+                case 'BOT_STATUS':
+                    const statusDot = document.getElementById('botStatusDot');
+                    const statusText = document.getElementById('botStatusText');
+                    if (statusDot && statusText) {
+                        const isRunning = event.data.status === 'running';
+                        statusDot.className = `status-dot ${isRunning ? 'running' : 'ready'}`;
+                        statusText.textContent = event.data.status.charAt(0).toUpperCase() + event.data.status.slice(1);
+                    }
+                    break;
+
+                default:
+                    // Handle other messages
+                    if (event.data.type && event.data.type.startsWith('LOG_')) {
+                        console.log('📝 Bot log:', event.data.message);
+                    }
+            }
+        });
 
         // ============================================================
         // SIDEBAR TOGGLE (Mobile)
@@ -1555,6 +1811,11 @@
             // Close sidebar on mobile
             document.getElementById('sidebar').classList.remove('open');
             document.getElementById('sidebarOverlay').classList.remove('active');
+
+            // If switching to bot page, refresh auth
+            if (page === 'bot') {
+                setTimeout(loadBotIframe, 500);
+            }
         }
 
         // Sidebar navigation
@@ -1567,46 +1828,29 @@
         });
 
         // ============================================================
-        // BOT IFRAME LOADING
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', function() {
-            const iframe = document.getElementById('botIframe');
-            const overlay = document.getElementById('botLoadingOverlay');
-
-            if (iframe) {
-                iframe.addEventListener('load', function() {
-                    setTimeout(function() {
-                        overlay.classList.add('hidden');
-                    }, 500);
-                });
-
-                // If iframe takes too long, hide overlay after 10 seconds
-                setTimeout(function() {
-                    if (!overlay.classList.contains('hidden')) {
-                        overlay.classList.add('hidden');
-                    }
-                }, 10000);
-            }
-        });
-
-        // ============================================================
         // LOAD BOT TEMPLATE
         // ============================================================
         function loadBotTemplate(template) {
             const iframe = document.getElementById('botIframe');
+            if (!iframe) return;
+
             try {
-                iframe.contentWindow.postMessage({
+                const message = {
                     type: 'LOAD_TEMPLATE',
-                    template: template
-                }, 'https://bot.tradenovax.co.ke');
+                    template: template,
+                    accountType: currentAccountType
+                };
+                iframe.contentWindow.postMessage(message, BOT_BUILDER_URL);
                 showToast('✅ Bot template loaded!');
             } catch (e) {
+                // If iframe not ready, try again after a delay
                 setTimeout(function() {
                     try {
                         iframe.contentWindow.postMessage({
                             type: 'LOAD_TEMPLATE',
-                            template: template
-                        }, 'https://bot.tradenovax.co.ke');
+                            template: template,
+                            accountType: currentAccountType
+                        }, BOT_BUILDER_URL);
                         showToast('✅ Bot template loaded!');
                     } catch (e2) {
                         showToast('⚠️ Please wait for the bot to load first');
@@ -1614,16 +1858,7 @@
                 }, 3000);
             }
         }
-
-        // Listen for messages from the bot
-        window.addEventListener('message', function(event) {
-            if (event.origin === 'https://bot.tradenovax.co.ke') {
-                console.log('📨 Message from bot:', event.data);
-                if (event.data.type === 'BOT_READY') {
-                    document.getElementById('botLoadingOverlay').classList.add('hidden');
-                }
-            }
-        });
+        window.loadBotTemplate = loadBotTemplate;
 
         // ============================================================
         // EXECUTION TAB SWITCHING
@@ -1904,7 +2139,7 @@
         window.handleLogout = handleLogout;
 
         // ============================================================
-        // CHECK DERIV STATUS
+        // UPDATE DERIV STATUS
         // ============================================================
         function updateDerivStatus() {
             const statusEl = document.getElementById('derivStatus');
@@ -1920,24 +2155,62 @@
             }
         }
 
+        // ============================================================
+        // INITIALIZATION
+        // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
             updateDerivStatus();
+            
+            // Check if user is logged in
+            const token = getAccessToken();
+            if (!token) {
+                showToast('⚠️ Please login with Deriv to use the Bot Builder');
+            } else {
+                showToast('🚀 Welcome to TradeNovaX Dashboard!');
+                // Load bot iframe after a delay
+                setTimeout(loadBotIframe, 1500);
+            }
         });
 
         // ============================================================
-        // WELCOME TOAST
+        // HANDLE OAUTH CALLBACK (for when returning from Deriv auth)
         // ============================================================
-        setTimeout(function() {
-            showToast('🚀 Welcome to TradeNovaX Dashboard!');
-        }, 1500);
+        function handleOAuthCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const state = urlParams.get('state');
+            const error = urlParams.get('error');
+
+            if (error) {
+                showToast('❌ OAuth Error: ' + error);
+                return;
+            }
+
+            if (code && state) {
+                console.log('🔄 OAuth callback detected');
+                // Store the code for the backend to exchange
+                localStorage.setItem('deriv_auth_code', code);
+                localStorage.setItem('deriv_auth_state', state);
+                
+                // Clean URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+                
+                showToast('✅ Authentication successful!');
+                
+                // Update status and reload iframe
+                updateDerivStatus();
+                setTimeout(loadBotIframe, 1000);
+            }
+        }
+
+        // Run OAuth check on page load
+        handleOAuthCallback();
 
         console.log('%c🚀 TradeNovaX Dashboard Loaded', 'font-size:20px; color:#D4AF37; font-weight:bold;');
-        console.log('%c🤖 Bot URL: https://bot.tradenovax.co.ke/', 'font-size:14px; color:#8899BB;');
+        console.log('%c🤖 Bot URL: ' + BOT_BUILDER_URL, 'font-size:14px; color:#8899BB;');
         console.log('%c📊 Click "Bot Builder" to start trading!', 'font-size:14px; color:#8899BB;');
+        console.log('%c🔑 Account Type: ' + currentAccountType.toUpperCase(), 'font-size:14px; color:#D4AF37;');
     </script>
-
-</body>
-</html>
 
 </body>
 </html>

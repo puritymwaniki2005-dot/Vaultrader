@@ -734,7 +734,7 @@
             </div>
             <div class="topbar-right">
                 <div class="balance">
-                    $0.41 <span class="currency">USD</span>
+                    <span id="balanceAmount">—</span> <span class="currency" id="balanceCurrency">USD</span>
                 </div>
                 <span class="deriv-status" id="derivStatus">🔗 Not connected</span>
                 <button class="btn-logout" onclick="handleLogout()">Logout</button>
@@ -849,39 +849,24 @@
                         <div class="summary-grid">
                             <div class="summary-item">
                                 <span>Total Trades</span>
-                                <strong id="totalTrades">147</strong>
+                                <strong id="totalTrades">0</strong>
                             </div>
                             <div class="summary-item">
                                 <span>Win Rate</span>
-                                <strong id="winRate">68%</strong>
+                                <strong id="winRate">0%</strong>
                             </div>
                             <div class="summary-item">
                                 <span>Total P&L</span>
-                                <strong id="totalPnL" style="color: var(--gold);">+$342.80</strong>
+                                <strong id="totalPnL" style="color: var(--gold);">$0.00</strong>
                             </div>
                             <div class="summary-item">
                                 <span>Active Bots</span>
-                                <strong id="activeBotsCount">2</strong>
+                                <strong id="activeBotsCount">0</strong>
                             </div>
                         </div>
                     </div>
                     <div class="tab-panel" id="panel-transactions">
-                        <div id="transactionList">
-                            <div style="display:flex; justify-content:space-between; padding:0.8rem 0; border-bottom:1px solid var(--border);">
-                                <span>R_75</span>
-                                <span style="color:var(--green);">+$2.50</span>
-                                <span style="color:var(--text-muted);">BUY</span>
-                            </div>
-                            <div style="display:flex; justify-content:space-between; padding:0.8rem 0; border-bottom:1px solid var(--border);">
-                                <span>R_100</span>
-                                <span style="color:var(--red);">-$1.20</span>
-                                <span style="color:var(--text-muted);">SELL</span>
-                            </div>
-                            <div style="display:flex; justify-content:space-between; padding:0.8rem 0;">
-                                <span>BOOM_500</span>
-                                <span style="color:var(--green);">+$5.80</span>
-                                <span style="color:var(--text-muted);">BUY</span>
-                            </div>
+                        <div id="transactionList"><div style="padding:1rem 0;color:var(--text-muted);text-align:center;">No live transactions yet.</div></div>
                         </div>
                     </div>
                     <div class="tab-panel" id="panel-journal">
@@ -917,6 +902,13 @@
                         🔗 Open in new tab
                     </a>
                 </div>
+            </div>
+
+            <div class="card" style="margin-top:1rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;">
+                <div><span style="color:var(--text-muted);font-size:1rem;display:block;">Deriv Account</span><strong id="accountIdDisplay">—</strong></div>
+                <div><span style="color:var(--text-muted);font-size:1rem;display:block;">Account Type</span><strong id="accountTypeDisplay">—</strong></div>
+                <div><span style="color:var(--text-muted);font-size:1rem;display:block;">Connection</span><strong id="connectionDisplay" style="color:var(--text-muted);">Connecting…</strong></div>
+                <div><span style="color:var(--text-muted);font-size:1rem;display:block;">Latest Tick</span><strong id="latestTickDisplay">—</strong></div>
             </div>
 
             <!-- ===== EMBEDDED BOT IFRAME WITH AUTH ===== -->
@@ -1498,719 +1490,395 @@
     MAIN DASHBOARD SCRIPT (ALL FIXES INCLUDED)
     ============================================================ -->
     <script>
-        // ============================================================
-        // CONFIGURATION
-        // ============================================================
-        const BOT_BUILDER_URL = 'https://bot.tradenovax.co.ke/';
-        let currentAccountType = 'live';
-        let botIframeReady = false;
-
-        // ============================================================
-        // TOAST
-        // ============================================================
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            const msg = document.getElementById('toastMessage');
-            if (toast && msg) {
-                msg.textContent = message;
-                toast.classList.add('show');
-                clearTimeout(toast._timer);
-                toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
-            } else {
-                console.log('🔔 Toast:', message);
-            }
-        }
-        window.showToast = showToast;
-
-        // ============================================================
-        // GET ACCESS TOKEN
-        // ============================================================
-        function getAccessToken() {
-            const token = localStorage.getItem('deriv_access_token');
-            const expiry = parseInt(localStorage.getItem('deriv_token_expiry') || '0');
-            if (!token || Date.now() > expiry) {
-                return null;
-            }
-            return token;
-        }
-
-        // ============================================================
-        // ACCOUNT TYPE SWITCHING
-        // ============================================================
-        function switchAccountType(type) {
-            currentAccountType = type;
-            
-            // Update button styles
-            const btnLive = document.getElementById('btnLive');
-            const btnDemo = document.getElementById('btnDemo');
-            
-            if (type === 'live') {
-                btnLive.className = 'account-btn active-live';
-                btnDemo.className = 'account-btn';
-                showToast('🟢 Switched to LIVE account');
-            } else {
-                btnLive.className = 'account-btn';
-                btnDemo.className = 'account-btn active-demo';
-                showToast('🟡 Switched to DEMO account');
-            }
-            
-            // Reload the iframe with new account type
-            loadBotIframe();
-        }
-        window.switchAccountType = switchAccountType;
-
-        // ============================================================
-        // LOAD BOT IFRAME WITH AUTH
-        // ============================================================
-        function loadBotIframe() {
-            const iframe = document.getElementById('botIframe');
-            const overlay = document.getElementById('botLoadingOverlay');
-            const statusText = document.getElementById('botLoadStatus');
-            const token = getAccessToken();
-
-            if (!token) {
-                overlay.querySelector('span:last-child').textContent = '⚠️ Please login to Deriv first';
-                overlay.classList.remove('hidden');
-                showToast('⚠️ Please login with Deriv first');
-                return;
-            }
-
-            // Build URL with authentication parameters
-            const url = new URL(BOT_BUILDER_URL);
-            
-            // Pass token and account type as URL parameters
-            url.searchParams.set('token', token);
-            url.searchParams.set('account_type', currentAccountType);
-            url.searchParams.set('platform', 'tradenovax');
-            url.searchParams.set('embedded', 'true');
-            
-            // Also pass as hash for some apps that prefer it
-            url.hash = `token=${token}&account_type=${currentAccountType}`;
-
-            console.log('🔗 Loading bot iframe with:', {
-                url: url.toString(),
-                accountType: currentAccountType,
-                hasToken: !!token
-            });
-
-            // Set the iframe src
-            iframe.src = url.toString();
-            
-            // Update status
-            if (statusText) {
-                statusText.textContent = `Connecting to Deriv (${currentAccountType.toUpperCase()})...`;
-            }
-            
-            overlay.classList.remove('hidden');
-        }
-
-        // ============================================================
-        // BOT IFRAME EVENTS
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', function() {
-            const iframe = document.getElementById('botIframe');
-            const overlay = document.getElementById('botLoadingOverlay');
-
-            if (iframe) {
-                // When iframe loads
-                iframe.addEventListener('load', function() {
-                    botIframeReady = true;
-                    console.log('✅ Bot iframe loaded');
-                    
-                    // Send authentication to the iframe via postMessage
-                    sendAuthToIframe();
-                    
-                    // Hide overlay after a moment
-                    setTimeout(function() {
-                        overlay.classList.add('hidden');
-                    }, 1500);
-                });
-
-                // Handle iframe errors
-                iframe.addEventListener('error', function() {
-                    console.error('❌ Failed to load bot iframe');
-                    overlay.classList.add('hidden');
-                    showToast('⚠️ Failed to load Bot Builder. Try opening in new tab.');
-                });
-            }
-
-            // Load the iframe after checking auth
-            setTimeout(loadBotIframe, 1000);
-        });
-
-        // ============================================================
-        // SEND AUTH TO IFRAME VIA POSTMESSAGE
-        // ============================================================
-        function sendAuthToIframe() {
-            const iframe = document.getElementById('botIframe');
-            const token = getAccessToken();
-            
-            if (!iframe || !token) return;
-
-            try {
-                // Send authentication data to the iframe
-                const authData = {
-                    type: 'AUTH',
-                    token: token,
-                    accountType: currentAccountType,
-                    platform: 'tradenovax',
-                    action: 'login',
-                    // Include user info if available
-                    user: {
-                        email: localStorage.getItem('deriv_user_email') || '',
-                        name: localStorage.getItem('deriv_user_name') || 'Trader'
-                    }
-                };
-
-                console.log('📤 Sending auth to iframe:', authData);
-                iframe.contentWindow.postMessage(authData, BOT_BUILDER_URL);
-            } catch (e) {
-                console.log('ℹ️ Cannot send postMessage yet, will retry on load');
-            }
-        }
-
-        // ============================================================
-        // LISTEN FOR MESSAGES FROM BOT IFRAME
-        // ============================================================
-        window.addEventListener('message', function(event) {
-            // Only accept messages from the bot domain
-            if (event.origin !== new URL(BOT_BUILDER_URL).origin) {
-                return;
-            }
-
-            console.log('📨 Message from bot:', event.data);
-
-            switch (event.data.type) {
-                case 'BOT_READY':
-                    botIframeReady = true;
-                    document.getElementById('botLoadingOverlay').classList.add('hidden');
-                    showToast('🤖 Bot Builder ready!');
-                    // Send auth again when bot says it's ready
-                    sendAuthToIframe();
-                    break;
-
-                case 'AUTH_SUCCESS':
-                    showToast('✅ Connected to Deriv successfully!');
-                    document.getElementById('derivStatus').textContent = '✅ Connected';
-                    document.getElementById('derivStatus').style.color = 'var(--green)';
-                    break;
-
-                case 'AUTH_ERROR':
-                    showToast('❌ Auth error: ' + (event.data.message || 'Unknown error'));
-                    break;
-
-                case 'ACCOUNT_SWITCHED':
-                    showToast(`📊 Switched to ${event.data.accountType} account`);
-                    currentAccountType = event.data.accountType;
-                    break;
-
-                case 'TRADE_EXECUTED':
-                    console.log('📊 Trade executed:', event.data);
-                    showToast(`📊 Trade: ${event.data.direction} $${event.data.amount}`);
-                    break;
-
-                case 'BOT_STATUS':
-                    const statusDot = document.getElementById('botStatusDot');
-                    const statusText = document.getElementById('botStatusText');
-                    if (statusDot && statusText) {
-                        const isRunning = event.data.status === 'running';
-                        statusDot.className = `status-dot ${isRunning ? 'running' : 'ready'}`;
-                        statusText.textContent = event.data.status.charAt(0).toUpperCase() + event.data.status.slice(1);
-                    }
-                    break;
-
-                default:
-                    // Handle other messages
-                    if (event.data.type && event.data.type.startsWith('LOG_')) {
-                        console.log('📝 Bot log:', event.data.message);
-                    }
-            }
-        });
-
-        // ============================================================
-        // SIDEBAR TOGGLE (Mobile)
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', function() {
-            const menuToggle = document.getElementById('menuToggle');
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-
-            if (menuToggle) {
-                menuToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('open');
-                    overlay.classList.toggle('active');
-                });
-            }
-
-            if (overlay) {
-                overlay.addEventListener('click', function() {
-                    sidebar.classList.remove('open');
-                    overlay.classList.remove('active');
-                });
-            }
-        });
-
-        // ============================================================
-        // PAGE SWITCHING
-        // ============================================================
-        const pageTitles = {
-            dashboard: 'Dashboard',
-            bot: 'Bot Builder',
-            manual: 'Manual Trader',
-            bulk: 'Bulk Trader',
-            premium: 'Premium AI Bots',
-            smart: 'Smart AI',
-            free: 'Free Bots',
-            quick: 'Quick Bot',
-            signal: 'Signal AI',
-            copy: 'Copy Trader',
-            analysis: 'Analysis Tools',
-            speedbot: 'Speedbot',
-            automated: 'Automated',
-            chart: 'Chart',
-            'bots-store': 'Bots Store',
-            reports: 'Reports'
-        };
-
-        const pageSubs = {
-            dashboard: 'Overview',
-            bot: 'Build, test, and deploy bots',
-            manual: 'Live manual trading',
-            bulk: 'Bulk trading with Dcircles',
-            premium: 'Premium automated trading bots',
-            smart: 'AI-powered reversal strategies',
-            free: 'Free bot strategies',
-            quick: 'Quick bot configuration',
-            signal: 'Real-time AI signal detection',
-            copy: 'Copy trades from top performers',
-            analysis: 'Dcircles analysis',
-            speedbot: 'Ultra-fast execution',
-            automated: 'Pre-built automated strategies',
-            chart: 'Advanced charting',
-            'bots-store': 'Premium bot marketplace',
-            reports: 'Trading performance analytics'
-        };
-
-        function switchPage(page) {
-            // Hide all pages
-            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-
-            // Show selected page
-            const target = document.getElementById('page-' + page);
-            if (target) target.classList.add('active');
-
-            // Update sidebar
-            document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
-            const link = document.querySelector(`.sidebar-nav a[data-page="${page}"]`);
-            if (link) link.classList.add('active');
-
-            // Update title
-            document.getElementById('pageTitle').textContent = pageTitles[page] || page;
-            document.getElementById('pageSub').textContent = pageSubs[page] || '';
-
-            // Close sidebar on mobile
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('active');
-
-            // If switching to bot page, refresh auth
-            if (page === 'bot') {
-                setTimeout(loadBotIframe, 500);
-            }
-        }
-
-        // Sidebar navigation
-        document.querySelectorAll('.sidebar-nav a[data-page]').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const page = this.dataset.page;
-                switchPage(page);
-            });
-        });
-
-        // ============================================================
-        // LOAD BOT TEMPLATE
-        // ============================================================
-        function loadBotTemplate(template) {
-            const iframe = document.getElementById('botIframe');
-            if (!iframe) return;
-
-            try {
-                const message = {
-                    type: 'LOAD_TEMPLATE',
-                    template: template,
-                    accountType: currentAccountType
-                };
-                iframe.contentWindow.postMessage(message, BOT_BUILDER_URL);
-                showToast('✅ Bot template loaded!');
-            } catch (e) {
-                // If iframe not ready, try again after a delay
-                setTimeout(function() {
-                    try {
-                        iframe.contentWindow.postMessage({
-                            type: 'LOAD_TEMPLATE',
-                            template: template,
-                            accountType: currentAccountType
-                        }, BOT_BUILDER_URL);
-                        showToast('✅ Bot template loaded!');
-                    } catch (e2) {
-                        showToast('⚠️ Please wait for the bot to load first');
-                    }
-                }, 3000);
-            }
-        }
-        window.loadBotTemplate = loadBotTemplate;
-
-        // ============================================================
-        // EXECUTION TAB SWITCHING
-        // ============================================================
-        function switchExecutionTab(tab) {
-            document.querySelectorAll('.execution-tabs .tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector(`.execution-tabs .tab-btn[data-tab="${tab}"]`).classList.add('active');
-            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-            document.getElementById(`panel-${tab}`).classList.add('active');
-        }
-        window.switchExecutionTab = switchExecutionTab;
-
-        // ============================================================
-        // AI SCANNER
-        // ============================================================
-        function runAIScanner() {
-            const results = [
-                '📈 Bullish pattern detected on Volatility 75',
-                '📉 Bearish reversal signal on Volatility 100',
-                '📊 Sideways market - wait for breakout',
-                '🔥 Strong uptrend on Boom 500',
-                '⚠️ Overbought conditions on Volatility 75',
-                '✅ Oversold signal on Step Index'
-            ];
-            const result = results[Math.floor(Math.random() * results.length)];
-            const scannerResults = document.getElementById('scannerResults');
-            if (scannerResults) {
-                scannerResults.innerHTML = `
-                    <span style="color:var(--gold);">🧠 Analysis:</span> ${result}
-                    <span style="color:var(--text-muted); font-size:1rem; display:block; margin-top:0.3rem;">Last scan: ${new Date().toLocaleTimeString()}</span>
-                `;
-            }
-            showToast('🧠 AI scan complete!');
-        }
-        window.runAIScanner = runAIScanner;
-
-        // ============================================================
-        // MANUAL TRADER
-        // ============================================================
-        function executeManualTrade(type) {
-            const symbol = document.getElementById('manualSymbol');
-            const stake = document.getElementById('manualStake');
-            
-            if (!symbol || !stake) {
-                showToast('⚠️ Please wait for page to load');
-                return;
-            }
-            
-            const symbolVal = symbol.value;
-            const amount = parseFloat(stake.value) || 10;
-            const isWin = Math.random() > 0.45;
-            const profit = isWin ? amount * (0.3 + Math.random() * 0.7) : -amount * (0.2 + Math.random() * 0.5);
-
-            const statusEl = document.getElementById('manualTradeStatus');
-            if (statusEl) {
-                statusEl.textContent = `✅ ${type} on ${symbolVal}: ${isWin ? 'WIN' : 'LOSS'} $${Math.abs(profit).toFixed(2)}`;
-                statusEl.style.color = isWin ? 'var(--green)' : 'var(--red)';
-            }
-
-            showToast(`${type} ${isWin ? 'WIN' : 'LOSS'} $${Math.abs(profit).toFixed(2)}`);
-        }
-        window.executeManualTrade = executeManualTrade;
-
-        // ============================================================
-        // BULK TRADER
-        // ============================================================
-        function executeBulkTrades(type) {
-            const market = document.getElementById('bulkMarket');
-            const stake = document.getElementById('bulkStake');
-            const count = document.getElementById('bulkCount');
-            
-            if (!market || !stake || !count) {
-                showToast('⚠️ Please wait for page to load');
-                return;
-            }
-            
-            const symbol = market.value;
-            const amount = parseFloat(stake.value) || 0.5;
-            const tradeCount = parseInt(count.value) || 5;
-
-            let wins = 0, total = 0;
-            for (let i = 0; i < tradeCount; i++) {
-                const isWin = Math.random() > 0.45;
-                if (isWin) wins++;
-                total += isWin ? amount * 0.5 : -amount * 0.3;
-            }
-
-            const statusEl = document.getElementById('bulkTradeStatus');
-            if (statusEl) {
-                statusEl.textContent = `📦 ${tradeCount} ${type} trades on ${symbol}: ${wins}/${tradeCount} wins, P&L $${total.toFixed(2)}`;
-                statusEl.style.color = total > 0 ? 'var(--green)' : 'var(--red)';
-            }
-
-            showToast(`📦 Bulk ${type}: ${wins}/${tradeCount} wins, $${total.toFixed(2)}`);
-        }
-        window.executeBulkTrades = executeBulkTrades;
-
-        // ============================================================
-        // SIGNAL AI
-        // ============================================================
-        function runSignalAI() {
-            const market = document.getElementById('signalMarket');
-            const strategy = document.getElementById('signalStrategy');
-            
-            if (!market || !strategy) {
-                showToast('⚠️ Please wait for page to load');
-                return;
-            }
-
-            const signals = ['📈 BUY (CALL)', '📉 SELL (PUT)', '⏳ WAIT'];
-            const signal = signals[Math.floor(Math.random() * signals.length)];
-            const confidence = Math.floor(Math.random() * 30) + 50;
-
-            const resultEl = document.getElementById('signalResult');
-            if (resultEl) {
-                resultEl.innerHTML = `
-                    <span style="color:var(--gold);">📡 Signal:</span> ${signal}<br>
-                    <span style="color:var(--text-muted);">Confidence: ${confidence}%</span>
-                `;
-            }
-            showToast(`📡 Signal: ${signal}`);
-        }
-        window.runSignalAI = runSignalAI;
-
-        // ============================================================
-        // COPY TRADER
-        // ============================================================
-        let copyRunning = false;
-
-        function startCopyTrading() {
-            const master = document.getElementById('copyMaster');
-            const amount = document.getElementById('copyAmount');
-            const multiplier = document.getElementById('copyMultiplier');
-            
-            if (!master || !amount || !multiplier) {
-                showToast('⚠️ Please wait for page to load');
-                return;
-            }
-
-            const masterVal = master.value;
-            copyRunning = !copyRunning;
-            
-            const statusEl = document.getElementById('copyStatus');
-            if (statusEl) {
-                statusEl.textContent = copyRunning ? '🟢 Copying from ' + masterVal : '🔴 Not copying';
-                statusEl.style.color = copyRunning ? 'var(--green)' : 'var(--text-muted)';
-            }
-            showToast(copyRunning ? '📋 Copy trading started!' : '⏹️ Copy trading stopped');
-        }
-        window.startCopyTrading = startCopyTrading;
-
-        // ============================================================
-        // ANALYSIS TOOLS
-        // ============================================================
-        function runAnalysis() {
-            const symbol = document.getElementById('analysisSymbol');
-            const indicator = document.getElementById('analysisIndicator');
-            
-            if (!symbol || !indicator) {
-                showToast('⚠️ Please wait for page to load');
-                return;
-            }
-
-            const results = {
-                rsi: ['RSI: 72 (Overbought)', 'RSI: 35 (Oversold)', 'RSI: 55 (Neutral)'],
-                macd: ['MACD Bullish Crossover', 'MACD Bearish Crossover', 'MACD Divergence Detected'],
-                ma: ['Price above MA50 (Bullish)', 'Price below MA50 (Bearish)', 'Price crossing MA200'],
-                bollinger: ['Price at upper band (Overbought)', 'Price at lower band (Oversold)', 'Price in middle band']
-            };
-
-            const result = results[indicator.value][Math.floor(Math.random() * results[indicator.value].length)];
-            const resultEl = document.getElementById('analysisResult');
-            if (resultEl) {
-                resultEl.innerHTML = `<span style="color:var(--gold);">📊 Analysis:</span> ${result}`;
-            }
-            showToast('📊 Analysis complete!');
-        }
-        window.runAnalysis = runAnalysis;
-
-        // ============================================================
-        // SPEEDBOT
-        // ============================================================
-        let speedRunning = false;
-
-        function runSpeedbot() {
-            speedRunning = !speedRunning;
-            const statusEl = document.getElementById('speedStatus');
-            if (statusEl) {
-                statusEl.textContent = speedRunning ? '🏃 Running' : '⏹️ Stopped';
-                statusEl.style.color = speedRunning ? 'var(--green)' : 'var(--text-muted)';
-            }
-            showToast(speedRunning ? '🏃 Speedbot started!' : '⏹️ Speedbot stopped');
-        }
-        window.runSpeedbot = runSpeedbot;
-
-        // ============================================================
-        // CHART
-        // ============================================================
-        function loadChart() {
-            const symbol = document.getElementById('chartSymbol');
-            const timeframe = document.getElementById('chartTimeframe');
-            
-            if (!symbol || !timeframe) {
-                showToast('⚠️ Please wait for page to load');
-                return;
-            }
-
-            const container = document.getElementById('chartContainer');
-            if (!container) return;
-
-            const data = [];
-            for (let i = 0; i < 50; i++) {
-                data.push(Math.random() * 100 + 50);
-            }
-
-            let html = '<div style="height:100%; width:100%; display:flex; align-items:flex-end; gap:2px; padding:1rem;">';
-            data.forEach((value) => {
-                const color = value > 70 ? 'var(--green)' : value > 40 ? 'var(--gold)' : 'var(--red)';
-                const height = (value / 150) * 100;
-                html += `<div style="flex:1; height:${height}%; background:${color}; border-radius:2px; min-height:10px;"></div>`;
-            });
-            html += '</div>';
-            container.innerHTML = html +
-                `<div style="text-align:center; color:var(--text-muted); font-size:1.2rem; margin-top:0.5rem;">${symbol.value} - ${timeframe.value}</div>`;
-            showToast(`📊 Chart loaded for ${symbol.value}`);
-        }
-        window.loadChart = loadChart;
-
-        // ============================================================
-        // REPORTS
-        // ============================================================
-        function generateReport() {
-            const totalTrades = Math.floor(Math.random() * 200) + 50;
-            const wins = Math.floor(Math.random() * totalTrades * 0.7);
-            const winRate = (wins / totalTrades * 100);
-            const totalPnL = (Math.random() * 5000 - 1000);
-            const bestTrade = Math.random() * 500 + 100;
-
-            const totalEl = document.getElementById('reportTotalTrades');
-            const winEl = document.getElementById('reportWinRate');
-            const pnlEl = document.getElementById('reportPnL');
-            const bestEl = document.getElementById('reportBest');
-
-            if (totalEl) totalEl.textContent = totalTrades;
-            if (winEl) winEl.textContent = winRate.toFixed(1) + '%';
-            if (pnlEl) pnlEl.textContent = '$' + totalPnL.toFixed(2);
-            if (bestEl) bestEl.textContent = '$' + bestTrade.toFixed(2);
-
-            const detailsEl = document.getElementById('reportDetails');
-            if (detailsEl) {
-                detailsEl.innerHTML = `
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; text-align:left;">
-                        <div>📊 Total Trades: <strong style="color:var(--gold);">${totalTrades}</strong></div>
-                        <div>✅ Win Rate: <strong style="color:var(--green);">${winRate.toFixed(1)}%</strong></div>
-                        <div>💰 Total P&L: <strong style="color:${totalPnL > 0 ? 'var(--green)' : 'var(--red)'};">$${totalPnL.toFixed(2)}</strong></div>
-                        <div>🏆 Best Trade: <strong style="color:var(--green);">$${bestTrade.toFixed(2)}</strong></div>
-                    </div>
-                `;
-            }
-            showToast('📊 Report generated!');
-        }
-        window.generateReport = generateReport;
-
-        // ============================================================
-        // LOGOUT
-        // ============================================================
-        function handleLogout() {
-            localStorage.removeItem('deriv_access_token');
-            localStorage.removeItem('deriv_token_expiry');
-            localStorage.removeItem('deriv_auth_code');
-            sessionStorage.removeItem('pkce_code_verifier');
-            sessionStorage.removeItem('oauth_state');
-            showToast('👋 Logged out successfully!');
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 1000);
-        }
-        window.handleLogout = handleLogout;
-
-        // ============================================================
-        // UPDATE DERIV STATUS
-        // ============================================================
-        function updateDerivStatus() {
-            const statusEl = document.getElementById('derivStatus');
-            const token = localStorage.getItem('deriv_access_token');
-            if (statusEl) {
-                if (token) {
-                    statusEl.textContent = '✅ Connected';
-                    statusEl.style.color = 'var(--green)';
-                } else {
-                    statusEl.textContent = '🔗 Not connected';
-                    statusEl.style.color = 'var(--text-muted)';
-                }
-            }
-        }
-
-        // ============================================================
-        // INITIALIZATION
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', function() {
-            updateDerivStatus();
-            
-            // Check if user is logged in
-            const token = getAccessToken();
-            if (!token) {
-                showToast('⚠️ Please login with Deriv to use the Bot Builder');
-            } else {
-                showToast('🚀 Welcome to TradeNovaX Dashboard!');
-                // Load bot iframe after a delay
-                setTimeout(loadBotIframe, 1500);
-            }
-        });
-
-        // ============================================================
-        // HANDLE OAUTH CALLBACK (for when returning from Deriv auth)
-        // ============================================================
-        function handleOAuthCallback() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const code = urlParams.get('code');
-            const state = urlParams.get('state');
-            const error = urlParams.get('error');
-
-            if (error) {
-                showToast('❌ OAuth Error: ' + error);
-                return;
-            }
-
-            if (code && state) {
-                console.log('🔄 OAuth callback detected');
-                // Store the code for the backend to exchange
-                localStorage.setItem('deriv_auth_code', code);
-                localStorage.setItem('deriv_auth_state', state);
-                
-                // Clean URL
-                window.history.replaceState({}, document.title, window.location.pathname);
-                
-                showToast('✅ Authentication successful!');
-                
-                // Update status and reload iframe
-                updateDerivStatus();
-                setTimeout(loadBotIframe, 1000);
-            }
-        }
-
-        // Run OAuth check on page load
-        handleOAuthCallback();
-
-        console.log('%c🚀 TradeNovaX Dashboard Loaded', 'font-size:20px; color:#D4AF37; font-weight:bold;');
-        console.log('%c🤖 Bot URL: ' + BOT_BUILDER_URL, 'font-size:14px; color:#8899BB;');
-        console.log('%c📊 Click "Bot Builder" to start trading!', 'font-size:14px; color:#8899BB;');
-        console.log('%c🔑 Account Type: ' + currentAccountType.toUpperCase(), 'font-size:14px; color:#D4AF37;');
-    </script>
+// ============================================================
+// TradeNovaX — REAL DERIV OPTIONS API CLIENT
+// Uses Deriv's current REST + authenticated WebSocket workflow.
+// Never put a PAT in this file. OAuth access tokens are short-lived.
+// ============================================================
+const BOT_BUILDER_URL = 'https://bot.tradenovax.co.ke/';
+const DERIV_API = 'https://api.derivws.com';
+let currentAccountType = localStorage.getItem('tradenovax_account_type') || 'live';
+let derivToken = null;
+let accounts = [];
+let activeAccount = null;
+let derivWS = null;
+let reqSeq = 100;
+const pending = new Map();
+let subscribedSymbol = null;
+let tickBuffer = [];
+let lastTick = null;
+let recentTransactions = [];
+let liveConnected = false;
+let activeContracts = new Map();
+
+function showToast(message) {
+  const toast = document.getElementById('toast'), msg = document.getElementById('toastMessage');
+  if (!toast || !msg) return console.log(message);
+  msg.textContent = message; toast.classList.add('show');
+  clearTimeout(toast._timer); toast._timer = setTimeout(() => toast.classList.remove('show'), 3500);
+}
+window.showToast = showToast;
+
+function getAccessToken() {
+  const token = localStorage.getItem('deriv_access_token');
+  const expiry = Number(localStorage.getItem('deriv_token_expiry') || 0);
+  // Keep compatibility with existing login, but don't treat an absent expiry as valid forever.
+  if (!token) return null;
+  if (expiry && Date.now() >= expiry) return null;
+  return token;
+}
+
+function setConnection(connected, message) {
+  liveConnected = connected;
+  const el = document.getElementById('derivStatus');
+  const cd = document.getElementById('connectionDisplay');
+  if (el) { el.textContent = connected ? '🟢 Live connected' : '🔴 ' + (message || 'Not connected'); el.style.color = connected ? 'var(--green)' : 'var(--red)'; }
+  if (cd) { cd.textContent = connected ? 'LIVE DATA' : (message || 'Disconnected'); cd.style.color = connected ? 'var(--green)' : 'var(--red)'; }
+}
+
+function apiHeaders() {
+  const token = getAccessToken();
+  if (!token) throw new Error('No Deriv OAuth access token. Sign in with Deriv first.');
+  return { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+}
+
+async function derivFetch(path, options = {}) {
+  const res = await fetch(DERIV_API + path, { ...options, headers: { ...apiHeaders(), ...(options.headers || {}) } });
+  let data = {};
+  try { data = await res.json(); } catch (_) {}
+  if (!res.ok) throw new Error(data?.errors?.[0]?.message || `Deriv API HTTP ${res.status}`);
+  return data;
+}
+
+async function loadAccounts() {
+  const result = await derivFetch('/trading/v1/options/accounts');
+  const list = Array.isArray(result.data) ? result.data : (Array.isArray(result.accounts) ? result.accounts : []);
+  accounts = list;
+  if (!accounts.length) throw new Error('No Deriv Options trading accounts were returned.');
+  const preferred = accounts.find(a => a.account_type === currentAccountType && a.status === 'active') || accounts.find(a => a.status === 'active') || accounts[0];
+  activeAccount = preferred;
+  currentAccountType = activeAccount.account_type || currentAccountType;
+  localStorage.setItem('tradenovax_account_type', currentAccountType);
+  updateAccountUI();
+}
+
+function updateAccountUI() {
+  const live = document.getElementById('btnLive'), demo = document.getElementById('btnDemo');
+  if (live) live.className = currentAccountType === 'real' || currentAccountType === 'live' ? 'account-btn active-live' : 'account-btn';
+  if (demo) demo.className = currentAccountType === 'demo' ? 'account-btn active-demo' : 'account-btn';
+  const id = document.getElementById('accountIdDisplay');
+  const typ = document.getElementById('accountTypeDisplay');
+  if (id) id.textContent = activeAccount?.account_id || '—';
+  if (typ) typ.textContent = (activeAccount?.account_type || currentAccountType).toUpperCase();
+}
+
+async function connectDeriv() {
+  try {
+    derivToken = getAccessToken();
+    if (!derivToken) { setConnection(false, 'Login required'); showToast('⚠️ Sign in with Deriv before trading.'); return; }
+    await loadAccounts();
+    await openAuthenticatedWebSocket();
+  } catch (err) {
+    console.error(err); setConnection(false, 'Connection failed'); showToast('❌ Deriv: ' + err.message);
+  }
+}
+
+async function openAuthenticatedWebSocket() {
+  if (!activeAccount?.account_id) throw new Error('No active Deriv account ID.');
+  if (derivWS && derivWS.readyState <= 1) derivWS.close();
+  // Deriv issues a short-lived, single-use WebSocket URL for the selected account.
+  const result = await derivFetch(`/trading/v1/options/accounts/${encodeURIComponent(activeAccount.account_id)}/otp`, { method: 'POST' });
+  const wsUrl = result?.data?.url;
+  if (!wsUrl) throw new Error('Deriv did not return an authenticated WebSocket URL.');
+  derivWS = new WebSocket(wsUrl);
+  derivWS.onopen = () => {
+    setConnection(true);
+    showToast(`✅ Connected to ${String(activeAccount.account_type).toUpperCase()} Deriv account`);
+    send({ balance: 1, subscribe: 1 });
+    send({ transaction: 1, subscribe: 1 });
+    send({ portfolio: 1 });
+    send({ active_symbols: 'brief' });
+    refreshLiveData();
+  };
+  derivWS.onmessage = e => handleDerivMessage(JSON.parse(e.data));
+  derivWS.onerror = () => setConnection(false, 'WebSocket error');
+  derivWS.onclose = () => { liveConnected = false; setConnection(false, 'Disconnected'); };
+}
+
+function send(payload) {
+  if (!derivWS || derivWS.readyState !== WebSocket.OPEN) throw new Error('Deriv connection is not ready.');
+  const req_id = ++reqSeq;
+  derivWS.send(JSON.stringify({ ...payload, req_id }));
+  return req_id;
+}
+
+function handleDerivMessage(data) {
+  if (data.error) { console.error('Deriv error', data.error); showToast('❌ ' + data.error.message); return; }
+  if (data.msg_type === 'balance') {
+    const b = data.balance || {};
+    document.getElementById('balanceAmount').textContent = Number(b.balance ?? 0).toFixed(2);
+    document.getElementById('balanceCurrency').textContent = b.currency || activeAccount?.currency || 'USD';
+  }
+  if (data.msg_type === 'tick') {
+    const t = data.tick;
+    if (!t) return;
+    lastTick = t;
+    tickBuffer.push({ epoch: Number(t.epoch), quote: Number(t.quote) });
+    if (tickBuffer.length > 300) tickBuffer.shift();
+    const el = document.getElementById('latestTickDisplay'); if (el) el.textContent = Number(t.quote).toFixed(5);
+    renderRealtimeChart();
+  }
+  if (data.msg_type === 'active_symbols') populateSymbols(data.active_symbols || []);
+  if (data.msg_type === 'transaction') addTransaction(data.transaction);
+  if (data.msg_type === 'proposal') handleProposal(data);
+  if (data.msg_type === 'buy') handleBuy(data);
+  if (data.msg_type === 'proposal_open_contract') handleContract(data.proposal_open_contract);
+  if (data.msg_type === 'portfolio') updateActiveContracts(data.portfolio?.contracts || []);
+  if (data.msg_type === 'profit_table') renderProfitTable(data.profit_table);
+}
+
+function populateSymbols(symbols) {
+  const filtered = symbols.filter(s => s.exchange_is_open !== 0 && s.is_trading_suspended !== 1);
+  const ids = ['manualSymbol','bulkMarket','signalMarket','analysisSymbol','speedSymbol','chartSymbol'];
+  ids.forEach(id => {
+    const select = document.getElementById(id); if (!select) return;
+    const old = select.value;
+    select.innerHTML = '';
+    filtered.slice(0, 150).forEach(s => {
+      const value = s.underlying_symbol || s.symbol;
+      if (!value) return;
+      const opt = document.createElement('option'); opt.value = value; opt.textContent = s.underlying_symbol_name || value; select.appendChild(opt);
+    });
+    if ([...select.options].some(o => o.value === old)) select.value = old;
+    else if (select.options.length) select.selectedIndex = 0;
+  });
+  const chosen = document.getElementById('chartSymbol')?.value;
+  if (chosen) subscribeTicks(chosen);
+}
+
+function subscribeTicks(symbol) {
+  if (!symbol || !liveConnected) return;
+  subscribedSymbol = symbol; tickBuffer = [];
+  try { send({ ticks: symbol, subscribe: 1 }); } catch (_) {}
+}
+
+function switchAccountType(type) {
+  const wanted = type === 'live' ? 'real' : 'demo';
+  const acct = accounts.find(a => a.account_type === wanted && a.status === 'active');
+  if (!acct) { showToast(`⚠️ No active ${wanted} Options account was returned by Deriv.`); return; }
+  currentAccountType = wanted; activeAccount = acct; localStorage.setItem('tradenovax_account_type', wanted);
+  updateAccountUI();
+  if (derivWS) derivWS.close();
+  connectDeriv();
+}
+window.switchAccountType = switchAccountType;
+
+function requireTradingReady() {
+  if (!liveConnected || !derivWS || derivWS.readyState !== WebSocket.OPEN) throw new Error('Deriv account is not connected.');
+  if (!activeAccount) throw new Error('No Deriv account selected.');
+}
+
+async function executeManualTrade(direction) {
+  const symbol = document.getElementById('manualSymbol')?.value;
+  const amount = Number(document.getElementById('manualStake')?.value);
+  const status = document.getElementById('manualTradeStatus');
+  if (!symbol || !Number.isFinite(amount) || amount <= 0) return showToast('⚠️ Enter a valid market and stake.');
+  if (activeAccount?.account_type === 'real' && !confirm(`REAL MONEY TRADE\n\n${direction} on ${symbol}\nStake: $${amount.toFixed(2)}\n\nProceed?`)) return;
+  try {
+    requireTradingReady();
+    status.textContent = '⏳ Requesting live price proposal…'; status.style.color = 'var(--gold)';
+    const req_id = send({ proposal: 1, amount, basis: 'stake', contract_type: direction === 'CALL' ? 'CALL' : 'PUT', currency: activeAccount.currency || 'USD', duration: 1, duration_unit: 'm', underlying_symbol: symbol });
+    pending.set(req_id, { kind: 'manualProposal', direction, symbol, amount, status });
+  } catch (e) { status.textContent = '❌ ' + e.message; status.style.color = 'var(--red)'; showToast('❌ ' + e.message); }
+}
+window.executeManualTrade = executeManualTrade;
+
+function handleProposal(data) {
+  const p = data.proposal || {};
+  const ctx = pending.get(data.req_id);
+  if (!ctx || ctx.kind !== 'manualProposal') return;
+  pending.delete(data.req_id);
+  const ask = Number(p.ask_price || ctx.amount);
+  try {
+    const req_id = send({ buy: p.id, price: ask });
+    pending.set(req_id, { kind: 'buy', ...ctx, ask });
+    ctx.status.textContent = '⏳ Buying contract…';
+  } catch (e) { ctx.status.textContent = '❌ ' + e.message; ctx.status.style.color = 'var(--red)'; }
+}
+
+function handleBuy(data) {
+  const ctx = pending.get(data.req_id); if (!ctx) return;
+  pending.delete(data.req_id);
+  const buy = data.buy || {};
+  const contractId = buy.contract_id;
+  if (contractId) {
+    activeContracts.set(String(contractId), buy);
+    try { send({ proposal_open_contract: 1, contract_id: contractId, subscribe: 1 }); } catch (_) {}
+  }
+  if (ctx.status) { ctx.status.textContent = `✅ REAL ${ctx.direction} executed • Contract ${contractId || 'created'}`; ctx.status.style.color = 'var(--green)'; }
+  showToast(`✅ ${ctx.direction} executed on ${ctx.symbol} • $${ctx.amount.toFixed(2)}`);
+}
+
+function handleContract(contract) {
+  if (!contract) return;
+  activeContracts.set(String(contract.contract_id), contract);
+  const status = contract.status || (contract.is_sold ? 'sold' : 'open');
+  const profit = Number(contract.profit || 0);
+  const list = document.getElementById('tradeList');
+  if (list) {
+    const row = document.createElement('div'); row.style.cssText='display:flex;justify-content:space-between;padding:.8rem 0;border-bottom:1px solid var(--border);gap:1rem;';
+    row.innerHTML = `<span>${escapeHtml(contract.underlying_symbol || contract.symbol || 'Contract')}</span><span style="color:${profit>=0?'var(--green)':'var(--red)'}">${profit>=0?'+':''}$${profit.toFixed(2)}</span><span style="color:var(--text-muted)">${escapeHtml(status)}</span>`;
+    list.prepend(row); while (list.children.length > 10) list.removeChild(list.lastChild);
+  }
+  updateSummaryFromLiveContracts();
+}
+
+function updateActiveContracts(contracts) {
+  activeContracts.clear(); contracts.forEach(c => activeContracts.set(String(c.contract_id), c));
+  const el = document.getElementById('activeBotsCount'); if (el) el.textContent = contracts.length;
+}
+
+function updateSummaryFromLiveContracts() {
+  const vals = [...activeContracts.values()];
+  const closed = vals.filter(c => c.is_sold || ['won','lost','sold'].includes(c.status));
+  const pnl = vals.reduce((s,c)=>s+Number(c.profit||0),0);
+  const wins = closed.filter(c=>Number(c.profit||0)>0).length;
+  const total = closed.length;
+  const t=document.getElementById('totalTrades'), w=document.getElementById('winRate'), p=document.getElementById('totalPnL');
+  if(t) t.textContent=total; if(w) w.textContent=total?((wins/total)*100).toFixed(1)+'%':'0%'; if(p) {p.textContent=(pnl>=0?'+':'')+'$'+pnl.toFixed(2); p.style.color=pnl>=0?'var(--green)':'var(--red)';}
+}
+
+function addTransaction(tx) {
+  if (!tx) return;
+  recentTransactions.unshift(tx); recentTransactions = recentTransactions.slice(0, 20);
+  const list = document.getElementById('transactionList'); if (!list) return;
+  list.innerHTML = recentTransactions.map(t => {
+    const amount = Number(t.amount ?? t.balance ?? 0);
+    const action = t.action || t.action_type || t.transaction_type || 'transaction';
+    return `<div style="display:flex;justify-content:space-between;padding:.8rem 0;border-bottom:1px solid var(--border);gap:1rem;"><span>${escapeHtml(t.underlying_symbol || t.symbol || 'Account')}</span><span style="color:${amount>=0?'var(--green)':'var(--red)'}">${amount>=0?'+':''}$${amount.toFixed(2)}</span><span style="color:var(--text-muted)">${escapeHtml(action)}</span></div>`;
+  }).join('');
+}
+
+function refreshLiveData() {
+  if (!liveConnected) return;
+  try { send({ portfolio: 1 }); } catch (_) {}
+  try { send({ profit_table: 1, limit: 100, sort: 'DESC' }); } catch (_) {}
+  const symbol = document.getElementById('chartSymbol')?.value || subscribedSymbol;
+  if (symbol) subscribeTicks(symbol);
+}
+
+function runAIScanner() {
+  const vals = tickBuffer.map(x=>x.quote).filter(Number.isFinite);
+  const el=document.getElementById('scannerResults'); if(!el)return;
+  if(vals.length<10){el.innerHTML='⏳ Collecting live ticks…';return;}
+  const last=vals.at(-1), prev=vals.slice(-10); const avg=prev.reduce((a,b)=>a+b,0)/prev.length;
+  const signal=last>avg?'📈 Upward momentum':'📉 Downward momentum';
+  el.innerHTML=`<span style="color:var(--gold);">🧠 Live analysis:</span> ${signal}<br><span style="color:var(--text-muted);">${subscribedSymbol} • price ${last.toFixed(5)} • ${new Date().toLocaleTimeString()}</span>`;
+}
+window.runAIScanner=runAIScanner;
+
+function runSignalAI(){
+  runAIScanner();
+  const r=document.getElementById('signalResult'); if(r) r.innerHTML=document.getElementById('scannerResults')?.innerHTML || 'Collecting live ticks…';
+}
+window.runSignalAI=runSignalAI;
+
+async function executeBulkTrades(type){
+  const symbol=document.getElementById('bulkMarket')?.value, amount=Number(document.getElementById('bulkStake')?.value), count=Math.min(20,Math.max(1,Number(document.getElementById('bulkCount')?.value)||1));
+  const el=document.getElementById('bulkTradeStatus');
+  if(!symbol||!Number.isFinite(amount)||amount<=0)return showToast('⚠️ Invalid bulk trade settings.');
+  if(activeAccount?.account_type==='real' && !confirm(`REAL MONEY: execute ${count} contracts at $${amount.toFixed(2)} each?`)) return;
+  try{requireTradingReady();}catch(e){if(el)el.textContent='❌ '+e.message;return;}
+  if(el)el.textContent=`⏳ Executing ${count} live ${type} trades…`;
+  // Real sequential execution. Direction is mapped to a CALL/PUT contract.
+  for(let i=0;i<count;i++){
+    const direction=type==='Even'?'CALL':'PUT';
+    try{
+      const req=send({proposal:1,amount,basis:'stake',contract_type:direction,currency:activeAccount.currency||'USD',duration:1,duration_unit:'m',underlying_symbol:symbol});
+      pending.set(req,{kind:'bulkProposal',direction,symbol,amount,index:i+1,total:count,status:el});
+      await new Promise(r=>setTimeout(r,350));
+    }catch(e){if(el)el.textContent=`❌ ${e.message}`;break;}
+  }
+  if(el)el.textContent=`🚀 ${count} live trade proposals submitted to Deriv.`;
+}
+window.executeBulkTrades=executeBulkTrades;
+
+function runAnalysis(){
+  const vals=tickBuffer.map(x=>x.quote).filter(Number.isFinite); const ind=document.getElementById('analysisIndicator')?.value; const el=document.getElementById('analysisResult');
+  if(!el)return; if(vals.length<20){el.textContent='⏳ Need at least 20 live ticks for analysis.';return;}
+  const rsi=calcRSI(vals,14), sma=vals.slice(-20).reduce((a,b)=>a+b,0)/20;
+  const last=vals.at(-1);
+  let text=ind==='rsi'?`RSI(14): ${rsi.toFixed(2)} — ${rsi>70?'Overbought':rsi<30?'Oversold':'Neutral'}`:`SMA(20): ${sma.toFixed(5)} • Price: ${last.toFixed(5)} • ${last>sma?'Above':'Below'} average`;
+  el.innerHTML=`<span style="color:var(--gold);">📊 Live analysis:</span> ${text}`;
+}
+window.runAnalysis=runAnalysis;
+function calcRSI(v,p){let gains=0,losses=0;for(let i=v.length-p;i<v.length;i++){const d=v[i]-v[i-1];if(d>=0)gains+=d;else losses-=d;}if(losses===0)return 100;const rs=(gains/p)/(losses/p);return 100-(100/(1+rs));}
+
+let speedRunning=false;
+function runSpeedbot(){speedRunning=!speedRunning;const el=document.getElementById('speedStatus');if(el)el.textContent=speedRunning?'🟢 Live execution engine armed — manual strategy trigger required':'⏹️ Stopped';showToast(speedRunning?'🏃 Speedbot armed':'⏹️ Speedbot stopped');}
+window.runSpeedbot=runSpeedbot;
+
+function renderRealtimeChart(){
+  const c=document.getElementById('chartContainer'); if(!c||tickBuffer.length<2)return;
+  const v=tickBuffer.slice(-80).map(x=>x.quote); const min=Math.min(...v), max=Math.max(...v), span=(max-min)||1;
+  c.innerHTML=`<div style="height:100%;width:100%;display:flex;align-items:flex-end;gap:2px;padding:1rem;">${v.map(x=>`<div style="flex:1;height:${Math.max(3,((x-min)/span)*95)}%;background:var(--gold);border-radius:2px;min-height:3px;"></div>`).join('')}</div><div style="position:absolute;bottom:8px;left:12px;color:var(--text-muted);font-size:1.1rem;">${escapeHtml(subscribedSymbol||'')} • ${lastTick?Number(lastTick.quote).toFixed(5):''}</div>`;
+}
+function loadChart(){const symbol=document.getElementById('chartSymbol')?.value;if(symbol){subscribeTicks(symbol);showToast(`📡 Streaming live ${symbol}`);}}
+window.loadChart=loadChart;
+
+function generateReport(){
+  if(!liveConnected)return showToast('⚠️ Connect your Deriv account first.');
+  try{send({profit_table:1,limit:100,sort:'DESC'});showToast('📊 Loading real Deriv P&L history…');}catch(e){showToast('❌ '+e.message);}
+}
+function renderProfitTable(pt){
+  const tx=pt?.transactions||[]; const total=tx.length; const pnl=tx.reduce((s,t)=>s+(Number(t.sell_price||0)-Number(t.buy_price||0)),0); const wins=tx.filter(t=>Number(t.sell_price||0)>Number(t.buy_price||0)).length; const best=tx.reduce((m,t)=>Math.max(m,Number(t.sell_price||0)-Number(t.buy_price||0)),0);
+  const a=document.getElementById('reportTotalTrades'),b=document.getElementById('reportWinRate'),c=document.getElementById('reportPnL'),d=document.getElementById('reportBest');
+  if(a)a.textContent=total;if(b)b.textContent=total?(wins/total*100).toFixed(1)+'%':'0%';if(c){c.textContent=(pnl>=0?'+':'')+'$'+pnl.toFixed(2);c.style.color=pnl>=0?'var(--green)':'var(--red)';}if(d)d.textContent='$'+best.toFixed(2);
+  const details=document.getElementById('reportDetails');if(details)details.innerHTML=`<div style="margin-top:1rem;text-align:left;color:var(--text-muted);">Live Deriv history: ${total} records loaded.</div>`;
+}
+window.generateReport=generateReport;
+
+function startCopyTrading(){showToast('⚠️ Copy trading requires a real source account/strategy feed. No fake trades are generated.');}
+window.startCopyTrading=startCopyTrading;
+function loadBotTemplate(template){showToast(`⚙️ Template ${template} selected. Trading remains disabled until you start a real strategy.`);}
+window.loadBotTemplate=loadBotTemplate;
+function switchExecutionTab(tab){document.querySelectorAll('.execution-tabs .tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id===`panel-${tab}`));}
+window.switchExecutionTab=switchExecutionTab;
+
+function escapeHtml(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+
+const pageTitles={dashboard:'Dashboard',bot:'Bot Builder',manual:'Manual Trader',bulk:'Bulk Trader',premium:'Premium AI Bots',smart:'Smart AI',free:'Free Bots',quick:'Quick Bot',signal:'Signal AI',copy:'Copy Trader',analysis:'Analysis Tools',speedbot:'Speedbot',automated:'Automated',chart:'Chart','bots-store':'Bots Store',reports:'Reports'};
+const pageSubs={dashboard:'Live Deriv account overview',bot:'Build, test, and deploy real Deriv strategies',manual:'Real-time manual trading',bulk:'Sequential real contract execution',premium:'Premium strategy library',smart:'Live-market analysis',free:'Strategy library',quick:'Quick strategy configuration',signal:'Live tick signal detection',copy:'Copy-trading framework',analysis:'Live tick analysis',speedbot:'Execution controls',automated:'Pre-built strategies',chart:'Real-time Deriv tick chart','bots-store':'Strategy marketplace',reports:'Real Deriv performance'};
+function switchPage(page){document.querySelectorAll('.page-content').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+page)?.classList.add('active');document.querySelectorAll('.sidebar-nav a').forEach(a=>a.classList.remove('active'));document.querySelector(`.sidebar-nav a[data-page="${page}"]`)?.classList.add('active');document.getElementById('pageTitle').textContent=pageTitles[page]||page;document.getElementById('pageSub').textContent=pageSubs[page]||'';document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');if(page==='chart')loadChart();}
+window.switchPage=switchPage;
+
+document.querySelectorAll('.sidebar-nav a[data-page]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();switchPage(a.dataset.page);}));
+function handleLogout(){if(derivWS)derivWS.close();['deriv_access_token','deriv_token_expiry','deriv_auth_code','deriv_account_id','deriv_account_type'].forEach(k=>{localStorage.removeItem(k);sessionStorage.removeItem(k)});sessionStorage.removeItem('tradenovax_pkce_verifier');sessionStorage.removeItem('tradenovax_oauth_state');showToast('👋 Logged out');setTimeout(()=>location.href='/',700);}
+window.handleLogout=handleLogout;
+
+window.addEventListener('message',event=>{if(event.origin!==new URL(BOT_BUILDER_URL).origin)return;const d=event.data||{};if(d.type==='BOT_READY')showToast('🤖 Bot Builder ready');if(d.type==='AUTH_ERROR')showToast('❌ Bot Builder: '+(d.message||'Authentication error'));if(d.type==='TRADE_EXECUTED')showToast('📊 Bot trade reported: '+(d.direction||''));});
+
+function loadBotIframe(){
+  const iframe=document.getElementById('botIframe'), overlay=document.getElementById('botLoadingOverlay'), status=document.getElementById('botLoadStatus'); if(!iframe)return;
+  // Do not put an OAuth/PAT token in the iframe URL. The child app must implement its own secure Deriv OAuth/session flow.
+  iframe.src=BOT_BUILDER_URL+'?embedded=true&account_type='+encodeURIComponent(currentAccountType)+'&account_id='+(activeAccount?.account_id||'');
+  if(status)status.textContent=liveConnected?'Bot Builder loaded — dashboard is connected to Deriv':'Waiting for Deriv connection…';
+  if(overlay)overlay.classList.add('hidden');
+}
+
+function updateDerivStatus(){const token=getAccessToken();setConnection(false,token?'Connecting…':'Login required');}
+
+document.addEventListener('DOMContentLoaded',async()=>{
+  document.getElementById('menuToggle')?.addEventListener('click',()=>{document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('active');});
+  document.getElementById('sidebarOverlay')?.addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');});
+  updateDerivStatus();
+  const token=getAccessToken();
+  if(!token){showToast('⚠️ Please sign in with Deriv first.');return;}
+  await connectDeriv();
+  loadBotIframe();
+  setInterval(()=>{if(liveConnected)refreshLiveData();},30000);
+});
+</script>
 
 </body>
 </html>

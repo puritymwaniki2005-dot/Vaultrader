@@ -699,6 +699,57 @@ select option:checked,select option:hover,select option:focus{background:#1d4ed8
 @media(max-width:900px){.tnx-bot-grid,.tnx-digit-footer-grid{grid-template-columns:1fr}.tnx-terminal-meta{align-items:flex-start}.tnx-bot-toolbar{flex-direction:column}}
 @media(max-width:560px){.tnx-form-row{grid-template-columns:1fr}.tnx-digit-bars{grid-template-columns:repeat(2,1fr)}.tnx-distribution{grid-template-columns:1fr}.tnx-price span{font-size:2rem}.tnx-segment{grid-template-columns:1fr}.tnx-proposal{grid-template-columns:1fr 1fr}.tnx-proposal div:last-child{grid-column:1/-1}}
 
+
+/* ===== PREMIUM TERMINAL UI V1 ===== */
+:root{
+  --tnx-gold:#d7b64a;--tnx-gold2:#f2d675;--tnx-bg:#050914;--tnx-panel:#0b1220;
+  --tnx-panel2:#0f192b;--tnx-line:rgba(255,255,255,.075);--tnx-muted:#8290a8;
+  --tnx-green:#19d58a;--tnx-red:#ff5d72;--tnx-blue:#4da3ff;--tnx-shadow:0 20px 60px rgba(0,0,0,.28)
+}
+body{background:radial-gradient(circle at 78% 5%,rgba(215,182,74,.07),transparent 28%),linear-gradient(135deg,#050914 0%,#07101f 48%,#050914 100%)}
+.sidebar{background:linear-gradient(180deg,#07101d 0%,#08111f 55%,#060c17 100%);border-right:1px solid rgba(255,255,255,.06);box-shadow:18px 0 50px rgba(0,0,0,.18)}
+.sidebar-brand{padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.06)}
+.logo-icon{box-shadow:0 8px 25px rgba(215,182,74,.2)}
+.sidebar-nav a,.sidebar-nav button{border-radius:10px;margin:3px 10px;padding:10px 12px;transition:.2s ease;color:#9eabc0}
+.sidebar-nav a:hover,.sidebar-nav button:hover{background:rgba(255,255,255,.045);color:#fff;transform:translateX(2px)}
+.sidebar-nav a.active{background:linear-gradient(90deg,rgba(215,182,74,.16),rgba(215,182,74,.035));color:#fff;border-left:2px solid var(--tnx-gold);box-shadow:inset 0 0 20px rgba(215,182,74,.035)}
+.main-content{background:transparent}
+.topbar{height:72px;background:rgba(5,9,20,.82);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.06);box-shadow:0 8px 35px rgba(0,0,0,.14)}
+.topbar-title{font-weight:750;letter-spacing:.2px}
+.deriv-status{border:1px solid rgba(25,213,138,.2);background:rgba(25,213,138,.07);padding:7px 11px;border-radius:999px}
+.page-content{max-width:1540px;margin:0 auto;padding:28px 28px 50px}
+.page-content>h2{letter-spacing:-.02em}
+.card,.execution-panel{background:linear-gradient(145deg,rgba(13,22,38,.94),rgba(8,15,27,.94));border:1px solid rgba(255,255,255,.065);box-shadow:var(--tnx-shadow);border-radius:16px}
+.card{transition:border-color .2s ease,transform .2s ease}
+.card:hover{border-color:rgba(215,182,74,.14)}
+.btn-load,.btn-run{border-radius:10px!important;box-shadow:0 10px 24px rgba(215,182,74,.08);font-weight:700}
+.summary-item{background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012));border:1px solid rgba(255,255,255,.055);border-radius:13px;padding:15px!important}
+.summary-item span{color:#78869d!important;font-size:.92rem!important;text-transform:uppercase;letter-spacing:.06em}
+.summary-item strong{font-size:1.65rem!important;margin-top:3px;display:block}
+.tnx-bot-workspace,.tnx-market-intel{border:1px solid rgba(255,255,255,.07)!important;box-shadow:0 24px 70px rgba(0,0,0,.24)!important}
+.tnx-bot-toolbar{background:linear-gradient(90deg,rgba(215,182,74,.055),transparent)!important}
+.execution-panel{padding:20px!important}
+.execution-header{border-bottom:1px solid var(--tnx-line);padding-bottom:15px;margin-bottom:16px}
+.ai-scanner{background:linear-gradient(135deg,rgba(77,163,255,.07),rgba(215,182,74,.035))!important;border:1px solid rgba(77,163,255,.12)!important;border-radius:13px!important}
+.execution-tabs{border-bottom:1px solid var(--tnx-line)!important}
+.tab-btn{border-radius:8px 8px 0 0!important}
+select,input,textarea{border-radius:10px!important;background:#0a1322!important;border-color:rgba(255,255,255,.09)!important;color:#fff!important}
+select option{background:#0a1322;color:#fff}
+@media(max-width:900px){.page-content{padding:18px 14px 90px}.topbar{padding:0 12px}.card{border-radius:13px}.sidebar{box-shadow:20px 0 60px rgba(0,0,0,.45)}}
+@media(max-width:560px){.page-content{padding:14px 10px 90px}.summary-item strong{font-size:1.35rem!important}.topbar-title{font-size:1.25rem}.execution-panel{padding:13px!important}}
+/* Dashboard hero */
+.tnx-dash-hero{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(300px,.8fr);gap:14px;margin-bottom:16px}
+.tnx-hero-card{position:relative;overflow:hidden;padding:24px;border:1px solid rgba(215,182,74,.14);border-radius:18px;background:radial-gradient(circle at 85% 15%,rgba(215,182,74,.12),transparent 32%),linear-gradient(135deg,#0d1829,#08111e);box-shadow:0 25px 70px rgba(0,0,0,.25)}
+.tnx-hero-card:after{content:"";position:absolute;inset:auto -80px -100px auto;width:260px;height:260px;border-radius:50%;border:1px solid rgba(215,182,74,.09);box-shadow:0 0 0 30px rgba(215,182,74,.02),0 0 0 60px rgba(215,182,74,.015)}
+.tnx-eyebrow{font-size:.82rem;text-transform:uppercase;letter-spacing:.16em;color:var(--tnx-gold2);font-weight:800}
+.tnx-hero-title{font-size:clamp(2.2rem,4vw,3.6rem);line-height:1.05;margin:8px 0;color:#fff;letter-spacing:-.04em}
+.tnx-hero-copy{color:#8795aa;max-width:650px;font-size:1.08rem}
+.tnx-live-strip{display:flex;flex-wrap:wrap;gap:8px;margin-top:17px}.tnx-chip{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.025);border-radius:999px;color:#c7d0de;font-size:.9rem}.tnx-chip i{width:7px;height:7px;border-radius:50%;background:var(--tnx-green);box-shadow:0 0 10px var(--tnx-green)}
+.tnx-quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tnx-quick{padding:16px;border-radius:15px;background:linear-gradient(145deg,#0d1828,#09111e);border:1px solid rgba(255,255,255,.06);cursor:pointer;transition:.2s}.tnx-quick:hover{transform:translateY(-2px);border-color:rgba(215,182,74,.22)}.tnx-quick b{display:block;font-size:1rem}.tnx-quick span{display:block;color:#77859b;font-size:.82rem;margin-top:3px}
+.tnx-market-strip{display:grid;grid-template-columns:1.3fr repeat(4,1fr);gap:10px;margin-bottom:16px}.tnx-market-card{padding:13px 14px;border:1px solid rgba(255,255,255,.06);border-radius:13px;background:rgba(10,18,31,.8)}.tnx-market-card span{display:block;color:#74839a;font-size:.76rem;text-transform:uppercase;letter-spacing:.08em}.tnx-market-card strong{display:block;margin-top:3px;font-size:1.18rem}.tnx-market-card.live strong{color:var(--tnx-green)}
+@media(max-width:900px){.tnx-dash-hero{grid-template-columns:1fr}.tnx-market-strip{grid-template-columns:1fr 1fr}.tnx-market-card:first-child{grid-column:1/-1}}
+@media(max-width:520px){.tnx-market-strip{grid-template-columns:1fr 1fr}.tnx-hero-card{padding:18px}.tnx-quick-grid{grid-template-columns:1fr 1fr}}
+
 </style>
 
 <style id="tnx-responsive-overhaul">
@@ -855,6 +906,26 @@ img,svg,canvas{max-width:100%}
 .page-content.active{display:block!important}
 .sidebar-nav a[data-page]{cursor:pointer}
 </style>
+
+<style id="mkx-premium-dashboard">
+:root{--mkx-red:#8d0000;--mkx-red2:#c40000;--mkx-gold:#f0c400;--mkx-cyan:#00e5ff;--mkx-blue:#2d9cff;--mkx-purple:#bd6cff;--mkx-bg:#05070b;--mkx-panel:#0b0d13;--mkx-line:rgba(255,255,255,.09)}
+.mkx-shell{margin:-1.2rem -2rem -2rem;min-height:calc(100vh - 80px);background:radial-gradient(circle at 75% 15%,rgba(139,0,0,.24),transparent 34%),linear-gradient(180deg,#07090e,#030408 70%);color:#fff;padding-bottom:2.5rem}
+.mkx-workbar{display:flex;overflow-x:auto;background:linear-gradient(180deg,#710000,#460000);border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,200,0,.22);scrollbar-width:none;white-space:nowrap}.mkx-workbar::-webkit-scrollbar{display:none}.mkx-workitem{flex:0 0 auto;border:0;background:transparent;color:#fff;font:700 1rem/1 inherit;padding:1rem 1.05rem;cursor:pointer;border-right:1px solid rgba(255,255,255,.06);transition:.2s}.mkx-workitem span{color:#ffd000;margin-right:.45rem;font-size:1.1rem}.mkx-workitem:hover,.mkx-workitem.active{background:#a50000;box-shadow:inset 0 -3px 0 #ffd000}
+.mkx-ticker{height:38px;display:flex;align-items:center;background:#031321;border-bottom:1px solid rgba(0,204,255,.18);overflow:hidden}.mkx-ticker-label{height:100%;display:flex;align-items:center;padding:0 1rem;background:#041b2e;color:#70cfff;font-size:.72rem;font-weight:900;letter-spacing:.12em;white-space:nowrap}.mkx-live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#18ef8b;box-shadow:0 0 12px #18ef8b;margin-right:.45rem}.mkx-ticker-track{display:flex;align-items:center;gap:0;min-width:max-content;animation:mkxTicker 35s linear infinite}.mkx-ticker:hover .mkx-ticker-track{animation-play-state:paused}.mkx-tick{display:inline-flex;align-items:center;gap:.55rem;padding:0 1.2rem;border-right:1px solid rgba(255,255,255,.06);font-size:.78rem;color:#7798b6}.mkx-tick b{color:#e7f1ff}.mkx-tick em{font-style:normal;color:#17e69a;font-size:.68rem}.mkx-ticker-empty{color:#66809a;padding-left:1rem;font-size:.76rem}@keyframes mkxTicker{from{transform:translateX(0)}to{transform:translateX(-45%)}}
+.mkx-hero{display:grid;grid-template-columns:1.25fr .75fr;gap:1.2rem;padding:1.25rem 1.4rem}.mkx-hero-copy,.mkx-hero-terminal{border:1px solid var(--mkx-line);background:linear-gradient(135deg,rgba(25,7,10,.98),rgba(7,9,15,.98));border-radius:20px;box-shadow:0 18px 50px rgba(0,0,0,.32);position:relative;overflow:hidden}.mkx-hero-copy{padding:2rem 2.2rem}.mkx-hero-copy:after{content:"";position:absolute;right:-90px;bottom:-110px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,0,0,.22),transparent 65%)}.mkx-kicker{font-size:.72rem;letter-spacing:.16em;font-weight:900;color:#d7dce7;margin-bottom:1rem}.mkx-hero h2{font-size:clamp(2.2rem,4vw,4.5rem);line-height:.98;margin:0 0 1rem;letter-spacing:-.04em}.mkx-hero h2 em{font-style:normal;color:#ffd000}.mkx-hero-copy p{max-width:680px;color:#9da7b7;font-size:1rem;line-height:1.65;margin:0}.mkx-hero-actions{display:flex;gap:.8rem;flex-wrap:wrap;margin:1.5rem 0}.mkx-primary,.mkx-secondary{border-radius:10px;padding:.85rem 1.2rem;font-weight:800;cursor:pointer}.mkx-primary{border:1px solid #ffd000;background:linear-gradient(180deg,#ffd51a,#c99900);color:#160f00}.mkx-secondary{border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.04);color:#fff}.mkx-hero-status{display:flex;gap:1.1rem;flex-wrap:wrap;color:#6f7c8f;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em}.mkx-hero-status b{color:#dce4ef}.mkx-hero-terminal{padding:1.3rem;display:flex;flex-direction:column;justify-content:space-between;min-height:330px;background:radial-gradient(circle at 60% 30%,rgba(0,229,255,.09),transparent 35%),linear-gradient(145deg,#0a1018,#07090e)}.mkx-terminal-head,.mkx-terminal-change,.mkx-terminal-footer{display:flex;justify-content:space-between;gap:1rem;color:#6d8098;font-size:.75rem}.mkx-terminal-head{color:#aab8ca;font-weight:800}.mkx-terminal-dot{display:inline-block;width:7px;height:7px;background:#00e5ff;border-radius:50%;box-shadow:0 0 14px #00e5ff;margin-right:.4rem}.mkx-terminal-price{font-size:clamp(2.5rem,5vw,4.4rem);font-weight:900;letter-spacing:-.05em;color:#fff;text-shadow:0 0 30px rgba(0,229,255,.22)}.mkx-terminal-change span:first-child{color:#ffd000}.mkx-spark{width:100%;height:120px;color:#00dfff;filter:drop-shadow(0 0 10px rgba(0,229,255,.22))}.mkx-terminal-footer{border-top:1px solid rgba(255,255,255,.07);padding-top:.8rem}.mkx-terminal-footer b{color:#dfe9f5}
+.mkx-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--mkx-line);margin:0 1.4rem 1.2rem;border:1px solid var(--mkx-line);border-radius:15px;overflow:hidden}.mkx-stat{background:#090c12;padding:1rem 1.2rem}.mkx-stat span,.mkx-section-title span,.mkx-panel-head span,.mkx-watch-label{display:block;font-size:.67rem;letter-spacing:.14em;color:#66758a;font-weight:900}.mkx-stat strong{display:block;font-size:1.45rem;margin:.35rem 0}.mkx-stat small{color:#778598;font-size:.72rem}
+.mkx-section-title{display:flex;justify-content:space-between;align-items:end;padding:1.1rem 1.4rem .7rem}.mkx-section-title h3{margin:.2rem 0 0;font-size:1.5rem}.mkx-section-title button,.mkx-panel-head button{border:0;background:transparent;color:#ffd000;font-weight:800;cursor:pointer}.mkx-tool-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;padding:0 1.4rem}.mkx-tool{min-height:150px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:#090b11;position:relative;overflow:hidden;text-align:left;color:#fff;padding:1.1rem;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-end;transition:.2s}.mkx-tool:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.25)}.mkx-tool:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 35%,var(--mkx-accent),transparent 45%);opacity:.16}.mkx-tool-icon{position:absolute;top:1rem;left:1rem;width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:1.8rem;background:rgba(255,255,255,.05);box-shadow:0 0 25px var(--mkx-accent)}.mkx-tool b,.mkx-tool span,.mkx-tool i{position:relative}.mkx-tool b{font-size:1rem}.mkx-tool span{font-size:.72rem;color:#8b96a8;margin-top:.35rem}.mkx-tool i{position:absolute;right:.8rem;top:.75rem;font-style:normal;color:var(--mkx-accent);font-weight:900}.mkx-blue{--mkx-accent:#2d9cff}.mkx-gold{--mkx-accent:#ffd000}.mkx-cyan{--mkx-accent:#00e5ff}.mkx-purple{--mkx-accent:#bd6cff}
+.mkx-market-board{margin:1.3rem 1.4rem;border:1px solid var(--mkx-line);border-radius:18px;background:#080b11;overflow:hidden}.mkx-board-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem 1.2rem;border-bottom:1px solid var(--mkx-line)}.mkx-board-head h3{margin:.25rem 0 0}.mkx-board-head select{min-width:280px;background:#10141c;color:#fff;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:.7rem}.mkx-board-body{display:grid;grid-template-columns:.42fr 1fr;min-height:230px}.mkx-watch-main{padding:1.4rem;border-right:1px solid var(--mkx-line)}.mkx-watch-main h4{font-size:1.2rem;margin:.45rem 0}.mkx-watch-price{font-size:2.7rem;font-weight:900;color:#fff}.mkx-watch-meta{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.7rem;color:#758397;font-size:.75rem}.mkx-watch-meta b{color:#e8eef6}.mkx-mini-chart{display:grid;place-items:center;padding:1rem;color:#00e5ff;background:linear-gradient(180deg,rgba(0,229,255,.025),transparent)}.mkx-mini-chart svg{width:100%;height:180px;filter:drop-shadow(0 0 8px rgba(0,229,255,.25))}
+.mkx-bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;padding:0 1.4rem}.mkx-panel{border:1px solid var(--mkx-line);border-radius:18px;background:#080b11;min-height:190px}.mkx-panel-head{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.1rem;border-bottom:1px solid var(--mkx-line)}.mkx-panel-head h3{margin:.2rem 0 0}.mkx-empty{padding:2rem;text-align:center;color:#637186}.mkx-analysis-row{display:grid;grid-template-columns:repeat(4,1fr);padding:1.2rem;gap:.7rem}.mkx-analysis-row div{background:#0d1119;border:1px solid rgba(255,255,255,.05);padding:.8rem;border-radius:10px}.mkx-analysis-row small{display:block;color:#657287;font-size:.65rem}.mkx-analysis-row strong{display:block;margin-top:.3rem}.mkx-note{font-size:.7rem;color:#66758a;padding:0 1.2rem 1.2rem}.mkx-risk{margin:1.2rem 1.4rem 0;border:1px solid rgba(255,193,7,.22);background:rgba(255,193,7,.045);border-radius:15px;padding:1rem 1.2rem;display:flex;align-items:center;gap:1rem}.mkx-risk>span{font-size:1.4rem;color:#ffd000}.mkx-risk b{font-size:.78rem;color:#ffd000}.mkx-risk p{margin:.2rem 0 0;color:#8e99a8;font-size:.72rem}.mkx-risk button{margin-left:auto;white-space:nowrap;background:#ffd000;color:#160f00;border:0;border-radius:8px;padding:.7rem 1rem;font-weight:900;cursor:pointer}
+@media(max-width:1050px){.mkx-hero{grid-template-columns:1fr}.mkx-tool-grid{grid-template-columns:repeat(2,1fr)}.mkx-stat-grid{grid-template-columns:repeat(2,1fr)}.mkx-board-body{grid-template-columns:1fr}.mkx-watch-main{border-right:0;border-bottom:1px solid var(--mkx-line)}.mkx-bottom-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.mkx-shell{margin:-.75rem -1rem -1rem}.mkx-hero{padding:.75rem}.mkx-hero-copy{padding:1.3rem}.mkx-hero h2{font-size:2.4rem}.mkx-stat-grid,.mkx-tool-grid{grid-template-columns:1fr}.mkx-stat-grid,.mkx-tool-grid,.mkx-bottom-grid{margin-left:.75rem;margin-right:.75rem}.mkx-market-board{margin-left:.75rem;margin-right:.75rem}.mkx-section-title{padding-left:.75rem;padding-right:.75rem}.mkx-risk{margin-left:.75rem;margin-right:.75rem;align-items:flex-start}.mkx-risk button{margin-left:0}.mkx-board-head{align-items:flex-start;flex-direction:column}.mkx-board-head select{width:100%;min-width:0}.mkx-analysis-row{grid-template-columns:repeat(2,1fr)}.mkx-workitem{padding:.8rem .85rem;font-size:.82rem}.mkx-ticker-label{padding:0 .7rem}.mkx-tick{padding:0 .8rem}.mkx-hero-status{font-size:.68rem}}
+</style>
+
+<style id="mkx-dashboard-header-fix">body:has(#page-dashboard.active) .sidebar{display:none}body:has(#page-dashboard.active) .main-content{margin-left:0;padding:0 1rem 2rem}body:has(#page-dashboard.active) .topbar{margin:0 -1rem;background:#fff;color:#20242b;border-bottom:1px solid #e5e7eb;padding:.7rem 1.2rem;box-shadow:0 1px 10px rgba(0,0,0,.08)}body:has(#page-dashboard.active) .topbar-left h1{color:#8d0000;font-weight:900}body:has(#page-dashboard.active) .topbar-left .page-sub{color:#6b7280}body:has(#page-dashboard.active) .topbar-right .balance{color:#0d9b91}body:has(#page-dashboard.active) .topbar-right .deriv-status{color:#148b5c}body:has(#page-dashboard.active) .topbar-right select{background:#fff!important;color:#222!important;border-color:#ddd!important}.mkx-top-report{display:flex;align-items:center;gap:.5rem;color:#333;font-weight:700;text-decoration:none;margin-left:1rem;border:0;background:transparent;cursor:pointer}.mkx-top-report:hover{color:#8d0000}</style>
+
+<style id="tnx-v2-automation-ui">
+.auto-page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.5rem}.auto-page-head h2{font-size:2.4rem;margin:.2rem 0}.auto-page-head p{color:var(--text-muted);font-size:1.05rem}.auto-kicker{font-size:.68rem;letter-spacing:.18em;color:#ffd000;font-weight:900}.auto-account-pill{display:inline-flex;align-items:center;gap:.5rem;border:1px solid rgba(0,200,83,.25);background:rgba(0,200,83,.07);padding:.65rem .9rem;border-radius:999px;color:#5ef09a;font-size:.72rem;font-weight:900;white-space:nowrap}.auto-account-pill span{width:8px;height:8px;border-radius:50%;background:#00c853;box-shadow:0 0 10px #00c853}.auto-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(340px,.8fr);gap:1.25rem}.auto-config-card,.auto-runs-card{min-width:0}.auto-card-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1.1rem}.auto-card-head span{font-size:.66rem;letter-spacing:.15em;color:#74839a;font-weight:900}.auto-card-head h3{margin:.2rem 0 0;font-size:1.35rem}.auto-count{background:rgba(255,208,0,.1);border:1px solid rgba(255,208,0,.2);color:#ffd000!important;padding:.35rem .6rem;border-radius:999px}.auto-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.auto-form-grid label{display:flex;flex-direction:column;gap:.35rem;color:#8c9ab0;font-size:.76rem;font-weight:700}.auto-form-grid input,.auto-form-grid select,.auto-form-grid textarea{width:100%;background:#0c121d!important;color:#fff!important;border:1px solid rgba(255,255,255,.1)!important;border-radius:9px;padding:.72rem;font:inherit;min-height:42px}.auto-form-grid textarea{resize:vertical;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.76rem}.auto-description{margin-top:1rem;padding:.9rem;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:#8e9aad;font-size:.8rem;line-height:1.5}.auto-risk-box{margin-top:1rem;padding:.9rem;border-radius:10px;border:1px solid rgba(255,193,7,.18);background:rgba(255,193,7,.045);color:#aeb8c7;font-size:.75rem;line-height:1.5}.auto-risk-box b{color:#ffd000}.auto-actions{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem}.auto-action-status{margin-top:.9rem;color:#8b99ad;font-size:.78rem}.auto-runs-list{display:flex;flex-direction:column;gap:.7rem;max-height:650px;overflow:auto}.auto-empty{padding:2rem 1rem;text-align:center;color:#65748a;border:1px dashed rgba(255,255,255,.08);border-radius:12px}.auto-run{border:1px solid rgba(255,255,255,.08);background:#0a1019;border-radius:13px;padding:.85rem}.auto-run-head{display:flex;justify-content:space-between;gap:.6rem;align-items:flex-start}.auto-run-title{font-weight:900;color:#eaf0f8}.auto-run-meta{color:#738198;font-size:.7rem;margin-top:.25rem}.auto-status{font-size:.65rem;font-weight:900;padding:.28rem .5rem;border-radius:999px}.auto-status.running{color:#5ef09a;background:rgba(0,200,83,.08);border:1px solid rgba(0,200,83,.2)}.auto-status.paused{color:#ffd35a;background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.2)}.auto-status.stopped{color:#ff7d98;background:rgba(255,23,68,.07);border:1px solid rgba(255,23,68,.18)}.auto-run-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:.7rem}.auto-run-stats div{padding:.55rem;background:rgba(255,255,255,.025);border-radius:8px}.auto-run-stats small{display:block;color:#66758a;font-size:.6rem}.auto-run-stats b{display:block;margin-top:.2rem;font-size:.78rem}.auto-run-actions{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.7rem}.auto-run-actions button{border:1px solid rgba(255,255,255,.09);background:#111925;color:#dce5ef;border-radius:7px;padding:.45rem .6rem;font-size:.68rem;font-weight:800;cursor:pointer}.auto-run-actions button:hover{border-color:#ffd000;color:#ffd000}.auto-api-note{margin-top:1.2rem;display:flex;gap:1rem;align-items:center}.auto-api-note b{color:#ffd000;white-space:nowrap}.auto-api-note span{color:#718096;font-size:.76rem}@media(max-width:900px){.auto-layout{grid-template-columns:1fr}.auto-page-head{flex-direction:column}.auto-form-grid{grid-template-columns:1fr}.auto-api-note{align-items:flex-start;flex-direction:column}}
+</style>
 </head>
 <body>
 
@@ -979,9 +1050,10 @@ img,svg,canvas{max-width:100%}
             <div class="topbar-left">
                 <button class="menu-toggle" id="menuToggle">☰</button>
                 <div>
-                    <h1 id="pageTitle">Dashboard</h1>
-                    <span class="page-sub" id="pageSub">Overview</span>
+                    <h1 id="pageTitle">TradeNovaX</h1>
+                    <span class="page-sub" id="pageSub">Live Deriv Workspace</span>
                 </div>
+                <button class="mkx-top-report" onclick="switchPage('reports')" type="button">▤ Reports</button>
             </div>
             <div class="topbar-right">
                 <button id="tnxThemeToggle" class="btn-load" type="button" style="width:auto;padding:.45rem .7rem;" aria-label="Toggle theme">☾</button>
@@ -1001,103 +1073,85 @@ img,svg,canvas{max-width:100%}
         PAGE: DASHBOARD
         ============================================================ -->
         <div class="page-content active" id="page-dashboard">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; flex-wrap:wrap; gap:1rem;">
-                <h2 style="font-size:2rem;">🤖 Your Bots</h2>
-                <button class="btn-load" style="width:auto; padding:0.6rem 2rem;" onclick="switchPage('bot')">
-                    + New Bot
-                </button>
-            </div>
-            <p style="color:var(--text-muted); font-size:1.3rem; margin-bottom:2rem;">Load and manage your trading bots</p>
-
-            <div class="card" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem;">
-                <div class="summary-item"><span>Real Balance</span><strong id="dashBalance">—</strong></div>
-                <div class="summary-item"><span>Open Positions</span><strong id="dashOpenPositions">0</strong></div>
-                <div class="summary-item"><span>Session P/L</span><strong id="dashSessionPnl">$0.00</strong></div>
-                <div class="summary-item"><span>Connection</span><strong id="dashConnection" style="color:var(--red);">Disconnected</strong></div>
-            </div>
-
-            <h2 style="font-size:2rem; margin-top:2rem;">📌 Live Positions</h2>
-            <p style="color:var(--text-muted); font-size:1.1rem; margin-bottom:1rem;">Only contracts currently held on your authenticated REAL Deriv account appear here.</p>
-            <div class="card" id="dashboardPositions">
-                <div style="padding:1.5rem;text-align:center;color:var(--text-muted);">No open real-money positions.</div>
-            </div>
-
-            <h2 style="font-size:2rem; margin-top:2rem;">🧾 Recent Account Activity</h2>
-            <div class="card">
-                <div class="trade-list" id="tradeList">
-                    <div style="padding:1.5rem;text-align:center;color:var(--text-muted);">Waiting for live Deriv transaction events…</div>
-                </div>
-            </div>
-
-            <!-- ===== EXECUTION PANEL ===== -->
-            <div class="execution-panel">
-                <div class="execution-header">
-                    <h3 style="font-size:1.8rem;">🎮 Bot Control</h3>
-                    <div class="execution-status">
-                        <span class="status-dot ready" id="botStatusDot"></span>
-                        <span id="botStatusText">Ready</span>
-                    </div>
+            <section class="mkx-shell">
+                <div class="mkx-workbar">
+                    <button class="mkx-workitem active" onclick="switchPage('dashboard')"><span>⌂</span> Dashboard</button>
+                    <button class="mkx-workitem" onclick="switchPage('bot')"><span>⚙</span> Bot Builder</button>
+                    <button class="mkx-workitem" onclick="switchPage('automated')"><span>✦</span> Auto Trading</button>
+                    <button class="mkx-workitem" onclick="switchPage('freebots')"><span>▣</span> Free Bots</button>
+                    <button class="mkx-workitem" onclick="switchPage('premium')"><span>♙</span> Premium AI Bots</button>
+                    <button class="mkx-workitem" onclick="switchPage('quick')"><span>⚡</span> Quick Bot</button>
+                    <button class="mkx-workitem" onclick="switchPage('signal')"><span>◎</span> Signal AI</button>
+                    <button class="mkx-workitem" onclick="switchPage('manual')"><span>▤</span> Manual Trader</button>
+                    <button class="mkx-workitem" onclick="switchPage('bulk')"><span>▱</span> Bulk Trader</button>
+                    <button class="mkx-workitem" onclick="switchPage('analysis')"><span>◉</span> Smart AI</button>
                 </div>
 
-                <div class="run-section">
-                    <a href="#" class="btn-run" onclick="switchPage('bot'); return false;">
-                        <span class="run-icon">🚀</span>
-                        <span class="run-text">Launch Bot Builder</span>
-                    </a>
-                    <p class="run-hint">When you're ready to trade, hit Run. You'll be able to track your bot's performance here.</p>
+                <div class="mkx-ticker" id="mkxMarketTicker" aria-label="Live Deriv market ticker">
+                    <div class="mkx-ticker-label"><span class="mkx-live-dot"></span> LIVE MARKETS</div>
+                    <div class="mkx-ticker-track" id="mkxTickerTrack"><span class="mkx-ticker-empty">Waiting for live Deriv market data…</span></div>
                 </div>
 
-                <!-- ===== AI SCANNER ===== -->
-                <div class="ai-scanner">
-                    <div class="scanner-header">
-                        <span class="scanner-icon">🧠</span>
-                        <span style="font-weight:600;">AI Scanner</span>
-                        <button class="btn-scan" id="scanBtn" onclick="runAIScanner()">🔍 Click to analyze</button>
-                    </div>
-                    <div class="scanner-results" id="scannerResults">
-                        <span class="scan-status">🟢 Ready to scan</span>
-                    </div>
-                </div>
-
-                <!-- ===== EXECUTION TABS ===== -->
-                <div class="execution-tabs">
-                    <button class="tab-btn active" data-tab="summary" onclick="switchExecutionTab('summary')">Summary</button>
-                    <button class="tab-btn" data-tab="transactions" onclick="switchExecutionTab('transactions')">Transactions</button>
-                    <button class="tab-btn" data-tab="journal" onclick="switchExecutionTab('journal')">Journal</button>
-                </div>
-
-                <div class="execution-content">
-                    <div class="tab-panel active" id="panel-summary">
-                        <div class="summary-grid">
-                            <div class="summary-item">
-                                <span>Total Trades</span>
-                                <strong id="totalTrades">0</strong>
-                            </div>
-                            <div class="summary-item">
-                                <span>Win Rate</span>
-                                <strong id="winRate">0%</strong>
-                            </div>
-                            <div class="summary-item">
-                                <span>Total P&L</span>
-                                <strong id="totalPnL" style="color: var(--gold);">$0.00</strong>
-                            </div>
-                            <div class="summary-item">
-                                <span>Active Bots</span>
-                                <strong id="activeBotsCount">0</strong>
-                            </div>
+                <div class="mkx-hero">
+                    <div class="mkx-hero-copy">
+                        <div class="mkx-kicker"><span class="mkx-live-dot"></span> TRADENOVAX LIVE TRADING WORKSPACE</div>
+                        <h2>Trade smarter.<br><em>Execute with precision.</em></h2>
+                        <p>One professional workspace for live Deriv markets, analysis, digit strategies, bots and real-account execution.</p>
+                        <div class="mkx-hero-actions">
+                            <button class="mkx-primary" onclick="switchPage('manual')">Open Manual Trader <span>→</span></button>
+                            <button class="mkx-secondary" onclick="switchPage('analysis')">Explore Market Intelligence</button>
+                        </div>
+                        <div class="mkx-hero-status">
+                            <span><i id="mkxLiveIndicator"></i><b id="mkxLiveText">Connecting to Deriv…</b></span>
+                            <span>ACCOUNT <b id="mkxHeroAccount">REAL —</b></span>
+                            <span>BALANCE <b id="mkxHeroBalance">—</b></span>
                         </div>
                     </div>
-                    <div class="tab-panel" id="panel-transactions">
-                        <div id="transactionList"><div style="padding:1rem 0;color:var(--text-muted);text-align:center;">No live transactions yet.</div></div>
+                    <div class="mkx-hero-terminal">
+                        <div class="mkx-terminal-head">
+                            <div><span class="mkx-terminal-dot"></span> LIVE MARKET</div>
+                            <span id="mkxHeroMarketName">Waiting for market…</span>
                         </div>
-                    </div>
-                    <div class="tab-panel" id="panel-journal">
-                        <div id="journalList">
-                            <p style="color: var(--text-muted); text-align: center; padding: 1rem;">No journal entries yet</p>
-                        </div>
+                        <div class="mkx-terminal-price" id="mkxHeroPrice">—</div>
+                        <div class="mkx-terminal-change"><span id="mkxHeroLastDigit">Last digit —</span><span id="mkxHeroTickTime">Live tick —</span></div>
+                        <svg class="mkx-spark" viewBox="0 0 520 150" preserveAspectRatio="none" aria-hidden="true">
+                            <path id="mkxSparkPath" d="M0 125 L45 118 L90 122 L135 100 L180 108 L225 74 L270 83 L315 48 L360 58 L405 34 L450 44 L520 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                            <path id="mkxSparkFill" d="M0 125 L45 118 L90 122 L135 100 L180 108 L225 74 L270 83 L315 48 L360 58 L405 34 L450 44 L520 20 L520 150 L0 150 Z" fill="currentColor" opacity=".08"/>
+                        </svg>
+                        <div class="mkx-terminal-footer"><span>Ticks <b id="mkxTickCount">0</b></span><span>Stream <b id="mkxStreamState">OFFLINE</b></span></div>
                     </div>
                 </div>
-            </div>
+
+                <div class="mkx-stat-grid">
+                    <div class="mkx-stat"><span>REAL BALANCE</span><strong id="mkxBalance">—</strong><small id="mkxCurrency">USD</small></div>
+                    <div class="mkx-stat"><span>OPEN CONTRACTS</span><strong id="mkxOpen">0</strong><small>Authenticated portfolio</small></div>
+                    <div class="mkx-stat"><span>SESSION P/L</span><strong id="mkxPnl">—</strong><small>Live closed contracts</small></div>
+                    <div class="mkx-stat"><span>CONNECTION</span><strong id="mkxConnection">OFFLINE</strong><small>REAL Deriv account</small></div>
+                </div>
+
+                <div class="mkx-section-title"><div><span>TRADING TOOLS</span><h3>Choose your workspace</h3></div><button onclick="switchPage('analysis')">View all tools →</button></div>
+                <div class="mkx-tool-grid">
+                    <button class="mkx-tool mkx-blue" onclick="switchPage('bot')"><div class="mkx-tool-icon">▣</div><div><b>BOT BUILDER</b><span>Build and configure live strategies</span></div><i>01</i></button>
+                    <button class="mkx-tool mkx-gold" onclick="switchPage('premium')"><div class="mkx-tool-icon">✦</div><div><b>PREMIUM AI BOTS</b><span>Advanced strategy workspace</span></div><i>02</i></button>
+                    <button class="mkx-tool mkx-cyan" onclick="switchPage('quick')"><div class="mkx-tool-icon">⚡</div><div><b>QUICK BOT</b><span>Fast strategy configuration</span></div><i>03</i></button>
+                    <button class="mkx-tool mkx-purple" onclick="switchPage('manual')"><div class="mkx-tool-icon">◉</div><div><b>MANUAL TRADING</b><span>Full live trade control</span></div><i>04</i></button>
+                </div>
+
+                <div class="mkx-market-board">
+                    <div class="mkx-board-head"><div><span>LIVE MARKET MONITOR</span><h3>Deriv Market Watch</h3></div><select id="mkxMarketSelect"><option value="">Select live Deriv market…</option></select></div>
+                    <div class="mkx-board-body">
+                        <div class="mkx-watch-main"><div class="mkx-watch-label">SELECTED MARKET</div><h4 id="mkxWatchName">—</h4><div class="mkx-watch-price" id="mkxWatchPrice">—</div><div class="mkx-watch-meta"><span>Last digit <b id="mkxWatchDigit">—</b></span><span>Market <b id="mkxWatchCategory">—</b></span></div></div>
+                        <div class="mkx-mini-chart"><svg viewBox="0 0 700 180" preserveAspectRatio="none"><path id="mkxChartLine" d="M0 140 L60 125 L120 132 L180 95 L240 110 L300 70 L360 92 L420 52 L480 74 L540 40 L600 54 L700 25" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></div>
+                    </div>
+                </div>
+
+                <div class="mkx-bottom-grid">
+                    <div class="mkx-panel"><div class="mkx-panel-head"><div><span>LIVE POSITIONS</span><h3>Open contracts</h3></div><button onclick="switchPage('positions')">Open positions →</button></div><div id="mkxPositions"><div class="mkx-empty">No open real-money positions.</div></div></div>
+                    <div class="mkx-panel"><div class="mkx-panel-head"><div><span>MARKET INTELLIGENCE</span><h3>Analysis snapshot</h3></div><button onclick="switchPage('analysis')">Open analysis →</button></div><div class="mkx-analysis-row"><div><small>RSI(14)</small><strong id="mkxRsi">—</strong></div><div><small>MACD</small><strong id="mkxMacd">—</strong></div><div><small>VOLATILITY</small><strong id="mkxVol">—</strong></div><div><small>DIGIT</small><strong id="mkxDigit">—</strong></div></div><div class="mkx-note">Values are populated from live Deriv market data; no simulated market readings are shown.</div></div>
+                </div>
+
+                <div class="mkx-risk"><span>⚠</span><div><b>REAL-MONEY TRADING</b><p>TradeNovaX sends purchases to your authenticated REAL Deriv account. Always verify stake, proposal, payout and risk before confirming a trade.</p></div><button onclick="switchPage('manual')">Open Trader</button></div>
+            </section>
         </div>
 
         <!-- ============================================================
@@ -1667,29 +1721,46 @@ img,svg,canvas{max-width:100%}
         PAGE: AUTOMATED
         ============================================================ -->
         <div class="page-content" id="page-automated">
-            <h2 style="font-size:2.4rem;">🤖 <span style="color:var(--gold);">Automated</span> Strategies</h2>
-            <p style="color:var(--text-muted); font-size:1.3rem; margin-bottom:2rem;">Pre-built automated trading strategies</p>
-
-            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:2rem;">
-                <div class="card" style="border-left: 4px solid var(--gold);">
-                    <h4 style="color:var(--gold);">Even/Odd (Digits)</h4>
-                    <p style="color:var(--text-muted);">Live Deriv market data • <span class="auto-live-price">Waiting…</span></p>
-                    <button class="btn-load" style="width:100%; margin-top:1rem;" onclick="activateLiveStrategy('even-odd-digit')">Configure Live Strategy</button>
+            <div class="auto-page-head">
+                <div>
+                    <div class="auto-kicker">DERIV AUTOMATION API</div>
+                    <h2>🤖 <span style="color:var(--gold);">Auto Trading</span></h2>
+                    <p>Run Deriv's authenticated predefined automated strategies with live run status, pause, resume and stop controls.</p>
                 </div>
-                <div class="card" style="border-left: 4px solid var(--gold);">
-                    <h4 style="color:var(--gold);">Over/Under (Digits)</h4>
-                    <p style="color:var(--text-muted);">Live Deriv market data • <span class="auto-live-price">Waiting…</span></p>
-                    <button class="btn-load" style="width:100%; margin-top:1rem;" onclick="activateLiveStrategy('over-under')">Configure Live Strategy</button>
-                </div>
-                <div class="card" style="border-left: 4px solid var(--gold);">
-                    <h4 style="color:var(--gold);">Rise/Fall</h4>
-                    <p style="color:var(--text-muted);">Live Deriv market data • <span class="auto-live-price">Waiting…</span></p>
-                    <button class="btn-load" style="width:100%; margin-top:1rem;" onclick="activateLiveStrategy('rise-fall')">Configure Live Strategy</button>
-                </div>
+                <div class="auto-account-pill"><span></span> REAL ACCOUNT ONLY</div>
             </div>
 
-            <div style="margin-top:2rem; padding:1.5rem; background:rgba(255,23,68,0.05); border:1px solid rgba(255,23,68,0.1); border-radius:12px;">
-                <p style="color:var(--red); font-size:1.1rem; text-align:center;">⚠️ Risk Disclaimer: Trading involves risk. Past performance does not guarantee future results.</p>
+            <div class="auto-layout">
+                <section class="card auto-config-card">
+                    <div class="auto-card-head"><div><span>STRATEGY</span><h3>Build an automated run</h3></div><button class="btn-load" onclick="loadAutomationStrategies()">↻ Refresh</button></div>
+                    <div class="auto-form-grid">
+                        <label>Strategy<select id="autoStrategy"><option value="">Loading Deriv strategies…</option></select></label>
+                        <label>Market<select id="autoMarket"><option value="">Loading live markets…</option></select></label>
+                        <label>Contract Type<select id="autoContractType"><option value="CALL">CALL</option></select></label>
+                        <label>Stake<input id="autoAmount" type="number" min="0.35" step="0.01" value="1"></label>
+                        <label>Duration<input id="autoDuration" type="number" min="1" step="1" value="1"></label>
+                        <label>Duration Unit<select id="autoDurationUnit"><option value="t">Ticks</option><option value="s">Seconds</option><option value="m">Minutes</option><option value="h">Hours</option><option value="d">Days</option></select></label>
+                        <label>Barrier / Digit<input id="autoBarrier" inputmode="decimal" placeholder="Optional"></label>
+                        <label>Strategy parameters<textarea id="autoParams" rows="3" spellcheck="false">{}</textarea></label>
+                    </div>
+                    <div id="autoStrategyDescription" class="auto-description">Choose a live strategy to see its supported contract types and parameters.</div>
+                    <div class="auto-risk-box">⚠️ <b>REAL MONEY:</b> Starting an automation run authorises Deriv to make purchases according to the selected strategy and contract template. Verify every setting before starting.</div>
+                    <div class="auto-actions">
+                        <button class="mkx-primary" onclick="startAutomationRun()">▶ Start REAL Automation</button>
+                        <button class="btn-load" onclick="loadAutomationRuns()">↻ Load My Runs</button>
+                    </div>
+                    <div id="autoActionStatus" class="auto-action-status">Waiting for Deriv automation data…</div>
+                </section>
+
+                <section class="card auto-runs-card">
+                    <div class="auto-card-head"><div><span>LIVE RUNS</span><h3>Automation control</h3></div><span id="autoRunCount" class="auto-count">0</span></div>
+                    <div id="autoRunsList" class="auto-runs-list"><div class="auto-empty">Connect your REAL Deriv account to load automation runs.</div></div>
+                </section>
+            </div>
+
+            <div class="card auto-api-note">
+                <b>Live Deriv Automation API</b>
+                <span>TradeNovaX uses Deriv's authenticated automation endpoints for predefined strategy runs. Status updates are read from Deriv; no simulated bot activity is shown.</span>
             </div>
         </div>
 
@@ -1827,9 +1898,9 @@ function updateUserIdentity(){const email=localStorage.getItem('deriv_user_email
 async function loadAccounts(){const r=await derivFetch('/trading/v1/options/accounts');const list=Array.isArray(r.data)?r.data:(Array.isArray(r.accounts)?r.accounts:[]);accounts=list.filter(a=>String(a.account_type||'').toLowerCase()==='real'&&String(a.status||'').toLowerCase()==='active'&&a.account_id);if(!accounts.length)throw new Error('No active REAL Deriv trading account is available. Demo accounts are disabled.');const saved=localStorage.getItem('tradenovax_real_account_id');activeAccount=accounts.find(a=>a.account_id===saved)||accounts[0];currentAccountType='real';localStorage.setItem('tradenovax_real_account_id',activeAccount.account_id);updateAccountUI();updateUserIdentity()}
 function updateAccountUI(){const real=document.getElementById('btnReal');if(real)real.className='account-btn active-live';const demo=document.getElementById('btnDemo');if(demo)demo.remove();const id=document.getElementById('accountIdDisplay'),typ=document.getElementById('accountTypeDisplay');if(id)id.textContent=activeAccount?.account_id||'—';if(typ)typ.textContent=activeAccount?'REAL':'—';const label=document.getElementById('accountLabel');if(label)label.textContent=activeAccount?`REAL • ${activeAccount.account_id}`:'REAL ACCOUNT'}
 async function connectDeriv(){try{derivToken=getAccessToken();if(!derivToken){setConnection(false,'Login required');showToast('⚠️ Sign in with Deriv before trading.');return}await loadAccounts();await openAuthenticatedWebSocket()}catch(e){console.error(e);setConnection(false,'Connection failed');showToast('❌ Deriv: '+e.message)}}
-async function openAuthenticatedWebSocket(){if(!activeAccount?.account_id)throw new Error('No active REAL Deriv account ID.');if(String(activeAccount.account_type).toLowerCase()!=='real')throw new Error('Demo accounts are disabled.');if(derivWS&&derivWS.readyState<=1)derivWS.close();const r=await derivFetch(`/trading/v1/options/accounts/${encodeURIComponent(activeAccount.account_id)}/otp`,{method:'POST'});const url=r?.data?.url;if(!url)throw new Error('Deriv did not return an authenticated WebSocket URL.');derivWS=new WebSocket(url);derivWS.onopen=()=>{reconnectAttempts=0;setConnection(true);showToast('✅ Connected to your REAL Deriv account');send({balance:1,subscribe:1});send({transaction:1,subscribe:1});send({portfolio:1});send({active_symbols:'full'});const ds=document.getElementById('digitSymbol')?.value||subscribedSymbol||'R_100';if(ds){subscribeTicks(ds);requestDigitContractsFor(ds)}refreshLiveData()};derivWS.onmessage=e=>{try{handleDerivMessage(JSON.parse(e.data))}catch(err){console.error('Deriv message error',err)}};derivWS.onerror=()=>setConnection(false,'WebSocket error');derivWS.onclose=()=>{setConnection(false,'Disconnected');if(getAccessToken()&&reconnectAttempts<3){clearTimeout(reconnectTimer);reconnectTimer=setTimeout(()=>{reconnectAttempts++;connectDeriv()},2000*reconnectAttempts)}}}
+async function openAuthenticatedWebSocket(){if(!activeAccount?.account_id)throw new Error('No active REAL Deriv account ID.');if(String(activeAccount.account_type).toLowerCase()!=='real')throw new Error('Demo accounts are disabled.');if(derivWS&&derivWS.readyState<=1)derivWS.close();const r=await derivFetch(`/trading/v1/options/accounts/${encodeURIComponent(activeAccount.account_id)}/otp`,{method:'POST'});const url=r?.data?.url;if(!url)throw new Error('Deriv did not return an authenticated WebSocket URL.');derivWS=new WebSocket(url);derivWS.onopen=()=>{reconnectAttempts=0;setConnection(true);showToast('✅ Connected to your REAL Deriv account');send({balance:1,subscribe:1});send({transaction:1,subscribe:1});send({portfolio:1});send({active_symbols:'full'});try{send({auto_list_strategies:1});send({auto_list:1})}catch{};const ds=document.getElementById('digitSymbol')?.value||subscribedSymbol||'R_100';if(ds){subscribeTicks(ds);requestDigitContractsFor(ds)}refreshLiveData()};derivWS.onmessage=e=>{try{handleDerivMessage(JSON.parse(e.data))}catch(err){console.error('Deriv message error',err)}};derivWS.onerror=()=>setConnection(false,'WebSocket error');derivWS.onclose=()=>{setConnection(false,'Disconnected');if(getAccessToken()&&reconnectAttempts<3){clearTimeout(reconnectTimer);reconnectTimer=setTimeout(()=>{reconnectAttempts++;connectDeriv()},2000*reconnectAttempts)}}}
 function send(payload){if(!derivWS||derivWS.readyState!==WebSocket.OPEN)throw new Error('Deriv connection is not ready.');const req_id=++reqSeq;derivWS.send(JSON.stringify({...payload,req_id}));return req_id}
-function handleDerivMessage(d){if(d.error){const ctx=pending.get(d.req_id);if(ctx){pending.delete(d.req_id);if(ctx.status)ctx.status.textContent='❌ '+d.error.message;if(ctx.kind==='digitProposal'){digitProposal=null;const b=digitEl('digitBuyButton');if(b)b.disabled=true}}console.error(d.error);showToast('❌ '+d.error.message);return}if(d.msg_type==='tick'){if(d.subscription?.id)tickSubscriptionId=d.subscription.id;return handleTick(d.tick)}switch(d.msg_type){case'balance':return handleBalance(d.balance);case'active_symbols':return populateSymbols(d.active_symbols||[]);case'contracts_for':return applyDigitContractLimits(d.contracts_for?.available||[],d.contracts_for?.symbol||subscribedSymbol||'');case'history':{const prices=(d.history?.prices||[]).map(Number).filter(Number.isFinite);if(prices.length){const times=(d.history?.times||[]).map(Number);const paired=prices.map((q,i)=>({epoch:Number.isFinite(times[i])?times[i]:Date.now()/1000-i,quote:q}));tickBuffer=paired.slice(-300);digitPrices=prices.slice(-1000);renderDigitStats();renderDigitChart();renderRealtimeChart();}return;}case'candles':{latestCandles=Array.isArray(d.candles)?d.candles.map(c=>({epoch:Number(c.epoch),open:Number(c.open),high:Number(c.high),low:Number(c.low),close:Number(c.close)})).filter(c=>Object.values(c).every(Number.isFinite)):[];renderCandleChart();return;}case'transaction':return addTransaction(d.transaction);case'proposal':if(digitProposalReq===d.req_id)return handleDigitProposal(d);return handleProposal(d);case'buy':if(pending.get(d.req_id)?.kind==='digitBuy')return handleDigitBuy(d);return handleBuy(d);case'proposal_open_contract':return handleContract(d.proposal_open_contract);case'portfolio':{
+function handleDerivMessage(d){if(d.error){const ctx=pending.get(d.req_id);if(ctx){pending.delete(d.req_id);if(ctx.status)ctx.status.textContent='❌ '+d.error.message;if(ctx.kind==='digitProposal'){digitProposal=null;const b=digitEl('digitBuyButton');if(b)b.disabled=true}if(String(ctx.kind||'').startsWith('auto')){try{autoSetStatus('❌ '+d.error.message)}catch{}}}console.error(d.error);showToast('❌ '+d.error.message);return}if(d.msg_type==='tick'){if(d.subscription?.id)tickSubscriptionId=d.subscription.id;return handleTick(d.tick)}switch(d.msg_type){case'auto_list_strategies':tnxAutoStrategies=d.auto_list_strategies?.strategies||[];renderAutoStrategies();autoSetStatus(`Loaded ${tnxAutoStrategies.length} live Deriv automation strategies.`,true);return;case'auto_list':tnxAutoRuns.clear();(d.auto_list?.runs||[]).forEach(r=>tnxAutoRuns.set(String(r.run_id),r));renderAutoRuns();autoSetStatus(`Loaded ${tnxAutoRuns.size} automation run(s).`,true);return;case'auto_start':handleAutoPayload('start',d.auto_start);autoSetStatus(`🟢 REAL automation started • Run ${d.auto_start?.run_id||'—'}`,true);try{send({auto_get:1,run_id:d.auto_start.run_id,subscribe:1})}catch{}return;case'auto_get':handleAutoPayload('get',d.auto_get);return;case'auto_pause':handleAutoPayload('pause',d.auto_pause);loadAutomationRuns();return;case'auto_resume':handleAutoPayload('resume',d.auto_resume);loadAutomationRuns();return;case'auto_stop':handleAutoPayload('stop',d.auto_stop);loadAutomationRuns();return;case'balance':return handleBalance(d.balance);case'active_symbols':return populateSymbols(d.active_symbols||[]);case'contracts_for':return applyDigitContractLimits(d.contracts_for?.available||[],d.contracts_for?.symbol||subscribedSymbol||'');case'history':{const prices=(d.history?.prices||[]).map(Number).filter(Number.isFinite);if(prices.length){const times=(d.history?.times||[]).map(Number);const paired=prices.map((q,i)=>({epoch:Number.isFinite(times[i])?times[i]:Date.now()/1000-i,quote:q}));tickBuffer=paired.slice(-300);digitPrices=prices.slice(-1000);renderDigitStats();renderDigitChart();renderRealtimeChart();}return;}case'candles':{latestCandles=Array.isArray(d.candles)?d.candles.map(c=>({epoch:Number(c.epoch),open:Number(c.open),high:Number(c.high),low:Number(c.low),close:Number(c.close)})).filter(c=>Object.values(c).every(Number.isFinite)):[];renderCandleChart();return;}case'transaction':return addTransaction(d.transaction);case'proposal':if(digitProposalReq===d.req_id)return handleDigitProposal(d);return handleProposal(d);case'buy':if(pending.get(d.req_id)?.kind==='digitBuy')return handleDigitBuy(d);return handleBuy(d);case'proposal_open_contract':return handleContract(d.proposal_open_contract);case'portfolio':{
   const contracts=d.portfolio?.contracts||[];
   updateActiveContracts(contracts);
   contracts.forEach(c=>{
@@ -1839,8 +1910,8 @@ function handleDerivMessage(d){if(d.error){const ctx=pending.get(d.req_id);if(ct
   });
   return;
 }case'profit_table':return renderProfitTable(d.profit_table);case'sell':return handleSell(d)}}
-function handleBalance(b){if(!b)return;const amount=Number(b.balance??0),cur=b.currency||activeAccount?.currency||'USD';for(const id of ['balanceAmount','dashBalance']){const e=document.getElementById(id);if(e)e.textContent=amount.toFixed(2)}const c=document.getElementById('balanceCurrency');if(c)c.textContent=cur;const db=document.getElementById('dashBalance');if(db)db.textContent=`${amount.toFixed(2)} ${cur}`}
-function handleTick(t){if(!t)return;lastTick=t;updateDigitFromTick(t);updateAnalysisMeta(document.getElementById('analysisSymbol')?.value||t.symbol||'');tickBuffer.push({epoch:Number(t.epoch),quote:Number(t.quote)});if(tickBuffer.length>300)tickBuffer.shift();const e=document.getElementById('latestTickDisplay');if(e)e.textContent=Number(t.quote).toFixed(5);renderRealtimeChart();runAIScanner(true)}
+function handleBalance(b){if(!b)return;const amount=Number(b.balance??0),cur=b.currency||activeAccount?.currency||'USD';for(const id of ['balanceAmount','dashBalance']){const e=document.getElementById(id);if(e)e.textContent=amount.toFixed(2)}const c=document.getElementById('balanceCurrency');if(c)c.textContent=cur;const db=document.getElementById('dashBalance');if(db)db.textContent=`${amount.toFixed(2)} ${cur}`;mkxSyncDashboard()}
+function handleTick(t){if(!t)return;lastTick=t;mkxMarketQuotes.set(t.symbol||subscribedSymbol,Number(t.quote));mkxSyncDashboard();updateDigitFromTick(t);updateAnalysisMeta(document.getElementById('analysisSymbol')?.value||t.symbol||'');tickBuffer.push({epoch:Number(t.epoch),quote:Number(t.quote)});if(tickBuffer.length>300)tickBuffer.shift();const e=document.getElementById('latestTickDisplay');if(e)e.textContent=Number(t.quote).toFixed(5);renderRealtimeChart();runAIScanner(true)}
 function populateSymbols(symbols){
   marketSymbols=Array.isArray(symbols)?symbols.filter(Boolean):[];
   const filtered=marketSymbols.filter(s=>s.exchange_is_open!==0&&s.is_trading_suspended!==1);
@@ -1885,7 +1956,7 @@ function populateSymbols(symbols){
     }
   }
   if(chosen&&(!subscribedSymbol||subscribedSymbol!==chosen))subscribeTicks(chosen);
-  updateDigitMarketUI();updateAnalysisMeta(document.getElementById('analysisSymbol')?.value||chosen||'');
+  const ms=document.getElementById('mkxMarketSelect'); if(ms){const oldm=ms.value; ms.innerHTML='<option value="">Select live Deriv market…</option>'; filtered.forEach(s=>{const v=s.underlying_symbol||s.symbol;if(!v)return;const o=document.createElement('option');o.value=v;o.textContent=(s.underlying_symbol_name||s.display_name||v)+' • '+v;ms.appendChild(o)}); const pick=subscribedSymbol||chosen||''; if(pick&&[...ms.options].some(o=>o.value===pick))ms.value=pick; else if(oldm&&[...ms.options].some(o=>o.value===oldm))ms.value=oldm;} mkxRenderTicker(); mkxSubscribeTicker(); mkxWireDashboard(); updateDigitMarketUI();updateAnalysisMeta(document.getElementById('analysisSymbol')?.value||chosen||''); populateAutoMarketSelect();
   if(liveConnected&&chosen){
     requestDigitContractsFor(chosen);
     setTimeout(()=>requestDigitProposal(),150);
@@ -1965,7 +2036,7 @@ function sellContract(contractId){const c=activeContracts.get(String(contractId)
 function handleSell(d){const s=d.sell||{};const ctx=pending.get(d.req_id);if(ctx)pending.delete(d.req_id);activeContracts.delete(String(s.contract_id||ctx?.contractId||''));showToast(`✅ Contract ${s.contract_id||ctx?.contractId||''} sold for ${Number(s.sold_for||0).toFixed(2)}`);renderPositions();refreshLiveData()}
 function renderTradeActivity(c){const list=document.getElementById('tradeList');if(!list)return;const p=Number(c.profit||0),row=document.createElement('div');row.style.cssText='display:flex;justify-content:space-between;padding:.8rem 0;border-bottom:1px solid var(--border);gap:1rem';row.innerHTML=`<span>${escapeHtml(c.underlying_symbol||c.symbol||'Contract')}</span><span class="${p>=0?'live-positive':'live-negative'}">${p>=0?'+':''}${fmtNum(p)}</span><span style="color:var(--text-muted)">${escapeHtml(c.status||'open')}</span>`;if(list.firstElementChild&&list.firstElementChild.textContent.includes('Waiting'))list.innerHTML='';list.prepend(row);while(list.children.length>15)list.removeChild(list.lastChild)}
 function addTransaction(tx){if(!tx)return;recentTransactions.unshift(tx);recentTransactions=recentTransactions.slice(0,20);const list=document.getElementById('transactionList');if(list)list.innerHTML=recentTransactions.map(t=>{const a=Number(t.amount??t.balance??0),action=t.action||t.action_type||t.transaction_type||'transaction';return`<div style="display:flex;justify-content:space-between;padding:.8rem 0;border-bottom:1px solid var(--border);gap:1rem"><span>${escapeHtml(t.underlying_symbol||t.symbol||'Account')}</span><span class="${a>=0?'live-positive':'live-negative'}">${a>=0?'+':''}${a.toFixed(2)}</span><span style="color:var(--text-muted)">${escapeHtml(action)}</span></div>`}).join('')}
-function updateSummary(){const open=[...activeContracts.values()].filter(c=>!c.is_sold&&!['won','lost','sold','expired'].includes(String(c.status||'').toLowerCase()));const closed=[...activeContracts.values()].filter(c=>c.is_sold||['won','lost','sold','expired'].includes(String(c.status||'').toLowerCase()));const liveWins=closed.filter(c=>Number(c.profit||0)>0).length;const liveTotal=closed.length;const totalTrades=historicalTrades||liveTotal;const winRate=historicalTrades?(historicalTrades?(historicalWins/historicalTrades*100):0):(liveTotal?liveWins/liveTotal*100:0);const pnl=historicalTrades?historicalPnl:closed.reduce((s,c)=>s+Number(c.profit||0),0);for(const [id,val] of [['activeBotsCount',open.length],['totalTrades',totalTrades],['winRate',winRate.toFixed(1)+'%']]){const e=document.getElementById(id);if(e)e.textContent=val}const e=document.getElementById('totalPnL');if(e){e.textContent=(pnl>=0?'+':'')+'$'+pnl.toFixed(2);e.style.color=pnl>=0?'var(--green)':'var(--red)'}const dp=document.getElementById('dashSessionPnl');if(dp){dp.textContent=(sessionPnl>=0?'+':'')+'$'+sessionPnl.toFixed(2);dp.style.color=sessionPnl>=0?'var(--green)':'var(--red)'}}
+function updateSummary(){const open=[...activeContracts.values()].filter(c=>!c.is_sold&&!['won','lost','sold','expired'].includes(String(c.status||'').toLowerCase()));const closed=[...activeContracts.values()].filter(c=>c.is_sold||['won','lost','sold','expired'].includes(String(c.status||'').toLowerCase()));const liveWins=closed.filter(c=>Number(c.profit||0)>0).length;const liveTotal=closed.length;const totalTrades=historicalTrades||liveTotal;const winRate=historicalTrades?(historicalTrades?(historicalWins/historicalTrades*100):0):(liveTotal?liveWins/liveTotal*100:0);const pnl=historicalTrades?historicalPnl:closed.reduce((s,c)=>s+Number(c.profit||0),0);for(const [id,val] of [['activeBotsCount',open.length],['totalTrades',totalTrades],['winRate',winRate.toFixed(1)+'%']]){const e=document.getElementById(id);if(e)e.textContent=val}const e=document.getElementById('totalPnL');if(e){e.textContent=(pnl>=0?'+':'')+'$'+pnl.toFixed(2);e.style.color=pnl>=0?'var(--green)':'var(--red)'}const dp=document.getElementById('dashSessionPnl');if(dp){dp.textContent=(sessionPnl>=0?'+':'')+'$'+sessionPnl.toFixed(2);dp.style.color=sessionPnl>=0?'var(--green)':'var(--red)'}mkxSyncDashboard();mkxRefreshPositions()}
 function refreshLiveData(){if(!liveConnected)return;try{send({portfolio:1})}catch{}try{send({profit_table:1,limit:100,sort:'DESC'})}catch{}}
 window.refreshLiveData=refreshLiveData;
 function runAIScanner(silent=false){const v=tickBuffer.map(x=>x.quote).filter(Number.isFinite),el=document.getElementById('scannerResults');if(!el)return;if(v.length<10){if(!silent)el.innerHTML='⏳ Collecting live ticks…';return}const last=v.at(-1),avg=v.slice(-10).reduce((a,b)=>a+b,0)/Math.min(10,v.length),delta=((last-avg)/avg)*100,signal=last>avg?'📈 Upward momentum':'📉 Downward momentum';el.innerHTML=`<span style="color:var(--gold);">🧠 Live scanner:</span> ${signal} <span style="color:var(--text-muted);">${delta.toFixed(3)}% vs 10-tick mean • ${escapeHtml(subscribedSymbol||'')}</span>`}window.runAIScanner=runAIScanner;
@@ -2007,7 +2078,7 @@ function updateAnalysisSnapshot(v){
  analysisCard('ATR',Number.isFinite(a)?a.toFixed(5):'—'),
  analysisCard('MACD',Number.isFinite(m.macd)?m.macd.toFixed(6):'—'),
  analysisCard('BB width',Number.isFinite(b.width)?b.width.toFixed(3)+'%':'—')
- ].join('')
+ ].join(''); const er=document.getElementById('mkxRsi'),em=document.getElementById('mkxMacd'),ev=document.getElementById('mkxVol'); if(er)er.textContent=Number.isFinite(r)?r.toFixed(2):'—'; if(em)em.textContent=Number.isFinite(m.macd)?m.macd.toFixed(5):'—'; if(ev)ev.textContent=Number.isFinite(a)?a.toFixed(5):'—'; const ed=document.getElementById('mkxDigit'); if(ed){const ds=digitStatsLive(v,Number(document.getElementById('analysisSymbol')?.value?2:2)); ed.textContent=ds.last??'—'}
 }
 function runAnalysis(){
  const symbol=document.getElementById('analysisSymbol')?.value;
@@ -2377,7 +2448,17 @@ function updateDigitConnectionUI(){
 
 document.getElementById('analysisSymbol')?.addEventListener('change',e=>{updateAnalysisMeta(e.target.value);if(e.target.value)subscribeTicks(e.target.value)});
 document.getElementById('chartTimeframe')?.addEventListener('change',()=>{if(document.getElementById('page-chart')?.classList.contains('active'))loadChart()});
-function init(){updateUserIdentity();initDigitTerminal();const token=getAccessToken();if(!token){setConnection(false,'Login required');return}connectDeriv();document.getElementById('chartSymbol')?.addEventListener('change',e=>subscribeTicks(e.target.value));}
+
+let mkxMarketQuotes=new Map(), mkxTickerSubIds=new Map(), mkxTickCount=0;
+function mkxEsc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function mkxRenderTicker(){const track=document.getElementById('mkxTickerTrack');if(!track)return;const list=(marketSymbols||[]).filter(s=>s.exchange_is_open!==0&&s.is_trading_suspended!==1).slice(0,24);if(!list.length){track.innerHTML='<span class="mkx-ticker-empty">Waiting for live Deriv market data…</span>';return}track.innerHTML=list.map(s=>{const sym=s.underlying_symbol||s.symbol||'';const name=s.underlying_symbol_name||s.display_name||sym;const q=mkxMarketQuotes.get(sym);return `<span class="mkx-tick"><span>${mkxEsc(name)}</span><b>${q==null?'—':Number(q).toFixed(5)}</b>${q!=null?'<em>LIVE</em>':''}</span>`}).join('')+list.map(s=>{const sym=s.underlying_symbol||s.symbol||'';const name=s.underlying_symbol_name||s.display_name||sym;const q=mkxMarketQuotes.get(sym);return `<span class="mkx-tick"><span>${mkxEsc(name)}</span><b>${q==null?'—':Number(q).toFixed(5)}</b>${q!=null?'<em>LIVE</em>':''}</span>`}).join('')}
+function mkxSubscribeTicker(){if(!liveConnected||!Array.isArray(marketSymbols)||!marketSymbols.length)return;mkxTickerSubIds.clear();const chosen=document.getElementById('digitSymbol')?.value||subscribedSymbol||'';const list=marketSymbols.filter(s=>s.exchange_is_open!==0&&s.is_trading_suspended!==1).map(s=>s.underlying_symbol||s.symbol).filter(Boolean).filter(x=>x!==chosen).slice(0,10);for(const sym of list){try{const req=send({ticks:sym,subscribe:1});mkxTickerSubIds.set(sym,req)}catch{}}}
+function mkxSetSelected(symbol){const s=(marketSymbols||[]).find(x=>(x.underlying_symbol||x.symbol)===symbol);const name=s?.underlying_symbol_name||s?.display_name||symbol||'—';const cat=s?.market||s?.underlying_symbol_type||'—';const q=mkxMarketQuotes.get(symbol);for(const [id,val] of [['mkxWatchName',name],['mkxHeroMarketName',name],['mkxWatchCategory',cat]]){const e=document.getElementById(id);if(e)e.textContent=val}for(const id of ['mkxWatchPrice','mkxHeroPrice']){const e=document.getElementById(id);if(e)e.textContent=q==null?'—':Number(q).toFixed(5)}const d=(lastTick&&((lastTick.symbol||subscribedSymbol)===symbol)&&lastTick.quote!=null)?String(lastTick.quote).replace(/\D/g,'').slice(-1):'—';const de=document.getElementById('mkxWatchDigit');if(de)de.textContent=d;const hd=document.getElementById('mkxHeroLastDigit');if(hd)hd.textContent='Last digit '+d;}
+function mkxSyncDashboard(){const cur=activeAccount?.currency||document.getElementById('balanceCurrency')?.textContent||'USD';const bal=document.getElementById('balanceAmount')?.textContent||'—';const ids=[['mkxBalance',bal+' '+cur],['mkxHeroBalance',bal+' '+cur],['mkxCurrency',cur],['mkxHeroAccount',activeAccount?.account_id||'—'],['mkxOpen',[...activeContracts.values()].filter(c=>!c.is_sold&&!['won','lost','sold','expired'].includes(String(c.status||'').toLowerCase())).length],['mkxPnl',(sessionPnl>=0?'+':'')+'$'+Number(sessionPnl||0).toFixed(2)]];ids.forEach(([id,v])=>{const e=document.getElementById(id);if(e)e.textContent=v});const conn=document.getElementById('mkxConnection'),txt=document.getElementById('mkxLiveText'),ind=document.getElementById('mkxLiveIndicator'),stream=document.getElementById('mkxStreamState');if(conn)conn.textContent=liveConnected?'ONLINE':'OFFLINE';if(conn)conn.style.color=liveConnected?'#19ee8b':'#ff4b61';if(txt)txt.textContent=liveConnected?'Deriv live connection active':'Connecting to Deriv…';if(ind)ind.style.background=liveConnected?'#18ef8b':'#ffb000';if(stream)stream.textContent=liveConnected?'LIVE':'OFFLINE';if(lastTick?.quote!=null){const sym=lastTick.symbol||subscribedSymbol;mkxMarketQuotes.set(sym,Number(lastTick.quote));mkxSetSelected(document.getElementById('mkxMarketSelect')?.value||sym);mkxTickCount++;const tc=document.getElementById('mkxTickCount');if(tc)tc.textContent=mkxTickCount;mkxRenderTicker()}}
+function mkxRefreshPositions(){const box=document.getElementById('mkxPositions');if(!box)return;const open=[...activeContracts.values()].filter(c=>!c.is_sold&&!['won','lost','sold','expired'].includes(String(c.status||'').toLowerCase()));if(!open.length){box.innerHTML='<div class="mkx-empty">No open real-money positions.</div>';return}box.innerHTML=open.slice(0,5).map(c=>`<div style="display:flex;justify-content:space-between;gap:1rem;padding:1rem 1.1rem;border-bottom:1px solid rgba(255,255,255,.06)"><div><b>${mkxEsc(c.contract_type||'Contract')}</b><div style="font-size:.7rem;color:#728095">${mkxEsc(c.underlying_symbol||c.symbol||'—')} • ${mkxEsc(c.contract_id||'—')}</div></div><strong>${Number(c.bid_price??c.buy_price??0).toFixed(2)}</strong></div>`).join('')}
+function mkxWireDashboard(){const sel=document.getElementById('mkxMarketSelect');if(sel&&!sel.dataset.wired){sel.dataset.wired='1';sel.addEventListener('change',()=>{const v=sel.value;if(!v)return;mkxSetSelected(v);if(document.getElementById('digitSymbol'))document.getElementById('digitSymbol').value=v;if(liveConnected){subscribeTicks(v);requestDigitContractsFor(v);setTimeout(requestDigitProposal,180)}})}mkxSyncDashboard();mkxRefreshPositions()}
+
+function init(){updateUserIdentity();mkxWireDashboard();initDigitTerminal();const token=getAccessToken();if(!token){setConnection(false,'Login required');return}connectDeriv();document.getElementById('chartSymbol')?.addEventListener('change',e=>subscribeTicks(e.target.value));}
 document.addEventListener('DOMContentLoaded',()=>{init();document.getElementById('menuToggle')?.addEventListener('click',()=>document.getElementById('sidebar')?.classList.toggle('open'));document.getElementById('sidebarOverlay')?.addEventListener('click',()=>document.getElementById('sidebar')?.classList.remove('open'))});
 console.log('%cTradeNovaX FINAL LIVE REAL DASHBOARD','font-size:20px;color:#D4AF37;font-weight:bold');
 
@@ -2476,9 +2557,10 @@ window.addEventListener('beforeunload',()=>{
     showToast(window.liveConnected?'🟢 Live strategy configured. Review before REAL BUY.':'⚠️ Connect your REAL Deriv account first.');
   };
   window.runQuickBotLive=function(){
-    const market=document.querySelector('#page-quick select')?.value||'R_75';
+    const market=document.querySelector('#page-quick select')?.value||window.subscribedSymbol||document.getElementById('digitSymbol')?.value||'';
     const stake=document.querySelector('#page-quick input')?.value||'1';
     if(!window.liveConnected)return showToast('⚠️ Connect your REAL Deriv account first.');
+    if(!market)return showToast('⚠️ Select a live Deriv market first.');
     const s=document.getElementById('digitSymbol'); if(s)s.value=market;
     const st=document.getElementById('digitStake'); if(st)st.value=stake;
     activateLiveStrategy('even-odd-digit');
@@ -2609,5 +2691,74 @@ try{
 })();
 </script>
 
+<script>
+(function(){
+  function syncHero(){
+    const map=[
+      ['dashHeroBalance','dashBalance'],['dashHeroOpen','dashOpenPositions'],['dashHeroPnl','dashSessionPnl'],['dashHeroConnection','dashConnection'],
+      ['dashHeroAccount','accountIdDisplay'],['dashHeroCurrency','balanceCurrency']
+    ];
+    map.forEach(([a,b])=>{const x=document.getElementById(a),y=document.getElementById(b);if(x&&y&&y.textContent.trim())x.textContent=y.textContent.trim()});
+    const c=document.getElementById('dashHeroConnection'), live=document.getElementById('dashHeroLive');
+    if(c){const t=c.textContent.toLowerCase(); if(live) live.textContent=t.includes('connected')||t.includes('online')?'Deriv live connection active':'Waiting for Deriv connection';}
+  }
+  setInterval(syncHero,1000); document.addEventListener('DOMContentLoaded',syncHero);
+})();
+</script>
+
+<script id="tnx-v2-automation-controller">
+/* ===== TRADE NOVAX V2 — REAL DERIV AUTOMATION ===== */
+let tnxAutoStrategies=[];
+let tnxAutoRuns=new Map();
+let tnxAutoSelectedStrategy=null;
+function autoSetStatus(msg,good=false){const e=document.getElementById('autoActionStatus');if(e){e.textContent=msg;e.style.color=good?'#5ef09a':'#8b99ad'}}
+function autoCurrentMarket(){return document.getElementById('autoMarket')?.value||document.getElementById('digitSymbol')?.value||subscribedSymbol||''}
+function renderAutoStrategies(){
+  const s=document.getElementById('autoStrategy'); if(!s)return;
+  const old=s.value; s.innerHTML='<option value="">Select Deriv strategy…</option>';
+  tnxAutoStrategies.forEach(x=>{const o=document.createElement('option');o.value=x.strategy_id;o.textContent=x.display_name;s.appendChild(o)});
+  if(old&&tnxAutoStrategies.some(x=>x.strategy_id===old))s.value=old;
+  else if(tnxAutoStrategies[0])s.value=tnxAutoStrategies[0].strategy_id;
+  renderSelectedAutoStrategy();
+}
+function renderSelectedAutoStrategy(){
+  const s=document.getElementById('autoStrategy'); if(!s)return;
+  tnxAutoSelectedStrategy=tnxAutoStrategies.find(x=>x.strategy_id===s.value)||null;
+  const ct=document.getElementById('autoContractType'); if(ct){const supported=tnxAutoSelectedStrategy?.supported_contract_types||[];ct.innerHTML=(supported.length?supported:['CALL']).map(x=>`<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join('')}
+  const d=document.getElementById('autoStrategyDescription');
+  if(d){if(!tnxAutoSelectedStrategy)d.textContent='Choose a live strategy to see its supported contract types and parameters.';else{const p=tnxAutoSelectedStrategy.parameters||{};d.innerHTML=`<b>${escapeHtml(tnxAutoSelectedStrategy.display_name)}</b> — ${escapeHtml(tnxAutoSelectedStrategy.description||'Deriv predefined automated strategy.')}<br><span>Supported contracts: ${escapeHtml((tnxAutoSelectedStrategy.supported_contract_types||[]).join(', ')||'See Deriv strategy metadata')} • Parameters: ${escapeHtml(Object.keys(p).join(', ')||'None')}</span>`;const ta=document.getElementById('autoParams');if(ta&&!ta.value.trim())ta.value=JSON.stringify(defaultAutoParams(p),null,2)}}
+}
+function defaultAutoParams(schema){const out={};for(const [k,v] of Object.entries(schema||{})){if(v&&Object.prototype.hasOwnProperty.call(v,'default'))out[k]=v.default;else if(v?.type==='number')out[k]=1;else if(v?.type==='integer')out[k]=1;else if(v?.type==='boolean')out[k]=false}return out}
+function populateAutoMarketSelect(){const e=document.getElementById('autoMarket');if(!e)return;const old=e.value;e.innerHTML='<option value="">Select live Deriv market…</option>';const list=(marketSymbols||[]).filter(x=>x.exchange_is_open!==0&&x.is_trading_suspended!==1);const groups=new Map();list.forEach(x=>{const v=x.underlying_symbol||x.symbol;if(!v)return;const g=x.market_display_name||x.market||'Other markets';if(!groups.has(g))groups.set(g,[]);groups.get(g).push(x)});for(const [g,a] of [...groups.entries()].sort((x,y)=>x[0].localeCompare(y[0]))){const og=document.createElement('optgroup');og.label=g;a.sort((x,y)=>(x.underlying_symbol_name||x.display_name||'').localeCompare(y.underlying_symbol_name||y.display_name||''));a.forEach(x=>{const v=x.underlying_symbol||x.symbol,o=document.createElement('option');o.value=v;o.textContent=(x.underlying_symbol_name||x.display_name||v)+' • '+v;og.appendChild(o)});e.appendChild(og)}const pick=subscribedSymbol||old; if(pick&&[...e.options].some(o=>o.value===pick))e.value=pick}
+function loadAutomationStrategies(){if(!derivWS||derivWS.readyState!==WebSocket.OPEN){autoSetStatus('Connect your REAL Deriv account first.');return}try{send({auto_list_strategies:1});autoSetStatus('Loading current Deriv automation strategies…')}catch(e){autoSetStatus('❌ '+e.message)}}
+function loadAutomationRuns(){if(!liveConnected){autoSetStatus('Connect your REAL Deriv account first.');return}try{send({auto_list:1});autoSetStatus('Loading your real automation runs…')}catch(e){autoSetStatus('❌ '+e.message)}}
+function autoTemplate(){const symbol=autoCurrentMarket(), amount=Number(document.getElementById('autoAmount')?.value),duration=Math.max(1,Number(document.getElementById('autoDuration')?.value)||1),unit=document.getElementById('autoDurationUnit')?.value||'t',type=document.getElementById('autoContractType')?.value||'CALL',currency=activeAccount?.currency||'USD';const t={contract_type:type,currency,underlying_symbol:symbol};if(Number.isFinite(amount)&&amount>0){t.amount=amount;t.basis='stake'}if(duration>0){t.duration=duration;t.duration_unit=unit}const barrier=document.getElementById('autoBarrier')?.value?.trim();if(barrier)t.barrier=barrier;return t}
+function startAutomationRun(){
+  if(!liveConnected||!activeAccount){autoSetStatus('❌ Connect your REAL Deriv account first.');return}
+  if(String(activeAccount.account_type).toLowerCase()!=='real'){autoSetStatus('❌ REAL account required.');return}
+  const st=tnxAutoSelectedStrategy;if(!st){autoSetStatus('❌ Select a Deriv automation strategy.');return}
+  const tpl=autoTemplate();if(!tpl.underlying_symbol){autoSetStatus('❌ Select a live Deriv market.');return}
+  let params={};try{params=JSON.parse(document.getElementById('autoParams')?.value||'{}')}catch{autoSetStatus('❌ Strategy parameters must be valid JSON.');return}
+  const text=`Start ${st.display_name}\nMarket: ${tpl.underlying_symbol}\nContract: ${tpl.contract_type}\nStake: ${tpl.amount??'default'} ${tpl.currency}\nDuration: ${tpl.duration??'default'} ${tpl.duration_unit??''}`;
+  if(!confirmRealTrade(text))return;
+  try{const id=send({auto_start:1,strategy_id:st.strategy_id,strategy_parameters:params,contract_template:tpl,subscribe:1});pending.set(id,{kind:'autoStart',strategy:st.strategy_id});autoSetStatus('⏳ Starting REAL Deriv automation…')}catch(e){autoSetStatus('❌ '+e.message)}
+}
+function autoControl(runId,action){if(!runId)return;if(!liveConnected){autoSetStatus('❌ REAL Deriv account is disconnected.');return}if(action==='stop'&&!confirmRealTrade(`Stop automated run ${runId}?\nNo new contracts will be purchased; existing contracts continue.`))return;try{const req={run_id:runId};req['auto_'+action]=1;const id=send(req);pending.set(id,{kind:'autoControl',action,runId});autoSetStatus(`⏳ ${action} request sent for ${runId}…`)}catch(e){autoSetStatus('❌ '+e.message)}}
+function renderAutoRuns(){const el=document.getElementById('autoRunsList'),count=document.getElementById('autoRunCount');if(!el)return;const runs=[...tnxAutoRuns.values()].sort((a,b)=>Number(b.start_time||0)-Number(a.start_time||0));if(count)count.textContent=runs.length;if(!runs.length){el.innerHTML='<div class="auto-empty">No automation runs found for this REAL account.</div>';return}el.innerHTML=runs.map(r=>{const status=String(r.status||'stopped').toLowerCase(),tpl=r.contract_template||{},p=Number(r.total_payout||0),stake=Number(r.total_stake||0),pl=p-stake;return `<div class="auto-run"><div class="auto-run-head"><div><div class="auto-run-title">${escapeHtml(r.strategy_id||'Strategy')}</div><div class="auto-run-meta">${escapeHtml(tpl.underlying_symbol||'—')} • ${escapeHtml(tpl.contract_type||'—')} • Run ${escapeHtml(r.run_id||'')}</div></div><span class="auto-status ${status}">${escapeHtml(status.toUpperCase())}</span></div><div class="auto-run-stats"><div><small>Stake</small><b>${stake.toFixed(2)} ${escapeHtml(activeAccount?.currency||tpl.currency||'')}</b></div><div><small>Payout</small><b>${p.toFixed(2)} ${escapeHtml(activeAccount?.currency||tpl.currency||'')}</b></div><div><small>Run P/L</small><b style="color:${pl>=0?'#5ef09a':'#ff7d98'}">${pl>=0?'+':''}${pl.toFixed(2)}</b></div></div><div class="auto-run-actions">${status==='running'?`<button onclick="autoControl('${escapeHtml(r.run_id)}','pause')">Ⅱ Pause</button><button onclick="autoControl('${escapeHtml(r.run_id)}','stop')">■ Stop</button>`:status==='paused'?`<button onclick="autoControl('${escapeHtml(r.run_id)}','resume')">▶ Resume</button><button onclick="autoControl('${escapeHtml(r.run_id)}','stop')">■ Stop</button>`:''}<button onclick="refreshAutomationRun('${escapeHtml(r.run_id)}')">↻ Refresh</button></div></div>`}).join('')}
+function refreshAutomationRun(runId){if(!liveConnected)return;try{send({auto_get:1,run_id:runId,subscribe:1})}catch(e){autoSetStatus('❌ '+e.message)}}
+function handleAutoPayload(type,obj){if(!obj)return;const run=obj.run_id;if(run){tnxAutoRuns.set(String(run),obj);renderAutoRuns()}}
+function handleAutoMessage(d){
+  if(d.msg_type==='auto_list_strategies'){tnxAutoStrategies=d.auto_list_strategies?.strategies||[];renderAutoStrategies();autoSetStatus(`Loaded ${tnxAutoStrategies.length} live Deriv automation strategies.`,true);return true}
+  if(d.msg_type==='auto_list'){tnxAutoRuns.clear();(d.auto_list?.runs||[]).forEach(r=>tnxAutoRuns.set(String(r.run_id),r));renderAutoRuns();autoSetStatus(`Loaded ${tnxAutoRuns.size} automation run(s).`,true);return true}
+  if(d.msg_type==='auto_start'){handleAutoPayload('start',d.auto_start);autoSetStatus(`🟢 REAL automation started • Run ${d.auto_start?.run_id||'—'}`,true);try{send({auto_get:1,run_id:d.auto_start.run_id,subscribe:1})}catch{}return true}
+  if(d.msg_type==='auto_get'){handleAutoPayload('get',d.auto_get);return true}
+  if(d.msg_type==='auto_pause'||d.msg_type==='auto_resume'||d.msg_type==='auto_stop'){if(d.auto_pause)handleAutoPayload('pause',d.auto_pause);if(d.auto_resume)handleAutoPayload('resume',d.auto_resume);if(d.auto_stop)handleAutoPayload('stop',d.auto_stop);loadAutomationRuns();return true}
+  return false
+}
+// Original handler is patched above so automation responses are handled in the live WebSocket path.
+// Market selector is synchronized from the original populateSymbols handler.
+const autoStrategyEl=document.getElementById('autoStrategy');if(autoStrategyEl)autoStrategyEl.addEventListener('change',renderSelectedAutoStrategy);
+populateAutoMarketSelect();
+</script>
 </body>
 </html>

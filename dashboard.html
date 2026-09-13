@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 
 <!--
@@ -649,6 +650,12 @@ TradeNovaX standalone live Deriv build:
 .eyebrow{font-size:.68rem;letter-spacing:.1em;font-weight:800;color:var(--text-muted)}
 .tnx-control{width:100%;background:rgba(255,255,255,.055);color:#fff;border:1px solid var(--border);border-radius:10px;padding:.7rem .8rem;outline:none}
 select.tnx-control option{background:#0b1020;color:#fff}
+/* TradeNovaX global native select fix */
+html,body{color-scheme:dark}
+select,select.tnx-control{color-scheme:dark!important;background-color:#111c2f!important;color:#fff!important;border-color:rgba(255,255,255,.16)!important;accent-color:#eab308}
+select option,select optgroup{background:#0b1424!important;color:#fff!important}
+select option:checked,select option:hover,select option:focus{background:#1d4ed8!important;color:#fff!important}
+
 .tnx-price{display:flex;align-items:baseline;gap:.75rem;margin:1rem 0}
 .tnx-price span{font-size:2.7rem;font-weight:800;letter-spacing:-.04em}
 .tnx-price small{color:var(--text-muted)}
@@ -1324,8 +1331,8 @@ img,svg,canvas{max-width:100%}
                         <label style="color:var(--text-muted); font-size:1.1rem;">Market</label>
                         <select id="manualSymbol" style="width:100%; padding:0.7rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1.05rem; margin-top:0.3rem;">
                             <option value="">Loading live Deriv markets…</option>
-                            <option value="BOOM_500">Boom 500</option>
-                            <option value="CRASH_500">Crash 500</option>
+                            
+                            
                         </select>
                     </div>
                     <div>
@@ -1368,7 +1375,7 @@ img,svg,canvas{max-width:100%}
                         <label style="color:var(--text-muted); font-size:1.1rem;">Market</label>
                         <select id="bulkMarket" style="width:100%; padding:0.7rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1.2rem; margin-top:0.3rem;">
                             <option value="">Loading live Deriv markets…</option>
-                            <option value="BOOM_500">Boom 500</option>
+                            
                         </select>
                     </div>
                     <div>
@@ -1476,9 +1483,9 @@ img,svg,canvas{max-width:100%}
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
                     <div>
                         <label style="color:var(--text-muted); font-size:1.1rem;">Market</label>
-                        <select style="width:100%; padding:0.7rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1.2rem; margin-top:0.3rem;">
+                        <select id="quickMarket" style="width:100%; padding:0.7rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1.2rem; margin-top:0.3rem;">
                             <option value="">Loading live Deriv markets…</option>
-                            <option value="BOOM_500">Boom 500</option>
+                            
                         </select>
                     </div>
                     <div>
@@ -1510,7 +1517,7 @@ img,svg,canvas{max-width:100%}
                         <label style="color:var(--text-muted); font-size:1.1rem;">Market</label>
                         <select id="signalMarket" style="width:100%; padding:0.7rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1.2rem; margin-top:0.3rem;">
                             <option value="">Loading live Deriv markets…</option>
-                            <option value="BOOM_500">Boom 500</option>
+                            
                         </select>
                     </div>
                     <div>
@@ -1570,44 +1577,55 @@ img,svg,canvas{max-width:100%}
         PAGE: ANALYSIS TOOLS
         ============================================================ -->
         <div class="page-content" id="page-analysis">
-            <h2 style="font-size:2.4rem;">🔍 <span style="color:var(--gold);">Analysis Tools</span></h2>
-            <p style="color:var(--text-muted); font-size:1.3rem; margin-bottom:2rem;">Dcircles analysis across all Volatility indices</p>
-
-            <div class="card">
-                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.5rem;">
-                    <div>
-                        <label style="color:var(--text-muted); font-size:1.1rem;">Market</label>
-                        <select id="analysisSymbol" style="width:100%; padding:0.7rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1.2rem; margin-top:0.3rem;">
-                            <option value="">Loading live Deriv markets…</option>
-                            <option value="BOOM_500">Boom 500</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="color:var(--text-muted); font-size:1.1rem;">Indicator</label>
-                        <select id="analysisIndicator" style="width:100%; padding:0.7rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1.2rem; margin-top:0.3rem;">
-                            <option value="rsi">RSI</option>
-                            <option value="macd">MACD</option>
-                            <option value="ma">Moving Average</option>
-                            <option value="bollinger">Bollinger Bands</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="color:var(--text-muted); font-size:1.1rem;">Ticks</label>
-                        <input type="number" value="120" style="width:100%; padding:0.7rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1.2rem; margin-top:0.3rem;" />
-                    </div>
-                </div>
-                <button class="btn-load" style="margin-top:1.5rem; width:100%;" onclick="runAnalysis()">🔍 Run Analysis</button>
-                <div id="analysisResult" style="margin-top:1rem; padding:1rem; background:rgba(255,255,255,0.03); border-radius:10px; text-align:center; color:var(--text-muted);">
-                    Click "Run Analysis" to see results
-                </div>
-            </div>
-
-            <div style="margin-top:2rem; padding:1.5rem; background:rgba(255,23,68,0.05); border:1px solid rgba(255,23,68,0.1); border-radius:12px;">
-                <p style="color:var(--red); font-size:1.1rem; text-align:center;">⚠️ Risk Disclaimer: Trading involves risk. Past performance does not guarantee future results.</p>
-            </div>
+    <h2 style="font-size:2.4rem;">🔍 <span style="color:var(--gold);">Market Intelligence</span></h2>
+    <p style="color:var(--text-muted);font-size:1.3rem;margin-bottom:2rem;">
+        Live Deriv market data, technical analysis, volatility and digit statistics.
+    </p>
+    <div class="card">
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:1.5rem;">
+        <div><label style="color:var(--text-muted);font-size:1.1rem;">Market</label>
+          <select id="analysisSymbol" style="width:100%;padding:.7rem;margin-top:.3rem;">
+            <option value="">Loading live Deriv markets…</option>
+          </select>
         </div>
+        <div><label style="color:var(--text-muted);font-size:1.1rem;">Analysis</label>
+          <select id="analysisIndicator" style="width:100%;padding:.7rem;margin-top:.3rem;">
+            <option value="overview">Market Overview</option>
+            <option value="rsi">RSI (14)</option>
+            <option value="macd">MACD (12,26,9)</option>
+            <option value="ma">Moving Averages</option>
+            <option value="bollinger">Bollinger Bands</option>
+            <option value="atr">ATR / Volatility</option>
+            <option value="digits">Digit Intelligence</option>
+          </select>
+        </div>
+        <div><label style="color:var(--text-muted);font-size:1.1rem;">Sample</label>
+          <select id="analysisWindow" style="width:100%;padding:.7rem;margin-top:.3rem;">
+            <option value="100">100 ticks</option>
+            <option value="250" selected>250 ticks</option>
+            <option value="500">500 ticks</option>
+            <option value="1000">1,000 ticks</option>
+          </select>
+        </div>
+      </div>
+      <div id="analysisMarketMeta" style="margin-top:1.25rem;"></div>
+      <button class="btn-load" style="margin-top:1.5rem;width:100%;" onclick="runAnalysis()">🔍 Analyse Live Deriv Market</button>
+      <div id="analysisResult" style="margin-top:1rem;padding:1rem;background:rgba(255,255,255,.03);border-radius:10px;">
+        Connect to Deriv and choose a market to analyse live data.
+      </div>
+    </div>
+    <div class="card" style="margin-top:1.5rem;">
+      <h3 style="margin-top:0;">📡 Live Market Snapshot</h3>
+      <div id="analysisSnapshot" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem;"></div>
+    </div>
+    <div style="margin-top:2rem;padding:1.5rem;background:rgba(255,23,68,.05);border:1px solid rgba(255,23,68,.1);border-radius:12px;">
+      <p style="color:var(--red);font-size:1.1rem;text-align:center;">
+        ⚠️ Analysis is calculated from live Deriv market data. It is not a guarantee or prediction of future prices.
+      </p>
+    </div>
+</div>
 
-        <!-- ============================================================
+<!-- ============================================================
         PAGE: SPEEDBOT
         ============================================================ -->
         <div class="page-content" id="page-speedbot">
@@ -1686,9 +1704,7 @@ img,svg,canvas{max-width:100%}
             <div class="card">
                 <div style="display:flex; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap;">
                     <select id="chartSymbol" style="flex:1; padding:0.7rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1.2rem; min-width:150px;">
-                        <option value="R_75">Volatility 75</option>
-                        <option value="R_100">Volatility 100</option>
-                        <option value="BOOM_500">Boom 500</option>
+                        <option value="">Loading live Deriv markets…</option>
                     </select>
                     <select id="chartTimeframe" style="flex:1; padding:0.7rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1.2rem; min-width:150px;">
                         <option value="1m">1 Minute</option>
@@ -1812,9 +1828,9 @@ function updateUserIdentity(){const email=localStorage.getItem('deriv_user_email
 async function loadAccounts(){const r=await derivFetch('/trading/v1/options/accounts');const list=Array.isArray(r.data)?r.data:(Array.isArray(r.accounts)?r.accounts:[]);accounts=list.filter(a=>String(a.account_type||'').toLowerCase()==='real'&&String(a.status||'').toLowerCase()==='active'&&a.account_id);if(!accounts.length)throw new Error('No active REAL Deriv trading account is available. Demo accounts are disabled.');const saved=localStorage.getItem('tradenovax_real_account_id');activeAccount=accounts.find(a=>a.account_id===saved)||accounts[0];currentAccountType='real';localStorage.setItem('tradenovax_real_account_id',activeAccount.account_id);updateAccountUI();updateUserIdentity()}
 function updateAccountUI(){const real=document.getElementById('btnReal');if(real)real.className='account-btn active-live';const demo=document.getElementById('btnDemo');if(demo)demo.remove();const id=document.getElementById('accountIdDisplay'),typ=document.getElementById('accountTypeDisplay');if(id)id.textContent=activeAccount?.account_id||'—';if(typ)typ.textContent=activeAccount?'REAL':'—';const label=document.getElementById('accountLabel');if(label)label.textContent=activeAccount?`REAL • ${activeAccount.account_id}`:'REAL ACCOUNT'}
 async function connectDeriv(){try{derivToken=getAccessToken();if(!derivToken){setConnection(false,'Login required');showToast('⚠️ Sign in with Deriv before trading.');return}await loadAccounts();await openAuthenticatedWebSocket()}catch(e){console.error(e);setConnection(false,'Connection failed');showToast('❌ Deriv: '+e.message)}}
-async function openAuthenticatedWebSocket(){if(!activeAccount?.account_id)throw new Error('No active REAL Deriv account ID.');if(String(activeAccount.account_type).toLowerCase()!=='real')throw new Error('Demo accounts are disabled.');if(derivWS&&derivWS.readyState<=1)derivWS.close();const r=await derivFetch(`/trading/v1/options/accounts/${encodeURIComponent(activeAccount.account_id)}/otp`,{method:'POST'});const url=r?.data?.url;if(!url)throw new Error('Deriv did not return an authenticated WebSocket URL.');derivWS=new WebSocket(url);derivWS.onopen=()=>{reconnectAttempts=0;setConnection(true);showToast('✅ Connected to your REAL Deriv account');send({balance:1,subscribe:1});send({transaction:1,subscribe:1});send({portfolio:1});send({active_symbols:'full',contract_type:['DIGITMATCH','DIGITDIFF','DIGITOVER','DIGITUNDER','DIGITEVEN','DIGITODD']});send({ticks:document.getElementById('digitSymbol')?.value||document.getElementById('chartSymbol')?.value||'R_100',subscribe:1});const ds=document.getElementById('digitSymbol')?.value||'R_100';requestDigitContractsFor(ds);refreshLiveData()};derivWS.onmessage=e=>{try{handleDerivMessage(JSON.parse(e.data))}catch(err){console.error('Deriv message error',err)}};derivWS.onerror=()=>setConnection(false,'WebSocket error');derivWS.onclose=()=>{setConnection(false,'Disconnected');if(getAccessToken()&&reconnectAttempts<3){clearTimeout(reconnectTimer);reconnectTimer=setTimeout(()=>{reconnectAttempts++;connectDeriv()},2000*reconnectAttempts)}}}
+async function openAuthenticatedWebSocket(){if(!activeAccount?.account_id)throw new Error('No active REAL Deriv account ID.');if(String(activeAccount.account_type).toLowerCase()!=='real')throw new Error('Demo accounts are disabled.');if(derivWS&&derivWS.readyState<=1)derivWS.close();const r=await derivFetch(`/trading/v1/options/accounts/${encodeURIComponent(activeAccount.account_id)}/otp`,{method:'POST'});const url=r?.data?.url;if(!url)throw new Error('Deriv did not return an authenticated WebSocket URL.');derivWS=new WebSocket(url);derivWS.onopen=()=>{reconnectAttempts=0;setConnection(true);showToast('✅ Connected to your REAL Deriv account');send({balance:1,subscribe:1});send({transaction:1,subscribe:1});send({portfolio:1});send({active_symbols:'full'});send({ticks:document.getElementById('digitSymbol')?.value||document.getElementById('chartSymbol')?.value||'R_100',subscribe:1});const ds=document.getElementById('digitSymbol')?.value||'R_100';requestDigitContractsFor(ds);refreshLiveData()};derivWS.onmessage=e=>{try{handleDerivMessage(JSON.parse(e.data))}catch(err){console.error('Deriv message error',err)}};derivWS.onerror=()=>setConnection(false,'WebSocket error');derivWS.onclose=()=>{setConnection(false,'Disconnected');if(getAccessToken()&&reconnectAttempts<3){clearTimeout(reconnectTimer);reconnectTimer=setTimeout(()=>{reconnectAttempts++;connectDeriv()},2000*reconnectAttempts)}}}
 function send(payload){if(!derivWS||derivWS.readyState!==WebSocket.OPEN)throw new Error('Deriv connection is not ready.');const req_id=++reqSeq;derivWS.send(JSON.stringify({...payload,req_id}));return req_id}
-function handleDerivMessage(d){if(d.error){const ctx=pending.get(d.req_id);if(ctx){pending.delete(d.req_id);if(ctx.status)ctx.status.textContent='❌ '+d.error.message;if(ctx.kind==='digitProposal'){digitProposal=null;const b=digitEl('digitBuyButton');if(b)b.disabled=true}}console.error(d.error);showToast('❌ '+d.error.message);return}if(d.msg_type==='tick'){if(d.subscription?.id)tickSubscriptionId=d.subscription.id;return handleTick(d.tick)}switch(d.msg_type){case'balance':return handleBalance(d.balance);case'active_symbols':return populateSymbols(d.active_symbols||[]);case'contracts_for':return applyDigitContractLimits(d.contracts_for?.available||[],d.contracts_for?.symbol||subscribedSymbol||'');case'history':{const prices=(d.history?.prices||[]).map(Number).filter(Number.isFinite);if(prices.length){tickBuffer=prices.slice(-300).map((q,i)=>({epoch:Date.now()/1000-i,quote:q}));digitPrices=prices.slice(-1000);renderDigitStats();renderDigitChart();renderRealtimeChart();}return;}case'transaction':return addTransaction(d.transaction);case'proposal':if(digitProposalReq===d.req_id)return handleDigitProposal(d);return handleProposal(d);case'buy':if(pending.get(d.req_id)?.kind==='digitBuy')return handleDigitBuy(d);return handleBuy(d);case'proposal_open_contract':return handleContract(d.proposal_open_contract);case'portfolio':{
+function handleDerivMessage(d){if(d.error){const ctx=pending.get(d.req_id);if(ctx){pending.delete(d.req_id);if(ctx.status)ctx.status.textContent='❌ '+d.error.message;if(ctx.kind==='digitProposal'){digitProposal=null;const b=digitEl('digitBuyButton');if(b)b.disabled=true}}console.error(d.error);showToast('❌ '+d.error.message);return}if(d.msg_type==='tick'){if(d.subscription?.id)tickSubscriptionId=d.subscription.id;return handleTick(d.tick)}switch(d.msg_type){case'balance':return handleBalance(d.balance);case'active_symbols':return populateSymbols(d.active_symbols||[]);case'contracts_for':return applyDigitContractLimits(d.contracts_for?.available||[],d.contracts_for?.symbol||subscribedSymbol||'');case'history':{const prices=(d.history?.prices||[]).map(Number).filter(Number.isFinite);if(prices.length){const times=(d.history?.times||[]).map(Number);const paired=prices.map((q,i)=>({epoch:Number.isFinite(times[i])?times[i]:Date.now()/1000-i,quote:q}));tickBuffer=paired.slice(-300);digitPrices=prices.slice(-1000);renderDigitStats();renderDigitChart();renderRealtimeChart();}return;}case'candles':{latestCandles=Array.isArray(d.candles)?d.candles.map(c=>({epoch:Number(c.epoch),open:Number(c.open),high:Number(c.high),low:Number(c.low),close:Number(c.close)})).filter(c=>Object.values(c).every(Number.isFinite)):[];renderCandleChart();return;}case'transaction':return addTransaction(d.transaction);case'proposal':if(digitProposalReq===d.req_id)return handleDigitProposal(d);return handleProposal(d);case'buy':if(pending.get(d.req_id)?.kind==='digitBuy')return handleDigitBuy(d);return handleBuy(d);case'proposal_open_contract':return handleContract(d.proposal_open_contract);case'portfolio':{
   const contracts=d.portfolio?.contracts||[];
   updateActiveContracts(contracts);
   contracts.forEach(c=>{
@@ -1825,8 +1841,41 @@ function handleDerivMessage(d){if(d.error){const ctx=pending.get(d.req_id);if(ct
   return;
 }case'profit_table':return renderProfitTable(d.profit_table);case'sell':return handleSell(d)}}
 function handleBalance(b){if(!b)return;const amount=Number(b.balance??0),cur=b.currency||activeAccount?.currency||'USD';for(const id of ['balanceAmount','dashBalance']){const e=document.getElementById(id);if(e)e.textContent=amount.toFixed(2)}const c=document.getElementById('balanceCurrency');if(c)c.textContent=cur;const db=document.getElementById('dashBalance');if(db)db.textContent=`${amount.toFixed(2)} ${cur}`}
-function handleTick(t){if(!t)return;lastTick=t;updateDigitFromTick(t);tickBuffer.push({epoch:Number(t.epoch),quote:Number(t.quote)});if(tickBuffer.length>300)tickBuffer.shift();const e=document.getElementById('latestTickDisplay');if(e)e.textContent=Number(t.quote).toFixed(5);renderRealtimeChart();runAIScanner(true)}
-function populateSymbols(symbols){const filtered=symbols.filter(s=>s.exchange_is_open!==0&&s.is_trading_suspended!==1);const ids=['manualSymbol','bulkMarket','signalMarket','analysisSymbol','speedSymbol','chartSymbol','digitSymbol'];ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;const old=el.value;el.innerHTML='';filtered.slice(0,250).forEach(s=>{const value=s.underlying_symbol||s.symbol;if(!value)return;const o=document.createElement('option');o.value=value;o.textContent=s.underlying_symbol_name||value;el.appendChild(o)});if([...el.options].some(o=>o.value===old))el.value=old});const chosen=document.getElementById('digitSymbol')?.value || document.getElementById('chartSymbol')?.value;if(chosen && (!subscribedSymbol || subscribedSymbol!==chosen))subscribeTicks(chosen);updateDigitMarketUI();if(liveConnected){requestDigitContractsFor(chosen);requestDigitProposal();}}
+function handleTick(t){if(!t)return;lastTick=t;updateDigitFromTick(t);updateAnalysisMeta(document.getElementById('analysisSymbol')?.value||t.symbol||'');tickBuffer.push({epoch:Number(t.epoch),quote:Number(t.quote)});if(tickBuffer.length>300)tickBuffer.shift();const e=document.getElementById('latestTickDisplay');if(e)e.textContent=Number(t.quote).toFixed(5);renderRealtimeChart();runAIScanner(true)}
+function populateSymbols(symbols){
+  marketSymbols=Array.isArray(symbols)?symbols.filter(Boolean):[];
+  const filtered=marketSymbols.filter(s=>s.exchange_is_open!==0&&s.is_trading_suspended!==1);
+  const ids=['manualSymbol','bulkMarket','signalMarket','analysisSymbol','speedSymbol','chartSymbol','digitSymbol','quickMarket'];
+  ids.forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    const old=el.value;el.innerHTML='';
+    const placeholder=document.createElement('option');
+    placeholder.value='';placeholder.textContent='Select live Deriv market…';el.appendChild(placeholder);
+    const groups=new Map();
+    filtered.forEach(s=>{
+      const value=s.underlying_symbol||s.symbol;if(!value)return;
+      const group=s.market_display_name||s.market||'Other markets';
+      if(!groups.has(group))groups.set(group,[]);groups.get(group).push(s);
+    });
+    [...groups.entries()].sort((a,b)=>a[0].localeCompare(b[0])).forEach(([group,arr])=>{
+      const og=document.createElement('optgroup');og.label=group;
+      arr.sort((a,b)=>(a.underlying_symbol_name||a.display_name||a.underlying_symbol||'').localeCompare(b.underlying_symbol_name||b.display_name||b.underlying_symbol||''));
+      arr.forEach(s=>{
+        const value=s.underlying_symbol||s.symbol;if(!value)return;
+        const o=document.createElement('option');
+        o.value=value;o.textContent=(s.underlying_symbol_name||s.display_name||value)+' • '+value;
+        og.appendChild(o);
+      });
+      el.appendChild(og);
+    });
+    if([...el.options].some(o=>o.value===old))el.value=old;
+    else if(el.options.length>1)el.selectedIndex=1;
+  });
+  const chosen=document.getElementById('analysisSymbol')?.value||document.getElementById('chartSymbol')?.value||document.getElementById('digitSymbol')?.value;
+  if(chosen&&(!subscribedSymbol||subscribedSymbol!==chosen))subscribeTicks(chosen);
+  updateDigitMarketUI();updateAnalysisMeta(document.getElementById('analysisSymbol')?.value||chosen||'');
+  if(liveConnected&&chosen){requestDigitContractsFor(chosen);requestDigitProposal();}
+}
 function subscribeTicks(symbol){
   if(!symbol||!liveConnected)return;
   const oldSubscription=tickSubscriptionId;
@@ -1906,10 +1955,81 @@ function refreshLiveData(){if(!liveConnected)return;try{send({portfolio:1})}catc
 window.refreshLiveData=refreshLiveData;
 function runAIScanner(silent=false){const v=tickBuffer.map(x=>x.quote).filter(Number.isFinite),el=document.getElementById('scannerResults');if(!el)return;if(v.length<10){if(!silent)el.innerHTML='⏳ Collecting live ticks…';return}const last=v.at(-1),avg=v.slice(-10).reduce((a,b)=>a+b,0)/Math.min(10,v.length),delta=((last-avg)/avg)*100,signal=last>avg?'📈 Upward momentum':'📉 Downward momentum';el.innerHTML=`<span style="color:var(--gold);">🧠 Live scanner:</span> ${signal} <span style="color:var(--text-muted);">${delta.toFixed(3)}% vs 10-tick mean • ${escapeHtml(subscribedSymbol||'')}</span>`}window.runAIScanner=runAIScanner;
 function runSignalAI(){runAIScanner();const r=document.getElementById('signalResult'),s=document.getElementById('scannerResults');if(r)r.innerHTML=s?.innerHTML||'Collecting live ticks…'}window.runSignalAI=runSignalAI;
-function runAnalysis(){const v=tickBuffer.map(x=>x.quote).filter(Number.isFinite),ind=document.getElementById('analysisIndicator')?.value,el=document.getElementById('analysisResult');if(!el)return;if(v.length<20){el.textContent='⏳ Need at least 20 live ticks.';return}const r=calcRSI(v,14),sma=v.slice(-20).reduce((a,b)=>a+b,0)/20,last=v.at(-1);el.innerHTML=`<span style="color:var(--gold);">📊 Live:</span> ${ind==='rsi'?`RSI(14) ${r.toFixed(2)} • ${r>70?'Overbought':r<30?'Oversold':'Neutral'}`:`SMA(20) ${sma.toFixed(5)} • Price ${last.toFixed(5)} • ${last>sma?'Above':'Below'} average`}`}window.runAnalysis=runAnalysis;
+
+/* ===== LIVE DERIV MARKET INTELLIGENCE ===== */
+let marketSymbols=[];
+let latestCandles=[];
+function marketLabel(symbol){const m=marketSymbols.find(x=>(x.underlying_symbol||x.symbol)===symbol);return m?.underlying_symbol_name||m?.display_name||symbol||'—'}
+function mean(a){return a.length?a.reduce((s,v)=>s+v,0)/a.length:NaN}
+function stddev(a){if(!a.length)return NaN;const m=mean(a);return Math.sqrt(mean(a.map(v=>(v-m)*(v-m))))}
+function emaSeries(v,p){if(!v.length)return[];const k=2/(p+1);let e=v[0],o=[e];for(let i=1;i<v.length;i++){e=v[i]*k+e*(1-k);o.push(e)}return o}
+function calcRSI14(v,p=14){if(v.length<p+1)return NaN;let g=0,l=0;for(let i=1;i<=p;i++){const d=v[i]-v[i-1];if(d>=0)g+=d;else l-=d}let ag=g/p,al=l/p;for(let i=p+1;i<v.length;i++){const d=v[i]-v[i-1];ag=(ag*(p-1)+Math.max(0,d))/p;al=(al*(p-1)+Math.max(0,-d))/p}return al===0?100:100-(100/(1+ag/al))}
+function calcMACD(v){const a=emaSeries(v,12),b=emaSeries(v,26),m=a.map((x,i)=>x-b[i]),s=emaSeries(m,9),i=m.length-1;return{macd:m[i],signal:s[i],histogram:m[i]-s[i]}}
+function calcBollinger(v,p=20,m=2){const a=v.slice(-p),mid=mean(a),sd=stddev(a);return{middle:mid,upper:mid+m*sd,lower:mid-m*sd,width:mid?(4*sd/mid)*100:NaN}}
+function calcATR(v,p=14){const r=[];for(let i=1;i<v.length;i++)r.push(Math.abs(v[i]-v[i-1]));return mean(r.slice(-p))}
+function digitAt(v,pip){const s=Number(v).toFixed(Math.max(0,Number(pip)||0));return Number(s.slice(-1))}
+function digitStatsLive(v,pip){const c=Array(10).fill(0);v.forEach(x=>c[digitAt(x,pip)]++);const n=v.length||1,even=c.reduce((s,x,d)=>s+(d%2===0?x:0),0),last=v.length?digitAt(v.at(-1),pip):null;let streak=0;if(last!==null)for(let i=v.length-1;i>=0&&digitAt(v[i],pip)===last;i--)streak++;return{c,n,even,odd:n-even,evenPct:even/n*100,oddPct:(n-even)/n*100,last,streak}}
+function analysisCard(label,value){return `<div style="padding:1rem;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,.025)"><div style="font-size:.82rem;color:var(--text-muted)">${escapeHtml(label)}</div><div style="font-size:1.2rem;font-weight:700;margin-top:.25rem">${escapeHtml(value)}</div></div>`}
+function updateAnalysisMeta(symbol){
+ const e=document.getElementById('analysisMarketMeta');if(!e)return;
+ const m=marketSymbols.find(x=>(x.underlying_symbol||x.symbol)===symbol);if(!m){e.innerHTML='';return}
+ e.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.65rem">
+ ${analysisCard('Market',m.underlying_symbol_name||m.display_name||symbol)}
+ ${analysisCard('Symbol',symbol)}
+ ${analysisCard('Pip size',String(m.pip_size??'—'))}
+ ${analysisCard('Market',m.market_display_name||m.market||'—')}
+ ${analysisCard('Submarket',m.submarket_display_name||m.submarket||'—')}
+ ${analysisCard('Status',m.exchange_is_open===0?'Closed':m.is_trading_suspended===1?'Suspended':'Open')}
+ </div>`
+}
+function updateAnalysisSnapshot(v){
+ const e=document.getElementById('analysisSnapshot');if(!e||!v.length)return;
+ const last=v.at(-1),prev=v.at(-2),chg=prev?((last-prev)/prev)*100:0,r=calcRSI14(v),a=calcATR(v),m=calcMACD(v),b=calcBollinger(v);
+ e.innerHTML=[
+ analysisCard('Last price',Number(last).toFixed(5)),
+ analysisCard('Tick change',(chg>=0?'+':'')+chg.toFixed(4)+'%'),
+ analysisCard('RSI(14)',Number.isFinite(r)?r.toFixed(2):'—'),
+ analysisCard('ATR',Number.isFinite(a)?a.toFixed(5):'—'),
+ analysisCard('MACD',Number.isFinite(m.macd)?m.macd.toFixed(6):'—'),
+ analysisCard('BB width',Number.isFinite(b.width)?b.width.toFixed(3)+'%':'—')
+ ].join('')
+}
+function runAnalysis(){
+ const symbol=document.getElementById('analysisSymbol')?.value;
+ const ind=document.getElementById('analysisIndicator')?.value||'overview';
+ const n=Math.max(50,Number(document.getElementById('analysisWindow')?.value||250));
+ const e=document.getElementById('analysisResult');if(!e)return;
+ if(symbol&&symbol!==subscribedSymbol)subscribeTicks(symbol);
+ const v=tickBuffer.map(x=>Number(x.quote)).filter(Number.isFinite).slice(-n);
+ if(v.length<30){e.innerHTML='⏳ Collecting live Deriv ticks for <strong>'+escapeHtml(symbol||'the selected market')+'</strong>…';return}
+ updateAnalysisMeta(symbol);updateAnalysisSnapshot(v);
+ const m=marketSymbols.find(x=>(x.underlying_symbol||x.symbol)===symbol);
+ const r=calcRSI14(v),macd=calcMACD(v),sma20=mean(v.slice(-20)),sma50=mean(v.slice(-50)),bb=calcBollinger(v),atr=calcATR(v);
+ const trend=v.at(-1)>sma20&&sma20>=sma50?'Bullish bias':v.at(-1)<sma20&&sma20<=sma50?'Bearish bias':'Mixed / range';
+ if(ind==='rsi')e.innerHTML=`<h3>RSI(14): ${r.toFixed(2)}</h3><p>${r>70?'Overbought zone':r<30?'Oversold zone':'Neutral zone'} • ${trend}</p>`;
+ else if(ind==='macd')e.innerHTML=`<h3>MACD: ${macd.macd.toFixed(6)}</h3><p>Signal ${macd.signal.toFixed(6)} • Histogram ${macd.histogram.toFixed(6)} • ${macd.histogram>=0?'Positive':'Negative'} momentum</p>`;
+ else if(ind==='ma')e.innerHTML=`<h3>Moving Averages</h3><p>Price ${v.at(-1).toFixed(5)} • SMA20 ${sma20.toFixed(5)} • SMA50 ${sma50.toFixed(5)} • ${trend}</p>`;
+ else if(ind==='bollinger')e.innerHTML=`<h3>Bollinger Bands</h3><p>Upper ${bb.upper.toFixed(5)} • Middle ${bb.middle.toFixed(5)} • Lower ${bb.lower.toFixed(5)} • Width ${bb.width.toFixed(3)}%</p>`;
+ else if(ind==='atr')e.innerHTML=`<h3>Volatility</h3><p>ATR-like tick range ${atr.toFixed(5)} • Std dev ${stddev(v).toFixed(5)} • ${trend}</p>`;
+ else if(ind==='digits'){
+   const ds=digitStatsLive(v,Number(m?.pip_size??digitPipSize??2));
+   const bars=ds.c.map((c,d)=>`<div style="display:grid;grid-template-columns:24px 1fr 75px;gap:.5rem;align-items:center;margin:.3rem 0"><strong>${d}</strong><div style="height:9px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden"><div style="width:${(c/ds.n*100).toFixed(2)}%;height:100%;background:var(--gold)"></div></div><span style="font-size:.8rem;color:var(--text-muted);text-align:right">${c} (${(c/ds.n*100).toFixed(1)}%)</span></div>`).join('');
+   e.innerHTML=`<h3>Digit Intelligence</h3><p>Last digit ${ds.last??'—'} • streak ${ds.streak} • Even ${ds.evenPct.toFixed(1)}% • Odd ${ds.oddPct.toFixed(1)}%</p><div style="margin-top:1rem">${bars}</div>`;
+ }else e.innerHTML=`<h3>Market Overview — ${escapeHtml(m?.underlying_symbol_name||symbol)}</h3><p>Price ${v.at(-1).toFixed(5)} • ${trend} • RSI ${r.toFixed(2)} • MACD ${macd.histogram>=0?'positive':'negative'} • ATR ${atr.toFixed(5)}</p><p style="color:var(--text-muted)">Calculated from live Deriv data; not a guaranteed prediction.</p>`;
+}
+window.runAnalysis=runAnalysis;
+
 function calcRSI(v,p){let g=0,l=0;for(let i=Math.max(1,v.length-p);i<v.length;i++){const d=v[i]-v[i-1];if(d>=0)g+=d;else l-=d}if(l===0)return 100;const rs=(g/p)/(l/p);return 100-(100/(1+rs))}
 function renderRealtimeChart(){const c=document.getElementById('chartContainer');if(!c||tickBuffer.length<2)return;const v=tickBuffer.slice(-100).map(x=>x.quote),min=Math.min(...v),max=Math.max(...v),span=max-min||1,w=Math.max(300,c.clientWidth||700),h=300,pad=24,pts=v.map((x,i)=>`${pad+i*(w-pad*2)/Math.max(1,v.length-1)},${h-pad-((x-min)/span)*(h-pad*2)}`).join(' ');c.innerHTML=`<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="width:100%;height:100%;display:block"><polyline points="${pts}" fill="none" stroke="var(--gold)" stroke-width="2" vector-effect="non-scaling-stroke"/><line x1="0" y1="${h-pad}" x2="${w}" y2="${h-pad}" stroke="rgba(255,255,255,.08)"/><text x="12" y="22" fill="var(--text-muted)" font-size="12">${escapeHtml(subscribedSymbol||'')}</text></svg>`}
-function loadChart(){const s=document.getElementById('chartSymbol')?.value;if(s){subscribeTicks(s);showToast('📡 Streaming live '+s)}}window.loadChart=loadChart;
+
+function renderCandleChart(){
+ const c=document.getElementById('chartContainer');if(!c||latestCandles.length<2)return;
+ const a=latestCandles.slice(-80),lo=Math.min(...a.map(x=>x.low)),hi=Math.max(...a.map(x=>x.high)),span=hi-lo||1,w=Math.max(500,c.clientWidth||800),h=340,pad=28,cw=(w-pad*2)/a.length;
+ const y=v=>h-pad-((v-lo)/span)*(h-pad*2);
+ const body=a.map((x,i)=>{const cx=pad+i*cw+cw/2,yo=y(x.open),yc=y(x.close),yh=y(x.high),yl=y(x.low),up=x.close>=x.open,top=Math.min(yo,yc),bh=Math.max(1,Math.abs(yc-yo));return `<line x1="${cx}" y1="${yh}" x2="${cx}" y2="${yl}" stroke="${up?'#22c55e':'#ef4444'}"/><rect x="${cx-cw*.32}" y="${top}" width="${Math.max(2,cw*.64)}" height="${bh}" fill="${up?'#22c55e':'#ef4444'}"/>`}).join('');
+ c.innerHTML=`<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="width:100%;height:100%;display:block">${body}<text x="12" y="20" fill="var(--text-muted)" font-size="12">${escapeHtml(subscribedSymbol||'')}</text></svg>`;
+}
+function loadChart(){const s=document.getElementById('chartSymbol')?.value;const tf=document.getElementById('chartTimeframe')?.value||'1m';const granularity={'1m':60,'5m':300,'15m':900,'1h':3600}[tf]||60;if(!s)return;subscribeTicks(s);try{const id=send({ticks_history:s,end:'latest',count:200,style:'candles',granularity,subscribe:0});pending.set(id,{kind:'chartCandles',symbol:s,granularity})}catch(e){console.warn('candle request',e)}showToast('📡 Streaming live '+s+' • '+tf)}window.loadChart=loadChart;
 async function executeBulkTrades(type){const symbol=document.getElementById('bulkMarket')?.value,amount=Number(document.getElementById('bulkStake')?.value),count=Math.min(20,Math.max(1,Number(document.getElementById('bulkCount')?.value)||1)),el=document.getElementById('bulkTradeStatus');if(!symbol||!Number.isFinite(amount)||amount<=0)return showToast('⚠️ Invalid bulk settings.');if(!confirmRealTrade(`${type} • ${count} REAL contracts\n${symbol}\nStake each: ${amount.toFixed(2)}`))return;try{requireTradingReady()}catch(e){if(el)el.textContent='❌ '+e.message;return}if(el)el.textContent='⏳ Sending real proposals…';for(let i=0;i<count;i++){try{const direction=type==='EVEN'?'DIGITEVEN':'DIGITODD';const id=send({proposal:1,amount,basis:'stake',contract_type:direction,currency:activeAccount.currency||'USD',duration:1,duration_unit:'t',underlying_symbol:symbol});pending.set(id,{kind:'bulkProposal',direction,symbol,amount,status:el,buySent:false,index:i+1,total:count});await new Promise(r=>setTimeout(r,250))}catch(e){if(el)el.textContent='❌ '+e.message;break}}if(el)el.textContent=`✅ ${count} real proposals sent; only successful proposals are purchased.`}window.executeBulkTrades=executeBulkTrades;
 function runSpeedbot(){
   const symbol=document.getElementById('speedSymbol')?.value;
@@ -2221,6 +2341,9 @@ function updateDigitConnectionUI(){
   updateDigitMarketUI();
 }
 
+
+document.getElementById('analysisSymbol')?.addEventListener('change',e=>{updateAnalysisMeta(e.target.value);if(e.target.value)subscribeTicks(e.target.value)});
+document.getElementById('chartTimeframe')?.addEventListener('change',()=>{if(document.getElementById('page-chart')?.classList.contains('active'))loadChart()});
 function init(){updateUserIdentity();initDigitTerminal();const token=getAccessToken();if(!token){setConnection(false,'Login required');return}connectDeriv();document.getElementById('chartSymbol')?.addEventListener('change',e=>subscribeTicks(e.target.value));}
 document.addEventListener('DOMContentLoaded',()=>{init();document.getElementById('menuToggle')?.addEventListener('click',()=>document.getElementById('sidebar')?.classList.toggle('open'));document.getElementById('sidebarOverlay')?.addEventListener('click',()=>document.getElementById('sidebar')?.classList.remove('open'))});
 console.log('%cTradeNovaX FINAL LIVE REAL DASHBOARD','font-size:20px;color:#D4AF37;font-weight:bold');

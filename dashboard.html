@@ -488,53 +488,7 @@ TradeNovaX standalone live Deriv build:
         }
         .summary-item span { color: var(--text-muted); font-size: 1.1rem; display: block; }
         .summary-item strong { font-size: 2rem; display: block; margin-top: 0.2rem; }
-
-        /* ===== BOT IFRAME ===== */
-        .bot-iframe-wrapper {
-            background: rgba(255,255,255,0.02);
-            border-radius: 16px;
-            border: 1px solid rgba(212,175,55,0.1);
-            overflow: hidden;
-            height: 70vh;
-            position: relative;
-            min-height: 500px;
-        }
-        .bot-iframe-wrapper iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: #010d21;
-        }
-        .bot-loading-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #010d21;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 1rem;
-            z-index: 10;
-            transition: opacity 0.5s;
-        }
-        .bot-loading-overlay.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-        .bot-loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(212,175,55,0.1);
-            border-top-color: var(--gold);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* ===== ACCOUNT TYPE SELECTOR ===== */
+/* ===== ACCOUNT TYPE SELECTOR ===== */
         .account-selector {
             display: flex;
             gap: 1rem;
@@ -888,6 +842,13 @@ img,svg,canvas{max-width:100%}
 }
 @media(min-width:901px){#tnxPinnedBuy{display:none!important}}
 </style>
+
+<style id="tnx-navigation-integrity">
+/* SPA navigation: one destination page visible at a time */
+.page-content{display:none!important}
+.page-content.active{display:block!important}
+.sidebar-nav a[data-page]{cursor:pointer}
+</style>
 </head>
 <body>
 
@@ -929,67 +890,67 @@ img,svg,canvas{max-width:100%}
 
         <nav class="sidebar-nav">
             <div class="nav-label">Main</div>
-            <a class="active" data-page="dashboard">
+            <a href="#" class="active" data-page="dashboard">
                 <span class="icon">📊</span> Dashboard
             </a>
-            <a data-page="bot" style="border-color: var(--gold);">
+            <a href="#" data-page="bot" style="border-color: var(--gold);">
                 <span class="icon">🤖</span> Bot Builder
                 <span class="badge" style="background: var(--gold); color: var(--navy);">LIVE</span>
             </a>
-            <a data-page="manual">
+            <a href="#" data-page="manual">
                 <span class="icon">✋</span> Manual Trader
             </a>
-            <a data-page="bulk">
+            <a href="#" data-page="bulk">
                 <span class="icon">📦</span> Bulk Trader
             </a>
-            <a data-page="positions">
+            <a href="#" data-page="positions">
                 <span class="icon">📌</span> Live Positions
                 <span class="badge" id="positionsBadge">0</span>
             </a>
 
             <div class="nav-label">Bots</div>
-            <a data-page="premium">
+            <a href="#" data-page="premium">
                 <span class="icon">⭐</span> Premium AI Bots
                 <span class="badge">LIVE</span>
             </a>
-            <a data-page="smart">
+            <a href="#" data-page="smart">
                 <span class="icon">🧠</span> Smart AI
                 <span class="badge">LIVE</span>
             </a>
-            <a data-page="free">
+            <a href="#" data-page="free">
                 <span class="icon">🎁</span> Free Bots
                 <span class="badge">LIVE</span>
             </a>
-            <a data-page="quick">
+            <a href="#" data-page="quick">
                 <span class="icon">⚡</span> Quick Bot
                 <span class="badge">LIVE</span>
             </a>
-            <a data-page="signal">
+            <a href="#" data-page="signal">
                 <span class="icon">📡</span> Signal AI
             </a>
-            <a data-page="copy">
+            <a href="#" data-page="copy">
                 <span class="icon">📋</span> Copy Trader
             </a>
 
             <div class="nav-label">Tools</div>
-            <a data-page="analysis">
+            <a href="#" data-page="analysis">
                 <span class="icon">🔍</span> Analysis Tools
             </a>
-            <a data-page="speedbot">
+            <a href="#" data-page="speedbot">
                 <span class="icon">🏃</span> Speedbot
             </a>
-            <a data-page="automated">
+            <a href="#" data-page="automated">
                 <span class="icon">🤖</span> Automated
             </a>
-            <a data-page="chart">
+            <a href="#" data-page="chart">
                 <span class="icon">📈</span> Chart
             </a>
 
             <div class="nav-label">Store</div>
-            <a data-page="bots-store">
+            <a href="#" data-page="bots-store">
                 <span class="icon">🏪</span> Bots Store
             </a>
-            <a data-page="reports">
+            <a href="#" data-page="reports">
                 <span class="icon">📋</span> Reports
             </a>
         </nav>
@@ -1134,7 +1095,7 @@ img,svg,canvas{max-width:100%}
         </div>
 
         <!-- ============================================================
-        PAGE: BOT BUILDER (EMBEDDED WITH AUTH)
+        PAGE: BOT BUILDER — NATIVE LIVE DERIV
         ============================================================ -->
         <div class="page-content" id="page-bot">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; flex-wrap:wrap; gap:1rem;">
@@ -1150,9 +1111,7 @@ img,svg,canvas{max-width:100%}
                             🟢 REAL
                         </span>
                     </div>
-                    <a href="https://bot.tradenovax.co.ke/" target="_blank" class="btn-load" style="padding:0.6rem 1.5rem; background:rgba(255,255,255,0.05); color:var(--text-muted); border:1px solid var(--border); font-size:1.1rem; text-decoration:none;">
-                        🔗 Open in new tab
-                    </a>
+                    
                 </div>
             </div>
 
@@ -1837,17 +1796,12 @@ img,svg,canvas{max-width:100%}
 // Current Deriv REST + authenticated WebSocket workflow.
 // REAL ACCOUNT ONLY. No demo fallback. No fake balances/trades.
 // ============================================================
-const BOT_BUILDER_URL='https://bot.tradenovax.co.ke/';
 const DERIV_API='https://api.derivws.com';
 let currentAccountType='real', derivToken=null, accounts=[], activeAccount=null, derivWS=null;
 let reqSeq=100, pending=new Map(), subscribedSymbol=null, tickBuffer=[], lastTick=null, tickSubscriptionId=null;
 let recentTransactions=[], activeContracts=new Map(), liveConnected=false, sessionPnl=0, countedClosedContracts=new Set(), historicalPnl=0, historicalTrades=0, historicalWins=0;
 let reconnectTimer=null, reconnectAttempts=0, digitDurationMin=1, digitDurationMax=10, digitDefaultStake=10, digitContracts=[];
-// Hides the .html extension in the URL
-if (window.location.pathname.endsWith('.html')) {
-    const cleanPath = window.location.pathname.replace(/\.html$/, '');
-    window.history.replaceState({}, '', cleanPath);
-}
+
 function showToast(message){const toast=document.getElementById('toast'),msg=document.getElementById('toastMessage');if(!toast||!msg){console.log(message);return}msg.textContent=message;toast.classList.add('show');clearTimeout(toast._timer);toast._timer=setTimeout(()=>toast.classList.remove('show'),3500)}
 window.showToast=showToast;
 function getAccessToken(){const keys=['deriv_access_token'];for(const store of [sessionStorage,localStorage]){const token=store.getItem(keys[0]);const exp=Number(store.getItem('deriv_token_expiry')||0);if(token&&(!exp||Date.now()<exp))return token}return null}
@@ -2313,7 +2267,7 @@ window.addEventListener('beforeunload',()=>{
 
     /* Close the drawer after choosing a sidebar navigation item. */
     const sb=sidebar();
-    if(sb && sb.contains(e.target) && e.target.closest('a,button,[role="button"]')){
+    if(sb && sb.contains(e.target) && e.target.closest('a[data-page]')){
       setTimeout(close,80);
     }
   },true);
@@ -2441,5 +2395,63 @@ try{
   });
 })();
 </script>
+
+<script id="tnx-sidebar-navigation-fix">
+(function(){
+  function bindTradeNovaXSidebar(){
+    const nav=document.querySelector('.sidebar-nav');
+    if(!nav || nav.dataset.tnxBound==='1') return;
+    nav.dataset.tnxBound='1';
+
+    nav.addEventListener('click',function(e){
+      const item=e.target.closest('a[data-page]');
+      if(!item || !nav.contains(item)) return;
+      e.preventDefault();
+      e.stopPropagation();
+
+      const page=item.getAttribute('data-page');
+      if(!page) return;
+
+      if(typeof window.switchPage==='function'){
+        window.switchPage(page);
+      }else{
+        document.querySelectorAll('.page-content').forEach(p=>p.classList.remove('active'));
+        const target=document.getElementById('page-'+page);
+        if(target)target.classList.add('active');
+      }
+
+      // Keep mobile drawer behavior synchronized with the existing responsive controller.
+      document.getElementById('sidebar')?.classList.remove('open','tnx-mobile-open');
+      document.getElementById('sidebarOverlay')?.classList.remove('active');
+      document.getElementById('tnxSidebarOverlay')?.classList.remove('active');
+      document.getElementById('tnxMobileMenu')?.setAttribute('aria-expanded','false');
+    });
+
+    // Make keyboard navigation work as well.
+    nav.querySelectorAll('a[data-page]').forEach(a=>{
+      if(!a.hasAttribute('href')) a.setAttribute('href','#');
+      a.setAttribute('role','button');
+      a.setAttribute('tabindex','0');
+      a.addEventListener('keydown',function(e){
+        if(e.key==='Enter' || e.key===' '){
+          e.preventDefault();
+          a.click();
+        }
+      });
+    });
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',bindTradeNovaXSidebar);
+  }else{
+    bindTradeNovaXSidebar();
+  }
+
+  // Handles cases where the dashboard builds/replaces navigation after startup.
+  setTimeout(bindTradeNovaXSidebar,300);
+  setTimeout(bindTradeNovaXSidebar,1200);
+})();
+</script>
+
 </body>
 </html>

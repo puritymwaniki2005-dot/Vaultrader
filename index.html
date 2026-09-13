@@ -382,7 +382,49 @@
             .lp__review-chip { min-width: 220px; }
             .modal-box { padding: 2rem; margin: 1rem; }
         }
-    </style>
+    
+/* TradeNovaX premium landing enhancement — reference-inspired, original implementation */
+.lp__page{background:#050814!important;color:#eef4ff!important;overflow:hidden}
+.lp__topbar{position:sticky!important;top:0;z-index:50;backdrop-filter:blur(18px);background:rgba(5,8,20,.78)!important;border-bottom:1px solid rgba(255,255,255,.08);padding:1.5rem clamp(1.6rem,4vw,5rem)!important}
+.lp__topbar-name{opacity:.65}
+.lp__topbar-btn{border-radius:12px!important;padding:1rem 1.7rem!important;font-weight:700!important;transition:.2s ease!important}
+.lp__topbar-btn--primary,.lp__hero-btn--primary{background:linear-gradient(135deg,#0b63f6,#5b8cff)!important;box-shadow:0 12px 30px rgba(11,99,246,.25)!important}
+.lp__ticker{background:#070d1c!important;border-top:1px solid rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.06)}
+.lp__hero{padding:clamp(5rem,9vw,9rem) 1.6rem 7rem!important;position:relative!important;text-align:left!important;background:radial-gradient(circle at 20% 15%,rgba(11,99,246,.18),transparent 32%),radial-gradient(circle at 85% 35%,rgba(58,130,246,.10),transparent 30%)!important}
+.lp__hero:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.18;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(to bottom,black,transparent 80%)}
+.lp__hero-center{max-width:1180px!important;margin:auto!important;display:grid!important;grid-template-columns:minmax(0,1.05fr) minmax(360px,.95fr)!important;gap:5rem!important;align-items:center!important;position:relative;z-index:1}
+.lp__hero-copy{max-width:720px}
+.lp__hero-h1{font-size:clamp(4.2rem,7vw,7.6rem)!important;line-height:.98!important;letter-spacing:-.055em!important;font-weight:850!important;margin:0!important}
+.lp__hero-pop-word{margin-right:.35rem!important}
+.lp__hero-pop-word:last-child{display:block;background:linear-gradient(100deg,#fff 10%,#72a7ff 65%,#3d7cff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lp__hero-sub{font-size:clamp(1.55rem,2vw,2rem)!important;line-height:1.65!important;color:#aebbd3!important;max-width:650px!important;margin:2.4rem 0 3rem!important}
+.lp__hero-btns{justify-content:flex-start!important}
+.lp__hero-btn{border-radius:14px!important;padding:1.35rem 2rem!important;font-size:1.45rem!important}
+.lp__hero-link{margin-top:1.5rem!important;color:#8fb5ff!important}
+.lp__hero-trust{justify-content:flex-start!important;gap:1rem!important;margin-top:3rem!important}
+.lp__hero-trust>div{padding:1.2rem 1.4rem;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035);border-radius:14px;min-width:135px}
+.lp__hero-trust-n{font-size:1.5rem}
+.lp__hero-disclaimer{margin-top:3rem!important;background:rgba(255,255,255,.035)!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:16px!important;padding:1.7rem!important;color:#8f9db6!important}
+/* right-side live workspace visual */
+.tnx-hero-visual{position:relative;min-height:430px;border:1px solid rgba(255,255,255,.1);border-radius:26px;background:linear-gradient(145deg,rgba(18,29,54,.95),rgba(6,10,24,.97));box-shadow:0 35px 90px rgba(0,0,0,.38),inset 0 1px rgba(255,255,255,.06);padding:1.7rem;overflow:hidden}
+.tnx-hero-visual:before{content:"";position:absolute;width:320px;height:320px;right:-100px;top:-100px;background:rgba(39,111,255,.16);filter:blur(50px);border-radius:50%}
+.tnx-window{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;gap:1.3rem}
+.tnx-windowbar{display:flex;align-items:center;gap:.55rem}.tnx-dot{width:8px;height:8px;border-radius:50%;background:#60708d}.tnx-window-title{margin-left:auto;font-size:1.1rem;color:#8291aa}
+.tnx-balance{display:flex;justify-content:space-between;align-items:end;padding:1.2rem 0}.tnx-balance small{color:#8291aa}.tnx-balance strong{display:block;font-size:2.6rem;margin-top:.4rem}.tnx-live{font-size:1.1rem;color:#59df9b}.tnx-live i{display:inline-block;width:7px;height:7px;background:#59df9b;border-radius:50%;margin-right:.5rem;box-shadow:0 0 12px #59df9b}
+.tnx-chart{height:170px;border-radius:16px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);padding:1.2rem;position:relative;overflow:hidden}.tnx-chart svg{width:100%;height:100%}.tnx-chart-label{position:absolute;top:1rem;left:1.2rem;color:#71819b;font-size:1.05rem}
+.tnx-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}.tnx-stat{padding:1.2rem;border-radius:14px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06)}.tnx-stat small{display:block;color:#74839b;font-size:1rem}.tnx-stat b{display:block;margin-top:.45rem;font-size:1.4rem}.tnx-up{color:#59df9b}.tnx-down{color:#ff7d88}
+.tnx-chip{position:absolute;right:1.7rem;bottom:1.7rem;background:rgba(12,24,45,.9);border:1px solid rgba(99,148,255,.2);padding:.9rem 1.1rem;border-radius:12px;font-size:1.05rem;color:#9fb8e8;z-index:2}
+.lp__features{padding:7rem 1.6rem!important;background:#060a15!important}.lp__features-inner{max-width:1180px!important;margin:auto!important}.lp__features-hd{font-size:clamp(2rem,3vw,3rem)!important;justify-content:center!important;margin-bottom:3.5rem!important}.lp__features-grid{grid-template-columns:repeat(3,1fr)!important;gap:1.5rem!important}.lp__feature-card{padding:2.2rem!important;min-height:210px;background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018))!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:20px!important;transition:transform .25s ease,border-color .25s ease,background .25s ease!important}.lp__feature-card:hover{transform:translateY(-6px);border-color:rgba(91,140,255,.35)!important;background:rgba(17,30,58,.75)!important}.lp__feature-icon{font-size:2.6rem!important}.lp__feature-title{font-size:1.65rem!important;margin-top:1.4rem}.lp__feature-desc{color:#91a0b8!important;line-height:1.6!important}
+.lp__reviews-ticker{background:#050814!important;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06)}
+/* Avoid presenting unverifiable performance testimonials as real customer results. */
+.lp__reviews-ticker{display:none!important}
+.intro-to-deriv-tab{background:#060a15!important}
+.intro-to-deriv-tab__hero{border-radius:24px!important;border:1px solid rgba(255,255,255,.08)!important;background:linear-gradient(145deg,#0b1325,#070b16)!important}
+.intro-to-deriv-tab__chapter{border-color:rgba(255,255,255,.08)!important;background:rgba(255,255,255,.025)!important}
+@media(max-width:900px){.lp__hero-center{grid-template-columns:1fr!important;gap:3.5rem!important}.lp__hero{text-align:center!important}.lp__hero-sub{margin-left:auto!important;margin-right:auto!important}.lp__hero-btns,.lp__hero-trust{justify-content:center!important}.lp__features-grid{grid-template-columns:repeat(2,1fr)!important}.tnx-hero-visual{min-height:380px}}
+@media(max-width:620px){.lp__topbar-name{display:none}.lp__topbar-actions{gap:.6rem!important}.lp__topbar-btn{padding:.85rem 1rem!important}.lp__hero{padding-top:4.5rem!important}.lp__hero-h1{font-size:4rem!important}.lp__hero-btns{flex-direction:column!important}.lp__hero-btn{width:100%!important}.lp__hero-trust{display:grid!important;grid-template-columns:1fr 1fr!important}.lp__hero-trust>div{min-width:0}.lp__features-grid{grid-template-columns:1fr!important}.tnx-stats{grid-template-columns:1fr!important}.tnx-hero-visual{min-height:360px}}
+
+</style>
 </head>
 
 <body class="body theme theme--light theme--traderscheme" style="--site-primary: #001840; --site-primary-rgb: 0, 24, 64; --site-secondary: #010d21; --site-secondary-rgb: 1, 13, 33; --site-accent: #02C0CE; --site-accent-rgb: 2, 192, 206; --site-accent-soft: #02C0CE; --site-accent-soft-rgb: 2, 192, 206; --site-tab-active: #27B8C3;">
@@ -436,7 +478,7 @@
                                 <button class="lp__hero-btn lp__hero-btn--primary" type="button" onclick="openDerivModal()"><span>⚡</span> Log In and Trade <span>→</span></button>
                                 <button class="lp__hero-btn lp__hero-btn--outline" type="button" onclick="openDerivModal()"><span>⚡</span> Create Free Account</button>
                             </div>
-                            <button class="lp__hero-link" type="button">Explore the course ↓</button>
+                            <button class="lp__hero-link" type="button" onclick="document.getElementById('lp-course-hero')?.scrollIntoView({behavior:'smooth',block:'start'})">Explore the course ↓</button>
 
                             <div class="lp__hero-trust">
                                 <div><span class="lp__hero-trust-n">Free</span><span class="lp__hero-trust-l">Bot templates</span></div>
@@ -454,6 +496,20 @@
                                 </ul>
                                 <p>You should never trade with borrowed money or with money that you cannot afford to lose.</p>
                             </blockquote>
+
+                            <div class="tnx-hero-visual" aria-label="TradeNovaX trading workspace preview">
+                                <div class="tnx-window">
+                                    <div class="tnx-windowbar"><span class="tnx-dot"></span><span class="tnx-dot"></span><span class="tnx-dot"></span><span class="tnx-window-title">TradeNovaX Workspace</span></div>
+                                    <div class="tnx-balance"><div><small>Trading workspace</small><strong>Live Market View</strong></div><span class="tnx-live"><i></i>Connected</span></div>
+                                    <div class="tnx-chart">
+                                        <span class="tnx-chart-label">Volatility Index · Live ticks</span>
+                                        <svg viewBox="0 0 500 150" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="tnxg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#4f8cff" stop-opacity=".30"/><stop offset="1" stop-color="#4f8cff" stop-opacity="0"/></linearGradient></defs><path d="M0 120 L35 112 L65 117 L92 91 L125 101 L155 72 L184 84 L218 58 L245 69 L277 46 L310 54 L338 30 L372 47 L405 25 L435 38 L470 17 L500 28 L500 150 L0 150 Z" fill="url(#tnxg)"/><path d="M0 120 L35 112 L65 117 L92 91 L125 101 L155 72 L184 84 L218 58 L245 69 L277 46 L310 54 L338 30 L372 47 L405 25 L435 38 L470 17 L500 28" fill="none" stroke="#70a3ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </div>
+                                    <div class="tnx-stats"><div class="tnx-stat"><small>Market data</small><b class="tnx-up">Live</b></div><div class="tnx-stat"><small>Analysis</small><b>AI Ready</b></div><div class="tnx-stat"><small>Execution</small><b>Deriv</b></div></div>
+                                </div>
+                                <div class="tnx-chip">⚡ Built for focused execution</div>
+                            </div>
+
                         </div>
                     </section>
 
@@ -582,240 +638,495 @@
     </div>
 
     <!-- ============================================================
-    TRADENOVAX - DERIV OAUTH 2.0 + PKCE
+    OAUTH.JS - Complete implementation with Supabase
     ============================================================ -->
     <script>
-        const OAUTH_CONFIG = Object.freeze({
+        // ============================================================
+        // TRADENOVAX - DERIV OAUTH 2.0 WITH PKCE
+        // ============================================================
+
+        // ============================================================
+        // TOAST FUNCTION
+        // ============================================================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toastMessage');
+            if (toast && msg) {
+                msg.textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            } else {
+                console.log('🔔 Toast:', message);
+                const tempToast = document.createElement('div');
+                tempToast.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#0A1628;border:1px solid #D4AF37;border-radius:12px;padding:12px 24px;color:white;z-index:9999;font-size:14px;box-shadow:0 8px 30px rgba(0,0,0,0.5);';
+                tempToast.textContent = message;
+                document.body.appendChild(tempToast);
+                setTimeout(() => tempToast.remove(), 3000);
+            }
+        }
+
+        // ============================================================
+        // SUPABASE - Safe loading with initialization check
+        // ============================================================
+        function initSupabase() {
+            if (typeof window._supabaseInitialized !== 'undefined' && window._supabaseInitialized) {
+                console.log('ℹ️ Supabase already initialized');
+                return true;
+            }
+
+            if (typeof window.supabase === 'undefined' || !window.supabase) {
+                console.warn('⚠️ Supabase SDK not available');
+                return false;
+            }
+
+            const SUPABASE_URL = 'https://qbfwvtoabfewhjnmfkxb.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZnd2dG9hYmZld2hqbm1ma3hiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4MzQ4ODcsImV4cCI6MjEwMzQxMDg4N30.Y0UAdvtTOD7vc3V7ZSOa6PTEKOQRQaiEIX1A56jb2H0';
+
+            window.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            window._supabaseInitialized = true;
+            console.log('✅ Supabase client created');
+            return true;
+        }
+
+        // Try to initialize, retry if needed
+        if (!initSupabase()) {
+            console.warn('⚠️ Supabase SDK not ready, retrying...');
+            setTimeout(() => {
+                if (!initSupabase()) {
+                    console.error('❌ Supabase SDK failed to load. Check your internet connection.');
+                }
+            }, 1000);
+        }
+
+        // ============================================================
+        // OAUTH CONFIG
+        // ============================================================
+        const OAUTH_CONFIG = {
             clientId: '34g3dK2hXuNSYEMsOUlvT',
-            // IMPORTANT: This exact URI must be registered in the Deriv application.
-            // Keep this as the canonical production callback for the current app.
-            redirectUri: 'https://tradenovax.co.ke/',
+            redirectUri: 'https://tradenovax.co.ke',
             authEndpoint: 'https://auth.deriv.com/oauth2/auth',
             tokenEndpoint: 'https://auth.deriv.com/oauth2/token',
             scope: 'trade account_manage',
             affiliateToken: '2PKMG53KVFH8',
             utmCampaign: 'tradenovax'
-        });
-
-        const STORAGE = {
-            accessToken: 'deriv_access_token',
-            expiresAt: 'deriv_token_expiry',
-            accountId: 'deriv_account_id',
-            accountType: 'deriv_account_type',
-            oauthState: 'tradenovax_oauth_state',
-            codeVerifier: 'tradenovax_pkce_verifier'
         };
 
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            const msg = document.getElementById('toastMessage');
-            if (!toast || !msg) return console.log('[Tradenovax]', message);
-            msg.textContent = message;
-            toast.classList.add('show');
-            clearTimeout(window.__toastTimer);
-            window.__toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
-        }
+        // ============================================================
+        // PKCE GENERATION
+        // ============================================================
+        async function generatePKCE() {
+            try {
+                const array = crypto.getRandomValues(new Uint8Array(64));
+                const codeVerifier = Array.from(array)
+                    .map(v => 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~'[v % 66])
+                    .join('');
 
-        function randomBase64Url(bytes = 64) {
-            const values = new Uint8Array(bytes);
-            crypto.getRandomValues(values);
-            let binary = '';
-            for (const value of values) binary += String.fromCharCode(value);
-            return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
-        }
+                const encoder = new TextEncoder();
+                const data = encoder.encode(codeVerifier);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashBase64 = btoa(String.fromCharCode(...hashArray));
+                const codeChallenge = hashBase64
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=+$/, '');
 
-        async function createPKCE() {
-            if (!window.crypto?.getRandomValues || !window.crypto?.subtle) {
-                throw new Error('This browser does not support the secure OAuth security features required by Tradenovax.');
+                const stateArray = crypto.getRandomValues(new Uint8Array(16));
+                const state = stateArray
+                    .reduce((s, b) => s + b.toString(16).padStart(2, '0'), '');
+
+                sessionStorage.setItem('pkce_code_verifier', codeVerifier);
+                sessionStorage.setItem('oauth_state', state);
+
+                return { codeVerifier, codeChallenge, state };
+            } catch (error) {
+                console.error('❌ PKCE generation error:', error);
+                const fallbackState = Math.random().toString(36).substring(2, 15);
+                sessionStorage.setItem('oauth_state', fallbackState);
+                return {
+                    codeVerifier: 'fallback_' + Math.random().toString(36).substring(2, 15),
+                    codeChallenge: 'fallback_' + Math.random().toString(36).substring(2, 15),
+                    state: fallbackState
+                };
             }
-            const codeVerifier = randomBase64Url(64);
-            const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(codeVerifier));
-            let binary = '';
-            for (const byte of new Uint8Array(digest)) binary += String.fromCharCode(byte);
-            const codeChallenge = btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
-            const state = randomBase64Url(32);
-
-            sessionStorage.setItem(STORAGE.codeVerifier, codeVerifier);
-            sessionStorage.setItem(STORAGE.oauthState, state);
-            return { codeVerifier, codeChallenge, state };
         }
 
-        function clearOAuthState() {
-            sessionStorage.removeItem(STORAGE.codeVerifier);
-            sessionStorage.removeItem(STORAGE.oauthState);
-        }
-
-        async function buildOAuthURL({ registration = false } = {}) {
-            const { codeChallenge, state } = await createPKCE();
-            const params = new URLSearchParams({
-                response_type: 'code',
-                client_id: OAUTH_CONFIG.clientId,
-                redirect_uri: OAUTH_CONFIG.redirectUri,
-                scope: OAUTH_CONFIG.scope,
-                state,
-                code_challenge: codeChallenge,
-                code_challenge_method: 'S256',
-                affiliate_token: OAUTH_CONFIG.affiliateToken,
-                utm_campaign: OAUTH_CONFIG.utmCampaign
-            });
-            if (registration) {
-                params.set('prompt', 'registration');
-                params.set('utm_medium', 'affiliate');
-                params.set('utm_source', OAUTH_CONFIG.affiliateToken);
-            }
-            return `${OAUTH_CONFIG.authEndpoint}?${params.toString()}`;
-        }
-
-        async function exchangeCodeForToken(code, codeVerifier) {
-            if (!code || !codeVerifier) throw new Error('Missing OAuth authorization code or PKCE verifier.');
-
-            const response = await fetch(OAUTH_CONFIG.tokenEndpoint, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({
-                    grant_type: 'authorization_code',
+        // ============================================================
+        // BUILD OAUTH URL
+        // ============================================================
+        async function buildOAuthURL() {
+            try {
+                const { codeChallenge, state } = await generatePKCE();
+                const params = new URLSearchParams({
+                    response_type: 'code',
                     client_id: OAUTH_CONFIG.clientId,
-                    code,
-                    code_verifier: codeVerifier,
-                    redirect_uri: OAUTH_CONFIG.redirectUri
-                })
-            });
-
-            const data = await response.json().catch(() => ({}));
-            if (!response.ok || !data.access_token) {
-                throw new Error(data.error_description || data.error || `OAuth token exchange failed (${response.status}).`);
+                    redirect_uri: OAUTH_CONFIG.redirectUri,
+                    scope: OAUTH_CONFIG.scope,
+                    state: state,
+                    code_challenge: codeChallenge,
+                    code_challenge_method: 'S256',
+                    affiliate_token: OAUTH_CONFIG.affiliateToken,
+                    utm_campaign: OAUTH_CONFIG.utmCampaign
+                });
+                return `${OAUTH_CONFIG.authEndpoint}?${params.toString()}`;
+            } catch (error) {
+                console.error('❌ Failed to build OAuth URL:', error);
+                throw error;
             }
-            return data;
         }
 
-        function saveDerivSession(tokenData) {
-            // Session storage keeps the access token scoped to this browser tab.
-            // It is intentionally not copied into localStorage or a Supabase password.
-            const expiresIn = Math.max(60, Number(tokenData.expires_in || 3600));
-            sessionStorage.setItem(STORAGE.accessToken, tokenData.access_token);
-            sessionStorage.setItem(STORAGE.expiresAt, String(Date.now() + expiresIn * 1000));
+        // ============================================================
+        // BUILD SIGNUP URL
+        // ============================================================
+        async function buildSignupURL() {
+            try {
+                const { codeChallenge, state } = await generatePKCE();
+                const params = new URLSearchParams({
+                    response_type: 'code',
+                    client_id: OAUTH_CONFIG.clientId,
+                    redirect_uri: OAUTH_CONFIG.redirectUri,
+                    scope: OAUTH_CONFIG.scope,
+                    state: state,
+                    code_challenge: codeChallenge,
+                    code_challenge_method: 'S256',
+                    prompt: 'registration',
+                    affiliate_token: OAUTH_CONFIG.affiliateToken,
+                    utm_campaign: OAUTH_CONFIG.utmCampaign,
+                    utm_medium: 'affiliate',
+                    utm_source: OAUTH_CONFIG.affiliateToken
+                });
+                return `${OAUTH_CONFIG.authEndpoint}?${params.toString()}`;
+            } catch (error) {
+                console.error('❌ Failed to build signup URL:', error);
+                throw error;
+            }
         }
 
+        // ============================================================
+        // EXCHANGE CODE FOR TOKEN
+        // ============================================================
+        async function exchangeCodeForToken(code, codeVerifier) {
+            try {
+                if (!code) {
+                    console.error('❌ No code provided for token exchange');
+                    return null;
+                }
+
+                console.log('🔄 Exchanging code for token...');
+                const response = await fetch(OAUTH_CONFIG.tokenEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        grant_type: 'authorization_code',
+                        client_id: OAUTH_CONFIG.clientId,
+                        code: code,
+                        code_verifier: codeVerifier,
+                        redirect_uri: OAUTH_CONFIG.redirectUri
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    console.error('❌ Token exchange error:', data.error);
+                    if (data.error_description) {
+                        console.error('❌ Description:', data.error_description);
+                    }
+                    return null;
+                }
+
+                if (data.access_token) {
+                    localStorage.setItem('deriv_access_token', data.access_token);
+                    localStorage.setItem('deriv_token_expiry', Date.now() + (data.expires_in || 3600) * 1000);
+                    localStorage.removeItem('deriv_auth_code');
+                    console.log('✅ Token exchange successful');
+                    return data;
+                } else {
+                    console.error('❌ No access_token in response');
+                    return null;
+                }
+            } catch (error) {
+                console.error('❌ Token exchange error:', error);
+                return null;
+            }
+        }
+
+        // ============================================================
+        // GET DERIV USER INFO
+        // ============================================================
+        async function getDerivUserInfo(accessToken) {
+            try {
+                console.log('🔄 Getting Deriv user info...');
+                const response = await fetch('https://api.deriv.com/v3/user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify({ user: 1 })
+                });
+                const data = await response.json();
+                console.log('✅ Deriv user info:', data);
+                return data;
+            } catch (error) {
+                console.error('❌ Error getting Deriv user info:', error);
+                return null;
+            }
+        }
+
+        // ============================================================
+        // CREATE OR GET SUPABASE USER FROM DERIV OAUTH
+        // ============================================================
+        async function createSupabaseUserFromDeriv(derivTokens) {
+            try {
+                const supabase = window.supabase;
+                if (!supabase) {
+                    console.error('❌ Supabase not available');
+                    return null;
+                }
+
+                const userInfo = await getDerivUserInfo(derivTokens.access_token);
+                
+                if (!userInfo || !userInfo.user) {
+                    console.error('❌ Could not get Deriv user info');
+                    return null;
+                }
+
+                const derivUser = userInfo.user;
+                const email = derivUser.email || derivUser.username + '@deriv.com';
+                const name = derivUser.full_name || derivUser.username || 'Deriv Trader';
+                
+                console.log('📧 Creating Supabase user with email:', email);
+
+                let { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: derivTokens.access_token + derivTokens.refresh_token
+                });
+
+                if (error && error.message.includes('Invalid login credentials')) {
+                    console.log('📝 User not found, creating new account...');
+                    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+                        email: email,
+                        password: derivTokens.access_token + derivTokens.refresh_token,
+                        options: {
+                            data: {
+                                full_name: name,
+                                deriv_account_id: derivUser.account_id || derivUser.user_id || derivTokens.account_id,
+                                deriv_username: derivUser.username || '',
+                                is_deriv_user: true
+                            }
+                        }
+                    });
+                    
+                    if (signUpError) {
+                        console.error('❌ Supabase sign up error:', signUpError);
+                        return null;
+                    }
+                    console.log('✅ Supabase user created:', signUpData.user);
+                    return signUpData.user;
+                }
+
+                if (error) {
+                    console.error('❌ Supabase sign in error:', error);
+                    return null;
+                }
+
+                console.log('✅ Supabase user signed in:', data.user);
+                return data.user;
+            } catch (error) {
+                console.error('❌ Error creating Supabase user:', error);
+                return null;
+            }
+        }
+
+        // ============================================================
+        // GET ACCESS TOKEN
+        // ============================================================
         function getAccessToken() {
-            const token = sessionStorage.getItem(STORAGE.accessToken);
-            const expiresAt = Number(sessionStorage.getItem(STORAGE.expiresAt) || 0);
-            if (!token || !expiresAt || Date.now() >= expiresAt - 30000) return null;
+            const token = localStorage.getItem('deriv_access_token');
+            const expiry = parseInt(localStorage.getItem('deriv_token_expiry') || '0');
+            if (!token || Date.now() > expiry) {
+                return null;
+            }
             return token;
         }
 
-        function isLoggedIn() { return !!getAccessToken(); }
+        function isLoggedIn() {
+            return !!getAccessToken();
+        }
 
-        function clearDerivSession() {
-            Object.values(STORAGE).forEach(key => sessionStorage.removeItem(key));
-            // Clean legacy keys from older builds as well.
+        // ============================================================
+        // LOGOUT
+        // ============================================================
+        function logout() {
             localStorage.removeItem('deriv_access_token');
             localStorage.removeItem('deriv_token_expiry');
             localStorage.removeItem('deriv_auth_code');
             localStorage.removeItem('deriv_auth_state');
             localStorage.removeItem('deriv_tokens_backup');
             localStorage.removeItem('supabase_user_id');
-        }
-
-        function logout() {
-            clearDerivSession();
+            sessionStorage.removeItem('pkce_code_verifier');
+            sessionStorage.removeItem('oauth_state');
+            console.log('👋 Logged out');
             window.location.href = '/index.html';
         }
 
+        // ============================================================
+        // HANDLE OAUTH CALLBACK
+        // ============================================================
         async function handleOAuthCallback() {
-            const params = new URLSearchParams(window.location.search);
-            const code = params.get('code');
-            const state = params.get('state');
-            const error = params.get('error');
-            const errorDescription = params.get('error_description');
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const code = urlParams.get('code');
+                const state = urlParams.get('state');
+                const error = urlParams.get('error');
+                const errorDescription = urlParams.get('error_description');
+
+                if (error) {
+                    console.error('❌ OAuth Error:', error, errorDescription);
+                    showToast('❌ OAuth Error: ' + error);
+                    return null;
+                }
+
+                if (!code) {
+                    console.log('ℹ️ No OAuth code found in URL');
+                    return null;
+                }
+
+                const storedState = sessionStorage.getItem('oauth_state');
+                if (state && storedState && state !== storedState) {
+                    console.error('❌ State mismatch! CSRF protection triggered.');
+                    showToast('❌ Security error. Please try again.');
+                    return null;
+                }
+
+                const codeVerifier = sessionStorage.getItem('pkce_code_verifier');
+                if (!codeVerifier) {
+                    console.error('❌ No code verifier found');
+                    showToast('❌ Session expired. Please try again.');
+                    return null;
+                }
+
+                showToast('🔄 Exchanging code for tokens...');
+                const tokenData = await exchangeCodeForToken(code, codeVerifier);
+
+                sessionStorage.removeItem('pkce_code_verifier');
+                sessionStorage.removeItem('oauth_state');
+                window.history.replaceState({}, document.title, window.location.pathname);
+
+                if (tokenData && tokenData.access_token) {
+                    console.log('✅ OAuth callback handled successfully');
+                    showToast('✅ Connected to Deriv!');
+                    
+                    localStorage.setItem('deriv_access_token', tokenData.access_token);
+                    localStorage.setItem('deriv_token_expiry', Date.now() + (tokenData.expires_in || 3600) * 1000);
+                    
+                    const supabaseUser = await createSupabaseUserFromDeriv(tokenData);
+                    
+                    if (supabaseUser) {
+                        console.log('✅ Supabase user created/signed in:', supabaseUser.email);
+                        localStorage.setItem('supabase_user_id', supabaseUser.id);
+                    } else {
+                        console.warn('⚠️ Could not create Supabase user. Check your Deriv account email.');
+                        localStorage.setItem('deriv_tokens_backup', JSON.stringify(tokenData));
+                    }
+                    
+                    setTimeout(() => {
+                        window.location.href = '/dashboard.html';
+                    }, 1500);
+                    
+                    return tokenData;
+                } else {
+                    console.error('❌ Token exchange failed');
+                    showToast('❌ Failed to connect to Deriv. Please try again.');
+                    return null;
+                }
+            } catch (error) {
+                console.error('❌ OAuth callback error:', error);
+                showToast('❌ Error: ' + error.message);
+                return null;
+            }
+        }
+
+        // ============================================================
+        // CHECK OAUTH CALLBACK ON PAGE LOAD
+        // ============================================================
+        function checkOAuthCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const state = urlParams.get('state');
+            const error = urlParams.get('error');
+            const errorDescription = urlParams.get('error_description');
+
+            console.log('🔍 OAuth Check:', { code: !!code, state: !!state, error, errorDescription });
 
             if (error) {
-                clearOAuthState();
-                showToast(`❌ Deriv login failed: ${errorDescription || error}`);
-                return false;
-            }
-            if (!code || !state) return false;
-
-            const storedState = sessionStorage.getItem(STORAGE.oauthState);
-            const codeVerifier = sessionStorage.getItem(STORAGE.codeVerifier);
-            if (!storedState || state !== storedState) {
-                clearOAuthState();
-                showToast('❌ Security check failed. Please start the Deriv login again.');
-                return false;
-            }
-            if (!codeVerifier) {
-                clearOAuthState();
-                showToast('❌ Login session expired. Please try again.');
-                return false;
+                console.error('❌ OAuth Error:', error, errorDescription);
+                showToast(`❌ OAuth Error: ${error}`);
+                return;
             }
 
-            try {
-                showToast('🔄 Securely connecting to Deriv...');
-                const tokenData = await exchangeCodeForToken(code, codeVerifier);
-                saveDerivSession(tokenData);
-                clearOAuthState();
-
-                // Remove the authorization code from the address bar immediately.
-                window.history.replaceState({}, document.title, window.location.pathname);
-
-                showToast('✅ Deriv connected successfully.');
-                setTimeout(() => { window.location.href = '/dashboard.html'; }, 500);
-                return true;
-            } catch (err) {
-                console.error('OAuth callback error:', err);
-                clearOAuthState();
-                window.history.replaceState({}, document.title, window.location.pathname);
-                showToast(`❌ ${err.message}`);
-                return false;
+            if (code && state) {
+                console.log('🔄 OAuth callback detected with code:', code.substring(0, 10) + '...');
+                handleOAuthCallback().then((result) => {
+                    console.log('✅ OAuth callback result:', result ? 'Success' : 'Failed');
+                });
+            } else {
+                console.log('ℹ️ No OAuth code found in URL');
             }
         }
 
+        // ============================================================
+        // DERIV MODAL FUNCTIONS
+        // ============================================================
         function openDerivModal() {
-            document.getElementById('derivModal')?.classList.add('active');
-        }
-        function closeDerivModal() {
-            document.getElementById('derivModal')?.classList.remove('active');
+            document.getElementById('derivModal').classList.add('active');
         }
 
-        document.getElementById('derivModal')?.addEventListener('click', e => {
-            if (e.target === e.currentTarget) closeDerivModal();
+        function closeDerivModal() {
+            document.getElementById('derivModal').classList.remove('active');
+        }
+
+        document.getElementById('derivModal').addEventListener('click', function(e) {
+            if (e.target === this) closeDerivModal();
         });
-        document.addEventListener('keydown', e => {
+
+        document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') closeDerivModal();
         });
 
-        document.getElementById('derivLoginBtn')?.addEventListener('click', async () => {
+        // ============================================================
+        // DERIV LOGIN HANDLER
+        // ============================================================
+        document.getElementById('derivLoginBtn').addEventListener('click', async function() {
             try {
                 closeDerivModal();
-                showToast('🔗 Opening secure Deriv login...');
-                window.location.assign(await buildOAuthURL());
-            } catch (err) {
-                console.error('Login start error:', err);
-                showToast(`❌ ${err.message}`);
+                showToast('🔗 Connecting to Deriv...');
+                const url = await buildOAuthURL();
+                console.log('🔗 Redirecting to:', url);
+                window.location.href = url;
+            } catch (error) {
+                console.error('❌ Login error:', error);
+                showToast('❌ Error: ' + error.message);
             }
         });
 
-        // The current page can also act as the registration entry point.
-        document.querySelectorAll('.lp__hero-btn--outline').forEach(button => {
-            if (/create free account/i.test(button.textContent || '')) {
-                button.removeAttribute('onclick');
-                button.addEventListener('click', async e => {
-                    e.preventDefault();
-                    try {
-                        showToast('🔗 Opening secure Deriv registration...');
-                        window.location.assign(await buildOAuthURL({ registration: true }));
-                    } catch (err) {
-                        console.error('Registration start error:', err);
-                        showToast(`❌ ${err.message}`);
-                    }
-                });
-            }
-        });
+        // ============================================================
+        // INITIALIZE
+        // ============================================================
+        checkOAuthCallback();
 
-        handleOAuthCallback();
+        console.log('%c🚀 Tradenovax Loaded', 'font-size:20px; color:#D4AF37; font-weight:bold;');
+        console.log('%c📊 Click "Get Started" to login with Deriv', 'font-size:14px; color:#8899BB;');
+        console.log('%c🔑 Client ID: ' + OAUTH_CONFIG.clientId, 'font-size:12px; color:#8899BB;');
+        console.log('%c🔗 Redirect URI: ' + OAUTH_CONFIG.redirectUri, 'font-size:12px; color:#8899BB;');
 
-        console.log('%c🚀 Tradenovax OAuth ready', 'font-size:18px;font-weight:700;');
-        console.log('OAuth redirect:', OAUTH_CONFIG.redirectUri);
-    </script>
+        setTimeout(function() {
+            showToast('🚀 Welcome to Tradenovax! Click "Get Started" to login with Deriv.');
+        }, 1000);
+
         // ============================================================
         // LIVECHAT
         // ============================================================

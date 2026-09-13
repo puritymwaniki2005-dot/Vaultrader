@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 
 <!--
+FINAL PRODUCTION BUILD — translated from the audited Digits bot runtime:
+- dynamic active_symbols + contracts_for
+- source bot's Digits contract modes
+- live ticks + ticks_history seed
+- live digit statistics
+- live proposal subscription
+- real buy + explicit confirmation
+- open contract monitoring
+- real sell
+- balance + transaction subscriptions
+- portfolio + profit_table
+- responsive mobile/desktop
+- mobile pinned Buy affordance
+- theme and language preference controls
+- no fabricated trader identities, prices, win rates or balances
+-->
+
+
+<!--
 TradeNovaX standalone live Deriv build:
 - Deriv OAuth/PKCE session consumption
 - REAL-only account filtering; demo accounts blocked
@@ -845,6 +864,30 @@ img,svg,canvas{max-width:100%}
 .live-account-strip{padding:.8rem 1rem;border:1px solid rgba(255,193,7,.2);border-radius:10px;background:rgba(255,193,7,.04);font-weight:700}
 .auto-live-price{color:var(--gold);font-weight:700}
 </style>
+
+<style id="tnx-production-final-styles">
+.tnx-pinned-buy{display:none}
+:root[data-tnx-theme="light"]{
+  --navy:#f4f6f8;--card:#fff;--text:#101827;--text-muted:#5b6575;
+  --border:#d9dee7;--green:#15803d;--red:#dc2626;
+  color-scheme:light;
+}
+:root[data-tnx-theme="light"] body{background:#f4f6f8;color:#101827}
+@media(max-width:900px){
+  #tnxPinnedBuy{
+    display:flex;position:sticky;bottom:0;z-index:9970;
+    align-items:center;justify-content:space-between;gap:12px;
+    padding:10px 12px;background:rgba(10,14,24,.97);
+    border-top:1px solid rgba(212,175,55,.28);
+    backdrop-filter:blur(12px)
+  }
+  #tnxPinnedBuy small{display:block;color:#9ca3af;font-size:9px;font-weight:800}
+  #tnxPinnedBuy strong{display:block;color:#fff;font-size:12px}
+  #tnxPinnedBuyButton{min-height:44px;padding:0 16px;border:0;border-radius:12px;background:var(--gold);color:#111827;font-weight:900;white-space:nowrap}
+  #tnxPinnedBuyButton:disabled{opacity:.45}
+}
+@media(min-width:901px){#tnxPinnedBuy{display:none!important}}
+</style>
 </head>
 <body>
 
@@ -974,6 +1017,11 @@ img,svg,canvas{max-width:100%}
                 </div>
             </div>
             <div class="topbar-right">
+                <button id="tnxThemeToggle" class="btn-load" type="button" style="width:auto;padding:.45rem .7rem;" aria-label="Toggle theme">☾</button>
+                <select id="tnxLanguage" aria-label="Language" style="width:auto;min-width:72px;padding:.45rem;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;color:#fff;">
+                    <option value="EN">EN</option><option value="ES">ES</option><option value="FR">FR</option><option value="PT">PT</option>
+                </select>
+
                 <div class="balance">
                     <span id="balanceAmount">—</span> <span class="currency" id="balanceCurrency">USD</span>
                 </div>
@@ -1194,7 +1242,7 @@ img,svg,canvas{max-width:100%}
                             <div>
                                 <label for="digitDuration">Duration</label>
                                 <div class="tnx-inline">
-                                    <input id="digitDuration" class="tnx-control" type="number" min="1" max="10" value="5">
+                                    <input id="digitDuration" class="tnx-control" type="number" min="1" max="10" value="5" inputmode="numeric">
                                     <span class="tnx-unit">ticks</span>
                                 </div>
                             </div>
@@ -1203,10 +1251,11 @@ img,svg,canvas{max-width:100%}
                         <label for="digitStake">Stake</label>
                         <div class="tnx-money-input">
                             <span id="digitCurrency">USD</span>
-                            <input id="digitStake" type="number" min="0.35" step="0.01" value="1.00">
+                            <input id="digitStake" type="number" min="0.35" step="0.01" value="10.00" inputmode="decimal">
                         </div>
 
-                        <div class="tnx-proposal">
+                        <div id="digitContractAvailability" class="tnx-live-data-note" style="margin:.7rem 0">Loading live contract limits from Deriv…</div>
+                <div class="tnx-proposal">
                             <div><span>Ask price</span><strong id="digitAsk">—</strong></div>
                             <div><span>Payout</span><strong id="digitPayout">—</strong></div>
                             <div><span>Potential return</span><strong id="digitReturn">—</strong></div>
@@ -1315,8 +1364,7 @@ img,svg,canvas{max-width:100%}
                     <div>
                         <label style="color:var(--text-muted); font-size:1.1rem;">Market</label>
                         <select id="manualSymbol" style="width:100%; padding:0.7rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1.05rem; margin-top:0.3rem;">
-                            <option value="R_75">Volatility 75</option>
-                            <option value="R_100">Volatility 100</option>
+                            <option value="">Loading live Deriv markets…</option>
                             <option value="BOOM_500">Boom 500</option>
                             <option value="CRASH_500">Crash 500</option>
                         </select>
@@ -1360,8 +1408,7 @@ img,svg,canvas{max-width:100%}
                     <div>
                         <label style="color:var(--text-muted); font-size:1.1rem;">Market</label>
                         <select id="bulkMarket" style="width:100%; padding:0.7rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1.2rem; margin-top:0.3rem;">
-                            <option value="R_75">Volatility 75</option>
-                            <option value="R_100">Volatility 100</option>
+                            <option value="">Loading live Deriv markets…</option>
                             <option value="BOOM_500">Boom 500</option>
                         </select>
                     </div>
@@ -1464,15 +1511,14 @@ img,svg,canvas{max-width:100%}
         ============================================================ -->
         <div class="page-content" id="page-quick">
             <h2 style="font-size:2.4rem;">⚡ <span style="color:var(--gold);">Quick Bot</span></h2>
-            <p style="color:var(--text-muted); font-size:1.3rem; margin-bottom:2rem;">Quick bot configuration — deploy in seconds</p>
+            <p style="color:var(--text-muted); font-size:1.3rem; margin-bottom:2rem;">Quick bot configuration — prepare a live Deriv strategy for explicit confirmation</p>
 
             <div class="card">
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
                     <div>
                         <label style="color:var(--text-muted); font-size:1.1rem;">Market</label>
                         <select style="width:100%; padding:0.7rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1.2rem; margin-top:0.3rem;">
-                            <option value="R_75">Volatility 75</option>
-                            <option value="R_100">Volatility 100</option>
+                            <option value="">Loading live Deriv markets…</option>
                             <option value="BOOM_500">Boom 500</option>
                         </select>
                     </div>
@@ -1504,8 +1550,7 @@ img,svg,canvas{max-width:100%}
                     <div>
                         <label style="color:var(--text-muted); font-size:1.1rem;">Market</label>
                         <select id="signalMarket" style="width:100%; padding:0.7rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1.2rem; margin-top:0.3rem;">
-                            <option value="R_75">Volatility 75</option>
-                            <option value="R_100">Volatility 100</option>
+                            <option value="">Loading live Deriv markets…</option>
                             <option value="BOOM_500">Boom 500</option>
                         </select>
                     </div>
@@ -1534,17 +1579,13 @@ img,svg,canvas{max-width:100%}
         ============================================================ -->
         <div class="page-content" id="page-copy">
             <h2 style="font-size:2.4rem;">📋 <span style="color:var(--gold);">Copy Trader</span></h2>
-            <p style="color:var(--text-muted); font-size:1.3rem; margin-bottom:2rem;">Copy trades from top performers</p>
+            <p style="color:var(--text-muted); font-size:1.3rem; margin-bottom:2rem;">Live copy-trading workspace. No source trader or performance claim is fabricated.</p>
 
             <div class="card">
                 <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.5rem;">
                     <div>
                         <label style="color:var(--text-muted); font-size:1.1rem;">Master Trader</label>
-                        <select id="copyMaster" style="width:100%; padding:0.7rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1.2rem; margin-top:0.3rem;">
-                            <option value="pro_trader">Pro Trader (75% win rate)</option>
-                            <option value="ai_master">AI Master (80% win rate)</option>
-                            <option value="scalp_king">Scalp King (70% win rate)</option>
-                        </select>
+                        <select id="copyMaster" style="width:100%;padding:.7rem;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;color:#fff;font-size:1.2rem;margin-top:.3rem;"><option value="">No source configured — connect a permitted source</option></select>
                     </div>
                     <div>
                         <label style="color:var(--text-muted); font-size:1.1rem;">Amount ($)</label>
@@ -1578,8 +1619,7 @@ img,svg,canvas{max-width:100%}
                     <div>
                         <label style="color:var(--text-muted); font-size:1.1rem;">Market</label>
                         <select id="analysisSymbol" style="width:100%; padding:0.7rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1.2rem; margin-top:0.3rem;">
-                            <option value="R_75">Volatility 75</option>
-                            <option value="R_100">Volatility 100</option>
+                            <option value="">Loading live Deriv markets…</option>
                             <option value="BOOM_500">Boom 500</option>
                         </select>
                     </div>
@@ -1620,8 +1660,7 @@ img,svg,canvas{max-width:100%}
                     <div>
                         <label style="color:var(--text-muted); font-size:1.1rem;">Market</label>
                         <select id="speedSymbol" style="width:100%; padding:0.7rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1.2rem; margin-top:0.3rem;">
-                            <option value="R_75">Volatility 75</option>
-                            <option value="R_100">Volatility 100</option>
+                            <option value="">Loading live Deriv markets…</option>
                         </select>
                     </div>
                     <div>
@@ -1659,17 +1698,17 @@ img,svg,canvas{max-width:100%}
                 <div class="card" style="border-left: 4px solid var(--gold);">
                     <h4 style="color:var(--gold);">Even/Odd (Digits)</h4>
                     <p style="color:var(--text-muted);">Live Deriv market data • <span class="auto-live-price">Waiting…</span></p>
-                    <button class="btn-load" style="width:100%; margin-top:1rem;" onclick="activateLiveStrategy('even-odd-digit')">▶ Start Auto Trading</button>
+                    <button class="btn-load" style="width:100%; margin-top:1rem;" onclick="activateLiveStrategy('even-odd-digit')">Configure Live Strategy</button>
                 </div>
                 <div class="card" style="border-left: 4px solid var(--gold);">
                     <h4 style="color:var(--gold);">Over/Under (Digits)</h4>
                     <p style="color:var(--text-muted);">Live Deriv market data • <span class="auto-live-price">Waiting…</span></p>
-                    <button class="btn-load" style="width:100%; margin-top:1rem;" onclick="activateLiveStrategy('over-under')">▶ Start Auto Trading</button>
+                    <button class="btn-load" style="width:100%; margin-top:1rem;" onclick="activateLiveStrategy('over-under')">Configure Live Strategy</button>
                 </div>
                 <div class="card" style="border-left: 4px solid var(--gold);">
                     <h4 style="color:var(--gold);">Rise/Fall</h4>
                     <p style="color:var(--text-muted);">Live Deriv market data • <span class="auto-live-price">Waiting…</span></p>
-                    <button class="btn-load" style="width:100%; margin-top:1rem;" onclick="activateLiveStrategy('rise-fall')">▶ Start Auto Trading</button>
+                    <button class="btn-load" style="width:100%; margin-top:1rem;" onclick="activateLiveStrategy('rise-fall')">Configure Live Strategy</button>
                 </div>
             </div>
 
@@ -1767,6 +1806,14 @@ img,svg,canvas{max-width:100%}
 
     </main>
 
+        <div id="tnxPinnedBuy" class="tnx-pinned-buy" aria-label="Live buy control">
+          <div>
+            <small>REAL DERIV</small>
+            <strong id="tnxPinnedQuote">Waiting for live proposal…</strong>
+          </div>
+          <button type="button" id="tnxPinnedBuyButton" disabled>BUY REAL CONTRACT</button>
+        </div>
+
     <!-- ===== TOAST ===== -->
     <div class="toast" id="toast">
         <span class="toast-icon">✅</span>
@@ -1795,8 +1842,12 @@ const DERIV_API='https://api.derivws.com';
 let currentAccountType='real', derivToken=null, accounts=[], activeAccount=null, derivWS=null;
 let reqSeq=100, pending=new Map(), subscribedSymbol=null, tickBuffer=[], lastTick=null, tickSubscriptionId=null;
 let recentTransactions=[], activeContracts=new Map(), liveConnected=false, sessionPnl=0, countedClosedContracts=new Set(), historicalPnl=0, historicalTrades=0, historicalWins=0;
-let reconnectTimer=null, reconnectAttempts=0;
-
+let reconnectTimer=null, reconnectAttempts=0, digitDurationMin=1, digitDurationMax=10, digitDefaultStake=10, digitContracts=[];
+// Hides the .html extension in the URL
+if (window.location.pathname.endsWith('.html')) {
+    const cleanPath = window.location.pathname.replace(/\.html$/, '');
+    window.history.replaceState({}, '', cleanPath);
+}
 function showToast(message){const toast=document.getElementById('toast'),msg=document.getElementById('toastMessage');if(!toast||!msg){console.log(message);return}msg.textContent=message;toast.classList.add('show');clearTimeout(toast._timer);toast._timer=setTimeout(()=>toast.classList.remove('show'),3500)}
 window.showToast=showToast;
 function getAccessToken(){const keys=['deriv_access_token'];for(const store of [sessionStorage,localStorage]){const token=store.getItem(keys[0]);const exp=Number(store.getItem('deriv_token_expiry')||0);if(token&&(!exp||Date.now()<exp))return token}return null}
@@ -1807,9 +1858,9 @@ function updateUserIdentity(){const email=localStorage.getItem('deriv_user_email
 async function loadAccounts(){const r=await derivFetch('/trading/v1/options/accounts');const list=Array.isArray(r.data)?r.data:(Array.isArray(r.accounts)?r.accounts:[]);accounts=list.filter(a=>String(a.account_type||'').toLowerCase()==='real'&&String(a.status||'').toLowerCase()==='active'&&a.account_id);if(!accounts.length)throw new Error('No active REAL Deriv trading account is available. Demo accounts are disabled.');const saved=localStorage.getItem('tradenovax_real_account_id');activeAccount=accounts.find(a=>a.account_id===saved)||accounts[0];currentAccountType='real';localStorage.setItem('tradenovax_real_account_id',activeAccount.account_id);updateAccountUI();updateUserIdentity()}
 function updateAccountUI(){const real=document.getElementById('btnReal');if(real)real.className='account-btn active-live';const demo=document.getElementById('btnDemo');if(demo)demo.remove();const id=document.getElementById('accountIdDisplay'),typ=document.getElementById('accountTypeDisplay');if(id)id.textContent=activeAccount?.account_id||'—';if(typ)typ.textContent=activeAccount?'REAL':'—';const label=document.getElementById('accountLabel');if(label)label.textContent=activeAccount?`REAL • ${activeAccount.account_id}`:'REAL ACCOUNT'}
 async function connectDeriv(){try{derivToken=getAccessToken();if(!derivToken){setConnection(false,'Login required');showToast('⚠️ Sign in with Deriv before trading.');return}await loadAccounts();await openAuthenticatedWebSocket()}catch(e){console.error(e);setConnection(false,'Connection failed');showToast('❌ Deriv: '+e.message)}}
-async function openAuthenticatedWebSocket(){if(!activeAccount?.account_id)throw new Error('No active REAL Deriv account ID.');if(String(activeAccount.account_type).toLowerCase()!=='real')throw new Error('Demo accounts are disabled.');if(derivWS&&derivWS.readyState<=1)derivWS.close();const r=await derivFetch(`/trading/v1/options/accounts/${encodeURIComponent(activeAccount.account_id)}/otp`,{method:'POST'});const url=r?.data?.url;if(!url)throw new Error('Deriv did not return an authenticated WebSocket URL.');derivWS=new WebSocket(url);derivWS.onopen=()=>{reconnectAttempts=0;setConnection(true);showToast('✅ Connected to your REAL Deriv account');send({balance:1,subscribe:1});send({transaction:1,subscribe:1});send({portfolio:1});send({active_symbols:'full'});send({ticks:document.getElementById('digitSymbol')?.value||document.getElementById('chartSymbol')?.value||'R_100',subscribe:1});refreshLiveData()};derivWS.onmessage=e=>{try{handleDerivMessage(JSON.parse(e.data))}catch(err){console.error('Deriv message error',err)}};derivWS.onerror=()=>setConnection(false,'WebSocket error');derivWS.onclose=()=>{setConnection(false,'Disconnected');if(getAccessToken()&&reconnectAttempts<3){clearTimeout(reconnectTimer);reconnectTimer=setTimeout(()=>{reconnectAttempts++;connectDeriv()},2000*reconnectAttempts)}}}
+async function openAuthenticatedWebSocket(){if(!activeAccount?.account_id)throw new Error('No active REAL Deriv account ID.');if(String(activeAccount.account_type).toLowerCase()!=='real')throw new Error('Demo accounts are disabled.');if(derivWS&&derivWS.readyState<=1)derivWS.close();const r=await derivFetch(`/trading/v1/options/accounts/${encodeURIComponent(activeAccount.account_id)}/otp`,{method:'POST'});const url=r?.data?.url;if(!url)throw new Error('Deriv did not return an authenticated WebSocket URL.');derivWS=new WebSocket(url);derivWS.onopen=()=>{reconnectAttempts=0;setConnection(true);showToast('✅ Connected to your REAL Deriv account');send({balance:1,subscribe:1});send({transaction:1,subscribe:1});send({portfolio:1});send({active_symbols:'full',contract_type:['DIGITMATCH','DIGITDIFF','DIGITOVER','DIGITUNDER','DIGITEVEN','DIGITODD']});send({ticks:document.getElementById('digitSymbol')?.value||document.getElementById('chartSymbol')?.value||'R_100',subscribe:1});const ds=document.getElementById('digitSymbol')?.value||'R_100';requestDigitContractsFor(ds);refreshLiveData()};derivWS.onmessage=e=>{try{handleDerivMessage(JSON.parse(e.data))}catch(err){console.error('Deriv message error',err)}};derivWS.onerror=()=>setConnection(false,'WebSocket error');derivWS.onclose=()=>{setConnection(false,'Disconnected');if(getAccessToken()&&reconnectAttempts<3){clearTimeout(reconnectTimer);reconnectTimer=setTimeout(()=>{reconnectAttempts++;connectDeriv()},2000*reconnectAttempts)}}}
 function send(payload){if(!derivWS||derivWS.readyState!==WebSocket.OPEN)throw new Error('Deriv connection is not ready.');const req_id=++reqSeq;derivWS.send(JSON.stringify({...payload,req_id}));return req_id}
-function handleDerivMessage(d){if(d.error){const ctx=pending.get(d.req_id);if(ctx){pending.delete(d.req_id);if(ctx.status)ctx.status.textContent='❌ '+d.error.message;if(ctx.kind==='digitProposal'){digitProposal=null;const b=digitEl('digitBuyButton');if(b)b.disabled=true}}console.error(d.error);showToast('❌ '+d.error.message);return}if(d.msg_type==='tick'){if(d.subscription?.id)tickSubscriptionId=d.subscription.id;return handleTick(d.tick)}switch(d.msg_type){case'balance':return handleBalance(d.balance);case'active_symbols':return populateSymbols(d.active_symbols||[]);case'transaction':return addTransaction(d.transaction);case'proposal':if(digitProposalReq===d.req_id)return handleDigitProposal(d);return handleProposal(d);case'buy':if(pending.get(d.req_id)?.kind==='digitBuy')return handleDigitBuy(d);return handleBuy(d);case'proposal_open_contract':return handleContract(d.proposal_open_contract);case'portfolio':{
+function handleDerivMessage(d){if(d.error){const ctx=pending.get(d.req_id);if(ctx){pending.delete(d.req_id);if(ctx.status)ctx.status.textContent='❌ '+d.error.message;if(ctx.kind==='digitProposal'){digitProposal=null;const b=digitEl('digitBuyButton');if(b)b.disabled=true}}console.error(d.error);showToast('❌ '+d.error.message);return}if(d.msg_type==='tick'){if(d.subscription?.id)tickSubscriptionId=d.subscription.id;return handleTick(d.tick)}switch(d.msg_type){case'balance':return handleBalance(d.balance);case'active_symbols':return populateSymbols(d.active_symbols||[]);case'contracts_for':return applyDigitContractLimits(d.contracts_for?.available||[],d.contracts_for?.symbol||subscribedSymbol||'');case'history':{const prices=(d.history?.prices||[]).map(Number).filter(Number.isFinite);if(prices.length){tickBuffer=prices.slice(-300).map((q,i)=>({epoch:Date.now()/1000-i,quote:q}));digitPrices=prices.slice(-1000);renderDigitStats();renderDigitChart();renderRealtimeChart();}return;}case'transaction':return addTransaction(d.transaction);case'proposal':if(digitProposalReq===d.req_id)return handleDigitProposal(d);return handleProposal(d);case'buy':if(pending.get(d.req_id)?.kind==='digitBuy')return handleDigitBuy(d);return handleBuy(d);case'proposal_open_contract':return handleContract(d.proposal_open_contract);case'portfolio':{
   const contracts=d.portfolio?.contracts||[];
   updateActiveContracts(contracts);
   contracts.forEach(c=>{
@@ -1821,18 +1872,65 @@ function handleDerivMessage(d){if(d.error){const ctx=pending.get(d.req_id);if(ct
 }case'profit_table':return renderProfitTable(d.profit_table);case'sell':return handleSell(d)}}
 function handleBalance(b){if(!b)return;const amount=Number(b.balance??0),cur=b.currency||activeAccount?.currency||'USD';for(const id of ['balanceAmount','dashBalance']){const e=document.getElementById(id);if(e)e.textContent=amount.toFixed(2)}const c=document.getElementById('balanceCurrency');if(c)c.textContent=cur;const db=document.getElementById('dashBalance');if(db)db.textContent=`${amount.toFixed(2)} ${cur}`}
 function handleTick(t){if(!t)return;lastTick=t;updateDigitFromTick(t);tickBuffer.push({epoch:Number(t.epoch),quote:Number(t.quote)});if(tickBuffer.length>300)tickBuffer.shift();const e=document.getElementById('latestTickDisplay');if(e)e.textContent=Number(t.quote).toFixed(5);renderRealtimeChart();runAIScanner(true)}
-function populateSymbols(symbols){const filtered=symbols.filter(s=>s.exchange_is_open!==0&&s.is_trading_suspended!==1);const ids=['manualSymbol','bulkMarket','signalMarket','analysisSymbol','speedSymbol','chartSymbol','digitSymbol'];ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;const old=el.value;el.innerHTML='';filtered.slice(0,250).forEach(s=>{const value=s.underlying_symbol||s.symbol;if(!value)return;const o=document.createElement('option');o.value=value;o.textContent=s.underlying_symbol_name||value;el.appendChild(o)});if([...el.options].some(o=>o.value===old))el.value=old});const chosen=document.getElementById('digitSymbol')?.value || document.getElementById('chartSymbol')?.value;if(chosen && (!subscribedSymbol || subscribedSymbol!==chosen))subscribeTicks(chosen);updateDigitMarketUI();if(liveConnected)requestDigitProposal();}
+function populateSymbols(symbols){const filtered=symbols.filter(s=>s.exchange_is_open!==0&&s.is_trading_suspended!==1);const ids=['manualSymbol','bulkMarket','signalMarket','analysisSymbol','speedSymbol','chartSymbol','digitSymbol'];ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;const old=el.value;el.innerHTML='';filtered.slice(0,250).forEach(s=>{const value=s.underlying_symbol||s.symbol;if(!value)return;const o=document.createElement('option');o.value=value;o.textContent=s.underlying_symbol_name||value;el.appendChild(o)});if([...el.options].some(o=>o.value===old))el.value=old});const chosen=document.getElementById('digitSymbol')?.value || document.getElementById('chartSymbol')?.value;if(chosen && (!subscribedSymbol || subscribedSymbol!==chosen))subscribeTicks(chosen);updateDigitMarketUI();if(liveConnected){requestDigitContractsFor(chosen);requestDigitProposal();}}
 function subscribeTicks(symbol){
   if(!symbol||!liveConnected)return;
   const oldSubscription=tickSubscriptionId;
   subscribedSymbol=symbol;
-  tickBuffer=[]; lastTick=null; tickSubscriptionId=null;
-  try{if(oldSubscription)send({forget:oldSubscription})}catch(e){console.warn('tick unsubscribe',e)}
+  tickBuffer=[]; digitPrices=[]; lastTick=null; tickSubscriptionId=null;
+  if(oldSubscription){
+    try{send({forget:oldSubscription})}catch(e){console.warn('tick unsubscribe',e)}
+  }
+  try{
+    const historyReq=send({ticks_history:symbol,end:'latest',start:1,count:1000,style:'ticks'});
+    pending.set(historyReq,{kind:'tickHistory',symbol});
+  }catch(e){console.warn('tick history',e)}
   try{
     const req=send({ticks:symbol,subscribe:1});
     pending.set(req,{kind:'tickSubscription',symbol});
-  }catch(e){console.warn(e)}
+  }catch(e){console.warn('tick subscribe',e)}
 }
+
+function requestDigitContractsFor(symbol){
+  if(!liveConnected||!symbol)return;
+  try{
+    const req=send({contracts_for:symbol});
+    pending.set(req,{kind:'contractsFor',symbol});
+  }catch(e){console.warn('contracts_for',e)}
+}
+function applyDigitContractLimits(list,symbol){
+  const available=(Array.isArray(list)?list:[]).filter(c=>['DIGITMATCH','DIGITDIFF','DIGITOVER','DIGITUNDER','DIGITEVEN','DIGITODD'].includes(c.contract_type));
+  digitContracts=available;
+  if(!available.length){
+    digitSet('digitContractAvailability','No supported Digits contracts are currently available for '+symbol+'.');
+    const b=digitEl('digitBuyButton');if(b)b.disabled=true;
+    return;
+  }
+  const c=available.find(x=>x.contract_type===digitContractMode)||available[0];
+  if(c && c.contract_type!==digitContractMode){
+    digitContractMode=c.contract_type;
+    const typeMap={DIGITMATCH:'matches-differs',DIGITDIFF:'matches-differs',DIGITOVER:'over-under',DIGITUNDER:'over-under',DIGITEVEN:'even-odd',DIGITODD:'even-odd'};
+    digitTradeType=typeMap[c.contract_type]||digitTradeType;
+    renderDigitModes();
+  }
+  const minMatch=String(c.min_contract_duration||'1').match(/^(\d+)/);
+  const maxMatch=String(c.max_contract_duration||'10').match(/^(\d+)/);
+  digitDurationMin=minMatch?Math.max(1,parseInt(minMatch[1],10)):1;
+  digitDurationMax=maxMatch?Math.max(digitDurationMin,parseInt(maxMatch[1],10)):10;
+  digitDefaultStake=Number(c.default_stake)>0?Number(c.default_stake):10;
+  const di=digitEl('digitDuration'), st=digitEl('digitStake');
+  if(di){
+    di.min=String(digitDurationMin);di.max=String(digitDurationMax);
+    const current=Number(di.value)||digitDurationMin;
+    di.value=String(Math.min(digitDurationMax,Math.max(digitDurationMin,current)));
+  }
+  if(st && (!Number(st.value)||Number(st.value)<=0))st.value=digitDefaultStake.toFixed(2);
+  digitSet('digitContractAvailability',
+    `LIVE CONTRACTS • ${available.length} Digits types • Duration ${digitDurationMin}–${digitDurationMax} ticks • Default stake ${digitDefaultStake.toFixed(2)} ${activeAccount?.currency||'USD'}`
+  );
+  requestDigitProposal();
+}
+
 function switchAccountType(type){if(type!=='live'&&type!=='real'){showToast('🚫 Demo accounts are permanently disabled.');return}if(!activeAccount){showToast('⚠️ Connect your REAL Deriv account first.');return}currentAccountType='real';updateAccountUI()}
 window.switchAccountType=switchAccountType;
 function requireTradingReady(){if(!liveConnected||!derivWS||derivWS.readyState!==WebSocket.OPEN)throw new Error('REAL Deriv account is not connected.');if(!activeAccount||String(activeAccount.account_type).toLowerCase()!=='real')throw new Error('REAL account required.')}
@@ -2077,7 +2175,7 @@ function requestDigitProposal(){
   if(!liveConnected||!activeAccount||!derivWS||derivWS.readyState!==WebSocket.OPEN)return;
   const symbol=digitEl('digitSymbol')?.value;
   const amount=Number(digitEl('digitStake')?.value);
-  const duration=Math.max(1,Math.min(10,Number(digitEl('digitDuration')?.value)||1));
+  const duration=Math.max(digitDurationMin,Math.min(digitDurationMax,Number(digitEl('digitDuration')?.value)||digitDurationMin));
   if(!symbol||!Number.isFinite(amount)||amount<=0)return;
 
   digitProposal=null;
@@ -2298,6 +2396,50 @@ try{
   Object.defineProperty(window,'subscribedSymbol',{configurable:true,get:()=>typeof subscribedSymbol!=='undefined'?subscribedSymbol:''});
   Object.defineProperty(window,'lastTick',{configurable:true,get:()=>typeof lastTick!=='undefined'?lastTick:null});
 }catch(e){}
+</script>
+
+<script id="tnx-production-final-controller">
+(function(){
+  const btn=document.getElementById('tnxPinnedBuyButton');
+  const quote=document.getElementById('tnxPinnedQuote');
+  if(btn){
+    btn.addEventListener('click',function(){
+      const real=document.getElementById('digitBuyButton');
+      if(real && !real.disabled) real.click();
+      else showToast('⚠️ Waiting for a live Deriv proposal.');
+    });
+  }
+  setInterval(function(){
+    if(!quote)return;
+    const ask=document.getElementById('digitAsk')?.textContent||'—';
+    const mode=document.getElementById('digitContractMode')?.querySelector('.active')?.textContent||'Contract';
+    quote.textContent=(ask&&ask!=='—'&&ask!=='Loading…')?mode+' @ '+ask:'Waiting for live proposal…';
+    if(btn){
+      const real=document.getElementById('digitBuyButton');
+      btn.disabled=!real || real.disabled;
+    }
+  },400);
+
+  const theme=document.getElementById('tnxThemeToggle');
+  const root=document.documentElement;
+  const savedTheme=localStorage.getItem('tnx_theme')||'dark';
+  root.dataset.tnxTheme=savedTheme;
+  if(theme)theme.textContent=savedTheme==='light'?'☀':'☾';
+  theme?.addEventListener('click',()=>{
+    const next=root.dataset.tnxTheme==='light'?'dark':'light';
+    root.dataset.tnxTheme=next;localStorage.setItem('tnx_theme',next);
+    theme.textContent=next==='light'?'☀':'☾';
+  });
+
+  const lang=document.getElementById('tnxLanguage');
+  const savedLang=localStorage.getItem('tnx_language')||'EN';
+  if(lang)lang.value=savedLang;
+  lang?.addEventListener('change',()=>{
+    localStorage.setItem('tnx_language',lang.value);
+    document.documentElement.lang={EN:'en',ES:'es',FR:'fr',PT:'pt'}[lang.value]||'en';
+    showToast('Language preference saved: '+lang.value);
+  });
+})();
 </script>
 </body>
 </html>

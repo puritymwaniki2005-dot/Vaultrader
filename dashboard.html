@@ -954,11 +954,6 @@ img,svg,canvas{max-width:100%}
 @media(min-width:901px){#tnxPinnedBuy{display:none!important}}
 </style>
 <style id="tnx-production-safety-css">
-#tnxSafetyBar{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:9998;display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid rgba(212,175,55,.35);border-radius:14px;background:rgba(10,15,28,.96);backdrop-filter:blur(12px);box-shadow:0 12px 35px rgba(0,0,0,.35);font-size:12px;max-width:calc(100vw - 24px)}
-#tnxSafetyBar .tnx-safe-status{font-weight:800;white-space:nowrap}
-#tnxSafetyBar .tnx-safe-dot{width:8px;height:8px;border-radius:50%;background:#777;display:inline-block;margin-right:5px}
-#tnxSafetyBar .tnx-safe-dot.ok{background:#27c281;box-shadow:0 0 9px rgba(39,194,129,.65)}
-#tnxSafetyBar .tnx-safe-dot.stop{background:#ef5350;box-shadow:0 0 9px rgba(239,83,80,.65)}
 #tnxEmergencyStop{border:1px solid rgba(239,83,80,.55);background:rgba(239,83,80,.12);color:#ff8b88;border-radius:10px;padding:7px 10px;font-weight:900;cursor:pointer}
 #tnxRiskSettings{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.72);align-items:center;justify-content:center;padding:18px}
 #tnxRiskSettings.open{display:flex}
@@ -968,7 +963,7 @@ img,svg,canvas{max-width:100%}
 .tnx-risk-field{display:grid;grid-template-columns:1fr 130px;gap:10px;align-items:center;margin:10px 0}
 .tnx-risk-field label{font-size:13px;color:#d8deea}.tnx-risk-field input{width:100%;padding:9px;border-radius:9px;border:1px solid #30394c;background:#0b1220;color:#fff}
 .tnx-risk-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}.tnx-risk-actions button{padding:9px 13px;border-radius:10px;border:1px solid #384155;background:#1b2435;color:#fff;cursor:pointer;font-weight:800}.tnx-risk-actions .primary{background:#d4af37;color:#111827;border-color:#d4af37}
-@media(max-width:650px){#tnxSafetyBar{bottom:8px;font-size:11px}.tnx-risk-field{grid-template-columns:1fr 105px}}
+@media(max-width:650px){.tnx-risk-field{grid-template-columns:1fr 105px}}
 </style>
 <style id="tnx-final-mobile-desktop-visibility">
 /* FINAL RESPONSIVE RELEASE: readable controls, cards, tables and navigation on phone + desktop */
@@ -1007,8 +1002,6 @@ input,select,textarea{width:100%;min-width:0}
   .tnx-buy-button{min-height:50px!important}
   .live-table{min-width:720px}
   .toast{right:10px;left:10px;bottom:76px;max-width:none}
-  #tnxSafetyBar{bottom:70px!important;max-width:calc(100vw - 16px);left:8px;right:8px;transform:none;justify-content:space-between}
-  #tnxSafetyBar .tnx-safe-status{overflow:hidden;text-overflow:ellipsis}
 }
 
 @media (max-width:560px){
@@ -1027,7 +1020,6 @@ input,select,textarea{width:100%;min-width:0}
   .tnx-pinned-buy{width:100%}
   #tnxPinnedBuy{padding:8px 10px!important}
   #tnxPinnedBuyButton{min-height:46px!important}
-  #tnxSafetyBar{font-size:10px!important;padding:7px 8px!important}
   #tnxEmergencyStop{min-height:38px!important;padding:6px 8px!important}
 }
 
@@ -2634,11 +2626,6 @@ try{
   });
 })();
 </script>
-<div aria-live="polite" id="tnxSafetyBar">
-<span><span class="tnx-safe-dot" id="tnxSafetyDot"></span><span class="tnx-safe-status" id="tnxSafetyStatus">REAL trading locked</span></span>
-<button id="tnxRiskOpen" type="button">Risk controls</button>
-<button id="tnxEmergencyStop" type="button">STOP NEW TRADES</button>
-</div>
 <div aria-labelledby="tnxRiskTitle" aria-modal="true" id="tnxRiskSettings" role="dialog">
 <div id="tnxRiskCard">
 <h3 id="tnxRiskTitle">Production Risk Controls</h3>

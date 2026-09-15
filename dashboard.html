@@ -808,6 +808,24 @@ select.tnx-control option{background:#0b1020;color:#fff}
 /* Production navigation hit-area fix */
 .sidebar-nav a[data-page]{cursor:pointer!important;pointer-events:auto!important;touch-action:manipulation;}
 .sidebar-nav a[data-page] .icon,.sidebar-nav a[data-page] .badge{pointer-events:none;}
+
+/* ===== REAL BLOCKLY BOT BUILDER ===== */
+.tnx-builder-reference{height:720px!important;background:#fff!important;border:1px solid #e1e1e1!important}
+.tnx-builder-sidebar{width:278px!important;flex-basis:278px!important;padding:10px 10px 0!important}
+.tnx-toolbox-panel{padding:0 4px 0 4px;overflow:auto;height:calc(100% - 126px)}
+.tnx-toolbox-panel button{display:flex;width:100%;min-height:42px;border:0;background:#fff;align-items:center;justify-content:space-between;text-align:left;padding:9px 10px;border-radius:5px;color:#3e4146;font-size:14px;cursor:pointer}
+.tnx-toolbox-panel button:hover,.tnx-toolbox-panel button.active{background:#f2f3f5}
+.tnx-toolbox-panel button span{color:#777;font-size:18px}
+.tnx-blockly-workspace{position:absolute;left:0;right:0;top:70px;bottom:52px;background:#fff}
+.tnx-builder-stage .blocklySvg{background:#fff!important}
+.tnx-builder-stage .blocklyToolboxDiv{display:none!important}
+.tnx-builder-stage .blocklyFlyout{box-shadow:0 5px 20px rgba(0,0,0,.14)!important}
+.tnx-builder-stage .blocklyFlyoutBackground{fill:#fff!important;fill-opacity:1!important}
+.tnx-builder-stage .blocklyFlyoutLabelText{font-family:Arial,Helvetica,sans-serif!important;font-size:14px!important}
+.tnx-builder-stage .blocklyText{font-family:Arial,Helvetica,sans-serif!important}
+.tnx-builder-stage .blocklyMainBackground{stroke:#fff!important}
+.tnx-builder-stage .blocklyScrollbarHandle{fill:#aaa!important}
+@media(max-width:850px){.tnx-builder-sidebar{width:230px!important;flex-basis:230px!important}.tnx-builder-reference{height:680px!important}}
 </style>
 <style id="tnx-responsive-overhaul">
 /* TradeNovaX responsive/mobile navigation overhaul */
@@ -1063,6 +1081,7 @@ input,select,textarea{width:100%;min-width:0}
   window.__TNX_SOURCE_MAPS_DISABLED__ = true;
 })();
 </script>
+<script src="https://unpkg.com/blockly@10.4.3/blockly.min.js"></script>
 </head>
 <body>
 <div class="tnx-mobile-header" id="tnxMobileHeader">
@@ -1195,94 +1214,92 @@ input,select,textarea{width:100%;min-width:0}
         PAGE: DASHBOARD
         ============================================================ -->
 <div class="page-content active" id="page-dashboard">
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; flex-wrap:wrap; gap:1rem;">
-<h2 style="font-size:2rem;">🤖 Your Bots</h2>
-<button class="btn-load" onclick="switchPage('bot')" style="width:auto; padding:0.6rem 2rem;">
-                    + New Bot
-                </button>
-</div>
-<p style="color:var(--text-muted); font-size:1.3rem; margin-bottom:2rem;">Load and manage your trading bots</p>
-<div class="card" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem;">
-<div class="summary-item"><span>Real Balance</span><strong id="dashBalance">—</strong></div>
-<div class="summary-item"><span>Open Positions</span><strong id="dashOpenPositions">0</strong></div>
-<div class="summary-item"><span>Session P/L</span><strong id="dashSessionPnl">$0.00</strong></div>
-<div class="summary-item"><span>Connection</span><strong id="dashConnection" style="color:var(--red);">Disconnected</strong></div>
-</div>
-<h2 style="font-size:2rem; margin-top:2rem;">📌 Live Positions</h2>
-<p style="color:var(--text-muted); font-size:1.1rem; margin-bottom:1rem;">Only contracts currently held on your authenticated REAL Deriv account appear here.</p>
-<div class="card" id="dashboardPositions">
-<div style="padding:1.5rem;text-align:center;color:var(--text-muted);">No open real-money positions.</div>
-</div>
-<h2 style="font-size:2rem; margin-top:2rem;">🧾 Recent Account Activity</h2>
-<div class="card">
-<div class="trade-list" id="tradeList">
-<div style="padding:1.5rem;text-align:center;color:var(--text-muted);">Waiting for live Deriv transaction events…</div>
-</div>
-</div>
-<!-- ===== EXECUTION PANEL ===== -->
-<div class="execution-panel">
-<div class="execution-header">
-<h3 style="font-size:1.8rem;">🎮 Bot Control</h3>
-<div class="execution-status">
-<span class="status-dot ready" id="botStatusDot"></span>
-<span id="botStatusText">Ready</span>
-</div>
-</div>
-<div class="run-section">
-<a class="btn-run" href="#" onclick="switchPage('bot'); return false;">
-<span class="run-icon">🚀</span>
-<span class="run-text">Launch Bot Builder</span>
-</a>
-<p class="run-hint">When you're ready to trade, hit Run. You'll be able to track your bot's performance here.</p>
-</div>
-<!-- ===== AI SCANNER ===== -->
-<div class="ai-scanner">
-<div class="scanner-header">
-<span class="scanner-icon">🧠</span>
-<span style="font-weight:600;">AI Scanner</span>
-<button class="btn-scan" id="scanBtn" onclick="runAIScanner()">🔍 Click to analyze</button>
-</div>
-<div class="scanner-results" id="scannerResults">
-<span class="scan-status">🟢 Ready to scan</span>
-</div>
-</div>
-<!-- ===== EXECUTION TABS ===== -->
-<div class="execution-tabs">
-<button class="tab-btn active" data-tab="summary" onclick="switchExecutionTab('summary')">Summary</button>
-<button class="tab-btn" data-tab="transactions" onclick="switchExecutionTab('transactions')">Transactions</button>
-<button class="tab-btn" data-tab="journal" onclick="switchExecutionTab('journal')">Journal</button>
-</div>
-<div class="execution-content">
-<div class="tab-panel active" id="panel-summary">
-<div class="summary-grid">
-<div class="summary-item">
-<span>Total Trades</span>
-<strong id="totalTrades">0</strong>
-</div>
-<div class="summary-item">
-<span>Win Rate</span>
-<strong id="winRate">0%</strong>
-</div>
-<div class="summary-item">
-<span>Total P&amp;L</span>
-<strong id="totalPnL" style="color: var(--gold);">$0.00</strong>
-</div>
-<div class="summary-item">
-<span>Active Bots</span>
-<strong id="activeBotsCount">0</strong>
-</div>
-</div>
-</div>
-<div class="tab-panel" id="panel-transactions">
-<div id="transactionList"><div style="padding:1rem 0;color:var(--text-muted);text-align:center;">No live transactions yet.</div></div>
-</div>
-</div>
-<div class="tab-panel" id="panel-journal">
-<div id="journalList">
-<p style="color: var(--text-muted); text-align: center; padding: 1rem;">No journal entries yet</p>
-</div>
-</div>
-</div>
+<section class="tnx-dash-hero">
+  <div>
+    <div class="tnx-eyebrow">TRADENOVAX • REAL DERIV ACCOUNT</div>
+    <h2>Trading Dashboard</h2>
+    <p>Monitor your authenticated account, live contracts and bot performance from one workspace.</p>
+  </div>
+  <div class="tnx-dash-hero-actions">
+    <span class="tnx-live-pill" id="dashLivePill"><i></i><span id="dashLiveText">NOT CONNECTED</span></span>
+    <button class="tnx-primary-btn" onclick="switchPage('bot')">▶ Open Bot Builder</button>
+    <button class="tnx-secondary-btn" onclick="window.connectDeriv?.(true)">↻ Connect REAL</button>
+  </div>
+</section>
+
+<section class="tnx-dash-metrics">
+  <article class="tnx-metric-card tnx-metric-balance">
+    <div class="tnx-metric-icon">$</div><div><span>REAL BALANCE</span><strong id="dashBalance">—</strong><small id="balanceCurrencyDash">USD</small></div>
+  </article>
+  <article class="tnx-metric-card">
+    <div class="tnx-metric-icon">◈</div><div><span>OPEN POSITIONS</span><strong id="dashOpenPositions">0</strong><small>Live contracts</small></div>
+  </article>
+  <article class="tnx-metric-card">
+    <div class="tnx-metric-icon">↗</div><div><span>SESSION P/L</span><strong id="dashSessionPnl">$0.00</strong><small>Authenticated session</small></div>
+  </article>
+  <article class="tnx-metric-card">
+    <div class="tnx-metric-icon">●</div><div><span>CONNECTION</span><strong id="dashConnection">Disconnected</strong><small id="dashAccountId">REAL account required</small></div>
+  </article>
+</section>
+
+<section class="tnx-dash-grid">
+  <article class="tnx-dash-panel tnx-dash-performance">
+    <div class="tnx-panel-head"><div><h3>Bot Performance</h3><p>Live statistics from this TradeNovaX session</p></div><button class="tnx-link-btn" onclick="switchPage('bot')">Build strategy →</button></div>
+    <div class="tnx-performance-row">
+      <div><span>Total trades</span><strong id="totalTrades">0</strong></div>
+      <div><span>Win rate</span><strong id="winRate">0%</strong></div>
+      <div><span>Total P/L</span><strong id="totalPnL">$0.00</strong></div>
+      <div><span>Active bots</span><strong id="activeBotsCount">0</strong></div>
+    </div>
+    <div class="tnx-pnl-track"><span id="dashPnlTrack"></span></div>
+    <div class="tnx-performance-foot"><span>Performance is calculated from actual execution events.</span><span id="dashPerfStatus">Waiting for REAL trading activity</span></div>
+  </article>
+
+  <article class="tnx-dash-panel tnx-dash-control">
+    <div class="tnx-panel-head"><div><h3>Bot Control</h3><p>Start from the real builder</p></div><span class="tnx-status-badge" id="botStatusText">Ready</span></div>
+    <div class="tnx-control-body">
+      <div class="tnx-control-orb"><span id="botStatusDot" class="status-dot ready"></span><b>REAL</b></div>
+      <div><strong id="dashBotMessage">No bot is running</strong><p>Configure your strategy in Bot Builder before execution.</p></div>
+    </div>
+    <button class="tnx-run-wide" onclick="switchPage('bot')">🚀 Launch Bot Builder</button>
+  </article>
+</section>
+
+<section class="tnx-dash-grid tnx-dash-grid-bottom">
+  <article class="tnx-dash-panel">
+    <div class="tnx-panel-head"><div><h3>Live Positions</h3><p>Only contracts currently held on your authenticated REAL Deriv account.</p></div><span class="tnx-count" id="dashPositionCount">0</span></div>
+    <div class="tnx-live-list" id="dashboardPositions"><div class="tnx-empty-state"><b>No open real-money positions</b><span>Connect a REAL account to see live contracts.</span></div></div>
+  </article>
+
+  <article class="tnx-dash-panel">
+    <div class="tnx-panel-head"><div><h3>Recent Account Activity</h3><p>Live transaction events received from Deriv.</p></div><button class="tnx-link-btn" onclick="switchPage('reports')">View reports →</button></div>
+    <div class="tnx-live-list" id="tradeList"><div class="tnx-empty-state"><b>Waiting for live Deriv transaction events</b><span>No fabricated activity is shown.</span></div></div>
+  </article>
+</section>
+
+<section class="tnx-dash-panel tnx-activity-panel">
+  <div class="tnx-panel-head"><div><h3>Execution Center</h3><p>Summary, transactions and journal for the current session.</p></div></div>
+  <div class="execution-tabs">
+    <button class="tab-btn active" data-tab="summary" onclick="switchExecutionTab('summary')">Summary</button>
+    <button class="tab-btn" data-tab="transactions" onclick="switchExecutionTab('transactions')">Transactions</button>
+    <button class="tab-btn" data-tab="journal" onclick="switchExecutionTab('journal')">Journal</button>
+  </div>
+  <div class="execution-content">
+    <div class="tab-panel active" id="panel-summary"><div class="summary-grid">
+      <div class="summary-item"><span>Total Trades</span><strong id="totalTradesExec">0</strong></div>
+      <div class="summary-item"><span>Win Rate</span><strong id="winRateExec">0%</strong></div>
+      <div class="summary-item"><span>Total P/L</span><strong id="totalPnLExec">$0.00</strong></div>
+      <div class="summary-item"><span>Active Bots</span><strong id="activeBotsExec">0</strong></div>
+    </div></div>
+    <div class="tab-panel" id="panel-transactions"><div id="transactionList"><div class="tnx-empty-state"><b>No transaction events yet</b><span>REAL Deriv transactions will appear here.</span></div></div></div>
+    <div class="tab-panel" id="panel-journal"><div id="journalList"><div class="tnx-empty-state"><b>No journal entries yet</b><span>Bot execution events will appear here.</span></div></div></div>
+  </div>
+</section>
+
+<section class="tnx-dash-panel tnx-ai-panel">
+  <div class="tnx-panel-head"><div><h3>AI Scanner</h3><p>Run analysis only when you request it.</p></div><button class="tnx-primary-btn" id="scanBtn" onclick="runAIScanner()">⌕ Analyze</button></div>
+  <div class="scanner-results" id="scannerResults"><span class="scan-status">🟢 Ready to scan</span></div>
+</section>
 </div>
 
 <!-- ============================================================
@@ -1295,61 +1312,34 @@ input,select,textarea{width:100%;min-width:0}
 <button class="tnx-ref-tab" onclick="switchPage('automated')">✦ Auto Trader</button>
 </div>
 
-<div class="tnx-builder-reference">
+<div class="tnx-builder-reference" id="tnxExactBuilder">
   <aside class="tnx-builder-sidebar">
     <button class="tnx-quick-strategy" onclick="tnxBuilderQuickStrategy()">Quick strategy</button>
     <div class="tnx-blocks-menu-head">Blocks menu <span>⌃</span></div>
-    <div class="tnx-builder-search"><span>⌕</span><input aria-label="Search blocks" placeholder="Search" type="text"></div>
-    <div class="tnx-sidebar-section">Restart trading conditions <span>›</span></div>
-    <div class="tnx-sidebar-section">Analysis <span>⌄</span></div>
-    <div class="tnx-sidebar-section">Utility <span>⌄</span></div>
-    <div class="tnx-sidebar-section">Virtual Hook Switcher</div>
-    <div class="tnx-sidebar-section">Custom Notification</div>
-    <div class="tnx-sidebar-section">Binarytools</div>
-    <div class="tnx-sidebar-section">Contract modifiers</div>
-    <div class="tnx-sidebar-section">Barrier Settings</div>
+    <div class="tnx-builder-search"><span>⌕</span><input id="tnxBlockSearch" aria-label="Search blocks" placeholder="Search" type="text"></div>
+    <div id="tnxToolboxPanel" class="tnx-toolbox-panel">
+      <button data-cat="restart">Restart trading conditions <span>›</span></button>
+      <button data-cat="analysis">Analysis <span>⌄</span></button>
+      <button data-cat="utility">Utility <span>⌄</span></button>
+      <button data-cat="hook">Virtual Hook Switcher</button>
+      <button data-cat="notification">Custom Notification</button>
+      <button data-cat="binary">Binarytools</button>
+      <button data-cat="contract">Contract modifiers</button>
+      <button data-cat="barrier">Barrier Settings</button>
+    </div>
   </aside>
-
   <section class="tnx-builder-stage">
-    <div class="tnx-builder-toolbar-ref">
+    <div class="tnx-builder-toolbar-ref" aria-label="Blockly toolbar">
       <button onclick="tnxBuilderReset()" title="Reset">⟳</button>
-      <button title="Open">▱</button>
-      <button onclick="tnxBuilderSave()" title="Save">▣</button>
-      <i></i><button title="Workspace">▤</button><i></i><button title="Chart">⌁</button><button title="Digit blocks">◉</button><button title="Chart 2">⌁</button><i></i><button title="Undo">↶</button><button title="Redo">↷</button><i></i><button title="Zoom in">⊕</button><button title="Zoom out">⊖</button>
+      <i></i><button onclick="tnxBuilderSave()" title="Save">▱</button>
+      <button onclick="tnxBuilderLoad()" title="Load">▣</button>
+      <button onclick="tnxBuilderUndo()" title="Undo">↶</button>
+      <button onclick="tnxBuilderRedo()" title="Redo">↷</button>
+      <button onclick="tnxBuilderZoomIn()" title="Zoom in">⊕</button>
+      <button onclick="tnxBuilderZoomOut()" title="Zoom out">⊖</button>
+      <button onclick="tnxBuilderCenter()" title="Center workspace">⌁</button>
     </div>
-
-    <div class="tnx-workspace-canvas">
-      <div class="tnx-flow-main">
-        <div class="tnx-ref-block tnx-block-params">
-          <div class="tnx-ref-block-title">▣ &nbsp;1. Trade parameters</div>
-          <div class="tnx-ref-block-body">
-            <div class="tnx-ref-line"><span>Market:</span><select class="tnx-ref-select tnx-control" id="digitSymbol"><option value="">Loading live Deriv markets…</option></select><span>›</span><select class="tnx-ref-select" id="builderMarketMode"><option>random_index</option><option>synthetic_index</option></select><span>›</span><select class="tnx-ref-select" id="builderMarketSymbol"><option>Volatility 100 (1s) Index</option></select></div>
-            <div class="tnx-ref-checkline"><span>Alternate markets (Continuous Indices only):</span><input id="builderAlternate" type="checkbox"><span>every</span><input class="tiny" value="1" type="number"><span>run(s)</span></div>
-            <div class="tnx-ref-checkline"><span>Auto-scan volatility markets and trade first match:</span><input id="builderAutoScan" type="checkbox"></div>
-            <div class="tnx-ref-checkline"><span>Virtual Hook:</span><input type="checkbox"><button class="vh-settings">VH Settings</button></div>
-            <div class="tnx-ref-line"><span>Trade Type:</span><select class="tnx-ref-select" id="builderTradeType"><option value="even-odd">Even/Odd</option><option value="over-under">Over/Under</option><option value="matches-differs">Matches/Differs</option></select><span>›</span><select class="tnx-ref-select" id="builderContract"><option value="DIGITEVEN">Even</option><option value="DIGITODD">Odd</option><option value="DIGITOVER">Over</option><option value="DIGITUNDER">Under</option><option value="DIGITMATCH">Matches</option><option value="DIGITDIFF">Differs</option></select></div>
-            <div class="tnx-ref-line"><span>Contract Type:</span><select class="tnx-ref-select"><option>Both</option></select></div>
-            <div class="tnx-ref-line"><span>Default Candle Interval:</span><select class="tnx-ref-select" id="builderDataInterval"><option>1 minute</option><option selected>Live ticks</option><option>1 tick</option></select></div>
-            <div class="tnx-ref-checkline"><span>Restart buy/sell on error (disable for better performance):</span><input checked="" id="builderStopOnError" type="checkbox"></div>
-            <div class="tnx-ref-checkline"><span>Restart last trade on error (bot ignores the unsuccessful trade):</span><input id="builderResumeError" type="checkbox"></div>
-          </div>
-          <div class="tnx-ref-section-title">Run once at start:</div>
-          <div class="tnx-ref-white-slot"></div>
-          <div class="tnx-ref-section-title">Trade options:</div>
-          <div class="tnx-ref-trade-options"><span>Duration:</span><select id="digitDurationUnit"><option value="t">Ticks</option><option value="s">Seconds</option><option value="m">Minutes</option></select><input id="digitDuration" value="1" min="1" max="10" type="number"><span>Stake: USD</span><input id="digitStake" value="1.00" min="0.35" step="0.01" type="number"></div>
-        </div>
-
-        <div class="tnx-ref-block tnx-block-sell">
-          <div class="tnx-ref-block-title">▣ &nbsp;3. Sell conditions</div>
-          <div class="tnx-sell-body"><span class="if-label">if</span><span class="condition-pill">Sell is available</span><span>then</span><div class="tnx-empty-slot"></div><button>+</button></div>
-        </div>
-        <div class="tnx-ref-block tnx-block-restart">
-          <div class="tnx-ref-block-title">⚑ &nbsp;4. Restart trading conditions</div>
-          <div class="tnx-restart-body"><button onclick="tnxBuilderRun()">Trade again</button></div>
-        </div>
-      </div>
-    </div>
-
+    <div id="tnxBlocklyWorkspace" class="tnx-blockly-workspace"></div>
     <div class="tnx-builder-bottom-ref">
       <button class="tnx-builder-run-ref" onclick="tnxBuilderRun()"><span>▶</span> Run</button>
       <div class="tnx-builder-running-ref"><strong id="builderRunStatus">Bot is not running • REAL account required</strong><div></div></div>
@@ -1357,7 +1347,6 @@ input,select,textarea{width:100%;min-width:0}
     </div>
   </section>
 </div>
-
 <div class="tnx-builder-hidden-fields" aria-hidden="true">
   <select id="builderInitialAction"><option value="preview">Preview live proposal</option><option value="trade">Execute one confirmed REAL trade</option></select>
   <select id="digitPrediction"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option selected value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select>
@@ -1816,8 +1805,8 @@ The source XML is preserved exactly. Loading a definition does not place a trade
 const BOT_BUILDER_URL='https://bot.tradenovax.co.ke/';
 const DERIV_API='https://api.derivws.com';
 let currentAccountType='real', derivToken=null, accounts=[], activeAccount=null, derivWS=null;
-let reqSeq=100, pending=new Map(), subscribedSymbol=null, tickBuffer=[], lastTick=null, tickSubscriptionId=null; window.TNX_PENDING=pending;
-let recentTransactions=[], activeContracts=new Map(), subscribedOpenContracts=new Set(), liveConnected=false, sessionPnl=0, countedClosedContracts=new Set(), historicalPnl=0, historicalTrades=0, historicalWins=0; window.TNX_ACTIVE_CONTRACTS=activeContracts;
+let reqSeq=100, pending=new Map(), subscribedSymbol=null, tickBuffer=[], lastTick=null, tickSubscriptionId=null;
+let recentTransactions=[], activeContracts=new Map(), subscribedOpenContracts=new Set(), liveConnected=false, sessionPnl=0, countedClosedContracts=new Set(), historicalPnl=0, historicalTrades=0, historicalWins=0;
 let reconnectTimer=null, reconnectAttempts=0, digitDurationMin=1, digitDurationMax=10, digitDurationUnit='t', digitDefaultStake=10, digitContracts=[];
 const DIGIT_CONTRACT_TYPES=['DIGITMATCH','DIGITDIFF','DIGITOVER','DIGITUNDER','DIGITEVEN','DIGITODD'];
 
@@ -1863,7 +1852,7 @@ async function connectDeriv(force=false){if(connectDeriv._busy&&!force)return;co
 window.connectDeriv=connectDeriv;
 async function openAuthenticatedWebSocket(){if(!activeAccount?.account_id)throw new Error('No active REAL Deriv account ID.');if(String(activeAccount.account_type).toLowerCase()!=='real')throw new Error('Demo accounts are disabled.');if(derivWS&&derivWS.readyState<=1)try{derivWS.close(1000,'reconnecting')}catch{}setConnection(false,'Requesting one-time REAL WebSocket OTP…');const r=await derivFetch(`/trading/v1/options/accounts/${encodeURIComponent(activeAccount.account_id)}/otp`,{method:'POST'});const url=r?.data?.url;if(!url)throw new Error('Deriv OTP request succeeded but no WebSocket URL was returned.');setConnection(false,'Opening authenticated REAL WebSocket…');derivWS=new WebSocket(url);let opened=false;const wsTimeout=setTimeout(()=>{if(!opened&&derivWS&&derivWS.readyState!==WebSocket.OPEN){try{derivWS.close(1000,'connection timeout')}catch{}setConnection(false,'REAL WebSocket connection timed out. Check browser Network/Console for WebSocket errors.')}},15000);derivWS.onopen=()=>{opened=true;clearTimeout(wsTimeout);reconnectAttempts=0;setConnection(true);showToast('✅ Connected to your REAL Deriv account');send({balance:1,subscribe:1});send({transaction:1,subscribe:1});send({portfolio:1});send({proposal_open_contract:1,subscribe:1});send({active_symbols:'full',contract_type:['DIGITMATCH','DIGITDIFF','DIGITOVER','DIGITUNDER','DIGITEVEN','DIGITODD']});send({ticks:document.getElementById('digitSymbol')?.value||document.getElementById('chartSymbol')?.value||'R_100',subscribe:1});const ds=document.getElementById('digitSymbol')?.value||'R_100';requestDigitContractsFor(ds);refreshLiveData()};derivWS.onmessage=e=>{try{handleDerivMessage(JSON.parse(e.data))}catch(err){console.error('Deriv message error',err)}};derivWS.onerror=()=>{if(!opened)clearTimeout(wsTimeout);setConnection(false,'Authenticated REAL WebSocket error. Open DevTools → Network → WS for the close/error detail.')};derivWS.onclose=e=>{clearTimeout(wsTimeout);const detail=e?.reason?`REAL WebSocket closed (${e.code}): ${e.reason}`:`REAL WebSocket closed (${e.code||'unknown'})`;setConnection(false,detail);if(getAccessToken()&&reconnectAttempts<3&&!connectDeriv._busy){clearTimeout(reconnectTimer);reconnectTimer=setTimeout(()=>{reconnectAttempts++;connectDeriv()},2000*reconnectAttempts)}}}
 function send(payload){if(!derivWS||derivWS.readyState!==WebSocket.OPEN)throw new Error('Deriv connection is not ready.');const req_id=++reqSeq;derivWS.send(JSON.stringify({...payload,req_id}));return req_id}
-function handleDerivMessage(d){if(d.error){const ctx=pending.get(d.req_id);if(ctx){pending.delete(d.req_id);if(ctx.status)ctx.status.textContent='❌ '+d.error.message;if(ctx.kind==='digitProposal'){digitProposal=null;const b=digitEl('digitBuyButton');if(b)b.disabled=true}}console.error(d.error);showToast('❌ '+d.error.message);return}if(d.msg_type==='tick'){if(d.subscription?.id)tickSubscriptionId=d.subscription.id;return handleTick(d.tick)}switch(d.msg_type){case'balance':return handleBalance(d.balance);case'active_symbols':return populateSymbols(d.active_symbols||[]);case'contracts_for':return applyDigitContractLimits(d.contracts_for?.available||[],d.contracts_for?.symbol||subscribedSymbol||'');case'history':{const prices=(d.history?.prices||[]).map(Number).filter(Number.isFinite);const times=(d.history?.times||[]).map(Number);if(prices.length){const hist=prices.slice(-1000);const start=Math.max(0,times.length-hist.length);tickBuffer=hist.slice(-300).map((q,i)=>({epoch:Number(times[start+i]??Date.now()/1000),quote:q}));digitPrices=hist; window.TNX_DIGIT_PRICES=digitPrices;if(Number(d.history?.pip_size)>0)digitPipSize=Number(d.history.pip_size);renderDigitStats();renderDigitChart();renderRealtimeChart();updateDigitConnectionUI();}return;}case'transaction':return addTransaction(d.transaction);case'proposal':if(digitProposalReq===d.req_id)return handleDigitProposal(d);return handleProposal(d);case'buy':if(pending.get(d.req_id)?.kind==='digitBuy')return handleDigitBuy(d);return handleBuy(d);case'proposal_open_contract':return handleContract(d.proposal_open_contract);case'portfolio':{
+function handleDerivMessage(d){if(d.error){const ctx=pending.get(d.req_id);if(ctx){pending.delete(d.req_id);if(ctx.status)ctx.status.textContent='❌ '+d.error.message;if(ctx.kind==='digitProposal'){digitProposal=null;const b=digitEl('digitBuyButton');if(b)b.disabled=true}}console.error(d.error);showToast('❌ '+d.error.message);return}if(d.msg_type==='tick'){if(d.subscription?.id)tickSubscriptionId=d.subscription.id;return handleTick(d.tick)}switch(d.msg_type){case'balance':return handleBalance(d.balance);case'active_symbols':return populateSymbols(d.active_symbols||[]);case'contracts_for':return applyDigitContractLimits(d.contracts_for?.available||[],d.contracts_for?.symbol||subscribedSymbol||'');case'history':{const prices=(d.history?.prices||[]).map(Number).filter(Number.isFinite);const times=(d.history?.times||[]).map(Number);if(prices.length){const hist=prices.slice(-1000);const start=Math.max(0,times.length-hist.length);tickBuffer=hist.slice(-300).map((q,i)=>({epoch:Number(times[start+i]??Date.now()/1000),quote:q}));digitPrices=hist;if(Number(d.history?.pip_size)>0)digitPipSize=Number(d.history.pip_size);renderDigitStats();renderDigitChart();renderRealtimeChart();updateDigitConnectionUI();}return;}case'transaction':return addTransaction(d.transaction);case'proposal':if(digitProposalReq===d.req_id)return handleDigitProposal(d);return handleProposal(d);case'buy':if(pending.get(d.req_id)?.kind==='digitBuy')return handleDigitBuy(d);return handleBuy(d);case'proposal_open_contract':return handleContract(d.proposal_open_contract);case'portfolio':{
   const contracts=d.portfolio?.contracts||[];
   updateActiveContracts(contracts);
   contracts.forEach(c=>{
@@ -2182,7 +2171,7 @@ let digitContractMode='DIGITMATCH';
 let digitSelectedDigit=5;
 let digitProposal=null;
 let digitProposalReq=null;
-let digitPrices=[]; window.TNX_DIGIT_PRICES=digitPrices;
+let digitPrices=[];
 let digitPipSize=2;
 
 const DIGIT_MODES={
@@ -3328,6 +3317,14 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
 .tnx-builder-help{position:absolute;right:18px;top:18px;z-index:3;background:#fff;border:1px solid #ddd;border-radius:6px;padding:9px 12px;color:#555;font-size:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .tnx-block-run{background:#fff;border:1px solid #d3d5da;border-radius:5px;padding:12px;margin-top:10px;display:flex;gap:8px;align-items:center}.tnx-block-run button{border:0;border-radius:5px;padding:9px 15px;font-weight:800;cursor:pointer}.tnx-run-real{background:#a90000;color:#fff}.tnx-run-save{background:#eee;color:#333}
 @media(max-width:900px){.tnx-builder-live-workspace{height:650px}.tnx-builder-stack{width:680px}.tnx-builder-help{display:none}}
+
+/* ===== TRADENOVAX DASHBOARD V2 ===== */
+.tnx-dash-hero{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:28px 30px;margin-bottom:18px;background:linear-gradient(135deg,rgba(17,29,50,.98),rgba(8,15,29,.98));border:1px solid rgba(212,175,55,.18);border-radius:18px;box-shadow:0 18px 50px rgba(0,0,0,.22)}
+.tnx-eyebrow{font-size:11px;letter-spacing:1.8px;color:var(--gold);font-weight:800;margin-bottom:7px}.tnx-dash-hero h2{font-size:28px;line-height:1.15}.tnx-dash-hero p{color:var(--text-muted);font-size:13px;margin-top:8px}.tnx-dash-hero-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}.tnx-live-pill{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border:1px solid rgba(255,255,255,.12);border-radius:999px;font-size:10px;font-weight:800;color:#aebbd2}.tnx-live-pill i{width:7px;height:7px;border-radius:50%;background:#7d8797;box-shadow:0 0 0 4px rgba(125,135,151,.08)}.tnx-live-pill.live{color:#67e7a7;border-color:rgba(0,200,83,.28)}.tnx-live-pill.live i{background:#00c853;box-shadow:0 0 12px rgba(0,200,83,.65)}
+.tnx-primary-btn,.tnx-secondary-btn,.tnx-link-btn,.tnx-run-wide{font:inherit;cursor:pointer}.tnx-primary-btn{border:0;background:linear-gradient(135deg,#d4af37,#9d7d0d);color:#07111f;font-weight:800;padding:10px 16px;border-radius:9px}.tnx-secondary-btn{background:rgba(255,255,255,.04);border:1px solid rgba(212,175,55,.24);color:#fff;padding:9px 13px;border-radius:9px;font-weight:700}.tnx-link-btn{border:0;background:none;color:var(--gold-light);font-size:12px;font-weight:700}.tnx-dash-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.tnx-metric-card{display:flex;align-items:center;gap:13px;padding:18px;background:linear-gradient(145deg,rgba(13,26,46,.96),rgba(8,16,30,.96));border:1px solid rgba(255,255,255,.07);border-radius:15px;min-height:100px}.tnx-metric-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:rgba(212,175,55,.1);color:var(--gold);font-weight:900;font-size:19px}.tnx-metric-card span{display:block;color:#8191aa;font-size:9px;letter-spacing:1.2px;font-weight:800}.tnx-metric-card strong{display:block;font-size:22px;margin-top:2px;line-height:1.15}.tnx-metric-card small{display:block;color:#62718a;font-size:10px;margin-top:3px}.tnx-metric-balance strong{color:var(--gold)}
+.tnx-dash-grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(300px,.8fr);gap:14px;margin-bottom:14px}.tnx-dash-grid-bottom{grid-template-columns:1fr 1fr}.tnx-dash-panel{background:linear-gradient(145deg,rgba(13,25,43,.96),rgba(7,14,27,.96));border:1px solid rgba(255,255,255,.07);border-radius:15px;padding:20px;min-width:0}.tnx-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:18px}.tnx-panel-head h3{font-size:16px}.tnx-panel-head p{font-size:11px;color:#72819a;margin-top:3px}.tnx-performance-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.tnx-performance-row>div{padding:14px;border-radius:11px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.045)}.tnx-performance-row span{display:block;color:#718099;font-size:10px}.tnx-performance-row strong{display:block;font-size:20px;margin-top:5px}.tnx-pnl-track{height:5px;background:#172238;border-radius:99px;margin-top:18px;overflow:hidden}.tnx-pnl-track span{display:block;height:100%;width:0;background:var(--gold);border-radius:99px;transition:width .4s}.tnx-performance-foot{display:flex;justify-content:space-between;gap:10px;margin-top:9px;color:#65748c;font-size:9px}.tnx-control-body{display:flex;align-items:center;gap:13px;min-height:82px}.tnx-control-orb{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.2);position:relative;color:var(--gold);font-size:11px}.tnx-control-orb .status-dot{position:absolute;top:2px;right:2px}.tnx-control-body strong{font-size:14px}.tnx-control-body p{font-size:10px;color:#718099;margin-top:4px}.tnx-status-badge{padding:5px 9px;border-radius:99px;background:rgba(255,255,255,.05);font-size:9px;color:#8d9bb0;font-weight:800}.tnx-run-wide{width:100%;border:1px solid rgba(212,175,55,.22);background:rgba(212,175,55,.09);color:var(--gold-light);padding:11px;border-radius:9px;font-weight:800;margin-top:8px}.tnx-count{min-width:28px;text-align:center;padding:4px 8px;border-radius:99px;background:rgba(212,175,55,.1);color:var(--gold);font-size:10px;font-weight:800}.tnx-live-list{min-height:125px;max-height:260px;overflow:auto}.tnx-empty-state{min-height:115px;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;gap:4px;color:#66758e;font-size:10px;border:1px dashed rgba(255,255,255,.07);border-radius:11px}.tnx-empty-state b{color:#a0adc0;font-size:11px}.tnx-activity-panel{margin-bottom:14px}.tnx-ai-panel{margin-bottom:30px}.tnx-ai-panel .scanner-results{min-height:45px;padding:13px;background:rgba(255,255,255,.025);border-radius:9px;color:#8290a5;font-size:11px}
+@media(max-width:1100px){.tnx-dash-metrics{grid-template-columns:repeat(2,1fr)}.tnx-dash-grid,.tnx-dash-grid-bottom{grid-template-columns:1fr}.tnx-dash-hero{align-items:flex-start;flex-direction:column}.tnx-dash-hero-actions{justify-content:flex-start}.tnx-performance-row{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.tnx-dash-metrics{grid-template-columns:1fr}.tnx-dash-hero{padding:20px}.tnx-dash-hero h2{font-size:23px}.tnx-performance-foot{flex-direction:column}.tnx-dash-panel{padding:15px}}
 </style>
 
 
@@ -3417,147 +3414,114 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
 </script>
 
 
-<style id="tnx-live-builder-upgrade">
-.tnx-builder-sidebar .tnx-sidebar-section{cursor:pointer;user-select:none;transition:background .15s, color .15s}
-.tnx-builder-sidebar .tnx-sidebar-section:hover{background:#f7f7f7;color:#980000}
-.tnx-builder-sidebar .tnx-sidebar-section.bb-open{background:#eee;color:#980000}
-.tnx-builder-category-panel{margin:0 14px 10px;border:1px solid #ddd;border-radius:6px;background:#fff;overflow:hidden;display:none}
-.tnx-builder-category-panel.open{display:block}
-.tnx-builder-category-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid #eee;font-size:12px;cursor:grab}
-.tnx-builder-category-item:last-child{border-bottom:0}.tnx-builder-category-item:hover{background:#fafafa}
-.tnx-builder-category-item b{font-size:10px;color:#fff;background:#a90000;border-radius:3px;padding:2px 4px}
-.tnx-builder-live-status{position:absolute;left:18px;bottom:18px;z-index:8;padding:8px 12px;background:#fff;border:1px solid #ddd;border-radius:6px;font-size:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-.tnx-builder-live-status.live{border-color:#159447;color:#147a3b}
-.tnx-builder-live-status.wait{border-color:#d5a900;color:#8b6800}
-.tnx-block.tnx-live-active{outline:3px solid rgba(0,160,80,.22)}
-</style>
-<script id="tnx-live-builder-engine">
+<script>
+/* TradeNovaX REAL Blockly Builder — built on Blockly 10.4.3. */
 (function(){
-  const q=s=>document.querySelector(s), qa=s=>Array.from(document.querySelectorAll(s));
-  const live={running:false,confirmed:false,lastTick:null,pending:false,contractId:null,trades:0,maxRuns:20,lastMessage:''};
-  window.TNX_LIVE_BUILDER=live;
-  function status(msg,cls){const e=q('#builderRunStatus');if(e)e.textContent=msg;const s=q('#tnxBuilderLiveStatus');if(s){s.textContent=msg;s.className='tnx-builder-live-status '+(cls||'')}}
-  function addStatus(){const ws=q('#tnxFunctionalWorkspace');if(ws&&!q('#tnxBuilderLiveStatus')){const e=document.createElement('div');e.id='tnxBuilderLiveStatus';e.className='tnx-builder-live-status';e.textContent='LIVE BUILDER • waiting for REAL Deriv connection';ws.appendChild(e)}}
-  function installCategories(){
-    const sections=qa('.tnx-builder-sidebar .tnx-sidebar-section');
-    const cats={
-      'Restart trading conditions':['Trade again','Stop after N runs','Stop on loss','Stop on profit'],
-      'Analysis':['Last digit equals','Last digit greater than','Last digit less than','Last digit is even','Last digit is odd'],
-      'Utility':['Wait ticks','Set variable','Get variable','Repeat'],
-      'Virtual Hook Switcher':['Enable virtual hook','Disable virtual hook'],
-      'Custom Notification':['Notify message'],
-      'Binarytools':['Compare values','If / then','And','Or'],
-      'Contract modifiers':['Set prediction','Set stake','Set duration'],
-      'Barrier Settings':['Barrier digit 0–9','Barrier from last digit']
-    };
-    sections.forEach(sec=>{
-      if(sec.dataset.bbWired)return;sec.dataset.bbWired='1';
-      const label=sec.textContent.replace(/[⌄⌃›]/g,'').trim();
-      if(!cats[label])return;
-      const panel=document.createElement('div');panel.className='tnx-builder-category-panel';
-      panel.innerHTML=cats[label].map((x,i)=>`<div class="tnx-builder-category-item" draggable="true" data-cat="${label}" data-action="${i}"><b>+</b>${x}</div>`).join('');
-      sec.insertAdjacentElement('afterend',panel);
-      sec.addEventListener('click',()=>{const open=panel.classList.toggle('open');sec.classList.toggle('bb-open',open)});
-      panel.querySelectorAll('[draggable]').forEach(item=>item.addEventListener('dragstart',e=>{e.dataTransfer.setData('tnx-live-category',label);e.dataTransfer.setData('tnx-live-action',item.dataset.action);e.dataTransfer.setData('tnx-block',categoryToBlock(label,item.dataset.action))}));
-    });
+  let workspace=null;
+  const savedKey='tnx_blockly_strategy_v1';
+  function el(id){return document.getElementById(id)}
+  function defineBlocks(){
+    if(!window.Blockly) return;
+    const B=Blockly.Blocks;
+    B['tnx_trade_parameters']={init:function(){
+      this.appendDummyInput().appendField('Trade parameters');
+      this.appendDummyInput('MARKET').appendField('Market').appendField(new Blockly.FieldDropdown([['Volatility 10 (1s)','1HZ10V'],['Volatility 25 (1s)','1HZ25V'],['Volatility 50 (1s)','1HZ50V'],['Volatility 75 (1s)','1HZ75V'],['Volatility 100 (1s)','1HZ100V']]),'SYMBOL');
+      this.appendDummyInput().appendField('Trade type').appendField(new Blockly.FieldDropdown([['Even/Odd','even-odd'],['Over/Under','over-under'],['Matches/Differs','matches-differs']]),'TYPE');
+      this.appendDummyInput().appendField('Contract').appendField(new Blockly.FieldDropdown([['Even','DIGITEVEN'],['Odd','DIGITODD'],['Over','DIGITOVER'],['Under','DIGITUNDER'],['Matches','DIGITMATCH'],['Differs','DIGITDIFF']]),'CONTRACT');
+      this.appendDummyInput().appendField('Ticks').appendField(new Blockly.FieldNumber(1,1,10,1),'DURATION');
+      this.appendDummyInput().appendField('Stake').appendField(new Blockly.FieldNumber(1,0.35,100000,.01),'STAKE');
+      this.appendDummyInput().appendField('Prediction').appendField(new Blockly.FieldNumber(5,0,9,1),'PREDICTION');
+      this.setNextStatement(true,null);this.setColour('#8B0000');this.setTooltip('REAL Deriv trade parameters');
+    }};
+    B['tnx_tick_analysis']={init:function(){this.appendDummyInput().appendField('Analysis: last digit');this.setOutput(true,'Number');this.setColour('#5b6f8f')}};
+    B['tnx_digit_condition']={init:function(){this.appendValueInput('VALUE').setCheck('Number').appendField('IF last digit');this.appendDummyInput().appendField(new Blockly.FieldDropdown([['=','EQ'],['≠','NEQ'],['>','GT'],['≥','GTE'],['<','LT'],['≤','LTE']]),'OP').appendField(new Blockly.FieldNumber(5,0,9,1),'DIGIT');this.setInputsInline(true);this.setOutput(true,'Boolean');this.setColour('#5b6f8f')}};
+    B['tnx_purchase']={init:function(){this.appendDummyInput().appendField('Purchase contract');this.appendDummyInput().appendField('Use configured contract');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#a46b00')}};
+    B['tnx_sell_conditions']={init:function(){this.appendDummyInput().appendField('Sell conditions');this.appendDummyInput().appendField('Sell at profit/loss');this.appendDummyInput().appendField(new Blockly.FieldNumber(0.01,-100000,100000,.01),'TARGET');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#b07a00')}};
+    B['tnx_trade_again']={init:function(){this.appendDummyInput().appendField('Trade again');this.appendDummyInput().appendField(new Blockly.FieldCheckbox('TRUE'),'ENABLED');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#7a7a7a')}};
+    B['tnx_notification']={init:function(){this.appendDummyInput().appendField('Custom notification');this.appendDummyInput().appendField(new Blockly.FieldTextInput('Trade completed'),'TEXT');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#6a4c93')}};
+    B['tnx_restart']={init:function(){this.appendDummyInput().appendField('Restart trading conditions');this.appendDummyInput().appendField(new Blockly.FieldCheckbox('TRUE'),'ENABLED');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#555')}};
+    B['tnx_binary_tool']={init:function(){this.appendDummyInput().appendField('Binarytools');this.appendDummyInput().appendField(new Blockly.FieldDropdown([['Last digit','LAST_DIGIT'],['Digit frequency','FREQUENCY'],['Tick count','TICK_COUNT']]),'TOOL');this.setOutput(true,null);this.setColour('#3f6f7d')}};
+    B['tnx_contract_modifier']={init:function(){this.appendDummyInput().appendField('Contract modifier');this.appendDummyInput().appendField(new Blockly.FieldDropdown([['Duration','DURATION'],['Stake','STAKE'],['Prediction','PREDICTION']]),'MOD');this.appendDummyInput().appendField(new Blockly.FieldNumber(1),'VALUE');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#805c2d')}};
+    B['tnx_barrier']={init:function(){this.appendDummyInput().appendField('Barrier settings');this.appendDummyInput().appendField('Barrier').appendField(new Blockly.FieldNumber(5,0,9,1),'BARRIER');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#805c2d')}};
+    B['tnx_hook']={init:function(){this.appendDummyInput().appendField('Virtual Hook Switcher');this.appendDummyInput().appendField(new Blockly.FieldDropdown([['Enabled','ON'],['Disabled','OFF']]),'STATE');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#68757d')}};
   }
-  function categoryToBlock(cat,a){
-    if(cat==='Analysis')return 'analysis';
-    if(cat==='Restart trading conditions')return 'restart';
-    if(cat==='Custom Notification')return 'notify';
-    if(cat==='Contract modifiers')return 'purchase';
-    if(cat==='Barrier Settings')return 'purchase';
-    if(cat==='Binarytools')return 'analysis';
-    return 'notify';
+  function toolboxXml(){return `<xml xmlns="https://developers.google.com/blockly/xml">
+    <category name="Trade parameters" colour="#8B0000"><block type="tnx_trade_parameters"></block></category>
+    <category name="Analysis" colour="#5b6f8f"><block type="tnx_tick_analysis"></block><block type="tnx_digit_condition"><value name="VALUE"><block type="tnx_tick_analysis"></block></value></block></category>
+    <category name="Utility" colour="#6a4c93"><block type="tnx_notification"></block><block type="tnx_hook"></block></category>
+    <category name="Binarytools" colour="#3f6f7d"><block type="tnx_binary_tool"></block></category>
+    <category name="Contract modifiers" colour="#805c2d"><block type="tnx_contract_modifier"></block></category>
+    <category name="Barrier Settings" colour="#805c2d"><block type="tnx_barrier"></block></category>
+    <category name="Restart trading conditions" colour="#555"><block type="tnx_restart"></block><block type="tnx_trade_again"></block></category>
+    <category name="Contracts" colour="#a46b00"><block type="tnx_purchase"></block><block type="tnx_sell_conditions"></block></category>
+    <sep></sep><category name="Logic" colour="#5C81A6"><block type="controls_if"></block><block type="logic_compare"></block><block type="logic_operation"></block></category>
+    <category name="Math" colour="#5B67A5"><block type="math_number"></block><block type="math_arithmetic"></block></category>
+  </xml>`}
+  function init(){
+    if(!window.Blockly || !el('tnxBlocklyWorkspace')) return;
+    defineBlocks();
+    workspace=Blockly.inject('tnxBlocklyWorkspace',{toolbox:toolboxXml(),trashcan:true,zoom:{controls:false,wheel:true,startScale:.95,maxScale:1.5,minScale:.55,scaleSpeed:1.1},grid:{spacing:20,length:3,colour:'#eee',snap:true},move:{scrollbars:true,drag:true,wheel:true},renderer:'geras'});
+    window.TNX_BLOCKLY_WORKSPACE=workspace;
+    const saved=localStorage.getItem(savedKey);
+    if(saved){try{Blockly.serialization.workspaces.load(JSON.parse(saved),workspace)}catch(e){console.warn('Blockly restore failed',e)}}
+    const search=el('tnxBlockSearch');
+    if(search)search.addEventListener('input',function(){const q=this.value.trim().toLowerCase();document.querySelectorAll('#tnxToolboxPanel button').forEach(b=>b.style.display=(!q||b.textContent.toLowerCase().includes(q))?'flex':'none')});
+    document.querySelectorAll('#tnxToolboxPanel button').forEach(btn=>btn.addEventListener('click',function(){
+      const cat=this.dataset.cat; const map={restart:'Restart trading conditions',analysis:'Analysis',utility:'Utility',notification:'Utility',binary:'Binarytools',contract:'Contract modifiers',barrier:'Barrier Settings',hook:'Utility'};
+      const tb=workspace.getToolbox(); if(tb){const item=tb.getToolboxItemById ? tb.getToolboxItemById(cat) : null;}
+      const xml=toolboxXml();
+      // Open Blockly flyout by selecting the matching category label.
+      const items=workspace.getToolbox()?.getToolboxItems?.()||[]; const target=items.find(i=>(i.getName?.()||'').toLowerCase()===((map[cat]||'').toLowerCase()));
+      if(target){workspace.getToolbox().setSelectedItem(target)}
+    }));
+    workspace.addChangeListener(function(){window.TNX_BLOCKLY_XML=Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));});
+    center();
   }
-  function latestDigit(){const arr=window.TNX_DIGIT_PRICES||[];const p=arr[arr.length-1];if(!Number.isFinite(Number(p)))return null;return typeof window.digitLastDigit==='function'?window.digitLastDigit(Number(p),window.digitPipSize||1):null}
-  function conditionOK(a,d){if(!a)return true;const v=Number(a.value||0),op=a.operator;return op==='equals'?d===v:op==='greater'?d>v:op==='less'?d<v:op==='even'?d%2===0:d%2===1}
-  function compiled(){
-    const fn=window.tnxFunctionalBuilder;
-    if(!fn)return null;
-    // Force a render so the current live block values are reflected.
-    try{fn.render()}catch{}
-    const blocks=window.TNX_BUILDER_BLOCKS||null;
-    return blocks;
+  function center(){if(workspace)try{workspace.zoomToFit(20)}catch(e){}}
+  window.tnxBuilderUndo=function(){if(workspace)workspace.undo(false)};
+  window.tnxBuilderRedo=function(){if(workspace)workspace.undo(true)};
+  window.tnxBuilderZoomIn=function(){if(workspace)workspace.zoomCenter(1.15)};
+  window.tnxBuilderZoomOut=function(){if(workspace)workspace.zoomCenter(.87)};
+  window.tnxBuilderCenter=center;
+  window.tnxBuilderSave=function(){if(!workspace)return;localStorage.setItem(savedKey,JSON.stringify(Blockly.serialization.workspaces.save(workspace)));if(typeof showToast==='function')showToast('Bot strategy saved locally.');};
+  window.tnxBuilderLoad=function(){if(!workspace)return;const raw=localStorage.getItem(savedKey);if(raw){try{Blockly.serialization.workspaces.load(JSON.parse(raw),workspace);if(typeof showToast==='function')showToast('Bot strategy loaded.')}catch(e){}}};
+  window.tnxBuilderReset=function(){if(!workspace)return;workspace.clear();const b=workspace.newBlock('tnx_trade_parameters');b.initSvg();b.render();b.setDeletable(false);b.moveBy(70,80);const p=workspace.newBlock('tnx_purchase');p.initSvg();p.render();p.previousConnection.connect(b.nextConnection);p.moveBy(70,260);if(typeof showToast==='function')showToast('Builder reset.');};
+  window.tnxBuilderQuickStrategy=function(){if(!workspace)return;workspace.clear();const b=workspace.newBlock('tnx_trade_parameters');b.initSvg();b.render();b.setDeletable(false);b.moveBy(70,70);const a=workspace.newBlock('tnx_tick_analysis');a.initSvg();a.render();a.moveBy(70,230);const c=workspace.newBlock('tnx_digit_condition');c.initSvg();c.render();c.moveBy(300,230);const p=workspace.newBlock('tnx_purchase');p.initSvg();p.render();p.moveBy(70,380);const r=workspace.newBlock('tnx_trade_again');r.initSvg();r.render();r.moveBy(70,480);if(typeof showToast==='function')showToast('Quick strategy loaded. Review before REAL execution.');};
+  const oldRun=window.tnxBuilderRun;
+  window.tnxBuilderRun=async function(){
+    if(!workspace){return oldRun&&oldRun()}
+    const blocks=workspace.getTopBlocks(true); const params=blocks.find(b=>b.type==='tnx_trade_parameters'); const purchase=workspace.getAllBlocks().find(b=>b.type==='tnx_purchase');
+    if(!params||!purchase){const st=el('builderRunStatus');if(st)st.textContent='🔴 Add Trade parameters and Purchase blocks first.';return}
+    const sym=params.getFieldValue('SYMBOL'), type=params.getFieldValue('TYPE'), contract=params.getFieldValue('CONTRACT');
+    const dur=Number(params.getFieldValue('DURATION')||1), stake=Number(params.getFieldValue('STAKE')||1), pred=Number(params.getFieldValue('PREDICTION')||5);
+    const ds=el('digitSymbol'), dc=el('digitDuration'), dst=el('digitStake'), dp=el('digitPrediction'), ca=el('builderContract'), tt=el('builderTradeType'), ia=el('builderInitialAction');
+    if(ds)ds.value=sym;if(dc)dc.value=dur;if(dst)dst.value=stake;if(dp)dp.value=pred;if(ca)ca.value=contract;if(tt)tt.value=type;if(ia)ia.value='trade';
+    if(typeof tnxBuilderSync==='function')tnxBuilderSync();
+    const st=el('builderRunStatus');
+    if(!liveConnected||!activeAccount){if(st)st.textContent='🔴 Connect a REAL Deriv account first.';return}
+    if(typeof tnxCanOpenTrade==='function'&&!tnxCanOpenTrade(stake,'builder'))return;
+    if(typeof confirmRealTrade==='function'&&!confirmRealTrade(`Bot Builder • 1 REAL contract\n${activeAccount.account_id}\nStake: ${stake.toFixed(2)}`))return;
+    if(typeof requestDigitProposal==='function')requestDigitProposal();
+    if(st)st.textContent='⏳ Live proposal requested • REAL purchase follows confirmation workflow';
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else setTimeout(init,0);
+})();
+</script>
+
+<script>
+(function(){
+  function syncDash(){
+    const bal=document.getElementById('dashBalance'), cur=document.getElementById('balanceCurrencyDash'), topCur=document.getElementById('balanceCurrency');
+    if(bal && window.__tnxDashLastBalance!==undefined) bal.textContent=window.__tnxDashLastBalance;
+    if(cur && topCur) cur.textContent=topCur.textContent||'USD';
+    const srcIds=[['totalTrades','totalTradesExec'],['winRate','winRateExec'],['totalPnL','totalPnLExec'],['activeBotsCount','activeBotsExec']];
+    srcIds.forEach(([a,b])=>{const x=document.getElementById(a),y=document.getElementById(b);if(x&&y)y.textContent=x.textContent;});
+    const conn=document.getElementById('dashConnection'), pill=document.getElementById('dashLivePill'), liveText=document.getElementById('dashLiveText');
+    if(conn&&pill&&liveText){const live=/connected|ready/i.test(conn.textContent||'')&&!/not connected|disconnected/i.test(conn.textContent||'');pill.classList.toggle('live',live);liveText.textContent=live?'LIVE REAL':'NOT CONNECTED';}
+    const pos=document.getElementById('dashboardPositions'), count=document.getElementById('dashPositionCount');
+    if(pos&&count){const n=pos.querySelectorAll('[data-contract-id],.position-card,.trade-item').length;count.textContent=String(n);}
   }
-  function getBlocks(){
-    try{const raw=localStorage.getItem('tnx_builder_blocks_v2');if(raw){const x=JSON.parse(raw);if(Array.isArray(x)&&x.length)return x}}catch{}
-    return null;
-  }
-  function configureFromBlocks(){
-    let bs=getBlocks();
-    if(!bs||!bs.length)return null;
-    const p=bs.find(x=>x.type==='params'),a=bs.find(x=>x.type==='analysis'),buy=bs.find(x=>x.type==='purchase'),r=bs.find(x=>x.type==='restart');
-    if(!p)return null;
-    const market=q('#digitSymbol');if(market&&p.market)market.value=p.market;
-    const tt=q('#builderTradeType');if(tt)tt.value=p.tradeType||'even-odd';
-    const c=q('#builderContract');if(c)c.value=(buy&&buy.contract)||p.contract||'DIGITEVEN';
-    const dur=q('#digitDuration');if(dur)dur.value=String(p.duration||1);
-    const stake=q('#digitStake');if(stake)stake.value=String(p.stake||1);
-    const pred=q('#digitPrediction');if(pred&&buy)pred.value=String(buy.prediction??5);
-    if(typeof window.tnxBuilderSync==='function')window.tnxBuilderSync();
-    live.maxRuns=Math.max(1,Number(r?.maxRuns||20));
-    return {p,a,buy,r};
-  }
-  async function start(){
-    if(live.running){stop('Builder stopped.');return}
-    const cfg=configureFromBlocks();
-    if(!cfg){status('Add a Trade parameters block first.','wait');return}
-    if(!window.liveConnected||!window.activeAccount){status('🔴 Connect a REAL Deriv account first.','wait');return}
-    const stake=Number(cfg.p.stake||1);
-    if(typeof window.tnxCanOpenTrade==='function'&&!window.tnxCanOpenTrade(stake,'builder'))return;
-    if(typeof window.confirmRealTrade==='function'&&!window.confirmRealTrade('Bot Builder • LIVE REAL strategy\n'+(window.activeAccount.account_id||'')+'\nStake per contract: '+stake.toFixed(2)+'\nMaximum runs: '+live.maxRuns))return;
-    live.running=true;live.confirmed=true;live.lastTick=null;live.pending=false;live.contractId=null;live.trades=0;
-    const sym=q('#digitSymbol')?.value||cfg.p.market;if(sym&&typeof window.subscribeTicks==='function')window.subscribeTicks(sym);
-    status('🟢 LIVE bot running • waiting for matching live tick','live');
-    const stack=q('.tnx-builder-stack');if(stack)stack.classList.add('tnx-live-active');
-    if(!live.timer)live.timer=setInterval(loop,250);
-  }
-  function stop(msg){live.running=false;live.confirmed=false;live.pending=false;live.contractId=null;if(live.timer){clearInterval(live.timer);live.timer=null}status(msg||'Bot stopped.','');const stack=q('.tnx-builder-stack');if(stack)stack.classList.remove('tnx-live-active')}
-  function loop(){
-    if(!live.running)return;
-    if(!window.liveConnected||!window.activeAccount){stop('🔴 Deriv connection lost • bot stopped');return}
-    const cfg=configureFromBlocks();if(!cfg){stop('Builder configuration unavailable');return}
-    if(live.trades>=live.maxRuns){stop('🛑 Maximum runs reached');return}
-    const d=latestDigit();if(d===null)return;
-    const key=String((window.TNX_DIGIT_PRICES||[]).length)+':'+String(d);if(key===live.lastTick)return;
-    // Wait until the previous contract/proposal is complete.
-    if(live.pending||live.contractId){
-      if(live.contractId){const c=window.TNX_ACTIVE_CONTRACTS?.get(String(live.contractId));if(c&& (c.is_sold||['won','lost','sold','expired'].includes(String(c.status||'').toLowerCase()))){live.contractId=null;live.pending=false;status('🟢 Contract settled • waiting for next live signal','live')}}
-      return;
-    }
-    live.lastTick=key;
-    if(!conditionOK(cfg.a,d)){status('⏸ LIVE • condition not met • waiting','wait');return}
-    if(typeof window.tnxCanOpenTrade==='function'&&!window.tnxCanOpenTrade(Number(cfg.p.stake||1),'builder')){stop('🛑 Risk controls blocked new trade');return}
-    // Synchronize the native REAL terminal with the builder before requesting a proposal.
-    const tt=q('#builderTradeType');if(tt)tt.value=cfg.p.tradeType||'even-odd';
-    const bc=q('#builderContract');if(bc)bc.value=cfg.buy?.contract||cfg.p.contract||'DIGITEVEN';
-    const pr=q('#digitPrediction');if(pr&&cfg.buy)pr.value=String(cfg.buy.prediction??5);
-    const du=q('#digitDuration');if(du)du.value=String(cfg.p.duration||1);
-    const st=q('#digitStake');if(st)st.value=String(cfg.p.stake||1);
-    if(typeof window.tnxBuilderSync==='function')window.tnxBuilderSync();
-    if(typeof window.requestDigitProposal!=='function'){stop('Live Deriv proposal engine unavailable');return}
-    live.pending=true;window.digitProposal=null;window.requestDigitProposal();status('⏳ LIVE • requesting REAL Deriv proposal','wait');
-  }
-  function proposalWatcher(){
-    if(!live.running||!live.pending)return;
-    const prop=window.digitProposal;if(!prop||!prop.id)return;
-    const ask=Number(prop.askPrice||0);if(!ask)return;
-    if(typeof window.tnxCanOpenTrade==='function'&&!window.tnxCanOpenTrade(Number(q('#digitStake')?.value||1),'builder')){stop('🛑 Risk controls blocked purchase');return}
-    try{
-      const req=window.send({buy:prop.id,price:String(ask)});
-      if(window.TNX_PENDING&&typeof window.TNX_PENDING.set==='function')window.TNX_PENDING.set(req,{kind:'digitBuy',symbol:q('#digitSymbol')?.value||'',amount:Number(q('#digitStake')?.value||1),direction:'BOT BUILDER',status:q('#digitTradeStatus')});
-      live.pending=false;live.trades++;status('🟢 REAL trade sent • waiting for contract result','live');
-    }catch(e){live.pending=false;status('❌ REAL purchase failed • '+e.message,'wait')}
-  }
-  function patchRun(){
-    window.tnxBuilderRun=start;
-    window.tnxFunctionalBuilder&&(window.tnxFunctionalBuilder.run=start);
-    const b=q('.tnx-builder-run-ref');if(b)b.onclick=start;
-    const old=q('.tnx-block-run .tnx-run-real');if(old)old.onclick=start;
-  }
-  function init(){addStatus();installCategories();patchRun();setInterval(proposalWatcher,150)}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(init,300));else setTimeout(init,300);
+  window.setInterval(syncDash,1200); window.addEventListener('load',syncDash);
 })();
 </script>
 </body>

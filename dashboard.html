@@ -48,6 +48,8 @@ TradeNovaX standalone live Deriv build:
 -->
 <html lang="en">
 <head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https: 'unsafe-eval'; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; connect-src 'self' https: wss:; font-src 'self' https: data:; frame-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self' https:;">
+
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
 <title>TradeNovaX - Dashboard</title>
@@ -624,6 +626,43 @@ TradeNovaX standalone live Deriv build:
 .tnx-builder-toolbar{display:flex;justify-content:space-between;gap:1rem;padding:1.1rem 1.2rem;background:#fff;border-bottom:1px solid #e2e4e8;align-items:center;flex-wrap:wrap}.tnx-builder-toolbar .tnx-builder-actions{display:flex;gap:.7rem;flex-wrap:wrap}.tnx-builder-btn{border:1px solid #d7d9de;background:#fff;border-radius:9px;padding:.85rem 1.15rem;font-weight:800;color:#34363d;cursor:pointer}.tnx-builder-btn.primary{background:linear-gradient(135deg,#650006,#c20b12);color:#fff;border-color:#7c090e}.tnx-builder-btn.gold{border-color:#d4af37;color:#6b5600}
 .tnx-builder-body{display:grid;grid-template-columns:74px minmax(0,1fr);min-height:520px}.tnx-builder-rail{background:#fff;border-right:1px solid #e0e2e7;display:flex;flex-direction:column;align-items:center;padding:1rem .5rem;gap:.65rem}.tnx-builder-rail button{width:44px;height:44px;border:0;background:#fff;border-radius:9px;font-size:1.7rem;cursor:pointer}.tnx-builder-rail button:hover{background:#f0f1f4}.tnx-builder-canvas{padding:1.2rem;overflow:auto}.tnx-block{max-width:760px;background:#fff;border-radius:9px;box-shadow:0 5px 18px rgba(24,28,38,.08);margin-bottom:1rem;overflow:hidden;border:1px solid #e2e4e8}.tnx-block-title{background:linear-gradient(135deg,#7a0007,#b20b12);color:#fff;padding:.95rem 1rem;font-size:1.3rem;font-weight:900}.tnx-block-content{padding:1rem}.tnx-builder-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.tnx-builder-field label{display:block;font-size:1rem;font-weight:800;color:#676b74;margin-bottom:.35rem}.tnx-builder-field select,.tnx-builder-field input{width:100%;padding:.85rem;border:1px solid #d4d7dc;border-radius:8px;background:#fff;color:#30333a;font-size:1.15rem}.tnx-check{display:flex;align-items:center;gap:.6rem;margin:.65rem 0;font-size:1.05rem}.tnx-check input{width:17px;height:17px}.tnx-runbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;background:#fff;border:1px solid #dddfe4;border-radius:10px;padding:1rem;margin-top:1rem}.tnx-runbar .run{background:linear-gradient(135deg,#620006,#c5a329);color:#fff;border:0;border-radius:8px;padding:1rem 1.7rem;font-size:1.25rem;font-weight:900;cursor:pointer}.tnx-runbar .status{color:#4e545e;font-weight:800}.tnx-builder-note{font-size:.95rem;color:#70747c;margin-top:.75rem}
 .tnx-bulk-terminal{background:#fff;color:#303238;border-radius:14px;overflow:hidden;border:1px solid #e0e2e6;box-shadow:0 12px 35px rgba(0,0,0,.16)}.tnx-bulk-head{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;padding:1.15rem;background:#fafbfc;border-bottom:1px solid #e4e5e8}.tnx-bulk-field label{display:block;color:#8a8d94;font-size:1rem;font-weight:900;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.35rem}.tnx-bulk-field select,.tnx-bulk-field input{width:100%;padding:.85rem;border:2px solid #dfe1e5;border-radius:7px;background:#fff;color:#333;font-size:1.15rem;font-weight:700}.tnx-bulk-ticks{text-align:center;padding:1rem 1rem .5rem}.tnx-bulk-ticks .label{color:#9699a0;font-weight:900;letter-spacing:.08em;font-size:1rem}.tnx-bulk-current{font-size:2.4rem;color:#d4af37;font-weight:900;margin:.25rem 0}.tnx-bulk-digits{display:grid;grid-template-columns:repeat(5,1fr);gap:.7rem;padding:1rem}.tnx-ring{position:relative;display:grid;place-items:center;aspect-ratio:1;border-radius:50%;background:conic-gradient(var(--ring,#3aa9ff) calc(var(--pct,10)*1%),#eceef1 0);max-width:92px;margin:auto}.tnx-ring::before{content:'';position:absolute;inset:7px;background:#f7f8f9;border-radius:50%}.tnx-ring>*{position:relative}.tnx-ring b{font-size:1.25rem}.tnx-ring small{position:absolute;bottom:17px;font-size:.78rem;font-weight:800}.tnx-recent-digits{display:flex;gap:.45rem;justify-content:center;flex-wrap:wrap;padding:0 1rem 1rem}.tnx-recent-digits span{min-width:38px;padding:.55rem .65rem;border-radius:7px;text-align:center;color:#fff;font-weight:900}.tnx-bulk-actions{display:grid;grid-template-columns:1fr 1fr;gap:1rem;padding:1rem;border-top:1px solid #eceef1}.tnx-bulk-action{border:0;border-radius:8px;padding:1.1rem;color:#fff;font-size:1.3rem;font-weight:900;cursor:pointer}.tnx-bulk-action.even{background:#42b4b0}.tnx-bulk-action.odd{background:#e4373d}.tnx-auto-row{margin:0 1rem 1rem;padding:.95rem;border:1px solid #dfe1e5;border-radius:8px;text-align:center;font-weight:900;cursor:pointer;background:#f5f6f7}.tnx-bulk-footer{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;padding:1rem;background:#fafbfc;border-top:1px solid #e5e6e9}.tnx-bulk-footer label{display:block;font-size:.9rem;color:#92959b;font-weight:900;text-transform:uppercase}.tnx-bulk-footer input{width:100%;padding:.8rem;border:1px solid #dfe1e5;border-radius:7px;font-weight:800}
+
+/* ===== Mkorean-style Bulk Trader terminal ===== */
+.tnx-reference-bulk{border-radius:4px;box-shadow:none;border:0;background:#fff}
+.tnx-reference-bulk .tnx-bulk-head{grid-template-columns:1fr 1fr;gap:10px;padding:0 18px 8px;background:#fff;border:0}
+.tnx-reference-bulk .tnx-bulk-field label{font-size:13px;letter-spacing:.08em;color:#929292;margin-bottom:4px}
+.tnx-reference-bulk .tnx-bulk-field select,.tnx-reference-bulk .tnx-bulk-field input{height:44px;padding:7px 11px;border:2px solid #d9dde1;border-radius:5px;background:#f8f9fa;font-size:17px;color:#3c3c3c;box-sizing:border-box}
+.tnx-reference-bulk .tnx-bulk-tick-window{grid-column:1;grid-row:2;margin-top:0}
+.tnx-reference-bulk .tnx-bulk-ticks{padding:0 0 7px;margin-top:0;text-align:center}
+.tnx-reference-bulk .tnx-bulk-ticks .label{font-size:12px;color:#9b9b9b;letter-spacing:.14em}
+.tnx-reference-bulk .tnx-bulk-current{font-size:28px;line-height:1.05;color:#efb900;margin:3px 0 0;font-weight:900}
+.tnx-reference-bulk .tnx-bulk-digits{grid-template-columns:repeat(10,minmax(70px,1fr));gap:14px;padding:3px 36px 10px;align-items:center}
+.tnx-reference-bulk .tnx-ring{width:96px;height:96px;max-width:96px;background:conic-gradient(var(--ring,#48aaa6) calc(var(--pct,10)*1%),#e9ebed 0);box-shadow:none}
+.tnx-reference-bulk .tnx-ring::before{inset:0;background:#f1f2f3}
+.tnx-reference-bulk .tnx-ring b{font-size:17px;line-height:1;color:#333;font-weight:900}
+.tnx-reference-bulk .tnx-ring small{position:static;margin-top:19px;font-size:12px;color:#333;font-weight:900}
+.tnx-reference-bulk .tnx-ring b{position:absolute;top:29px}
+.tnx-reference-bulk .tnx-ring small{position:absolute;top:51px;bottom:auto}
+.tnx-reference-bulk .tnx-recent-digits{min-height:38px;padding:0 20px 25px;gap:8px}
+.tnx-reference-bulk .tnx-recent-digits span{min-width:32px;height:32px;padding:0;border-radius:6px;display:grid;place-items:center;font-size:17px;box-sizing:border-box}
+.tnx-reference-bulk .tnx-bulk-footer{grid-template-columns:repeat(3,1fr);gap:9px;padding:0 18px 10px;background:#fff;border:0}
+.tnx-reference-bulk .tnx-bulk-footer>div{min-width:0}
+.tnx-reference-bulk .tnx-bulk-footer label{font-size:11px;letter-spacing:.1em;color:#969696;text-align:center;margin-bottom:5px}
+.tnx-reference-bulk .tnx-bulk-footer input,.tnx-reference-bulk .tnx-bulk-footer select{height:40px;width:100%;padding:6px 9px;border:1px solid #dfe2e5;border-radius:5px;background:#fff;text-align:center;font-size:17px;font-weight:800;color:#3d3d3d;box-sizing:border-box}
+.tnx-reference-bulk .tnx-bulk-prediction{display:none}
+.tnx-reference-bulk .tnx-auto-row{margin:0 18px 12px 0;margin-left:auto;width:max-content;min-width:138px;padding:10px 14px;border:1px solid #d8dce0;border-radius:6px;background:#f7f7f7;color:#353535;text-align:center;font-size:14px;box-shadow:none}
+.tnx-reference-bulk .tnx-auto-row span{margin-right:6px}.tnx-reference-bulk .tnx-auto-row strong{margin-left:6px}
+.tnx-reference-bulk .tnx-bulk-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 18px 25px;border:0}
+.tnx-reference-bulk .tnx-bulk-action{position:relative;min-height:81px;border:0;border-radius:4px;padding:12px 18px;color:#fff;font-size:17px;font-weight:900;text-align:center;cursor:pointer;overflow:hidden;box-shadow:none}
+.tnx-reference-bulk .tnx-bulk-action::after{content:"";position:absolute;left:53%;top:0;width:42px;height:100%;background:rgba(255,255,255,.16);transform:skewX(34deg)}
+.tnx-reference-bulk .tnx-bulk-action.even{background:linear-gradient(#4cb9b5,#3d9897)}
+.tnx-reference-bulk .tnx-bulk-action.odd{background:linear-gradient(#ef4145,#d63236)}
+.tnx-reference-bulk .tnx-bulk-action .bulk-action-pct{display:block;position:absolute;right:18px;bottom:10px;font-size:14px;z-index:2}
+.tnx-reference-bulk .tnx-bulk-action .bulk-action-quote{position:absolute;right:18px;top:10px;font-size:14px;z-index:2}
+.tnx-reference-bulk #bulkTradeStatus{font-size:13px;padding:7px 18px 14px!important}
+@media(max-width:1200px){.tnx-reference-bulk .tnx-bulk-digits{grid-template-columns:repeat(5,1fr);padding-left:20px;padding-right:20px}.tnx-reference-bulk .tnx-ring{width:82px;height:82px}.tnx-reference-bulk .tnx-ring b{top:24px}.tnx-reference-bulk .tnx-ring small{top:44px}}
+@media(max-width:700px){.tnx-reference-bulk .tnx-bulk-head{grid-template-columns:1fr}.tnx-reference-bulk .tnx-bulk-tick-window{grid-column:auto;grid-row:auto}.tnx-reference-bulk .tnx-bulk-digits{grid-template-columns:repeat(5,1fr);gap:8px;padding:8px}.tnx-reference-bulk .tnx-ring{width:62px;height:62px}.tnx-reference-bulk .tnx-ring b{top:18px;font-size:14px}.tnx-reference-bulk .tnx-ring small{top:34px;font-size:9px}.tnx-reference-bulk .tnx-bulk-footer{grid-template-columns:1fr 1fr 1fr}.tnx-reference-bulk .tnx-bulk-actions{grid-template-columns:1fr 1fr;padding-left:8px;padding-right:8px}}
+
 @media(max-width:700px){.tnx-builder-body{grid-template-columns:54px minmax(0,1fr)}.tnx-builder-grid{grid-template-columns:1fr}.tnx-bulk-head,.tnx-bulk-footer{grid-template-columns:1fr}.tnx-bulk-digits{grid-template-columns:repeat(5,1fr);gap:.35rem;padding:.65rem}.tnx-ring{max-width:62px}.tnx-ring::before{inset:5px}.tnx-ring b{font-size:1rem}.tnx-ring small{bottom:10px;font-size:.6rem}.tnx-bulk-current{font-size:2rem}.tnx-bulk-actions{grid-template-columns:1fr 1fr}.tnx-builder-canvas{padding:.75rem}}
 
         /* ===== RESPONSIVE ===== */
@@ -1003,6 +1042,15 @@ input,select,textarea{width:100%;min-width:0}
   main.main-content{padding-left:10px!important;padding-right:10px!important;}
 }
 </style>
+
+<script>
+(function(){
+  if (window.TNX_DEBUG) return;
+  // Prevent application code from intentionally advertising source maps.
+  const oldCreate = URL.createObjectURL;
+  window.__TNX_SOURCE_MAPS_DISABLED__ = true;
+})();
+</script>
 </head>
 <body>
 <div class="tnx-mobile-header" id="tnxMobileHeader">
@@ -1336,11 +1384,11 @@ input,select,textarea{width:100%;min-width:0}
         ============================================================ -->
 <div class="page-content" id="page-bulk">
 <div class="tnx-ref-tabs"><button class="tnx-ref-tab" onclick="switchPage('manual')">Manual Trader</button><button class="tnx-ref-tab active">▱ Bulk Trader</button><button class="tnx-ref-tab" onclick="switchPage('smart')">🧠 Smart AI</button></div>
-<div class="tnx-bulk-terminal">
+<div class="tnx-bulk-terminal tnx-reference-bulk">
 <div class="tnx-bulk-head">
 <div class="tnx-bulk-field"><label>Market</label><select id="bulkMarket"><option value="">Loading live Deriv markets…</option></select></div>
-<div class="tnx-bulk-field"><label>Trade Type</label><select id="bulkTradeType"><option value="EVEN">Even / Odd</option><option value="EVEN">Even</option><option value="ODD">Odd</option></select></div>
-<div class="tnx-bulk-field"><label>Number of ticks</label><input id="bulkTickWindow" max="1000" min="20" type="number" value="120"/></div>
+<div class="tnx-bulk-field"><label>Trade Type</label><select id="bulkTradeType"><option value="even-odd">Even/Odd</option><option value="over-under">Over/Under</option><option value="matches-differs">Matches/Differs</option></select></div>
+<div class="tnx-bulk-field tnx-bulk-tick-window"><label>Number of ticks</label><input id="bulkTickWindow" max="1000" min="20" type="number" value="120"/></div>
 </div>
 <div class="tnx-bulk-ticks"><div class="label">CURRENT TICK</div><div class="tnx-bulk-current" id="bulkCurrentTick">—</div></div>
 <div class="tnx-bulk-digits" id="bulkDigitRings"></div>
@@ -1348,10 +1396,11 @@ input,select,textarea{width:100%;min-width:0}
 <div class="tnx-bulk-footer">
 <div><label>Ticks</label><input id="bulkDuration" min="1" type="number" value="1"/></div>
 <div><label>Stake</label><input id="bulkStake" min="0.35" step="0.01" type="number" value="0.50"/></div>
+<div class="tnx-bulk-prediction"><label>Prediction</label><select id="bulkPrediction"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5" selected>5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select></div>
 <div><label>No. of bulk trades</label><input id="bulkCount" max="20" min="1" type="number" value="1"/></div>
 </div>
-<div class="tnx-auto-row" onclick="tnxBulkAutoToggle()">⚙ Auto trader <span id="bulkAutoState">OFF</span></div>
-<div class="tnx-bulk-actions"><button class="tnx-bulk-action even" onclick="tnxBulkExecute('EVEN')">◈ Even <span id="bulkEvenQuote">—</span></button><button class="tnx-bulk-action odd" onclick="tnxBulkExecute('ODD')">◇ Odd <span id="bulkOddQuote">—</span></button></div>
+<div class="tnx-auto-row" onclick="tnxBulkAutoToggle()"><span>⚙</span> Auto trader <strong id="bulkAutoState">OFF</strong></div>
+<div class="tnx-bulk-actions" id="bulkTradeActions"></div>
 <div id="bulkTradeStatus" style="padding:1rem;text-align:center;font-weight:800;color:#8a8d94">Connect your REAL Deriv account to trade.</div>
 </div>
 <div class="card" style="margin-top:1.2rem"><div class="tnx-card-head"><div><span class="eyebrow">LIVE ANALYSIS</span><h3>Bulk execution monitor</h3></div><span id="bulkExposureLabel" style="color:var(--text-muted)">0 contracts</span></div><div id="bulkLiveInsight" style="color:var(--text-muted)">Waiting for live tick data…</div></div>
@@ -1643,6 +1692,81 @@ The source XML is preserved exactly. Loading a definition does not place a trade
     JAVASCRIPT
     ============================================================ -->
 <!-- ===== SUPABASE SDK ===== -->
+
+<script>
+/* ============================================================
+   TradeNovaX PRODUCTION PROTECTION
+   Debug is OFF by default.
+   Enable intentionally with:
+      https://your-domain/?debug=true
+   Debug is URL-only in production; no persistent localStorage debug flag.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  const params = new URLSearchParams(location.search);
+  const debug = params.get("debug") === "true";
+
+  window.TNX_DEBUG = debug;
+
+  // Suppress application diagnostics in production.
+  if (!debug) {
+    const noop = function(){};
+    try {
+      console.log = noop;
+      console.debug = noop;
+      console.info = noop;
+      console.warn = noop;
+      console.trace = noop;
+      console.group = noop;
+      console.groupCollapsed = noop;
+      console.groupEnd = noop;
+      console.table = noop;
+    } catch (_) {}
+
+    // Do not expose common app internals through accidental globals.
+    window.__TNX_INTERNAL__ = undefined;
+  }
+
+  // Make accidental error reporting less useful to casual inspection.
+  window.addEventListener("error", function (e) {
+    if (!window.TNX_DEBUG) {
+      e.preventDefault();
+    }
+  }, true);
+
+  window.addEventListener("unhandledrejection", function (e) {
+    if (!window.TNX_DEBUG) {
+      e.preventDefault();
+    }
+  }, true);
+
+  // Disable common "view source" / save / basic inspection shortcuts.
+  // This is deterrence only; it is NOT a cryptographic security boundary.
+  if (!debug) {
+    document.addEventListener("contextmenu", e => e.preventDefault(), {capture:true});
+    document.addEventListener("dragstart", e => e.preventDefault(), {capture:true});
+    document.addEventListener("keydown", function(e) {
+      const k = String(e.key || "").toLowerCase();
+      if (
+        k === "f12" ||
+        (e.ctrlKey && e.shiftKey && ["i","j","c"].includes(k)) ||
+        (e.ctrlKey && ["u","s"].includes(k))
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, true);
+  }
+
+  // Production marker: other modules can check this instead of exposing a
+  // visible debug switch in the application UI.
+  window.isTradeNovaXDebug = function () {
+    return !!window.TNX_DEBUG;
+  };
+})();
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
 </script>
 <!-- ============================================================
@@ -1855,7 +1979,7 @@ function runAnalysis(){const v=tickBuffer.map(x=>x.quote).filter(Number.isFinite
 function calcRSI(v,p){let g=0,l=0;for(let i=Math.max(1,v.length-p);i<v.length;i++){const d=v[i]-v[i-1];if(d>=0)g+=d;else l-=d}if(l===0)return 100;const rs=(g/p)/(l/p);return 100-(100/(1+rs))}
 function renderRealtimeChart(){const c=document.getElementById('chartContainer');if(!c||tickBuffer.length<2)return;const v=tickBuffer.slice(-100).map(x=>x.quote),min=Math.min(...v),max=Math.max(...v),span=max-min||1,w=Math.max(300,c.clientWidth||700),h=300,pad=24,pts=v.map((x,i)=>`${pad+i*(w-pad*2)/Math.max(1,v.length-1)},${h-pad-((x-min)/span)*(h-pad*2)}`).join(' ');c.innerHTML=`<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="width:100%;height:100%;display:block"><polyline points="${pts}" fill="none" stroke="var(--gold)" stroke-width="2" vector-effect="non-scaling-stroke"/><line x1="0" y1="${h-pad}" x2="${w}" y2="${h-pad}" stroke="rgba(255,255,255,.08)"/><text x="12" y="22" fill="var(--text-muted)" font-size="12">${escapeHtml(subscribedSymbol||'')}</text></svg>`}
 function loadChart(){const s=document.getElementById('chartSymbol')?.value;if(s){subscribeTicks(s);showToast('📡 Streaming live '+s)}}window.loadChart=loadChart;
-async function executeBulkTrades(type){const symbol=document.getElementById('bulkMarket')?.value,amount=Number(document.getElementById('bulkStake')?.value),count=Math.min(20,Math.max(1,Number(document.getElementById('bulkCount')?.value)||1)),el=document.getElementById('bulkTradeStatus');if(!symbol||!Number.isFinite(amount)||amount<=0)return showToast('⚠️ Invalid bulk settings.');if(!confirmRealTrade(`${type} • ${count} REAL contracts\n${symbol}\nStake each: ${amount.toFixed(2)}`))return;try{requireTradingReady()}catch(e){if(el)el.textContent='❌ '+e.message;return}if(el)el.textContent='⏳ Sending real proposals…';for(let i=0;i<count;i++){try{const direction=type==='EVEN'?'DIGITEVEN':'DIGITODD';const id=send({proposal:1,amount,basis:'stake',contract_type:direction,currency:activeAccount.currency||'USD',duration:1,duration_unit:'t',underlying_symbol:symbol});pending.set(id,{kind:'bulkProposal',direction,symbol,amount,status:el,buySent:false,index:i+1,total:count});await new Promise(r=>setTimeout(r,250))}catch(e){if(el)el.textContent='❌ '+e.message;break}}if(el)el.textContent=`✅ ${count} real proposals sent; only successful proposals are purchased.`}window.executeBulkTrades=executeBulkTrades;
+async function executeBulkTrades(type){const symbol=document.getElementById('bulkMarket')?.value,amount=Number(document.getElementById('bulkStake')?.value),count=Math.min(20,Math.max(1,Number(document.getElementById('bulkCount')?.value)||1)),duration=Math.max(1,Number(document.getElementById('bulkDuration')?.value)||1),barrier=String(document.getElementById('bulkPrediction')?.value??5),el=document.getElementById('bulkTradeStatus');if(!symbol||!Number.isFinite(amount)||amount<=0)return showToast('⚠️ Invalid bulk settings.');const labels={DIGITEVEN:'EVEN',DIGITODD:'ODD',DIGITOVER:'OVER',DIGITUNDER:'UNDER',DIGITMATCH:'MATCHES',DIGITDIFF:'DIFFERS'};const label=labels[type]||type;const needsBarrier=['DIGITOVER','DIGITUNDER','DIGITMATCH','DIGITDIFF'].includes(type);if(!confirmRealTrade(`${label}${needsBarrier?' • Prediction '+barrier:''} • ${count} REAL contracts\n${symbol}\nStake each: ${amount.toFixed(2)}\nDuration: ${duration} tick(s)`))return;try{requireTradingReady()}catch(e){if(el)el.textContent='❌ '+e.message;return}if(el)el.textContent='⏳ Sending real proposals…';for(let i=0;i<count;i++){try{const payload={proposal:1,amount,basis:'stake',contract_type:type,currency:activeAccount.currency||'USD',duration,duration_unit:'t',underlying_symbol:symbol};if(needsBarrier)payload.barrier=barrier;const id=send(payload);pending.set(id,{kind:'bulkProposal',direction:type,symbol,amount,status:el,buySent:false,index:i+1,total:count,barrier});await new Promise(r=>setTimeout(r,250))}catch(e){if(el)el.textContent='❌ '+e.message;break}}if(el)el.textContent=`✅ ${count} real ${label} proposal(s) sent; only successful proposals are purchased.`}window.executeBulkTrades=executeBulkTrades;
 
 function tnxBuilderSync(){
   const tt=document.getElementById('builderTradeType'); if(tt){digitTradeType=tt.value; if(DIGIT_MODES[digitTradeType]){digitContractMode=DIGIT_MODES[digitTradeType][0][0];renderDigitModes();}}
@@ -1868,10 +1992,58 @@ function tnxBuilderQuickStrategy(){const tt=document.getElementById('builderTrad
 function tnxBuilderReset(){document.getElementById('builderTradeType').value='even-odd';document.getElementById('builderContract').value='DIGITEVEN';document.getElementById('builderInitialAction').value='preview';document.getElementById('digitDuration').value=1;document.getElementById('digitStake').value=1;tnxBuilderSync();showToast('↻ Builder reset.');}
 function tnxBuilderSave(){localStorage.setItem('tnx_builder_config',JSON.stringify({tradeType:document.getElementById('builderTradeType')?.value,contract:document.getElementById('builderContract')?.value,duration:document.getElementById('digitDuration')?.value,stake:document.getElementById('digitStake')?.value}));showToast('▣ Builder settings saved locally.');}
 async function tnxBuilderRun(){tnxBuilderSync();const status=document.getElementById('builderRunStatus');if(!liveConnected||!activeAccount){if(status)status.textContent='🔴 Connect a REAL Deriv account first.';return}const action=document.getElementById('builderInitialAction')?.value||'preview';if(action==='preview'){requestDigitProposal();if(status)status.textContent='🟢 Live proposal requested • no trade placed';return}const stake=Number(document.getElementById('digitStake')?.value||0);if(!tnxCanOpenTrade(stake,'builder'))return;if(!confirmRealTrade(`Bot Builder • 1 REAL contract\n${activeAccount.account_id}\nStake: ${stake.toFixed(2)}`))return;requestDigitProposal();if(status)status.textContent='⏳ Live proposal requested • purchase follows the configured REAL confirmation workflow';}
-function tnxBulkRender(){const el=document.getElementById('bulkDigitRings'),recent=document.getElementById('bulkRecentDigits'),cur=document.getElementById('bulkCurrentTick');if(!el)return;const windowN=Math.max(20,Math.min(1000,Number(document.getElementById('bulkTickWindow')?.value)||120));const prices=digitPrices.slice(-windowN);const stats=Array(10).fill(0);prices.forEach(p=>stats[digitLastDigit(p,digitPipSize)]++);const total=prices.length||1;el.innerHTML=stats.map((n,i)=>{const pct=n/total*100;const ring=Math.max(1,pct);return `<div class="tnx-ring" style="--pct:${ring};--ring:${i%3===0?'#3b82f6':i%3===1?'#48aaa6':'#ef4444'}"><b>${i}</b><small>${pct.toFixed(1)}%</small></div>`}).join('');recent.innerHTML=prices.slice(-8).map(p=>{const d=digitLastDigit(p,digitPipSize);return `<span style="background:${d%2?'#e33b40':'#45aaa6'}">${d%2?'O':'E'}</span>`}).join('');if(cur){const p=prices.at(-1);cur.textContent=Number.isFinite(p)?p.toFixed(Math.max(0,digitPipSize)):'—';}const insight=document.getElementById('bulkLiveInsight');if(insight&&prices.length){const even=stats.reduce((a,n,i)=>a+(i%2===0?n:0),0)/total*100;const odd=100-even;insight.textContent=`Live ${prices.length}-tick distribution • Even ${even.toFixed(1)}% • Odd ${odd.toFixed(1)}% • Last digit ${digitLastDigit(prices.at(-1),digitPipSize)}`;}const ex=document.getElementById('bulkExposureLabel');if(ex)ex.textContent=`${Math.max(0,tnxOpenCount())} open contracts`;}
+function tnxBulkRender(){
+  const el=document.getElementById('bulkDigitRings'),recent=document.getElementById('bulkRecentDigits'),cur=document.getElementById('bulkCurrentTick');
+  if(!el)return;
+  const windowN=Math.max(20,Math.min(1000,Number(document.getElementById('bulkTickWindow')?.value)||120));
+  const prices=digitPrices.slice(-windowN),stats=Array(10).fill(0);
+  prices.forEach(p=>stats[digitLastDigit(p,digitPipSize)]++);
+  const total=prices.length||1;
+  const pct=n=>n/total*100;
+  el.innerHTML=stats.map((n,i)=>`<div class="tnx-ring" style="--pct:${Math.max(.5,pct(n))};--ring:${i%3===0?'#3b82f6':i%3===1?'#48aaa6':'#ef4444'}"><b>${i}</b><small>${pct(n).toFixed(2)}%</small></div>`).join('');
+  const mode=document.getElementById('bulkTradeType')?.value||'even-odd';
+  const prediction=Number(document.getElementById('bulkPrediction')?.value??5);
+  recent.innerHTML=prices.slice(-8).map(p=>{
+    const d=digitLastDigit(p,digitPipSize);let label,color;
+    if(mode==='even-odd'){label=d%2?'O':'E';color=d%2?'#e33b40':'#45aaa6'}
+    else if(mode==='over-under'){label=d>prediction?'O':'U';color=d>prediction?'#45aaa6':'#e33b40'}
+    else {label=d===prediction?'M':'D';color=d===prediction?'#45aaa6':'#e33b40'}
+    return `<span style="background:${color}">${label}</span>`;
+  }).join('');
+  if(cur){const p=prices.at(-1);cur.textContent=Number.isFinite(p)?p.toFixed(Math.max(0,digitPipSize)):'—'}
+  if(mode==='even-odd'){
+    const even=stats.reduce((a,n,i)=>a+(i%2===0?n:0),0),odd=total-even;
+    tnxBulkSetActionMeta('DIGITEVEN',pct(even));tnxBulkSetActionMeta('DIGITODD',pct(odd));
+    const insight=document.getElementById('bulkLiveInsight');if(insight&&prices.length)insight.textContent=`Live ${prices.length}-tick distribution • Even ${pct(even).toFixed(1)}% • Odd ${pct(odd).toFixed(1)}% • Last digit ${digitLastDigit(prices.at(-1),digitPipSize)}`;
+  } else if(mode==='over-under'){
+    const over=stats.reduce((a,n,i)=>a+(i>prediction?n:0),0),under=total-over;
+    tnxBulkSetActionMeta('DIGITOVER',pct(over));tnxBulkSetActionMeta('DIGITUNDER',pct(under));
+    const insight=document.getElementById('bulkLiveInsight');if(insight&&prices.length)insight.textContent=`Live ${prices.length}-tick distribution • Over ${pct(over).toFixed(1)}% • Under ${pct(under).toFixed(1)}% • Prediction ${prediction}`;
+  } else {
+    const matches=stats[prediction]||0,differs=total-matches;
+    tnxBulkSetActionMeta('DIGITMATCH',pct(matches));tnxBulkSetActionMeta('DIGITDIFF',pct(differs));
+    const insight=document.getElementById('bulkLiveInsight');if(insight&&prices.length)insight.textContent=`Live ${prices.length}-tick distribution • Matches ${pct(matches).toFixed(1)}% • Differs ${pct(differs).toFixed(1)}% • Prediction ${prediction}`;
+  }
+  const ex=document.getElementById('bulkExposureLabel');if(ex)ex.textContent=`${Math.max(0,tnxOpenCount())} open contracts`;
+}
+function tnxBulkSetActionMeta(type,p){const map={DIGITEVEN:'bulkEvenQuote',DIGITODD:'bulkOddQuote',DIGITOVER:'bulkOverQuote',DIGITUNDER:'bulkUnderQuote',DIGITMATCH:'bulkMatchesQuote',DIGITDIFF:'bulkDiffersQuote'};const e=document.getElementById(map[type]);const pctEl=document.querySelector(`[data-action-pct="${type}"]`);if(pctEl)pctEl.textContent=`${Number(p||0).toFixed(2)}%`;if(e&&!e.dataset.liveQuote)e.textContent='—'}
 function tnxBulkAutoToggle(){const e=document.getElementById('bulkAutoState');if(!e)return;const on=e.textContent==='OFF';e.textContent=on?'ARMED':'OFF';showToast(on?'⚙ Auto trader armed — no trade is placed until its execution conditions and REAL confirmation are satisfied.':'⚙ Auto trader disarmed.');}
-async function tnxBulkExecute(type){document.getElementById('bulkTradeType').value=type;await executeBulkTrades(type);}
-function tnxBulkBind(){['bulkTickWindow','bulkMarket'].forEach(id=>document.getElementById(id)?.addEventListener('change',tnxBulkRender));tnxBulkRender();}
+async function tnxBulkExecute(type){await executeBulkTrades(type)}
+function tnxBulkRenderActions(){
+  const sel=document.getElementById('bulkTradeType'),wrap=document.getElementById('bulkTradeActions');if(!sel||!wrap)return;
+  const mode=sel.value;
+  const groups={
+    'even-odd':[['DIGITEVEN','Even','even','bulkEvenQuote'],['DIGITODD','Odd','odd','bulkOddQuote']],
+    'over-under':[['DIGITOVER','Over','even','bulkOverQuote'],['DIGITUNDER','Under','odd','bulkUnderQuote']],
+    'matches-differs':[['DIGITMATCH','Matches','even','bulkMatchesQuote'],['DIGITDIFF','Differs','odd','bulkDiffersQuote']]
+  };
+  const items=groups[mode]||groups['even-odd'];
+  const needsPrediction=mode!=='even-odd';
+  document.querySelector('.tnx-bulk-prediction')?.style.setProperty('display',needsPrediction?'block':'none');
+  wrap.innerHTML=items.map(([v,t,c,q])=>`<button class="tnx-bulk-action ${c}" onclick="tnxBulkExecute('${v}')"><span>${t}</span><span class="bulk-action-quote" id="${q}">—</span><span class="bulk-action-pct" data-action-pct="${v}">0.00%</span></button>`).join('');
+  tnxBulkRender();
+}
+function tnxBulkBind(){['bulkTickWindow','bulkMarket','bulkPrediction'].forEach(id=>document.getElementById(id)?.addEventListener('change',()=>{tnxBulkRender();tnxBulkRenderActions()}));document.getElementById('bulkTradeType')?.addEventListener('change',tnxBulkRenderActions);tnxBulkRenderActions();tnxBulkRender();}
 
 function runSpeedbot(){
   const symbol=document.getElementById('speedSymbol')?.value;
@@ -3073,6 +3245,37 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
   // If a source bot is selected and the page already has the generic start
   // function, ensure only this engine owns its lifecycle.
   ui('Mkorean REAL engine loaded • select a verified bot and start it.');
+})();
+</script>
+
+
+<div id="tnxDebugPanel" hidden style="position:fixed;right:12px;bottom:12px;z-index:999999;max-width:420px;max-height:45vh;overflow:auto;background:#07101f;color:#fff;border:1px solid #334;padding:12px;border-radius:10px;font:12px monospace;">
+  <strong>TradeNovaX DEBUG MODE</strong>
+  <pre id="tnxDebugOutput" style="white-space:pre-wrap;"></pre>
+</div>
+<script>
+(function(){
+  const p=document.getElementById("tnxDebugPanel");
+  if(p && window.TNX_DEBUG) p.hidden=false;
+  window.TNXDebug=function(){
+    if(!window.TNX_DEBUG) return;
+    const o=document.getElementById("tnxDebugOutput");
+    if(o) o.textContent += Array.from(arguments).map(x=>{
+      try{return typeof x==="string"?x:JSON.stringify(x)}catch(_){return String(x)}
+    }).join(" ")+"\\n";
+  };
+})();
+</script>
+
+
+<script>
+(function(){
+  if(window.TNX_DEBUG) return;
+  const path=location.pathname;
+  if(/\.html$/i.test(path)){
+    const clean=path.replace(/\.html$/i,"") + location.search + location.hash;
+    if(history.replaceState) history.replaceState(null,"",clean);
+  }
 })();
 </script>
 

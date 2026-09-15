@@ -808,6 +808,24 @@ select.tnx-control option{background:#0b1020;color:#fff}
 /* Production navigation hit-area fix */
 .sidebar-nav a[data-page]{cursor:pointer!important;pointer-events:auto!important;touch-action:manipulation;}
 .sidebar-nav a[data-page] .icon,.sidebar-nav a[data-page] .badge{pointer-events:none;}
+
+/* ===== REAL BLOCKLY BOT BUILDER ===== */
+.tnx-builder-reference{height:720px!important;background:#fff!important;border:1px solid #e1e1e1!important}
+.tnx-builder-sidebar{width:278px!important;flex-basis:278px!important;padding:10px 10px 0!important}
+.tnx-toolbox-panel{padding:0 4px 0 4px;overflow:auto;height:calc(100% - 126px)}
+.tnx-toolbox-panel button{display:flex;width:100%;min-height:42px;border:0;background:#fff;align-items:center;justify-content:space-between;text-align:left;padding:9px 10px;border-radius:5px;color:#3e4146;font-size:14px;cursor:pointer}
+.tnx-toolbox-panel button:hover,.tnx-toolbox-panel button.active{background:#f2f3f5}
+.tnx-toolbox-panel button span{color:#777;font-size:18px}
+.tnx-blockly-workspace{position:absolute;left:0;right:0;top:70px;bottom:52px;background:#fff}
+.tnx-builder-stage .blocklySvg{background:#fff!important}
+.tnx-builder-stage .blocklyToolboxDiv{display:none!important}
+.tnx-builder-stage .blocklyFlyout{box-shadow:0 5px 20px rgba(0,0,0,.14)!important}
+.tnx-builder-stage .blocklyFlyoutBackground{fill:#fff!important;fill-opacity:1!important}
+.tnx-builder-stage .blocklyFlyoutLabelText{font-family:Arial,Helvetica,sans-serif!important;font-size:14px!important}
+.tnx-builder-stage .blocklyText{font-family:Arial,Helvetica,sans-serif!important}
+.tnx-builder-stage .blocklyMainBackground{stroke:#fff!important}
+.tnx-builder-stage .blocklyScrollbarHandle{fill:#aaa!important}
+@media(max-width:850px){.tnx-builder-sidebar{width:230px!important;flex-basis:230px!important}.tnx-builder-reference{height:680px!important}}
 </style>
 <style id="tnx-responsive-overhaul">
 /* TradeNovaX responsive/mobile navigation overhaul */
@@ -1063,6 +1081,7 @@ input,select,textarea{width:100%;min-width:0}
   window.__TNX_SOURCE_MAPS_DISABLED__ = true;
 })();
 </script>
+<script src="https://unpkg.com/blockly@10.4.3/blockly.min.js"></script>
 </head>
 <body>
 <div class="tnx-mobile-header" id="tnxMobileHeader">
@@ -1295,61 +1314,34 @@ input,select,textarea{width:100%;min-width:0}
 <button class="tnx-ref-tab" onclick="switchPage('automated')">✦ Auto Trader</button>
 </div>
 
-<div class="tnx-builder-reference">
+<div class="tnx-builder-reference" id="tnxExactBuilder">
   <aside class="tnx-builder-sidebar">
     <button class="tnx-quick-strategy" onclick="tnxBuilderQuickStrategy()">Quick strategy</button>
     <div class="tnx-blocks-menu-head">Blocks menu <span>⌃</span></div>
-    <div class="tnx-builder-search"><span>⌕</span><input aria-label="Search blocks" placeholder="Search" type="text"></div>
-    <div class="tnx-sidebar-section">Restart trading conditions <span>›</span></div>
-    <div class="tnx-sidebar-section">Analysis <span>⌄</span></div>
-    <div class="tnx-sidebar-section">Utility <span>⌄</span></div>
-    <div class="tnx-sidebar-section">Virtual Hook Switcher</div>
-    <div class="tnx-sidebar-section">Custom Notification</div>
-    <div class="tnx-sidebar-section">Binarytools</div>
-    <div class="tnx-sidebar-section">Contract modifiers</div>
-    <div class="tnx-sidebar-section">Barrier Settings</div>
+    <div class="tnx-builder-search"><span>⌕</span><input id="tnxBlockSearch" aria-label="Search blocks" placeholder="Search" type="text"></div>
+    <div id="tnxToolboxPanel" class="tnx-toolbox-panel">
+      <button data-cat="restart">Restart trading conditions <span>›</span></button>
+      <button data-cat="analysis">Analysis <span>⌄</span></button>
+      <button data-cat="utility">Utility <span>⌄</span></button>
+      <button data-cat="hook">Virtual Hook Switcher</button>
+      <button data-cat="notification">Custom Notification</button>
+      <button data-cat="binary">Binarytools</button>
+      <button data-cat="contract">Contract modifiers</button>
+      <button data-cat="barrier">Barrier Settings</button>
+    </div>
   </aside>
-
   <section class="tnx-builder-stage">
-    <div class="tnx-builder-toolbar-ref">
+    <div class="tnx-builder-toolbar-ref" aria-label="Blockly toolbar">
       <button onclick="tnxBuilderReset()" title="Reset">⟳</button>
-      <button title="Open">▱</button>
-      <button onclick="tnxBuilderSave()" title="Save">▣</button>
-      <i></i><button title="Workspace">▤</button><i></i><button title="Chart">⌁</button><button title="Digit blocks">◉</button><button title="Chart 2">⌁</button><i></i><button title="Undo">↶</button><button title="Redo">↷</button><i></i><button title="Zoom in">⊕</button><button title="Zoom out">⊖</button>
+      <i></i><button onclick="tnxBuilderSave()" title="Save">▱</button>
+      <button onclick="tnxBuilderLoad()" title="Load">▣</button>
+      <button onclick="tnxBuilderUndo()" title="Undo">↶</button>
+      <button onclick="tnxBuilderRedo()" title="Redo">↷</button>
+      <button onclick="tnxBuilderZoomIn()" title="Zoom in">⊕</button>
+      <button onclick="tnxBuilderZoomOut()" title="Zoom out">⊖</button>
+      <button onclick="tnxBuilderCenter()" title="Center workspace">⌁</button>
     </div>
-
-    <div class="tnx-workspace-canvas">
-      <div class="tnx-flow-main">
-        <div class="tnx-ref-block tnx-block-params">
-          <div class="tnx-ref-block-title">▣ &nbsp;1. Trade parameters</div>
-          <div class="tnx-ref-block-body">
-            <div class="tnx-ref-line"><span>Market:</span><select class="tnx-ref-select tnx-control" id="digitSymbol"><option value="">Loading live Deriv markets…</option></select><span>›</span><select class="tnx-ref-select" id="builderMarketMode"><option>random_index</option><option>synthetic_index</option></select><span>›</span><select class="tnx-ref-select" id="builderMarketSymbol"><option>Volatility 100 (1s) Index</option></select></div>
-            <div class="tnx-ref-checkline"><span>Alternate markets (Continuous Indices only):</span><input id="builderAlternate" type="checkbox"><span>every</span><input class="tiny" value="1" type="number"><span>run(s)</span></div>
-            <div class="tnx-ref-checkline"><span>Auto-scan volatility markets and trade first match:</span><input id="builderAutoScan" type="checkbox"></div>
-            <div class="tnx-ref-checkline"><span>Virtual Hook:</span><input type="checkbox"><button class="vh-settings">VH Settings</button></div>
-            <div class="tnx-ref-line"><span>Trade Type:</span><select class="tnx-ref-select" id="builderTradeType"><option value="even-odd">Even/Odd</option><option value="over-under">Over/Under</option><option value="matches-differs">Matches/Differs</option></select><span>›</span><select class="tnx-ref-select" id="builderContract"><option value="DIGITEVEN">Even</option><option value="DIGITODD">Odd</option><option value="DIGITOVER">Over</option><option value="DIGITUNDER">Under</option><option value="DIGITMATCH">Matches</option><option value="DIGITDIFF">Differs</option></select></div>
-            <div class="tnx-ref-line"><span>Contract Type:</span><select class="tnx-ref-select"><option>Both</option></select></div>
-            <div class="tnx-ref-line"><span>Default Candle Interval:</span><select class="tnx-ref-select" id="builderDataInterval"><option>1 minute</option><option selected>Live ticks</option><option>1 tick</option></select></div>
-            <div class="tnx-ref-checkline"><span>Restart buy/sell on error (disable for better performance):</span><input checked="" id="builderStopOnError" type="checkbox"></div>
-            <div class="tnx-ref-checkline"><span>Restart last trade on error (bot ignores the unsuccessful trade):</span><input id="builderResumeError" type="checkbox"></div>
-          </div>
-          <div class="tnx-ref-section-title">Run once at start:</div>
-          <div class="tnx-ref-white-slot"></div>
-          <div class="tnx-ref-section-title">Trade options:</div>
-          <div class="tnx-ref-trade-options"><span>Duration:</span><select id="digitDurationUnit"><option value="t">Ticks</option><option value="s">Seconds</option><option value="m">Minutes</option></select><input id="digitDuration" value="1" min="1" max="10" type="number"><span>Stake: USD</span><input id="digitStake" value="1.00" min="0.35" step="0.01" type="number"></div>
-        </div>
-
-        <div class="tnx-ref-block tnx-block-sell">
-          <div class="tnx-ref-block-title">▣ &nbsp;3. Sell conditions</div>
-          <div class="tnx-sell-body"><span class="if-label">if</span><span class="condition-pill">Sell is available</span><span>then</span><div class="tnx-empty-slot"></div><button>+</button></div>
-        </div>
-        <div class="tnx-ref-block tnx-block-restart">
-          <div class="tnx-ref-block-title">⚑ &nbsp;4. Restart trading conditions</div>
-          <div class="tnx-restart-body"><button onclick="tnxBuilderRun()">Trade again</button></div>
-        </div>
-      </div>
-    </div>
-
+    <div id="tnxBlocklyWorkspace" class="tnx-blockly-workspace"></div>
     <div class="tnx-builder-bottom-ref">
       <button class="tnx-builder-run-ref" onclick="tnxBuilderRun()"><span>▶</span> Run</button>
       <div class="tnx-builder-running-ref"><strong id="builderRunStatus">Bot is not running • REAL account required</strong><div></div></div>
@@ -1357,7 +1349,6 @@ input,select,textarea{width:100%;min-width:0}
     </div>
   </section>
 </div>
-
 <div class="tnx-builder-hidden-fields" aria-hidden="true">
   <select id="builderInitialAction"><option value="preview">Preview live proposal</option><option value="trade">Execute one confirmed REAL trade</option></select>
   <select id="digitPrediction"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option selected value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select>
@@ -3309,5 +3300,206 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
 })();
 </script>
 
+
+<style id="tnx-real-builder-css">
+.tnx-builder-palette{margin:10px 14px 0;border:1px solid #d9dce2;background:#fff;max-height:330px;overflow:auto;border-radius:8px}
+.tnx-builder-palette-head{padding:10px 12px;font-weight:800;color:#252a33;background:#f1f2f4;border-bottom:1px solid #ddd}
+.tnx-palette-item{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid #eee;cursor:grab;font-size:13px;color:#333;background:#fff}
+.tnx-palette-item:hover{background:#fafafa}.tnx-palette-item:active{cursor:grabbing}
+.tnx-palette-dot{width:12px;height:12px;border-radius:3px;background:#b00000;display:inline-block}
+.tnx-builder-live-workspace{position:relative;min-height:690px;height:calc(100vh - 300px);overflow:auto;background:#fff}
+.tnx-builder-live-workspace.drag-over{background:linear-gradient(#fff,#fff),repeating-linear-gradient(0deg,transparent 0,transparent 29px,#f4f5f7 30px);box-shadow:inset 0 0 0 3px #d4a900}
+.tnx-builder-grid{position:absolute;inset:0;background-image:radial-gradient(#d9dde3 1px,transparent 1px);background-size:20px 20px;opacity:.45;pointer-events:none}
+.tnx-builder-stack{position:relative;z-index:2;width:760px;max-width:calc(100% - 40px);margin:35px auto 110px;display:flex;flex-direction:column;align-items:flex-start}
+.tnx-block{width:100%;max-width:760px;box-shadow:0 2px 7px rgba(0,0,0,.13);border-radius:5px;overflow:hidden;background:#e5e5e5;border:1px solid #990000;position:relative}
+.tnx-block-head{background:#a90000;color:#fff;padding:8px 12px;font-size:14px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.tnx-block-body{padding:12px;color:#30353d;font-size:13px}.tnx-block-row{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:7px 0}.tnx-block label{font-weight:600}.tnx-block select,.tnx-block input{height:31px;border:1px solid #c7cbd1;border-radius:5px;background:#fff;padding:4px 8px;color:#222}.tnx-block input[type=checkbox]{height:auto}.tnx-block-delete{border:0;background:transparent;color:#fff;font-size:16px;cursor:pointer}
+.tnx-connector{height:25px;width:34px;border-left:3px solid #a90000;border-bottom:3px solid #a90000;margin-left:20px;position:relative}.tnx-connector:after{content:"";position:absolute;left:-6px;bottom:-6px;width:9px;height:9px;background:#a90000;border-radius:50%}
+.tnx-block-placeholder{width:100%;height:48px;border:2px dashed #bbb;border-radius:6px;margin:8px 0;display:flex;align-items:center;justify-content:center;color:#8a8d94;background:rgba(245,246,247,.7)}
+.tnx-builder-help{position:absolute;right:18px;top:18px;z-index:3;background:#fff;border:1px solid #ddd;border-radius:6px;padding:9px 12px;color:#555;font-size:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.tnx-block-run{background:#fff;border:1px solid #d3d5da;border-radius:5px;padding:12px;margin-top:10px;display:flex;gap:8px;align-items:center}.tnx-block-run button{border:0;border-radius:5px;padding:9px 15px;font-weight:800;cursor:pointer}.tnx-run-real{background:#a90000;color:#fff}.tnx-run-save{background:#eee;color:#333}
+@media(max-width:900px){.tnx-builder-live-workspace{height:650px}.tnx-builder-stack{width:680px}.tnx-builder-help{display:none}}
+</style>
+
+
+<script id="tnx-functional-builder">
+(function(){
+  const types={
+    params:{title:'1. Trade parameters',color:'#a90000'},
+    analysis:{title:'2. Analysis / condition',color:'#8b0000'},
+    purchase:{title:'3. Purchase contract',color:'#a90000'},
+    sell:{title:'4. Sell conditions',color:'#a90000'},
+    restart:{title:'5. Restart trading conditions',color:'#a90000'},
+    notify:{title:'6. Custom notification',color:'#a90000'}
+  };
+  const state={blocks:[],selected:null,history:[],future:[]};
+  const qs=s=>document.querySelector(s), qsa=s=>Array.from(document.querySelectorAll(s));
+  function el(tag,attrs={},html=''){const x=document.createElement(tag);Object.entries(attrs).forEach(([k,v])=>k==='class'?x.className=v:k==='text'?x.textContent=v:x.setAttribute(k,v));if(html)x.innerHTML=html;return x;}
+  function defaultBlock(type){
+    if(type==='params')return {type,market:qs('#digitSymbol')?.value||'',mode:'random_index',symbol:qs('#builderMarketSymbol')?.value||'R_100',tradeType:qs('#builderTradeType')?.value||'even-odd',contract:qs('#builderContract')?.value||'DIGITEVEN',duration:Number(qs('#digitDuration')?.value||1),stake:Number(qs('#digitStake')?.value||1)};
+    if(type==='analysis')return {type,condition:'last-digit',operator:'equals',value:7};
+    if(type==='purchase')return {type,contract:'DIGITEVEN',prediction:5};
+    if(type==='sell')return {type,condition:'sell-available'};
+    if(type==='restart')return {type,enabled:true,maxRuns:1};
+    return {type,message:'TradeNovaX bot notification'};
+  }
+  function syncFromParams(b){
+    if(b.type!=='params')return;
+    const tt=qs('#builderTradeType'),ct=qs('#builderContract'),du=qs('#digitDuration'),st=qs('#digitStake');
+    if(tt)tt.value=b.tradeType;if(ct)ct.value=b.contract;if(du)du.value=b.duration;if(st)st.value=b.stake;
+    if(typeof tnxBuilderSync==='function')tnxBuilderSync();
+  }
+  function saveHistory(){state.history.push(JSON.stringify(state.blocks));if(state.history.length>30)state.history.shift();state.future=[]}
+  function addBlock(type,index){saveHistory();const b=defaultBlock(type);if(index==null)state.blocks.push(b);else state.blocks.splice(index,0,b);render();}
+  function removeBlock(i){saveHistory();state.blocks.splice(i,1);render()}
+  function render(){
+    const ws=qs('#tnxFunctionalWorkspace');if(!ws)return;ws.innerHTML='';
+    ws.appendChild(el('div',{class:'tnx-builder-grid'}));
+    const help=el('div',{class:'tnx-builder-help'},'Drag blocks from the left into this workspace. Drop between blocks.');ws.appendChild(help);
+    const stack=el('div',{class:'tnx-builder-stack'});ws.appendChild(stack);
+    state.blocks.forEach((b,i)=>{if(i>0)stack.appendChild(el('div',{class:'tnx-connector'}));stack.appendChild(renderBlock(b,i));});
+    if(!state.blocks.length){const p=el('div',{class:'tnx-block-placeholder'},'Drop a block here to start building your bot');stack.appendChild(p)}
+    const run=el('div',{class:'tnx-block-run'},'<span style="font-weight:700">Builder:</span><button class="tnx-run-real">▶ Run REAL strategy</button><button class="tnx-run-save">Save</button><span style="font-size:12px;color:#777">Requires a connected REAL Deriv account.</span>');stack.appendChild(run);
+    run.querySelector('.tnx-run-real').onclick=runBuilder;run.querySelector('.tnx-run-save').onclick=saveBuilder;
+    ws.ondragover=e=>{e.preventDefault();ws.classList.add('drag-over')};ws.ondragleave=()=>ws.classList.remove('drag-over');ws.ondrop=e=>{e.preventDefault();ws.classList.remove('drag-over');const type=e.dataTransfer.getData('tnx-block');if(type)addBlock(type)};
+  }
+  function renderBlock(b,i){
+    const box=el('div',{class:'tnx-block',draggable:'true'}),head=el('div',{class:'tnx-block-head'});head.innerHTML='<span>'+types[b.type].title+'</span><button class="tnx-block-delete" title="Remove block">×</button>';box.appendChild(head);box.querySelector('button').onclick=()=>removeBlock(i);box.addEventListener('dragstart',e=>{e.dataTransfer.setData('tnx-move',String(i));e.dataTransfer.effectAllowed='move'});box.addEventListener('dragover',e=>e.preventDefault());box.addEventListener('drop',e=>{e.preventDefault();const from=e.dataTransfer.getData('tnx-move'),type=e.dataTransfer.getData('tnx-block');if(type){saveHistory();state.blocks.splice(i,0,defaultBlock(type));render();}else if(from!==''){saveHistory();const x=state.blocks.splice(Number(from),1)[0];state.blocks.splice(i,0,x);render();}});
+    const body=el('div',{class:'tnx-block-body'});box.appendChild(body);
+    if(b.type==='params'){
+      body.innerHTML='<div class="tnx-block-row"><label>Market</label><select class="bb-market"><option value="">Loading live markets…</option></select><label>Trade Type</label><select class="bb-type"><option value="even-odd">Even/Odd</option><option value="over-under">Over/Under</option><option value="matches-differs">Matches/Differs</option></select></div><div class="tnx-block-row"><label>Contract</label><select class="bb-contract"><option value="DIGITEVEN">Even</option><option value="DIGITODD">Odd</option><option value="DIGITOVER">Over</option><option value="DIGITUNDER">Under</option><option value="DIGITMATCH">Matches</option><option value="DIGITDIFF">Differs</option></select><label>Duration</label><input class="bb-duration" type="number" min="1" value="'+b.duration+'"><label>Stake USD</label><input class="bb-stake" type="number" min="0.35" step="0.01" value="'+b.stake+'"></div>';
+      const m=body.querySelector('.bb-market');const source=qs('#digitSymbol');if(source){m.innerHTML=source.innerHTML;m.value=b.market||source.value||'';}body.querySelector('.bb-type').value=b.tradeType;body.querySelector('.bb-contract').value=b.contract;
+      m.onchange=()=>b.market=m.value;body.querySelector('.bb-type').onchange=()=>{b.tradeType=body.querySelector('.bb-type').value;syncFromParams(b);};body.querySelector('.bb-contract').onchange=()=>{b.contract=body.querySelector('.bb-contract').value;syncFromParams(b)};body.querySelector('.bb-duration').oninput=()=>{b.duration=Number(body.querySelector('.bb-duration').value)||1;syncFromParams(b)};body.querySelector('.bb-stake').oninput=()=>{b.stake=Number(body.querySelector('.bb-stake').value)||1;syncFromParams(b)};
+    } else if(b.type==='analysis'){
+      body.innerHTML='<div class="tnx-block-row"><label>When last digit</label><select class="bb-op"><option value="equals">equals</option><option value="greater">is greater than</option><option value="less">is less than</option><option value="even">is even</option><option value="odd">is odd</option></select><input class="bb-value" type="number" min="0" max="9" value="'+b.value+'"></div><small>Live ticks are evaluated before a proposal is requested.</small>';
+      body.querySelector('.bb-op').value=b.operator;body.querySelector('.bb-op').onchange=()=>b.operator=body.querySelector('.bb-op').value;body.querySelector('.bb-value').oninput=()=>b.value=Math.max(0,Math.min(9,Number(body.querySelector('.bb-value').value)||0));
+    } else if(b.type==='purchase'){
+      body.innerHTML='<div class="tnx-block-row"><label>Contract</label><select class="bb-contract"><option value="DIGITEVEN">Even</option><option value="DIGITODD">Odd</option><option value="DIGITOVER">Over</option><option value="DIGITUNDER">Under</option><option value="DIGITMATCH">Matches</option><option value="DIGITDIFF">Differs</option></select><label>Prediction</label><select class="bb-pred">'+Array.from({length:10},(_,n)=>'<option value="'+n+'">'+n+'</option>').join('')+'</select></div><small>Purchase uses a live Deriv proposal and the configured REAL account.</small>';body.querySelector('.bb-contract').value=b.contract;body.querySelector('.bb-pred').value=b.prediction;body.querySelector('.bb-contract').onchange=()=>b.contract=body.querySelector('.bb-contract').value;body.querySelector('.bb-pred').onchange=()=>b.prediction=Number(body.querySelector('.bb-pred').value);
+    } else if(b.type==='sell')body.innerHTML='<div class="tnx-block-row"><span>if</span><span style="background:#f7f7f7;border:1px solid #ccc;border-radius:4px;padding:6px 10px">Sell is available</span><span>then execute sell condition</span></div>';
+    else if(b.type==='restart'){body.innerHTML='<div class="tnx-block-row"><label><input class="bb-enabled" type="checkbox" '+(b.enabled?'checked':'')+'> Trade again</label><label>Maximum runs</label><input class="bb-runs" type="number" min="1" max="100" value="'+b.maxRuns+'"></div>';body.querySelector('.bb-enabled').onchange=()=>b.enabled=body.querySelector('.bb-enabled').checked;body.querySelector('.bb-runs').oninput=()=>b.maxRuns=Math.max(1,Number(body.querySelector('.bb-runs').value)||1)}
+    else body.innerHTML='<div class="tnx-block-row"><label>Notification</label><input style="flex:1" value="'+b.message+'"></div>';
+    return box;
+  }
+  function compile(){
+    const p=state.blocks.find(x=>x.type==='params')||defaultBlock('params');const a=state.blocks.find(x=>x.type==='analysis');const buy=state.blocks.find(x=>x.type==='purchase');const r=state.blocks.find(x=>x.type==='restart');
+    syncFromParams(p);if(buy){const c=qs('#builderContract');if(c)c.value=buy.contract;const pred=qs('#digitPrediction');if(pred)pred.value=String(buy.prediction);}
+    return {params:p,analysis:a,purchase:buy,restart:r};
+  }
+  async function runBuilder(){
+    if(!state.blocks.some(x=>x.type==='params')){showToast('Add a Trade parameters block first.');return}
+    const c=compile(),status=qs('#builderRunStatus');
+    if(!window.liveConnected||!window.activeAccount){if(status)status.textContent='🔴 Connect a REAL Deriv account first.';showToast('Connect a REAL Deriv account before running.');return}
+    const stake=Number(c.params.stake||1);if(typeof tnxCanOpenTrade==='function'&&!tnxCanOpenTrade(stake,'builder'))return;
+    if(c.analysis){const op=c.analysis.operator,v=Number(c.analysis.value);const p=(window.digitPrices||[]).at(-1);if(Number.isFinite(p)&&typeof window.digitLastDigit==='function'){const d=window.digitLastDigit(p,window.digitPipSize||1);let ok=op==='equals'?d===v:op==='greater'?d>v:op==='less'?d<v:op==='even'?d%2===0:d%2===1;if(!ok){if(status)status.textContent='⏸ Condition not met • waiting for matching live tick';showToast('Condition not met on the latest tick.');return}}}
+    const a=qs('#builderInitialAction');if(a)a.value='trade';const cc=qs('#builderContract');if(cc)cc.value=c.purchase?.contract||c.params.contract;const pr=qs('#digitPrediction');if(pr)pr.value=String(c.purchase?.prediction??5);const du=qs('#digitDuration');if(du)du.value=String(c.params.duration||1);const st=qs('#digitStake');if(st)st.value=String(c.params.stake||1);if(typeof tnxBuilderSync==='function')tnxBuilderSync();
+    if(typeof confirmRealTrade==='function'&&!confirmRealTrade('Bot Builder • REAL contract\n'+(window.activeAccount.account_id||'')+'\nStake: '+stake.toFixed(2)))return;
+    if(typeof requestDigitProposal==='function')requestDigitProposal();if(status)status.textContent='⏳ REAL Deriv proposal requested from compiled builder blocks';
+  }
+  function saveBuilder(){localStorage.setItem('tnx_builder_blocks_v2',JSON.stringify(state.blocks));showToast('Builder saved locally.');}
+  function loadBuilder(){try{const x=JSON.parse(localStorage.getItem('tnx_builder_blocks_v2')||'[]');if(Array.isArray(x)&&x.length)state.blocks=x}catch(_){}render()}
+  function install(){
+    const old=qs('.tnx-workspace-canvas');if(!old)return;old.innerHTML='';const ws=el('div',{id:'tnxFunctionalWorkspace',class:'tnx-builder-live-workspace'});old.appendChild(ws);
+    const side=qs('.tnx-builder-sidebar');if(side&&!qs('.tnx-builder-palette')){const p=el('div',{class:'tnx-builder-palette'});p.innerHTML='<div class="tnx-builder-palette-head">Blocks</div>'+Object.entries(types).map(([k,v])=>'<div class="tnx-palette-item" draggable="true" data-block="'+k+'"><span class="tnx-palette-dot"></span>'+v.title+'</div>').join('');side.appendChild(p);p.querySelectorAll('.tnx-palette-item').forEach(x=>x.addEventListener('dragstart',e=>e.dataTransfer.setData('tnx-block',x.dataset.block)));}
+    loadBuilder();
+  }
+  window.tnxFunctionalBuilder={addBlock,render,run:runBuilder,save:saveBuilder};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install);else setTimeout(install,50);
+})();
+</script>
+
+
+<script>
+/* TradeNovaX REAL Blockly Builder — built on Blockly 10.4.3. */
+(function(){
+  let workspace=null;
+  const savedKey='tnx_blockly_strategy_v1';
+  function el(id){return document.getElementById(id)}
+  function defineBlocks(){
+    if(!window.Blockly) return;
+    const B=Blockly.Blocks;
+    B['tnx_trade_parameters']={init:function(){
+      this.appendDummyInput().appendField('Trade parameters');
+      this.appendDummyInput('MARKET').appendField('Market').appendField(new Blockly.FieldDropdown([['Volatility 10 (1s)','1HZ10V'],['Volatility 25 (1s)','1HZ25V'],['Volatility 50 (1s)','1HZ50V'],['Volatility 75 (1s)','1HZ75V'],['Volatility 100 (1s)','1HZ100V']]),'SYMBOL');
+      this.appendDummyInput().appendField('Trade type').appendField(new Blockly.FieldDropdown([['Even/Odd','even-odd'],['Over/Under','over-under'],['Matches/Differs','matches-differs']]),'TYPE');
+      this.appendDummyInput().appendField('Contract').appendField(new Blockly.FieldDropdown([['Even','DIGITEVEN'],['Odd','DIGITODD'],['Over','DIGITOVER'],['Under','DIGITUNDER'],['Matches','DIGITMATCH'],['Differs','DIGITDIFF']]),'CONTRACT');
+      this.appendDummyInput().appendField('Ticks').appendField(new Blockly.FieldNumber(1,1,10,1),'DURATION');
+      this.appendDummyInput().appendField('Stake').appendField(new Blockly.FieldNumber(1,0.35,100000,.01),'STAKE');
+      this.appendDummyInput().appendField('Prediction').appendField(new Blockly.FieldNumber(5,0,9,1),'PREDICTION');
+      this.setNextStatement(true,null);this.setColour('#8B0000');this.setTooltip('REAL Deriv trade parameters');
+    }};
+    B['tnx_tick_analysis']={init:function(){this.appendDummyInput().appendField('Analysis: last digit');this.setOutput(true,'Number');this.setColour('#5b6f8f')}};
+    B['tnx_digit_condition']={init:function(){this.appendValueInput('VALUE').setCheck('Number').appendField('IF last digit');this.appendDummyInput().appendField(new Blockly.FieldDropdown([['=','EQ'],['≠','NEQ'],['>','GT'],['≥','GTE'],['<','LT'],['≤','LTE']]),'OP').appendField(new Blockly.FieldNumber(5,0,9,1),'DIGIT');this.setInputsInline(true);this.setOutput(true,'Boolean');this.setColour('#5b6f8f')}};
+    B['tnx_purchase']={init:function(){this.appendDummyInput().appendField('Purchase contract');this.appendDummyInput().appendField('Use configured contract');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#a46b00')}};
+    B['tnx_sell_conditions']={init:function(){this.appendDummyInput().appendField('Sell conditions');this.appendDummyInput().appendField('Sell at profit/loss');this.appendDummyInput().appendField(new Blockly.FieldNumber(0.01,-100000,100000,.01),'TARGET');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#b07a00')}};
+    B['tnx_trade_again']={init:function(){this.appendDummyInput().appendField('Trade again');this.appendDummyInput().appendField(new Blockly.FieldCheckbox('TRUE'),'ENABLED');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#7a7a7a')}};
+    B['tnx_notification']={init:function(){this.appendDummyInput().appendField('Custom notification');this.appendDummyInput().appendField(new Blockly.FieldTextInput('Trade completed'),'TEXT');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#6a4c93')}};
+    B['tnx_restart']={init:function(){this.appendDummyInput().appendField('Restart trading conditions');this.appendDummyInput().appendField(new Blockly.FieldCheckbox('TRUE'),'ENABLED');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#555')}};
+    B['tnx_binary_tool']={init:function(){this.appendDummyInput().appendField('Binarytools');this.appendDummyInput().appendField(new Blockly.FieldDropdown([['Last digit','LAST_DIGIT'],['Digit frequency','FREQUENCY'],['Tick count','TICK_COUNT']]),'TOOL');this.setOutput(true,null);this.setColour('#3f6f7d')}};
+    B['tnx_contract_modifier']={init:function(){this.appendDummyInput().appendField('Contract modifier');this.appendDummyInput().appendField(new Blockly.FieldDropdown([['Duration','DURATION'],['Stake','STAKE'],['Prediction','PREDICTION']]),'MOD');this.appendDummyInput().appendField(new Blockly.FieldNumber(1),'VALUE');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#805c2d')}};
+    B['tnx_barrier']={init:function(){this.appendDummyInput().appendField('Barrier settings');this.appendDummyInput().appendField('Barrier').appendField(new Blockly.FieldNumber(5,0,9,1),'BARRIER');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#805c2d')}};
+    B['tnx_hook']={init:function(){this.appendDummyInput().appendField('Virtual Hook Switcher');this.appendDummyInput().appendField(new Blockly.FieldDropdown([['Enabled','ON'],['Disabled','OFF']]),'STATE');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#68757d')}};
+  }
+  function toolboxXml(){return `<xml xmlns="https://developers.google.com/blockly/xml">
+    <category name="Trade parameters" colour="#8B0000"><block type="tnx_trade_parameters"></block></category>
+    <category name="Analysis" colour="#5b6f8f"><block type="tnx_tick_analysis"></block><block type="tnx_digit_condition"><value name="VALUE"><block type="tnx_tick_analysis"></block></value></block></category>
+    <category name="Utility" colour="#6a4c93"><block type="tnx_notification"></block><block type="tnx_hook"></block></category>
+    <category name="Binarytools" colour="#3f6f7d"><block type="tnx_binary_tool"></block></category>
+    <category name="Contract modifiers" colour="#805c2d"><block type="tnx_contract_modifier"></block></category>
+    <category name="Barrier Settings" colour="#805c2d"><block type="tnx_barrier"></block></category>
+    <category name="Restart trading conditions" colour="#555"><block type="tnx_restart"></block><block type="tnx_trade_again"></block></category>
+    <category name="Contracts" colour="#a46b00"><block type="tnx_purchase"></block><block type="tnx_sell_conditions"></block></category>
+    <sep></sep><category name="Logic" colour="#5C81A6"><block type="controls_if"></block><block type="logic_compare"></block><block type="logic_operation"></block></category>
+    <category name="Math" colour="#5B67A5"><block type="math_number"></block><block type="math_arithmetic"></block></category>
+  </xml>`}
+  function init(){
+    if(!window.Blockly || !el('tnxBlocklyWorkspace')) return;
+    defineBlocks();
+    workspace=Blockly.inject('tnxBlocklyWorkspace',{toolbox:toolboxXml(),trashcan:true,zoom:{controls:false,wheel:true,startScale:.95,maxScale:1.5,minScale:.55,scaleSpeed:1.1},grid:{spacing:20,length:3,colour:'#eee',snap:true},move:{scrollbars:true,drag:true,wheel:true},renderer:'geras'});
+    window.TNX_BLOCKLY_WORKSPACE=workspace;
+    const saved=localStorage.getItem(savedKey);
+    if(saved){try{Blockly.serialization.workspaces.load(JSON.parse(saved),workspace)}catch(e){console.warn('Blockly restore failed',e)}}
+    const search=el('tnxBlockSearch');
+    if(search)search.addEventListener('input',function(){const q=this.value.trim().toLowerCase();document.querySelectorAll('#tnxToolboxPanel button').forEach(b=>b.style.display=(!q||b.textContent.toLowerCase().includes(q))?'flex':'none')});
+    document.querySelectorAll('#tnxToolboxPanel button').forEach(btn=>btn.addEventListener('click',function(){
+      const cat=this.dataset.cat; const map={restart:'Restart trading conditions',analysis:'Analysis',utility:'Utility',notification:'Utility',binary:'Binarytools',contract:'Contract modifiers',barrier:'Barrier Settings',hook:'Utility'};
+      const tb=workspace.getToolbox(); if(tb){const item=tb.getToolboxItemById ? tb.getToolboxItemById(cat) : null;}
+      const xml=toolboxXml();
+      // Open Blockly flyout by selecting the matching category label.
+      const items=workspace.getToolbox()?.getToolboxItems?.()||[]; const target=items.find(i=>(i.getName?.()||'').toLowerCase()===((map[cat]||'').toLowerCase()));
+      if(target){workspace.getToolbox().setSelectedItem(target)}
+    }));
+    workspace.addChangeListener(function(){window.TNX_BLOCKLY_XML=Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));});
+    center();
+  }
+  function center(){if(workspace)try{workspace.zoomToFit(20)}catch(e){}}
+  window.tnxBuilderUndo=function(){if(workspace)workspace.undo(false)};
+  window.tnxBuilderRedo=function(){if(workspace)workspace.undo(true)};
+  window.tnxBuilderZoomIn=function(){if(workspace)workspace.zoomCenter(1.15)};
+  window.tnxBuilderZoomOut=function(){if(workspace)workspace.zoomCenter(.87)};
+  window.tnxBuilderCenter=center;
+  window.tnxBuilderSave=function(){if(!workspace)return;localStorage.setItem(savedKey,JSON.stringify(Blockly.serialization.workspaces.save(workspace)));if(typeof showToast==='function')showToast('Bot strategy saved locally.');};
+  window.tnxBuilderLoad=function(){if(!workspace)return;const raw=localStorage.getItem(savedKey);if(raw){try{Blockly.serialization.workspaces.load(JSON.parse(raw),workspace);if(typeof showToast==='function')showToast('Bot strategy loaded.')}catch(e){}}};
+  window.tnxBuilderReset=function(){if(!workspace)return;workspace.clear();const b=workspace.newBlock('tnx_trade_parameters');b.initSvg();b.render();b.setDeletable(false);b.moveBy(70,80);const p=workspace.newBlock('tnx_purchase');p.initSvg();p.render();p.previousConnection.connect(b.nextConnection);p.moveBy(70,260);if(typeof showToast==='function')showToast('Builder reset.');};
+  window.tnxBuilderQuickStrategy=function(){if(!workspace)return;workspace.clear();const b=workspace.newBlock('tnx_trade_parameters');b.initSvg();b.render();b.setDeletable(false);b.moveBy(70,70);const a=workspace.newBlock('tnx_tick_analysis');a.initSvg();a.render();a.moveBy(70,230);const c=workspace.newBlock('tnx_digit_condition');c.initSvg();c.render();c.moveBy(300,230);const p=workspace.newBlock('tnx_purchase');p.initSvg();p.render();p.moveBy(70,380);const r=workspace.newBlock('tnx_trade_again');r.initSvg();r.render();r.moveBy(70,480);if(typeof showToast==='function')showToast('Quick strategy loaded. Review before REAL execution.');};
+  const oldRun=window.tnxBuilderRun;
+  window.tnxBuilderRun=async function(){
+    if(!workspace){return oldRun&&oldRun()}
+    const blocks=workspace.getTopBlocks(true); const params=blocks.find(b=>b.type==='tnx_trade_parameters'); const purchase=workspace.getAllBlocks().find(b=>b.type==='tnx_purchase');
+    if(!params||!purchase){const st=el('builderRunStatus');if(st)st.textContent='🔴 Add Trade parameters and Purchase blocks first.';return}
+    const sym=params.getFieldValue('SYMBOL'), type=params.getFieldValue('TYPE'), contract=params.getFieldValue('CONTRACT');
+    const dur=Number(params.getFieldValue('DURATION')||1), stake=Number(params.getFieldValue('STAKE')||1), pred=Number(params.getFieldValue('PREDICTION')||5);
+    const ds=el('digitSymbol'), dc=el('digitDuration'), dst=el('digitStake'), dp=el('digitPrediction'), ca=el('builderContract'), tt=el('builderTradeType'), ia=el('builderInitialAction');
+    if(ds)ds.value=sym;if(dc)dc.value=dur;if(dst)dst.value=stake;if(dp)dp.value=pred;if(ca)ca.value=contract;if(tt)tt.value=type;if(ia)ia.value='trade';
+    if(typeof tnxBuilderSync==='function')tnxBuilderSync();
+    const st=el('builderRunStatus');
+    if(!liveConnected||!activeAccount){if(st)st.textContent='🔴 Connect a REAL Deriv account first.';return}
+    if(typeof tnxCanOpenTrade==='function'&&!tnxCanOpenTrade(stake,'builder'))return;
+    if(typeof confirmRealTrade==='function'&&!confirmRealTrade(`Bot Builder • 1 REAL contract\n${activeAccount.account_id}\nStake: ${stake.toFixed(2)}`))return;
+    if(typeof requestDigitProposal==='function')requestDigitProposal();
+    if(st)st.textContent='⏳ Live proposal requested • REAL purchase follows confirmation workflow';
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else setTimeout(init,0);
+})();
+</script>
 </body>
 </html>

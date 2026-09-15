@@ -1342,13 +1342,13 @@ input,select,textarea{width:100%;min-width:0}
     <div id="tnxBlocklyWorkspace" class="tnx-blockly-workspace"></div>
     <div class="tnx-builder-bottom-ref">
       <button class="tnx-builder-run-ref" onclick="tnxBuilderRun()"><span>▶</span> Run</button>
-      <div class="tnx-builder-running-ref"><strong id="builderRunStatus">Bot is not running • REAL account required</strong><div></div></div>
+      <div class="tnx-builder-running-ref"><strong id="builderRunStatus">Ready • REAL account required</strong><div></div></div>
       <div class="tnx-builder-footer-ref">(c) 2026 TradeNovaX &nbsp; ● &nbsp; <span id="builderClock">LIVE</span> &nbsp; | &nbsp; ☼ &nbsp; EN &nbsp; ⛶</div>
     </div>
   </section>
 </div>
 <div class="tnx-builder-hidden-fields" aria-hidden="true">
-  <select id="builderInitialAction"><option value="preview">Preview live proposal</option><option value="trade">Execute one confirmed REAL trade</option></select>
+  <select id="builderInitialAction"><option value="trade" selected>Execute confirmed REAL trade</option></select>
   <select id="digitPrediction"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option selected value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select>
   <input id="builderMaxTrades" value="1" type="number">
 </div>
@@ -2012,43 +2012,77 @@ function tnxBuilderSync(){
   const dt=document.getElementById('digitDurationTerminal'),st=document.getElementById('digitStakeTerminal');
   if(dt)dt.value=d?.value||1;if(st)st.value=s?.value||1;
 }
-function tnxBuilderQuickStrategy(){const tt=document.getElementById('builderTradeType'),c=document.getElementById('builderContract'),a=document.getElementById('builderInitialAction');if(tt)tt.value='even-odd';if(c)c.value='DIGITEVEN';if(a)a.value='preview';tnxBuilderSync();showToast('⚡ Quick strategy loaded. Review live proposal before any REAL purchase.');}
-function tnxBuilderReset(){document.getElementById('builderTradeType').value='even-odd';document.getElementById('builderContract').value='DIGITEVEN';document.getElementById('builderInitialAction').value='preview';document.getElementById('digitDuration').value=1;document.getElementById('digitStake').value=1;tnxBuilderSync();showToast('↻ Builder reset.');}
+function tnxBuilderQuickStrategy(){const tt=document.getElementById('builderTradeType'),c=document.getElementById('builderContract'),a=document.getElementById('builderInitialAction');if(tt)tt.value='even-odd';if(c)c.value='DIGITEVEN';if(a)a.value='trade';tnxBuilderSync();showToast('⚡ Quick strategy loaded. Review live proposal before any REAL purchase.');}
+function tnxBuilderReset(){document.getElementById('builderTradeType').value='even-odd';document.getElementById('builderContract').value='DIGITEVEN';document.getElementById('builderInitialAction').value='trade';document.getElementById('digitDuration').value=1;document.getElementById('digitStake').value=1;tnxBuilderSync();showToast('↻ Builder reset.');}
 function tnxBuilderSave(){localStorage.setItem('tnx_builder_config',JSON.stringify({tradeType:document.getElementById('builderTradeType')?.value,contract:document.getElementById('builderContract')?.value,duration:document.getElementById('digitDuration')?.value,stake:document.getElementById('digitStake')?.value}));showToast('▣ Builder settings saved locally.');}
-async function tnxBuilderRun(){tnxBuilderSync();const status=document.getElementById('builderRunStatus');if(!liveConnected||!activeAccount){if(status)status.textContent='🔴 Connect a REAL Deriv account first.';return}const action=document.getElementById('builderInitialAction')?.value||'preview';if(action==='preview'){requestDigitProposal();if(status)status.textContent='🟢 Live proposal requested • no trade placed';return}const stake=Number(document.getElementById('digitStake')?.value||0);if(!tnxCanOpenTrade(stake,'builder'))return;if(!confirmRealTrade(`Bot Builder • 1 REAL contract\n${activeAccount.account_id}\nStake: ${stake.toFixed(2)}`))return;requestDigitProposal();if(status)status.textContent='⏳ Live proposal requested • purchase follows the configured REAL confirmation workflow';}
-function tnxBulkRender(){
-  const el=document.getElementById('bulkDigitRings'),recent=document.getElementById('bulkRecentDigits'),cur=document.getElementById('bulkCurrentTick');
-  if(!el)return;
-  const windowN=Math.max(20,Math.min(1000,Number(document.getElementById('bulkTickWindow')?.value)||120));
-  const prices=digitPrices.slice(-windowN),stats=Array(10).fill(0);
-  prices.forEach(p=>stats[digitLastDigit(p,digitPipSize)]++);
-  const total=prices.length||1;
-  const pct=n=>n/total*100;
-  el.innerHTML=stats.map((n,i)=>`<div class="tnx-ring" style="--pct:${Math.max(.5,pct(n))};--ring:${i%3===0?'#3b82f6':i%3===1?'#48aaa6':'#ef4444'}"><b>${i}</b><small>${pct(n).toFixed(2)}%</small></div>`).join('');
-  const mode=document.getElementById('bulkTradeType')?.value||'even-odd';
-  const prediction=Number(document.getElementById('bulkPrediction')?.value??5);
-  recent.innerHTML=prices.slice(-8).map(p=>{
-    const d=digitLastDigit(p,digitPipSize);let label,color;
-    if(mode==='even-odd'){label=d%2?'O':'E';color=d%2?'#e33b40':'#45aaa6'}
-    else if(mode==='over-under'){label=d>prediction?'O':'U';color=d>prediction?'#45aaa6':'#e33b40'}
-    else {label=d===prediction?'M':'D';color=d===prediction?'#45aaa6':'#e33b40'}
-    return `<span style="background:${color}">${label}</span>`;
-  }).join('');
-  if(cur){const p=prices.at(-1);cur.textContent=Number.isFinite(p)?p.toFixed(Math.max(0,digitPipSize)):'—'}
-  if(mode==='even-odd'){
-    const even=stats.reduce((a,n,i)=>a+(i%2===0?n:0),0),odd=total-even;
-    tnxBulkSetActionMeta('DIGITEVEN',pct(even));tnxBulkSetActionMeta('DIGITODD',pct(odd));
-    const insight=document.getElementById('bulkLiveInsight');if(insight&&prices.length)insight.textContent=`Live ${prices.length}-tick distribution • Even ${pct(even).toFixed(1)}% • Odd ${pct(odd).toFixed(1)}% • Last digit ${digitLastDigit(prices.at(-1),digitPipSize)}`;
-  } else if(mode==='over-under'){
-    const over=stats.reduce((a,n,i)=>a+(i>prediction?n:0),0),under=total-over;
-    tnxBulkSetActionMeta('DIGITOVER',pct(over));tnxBulkSetActionMeta('DIGITUNDER',pct(under));
-    const insight=document.getElementById('bulkLiveInsight');if(insight&&prices.length)insight.textContent=`Live ${prices.length}-tick distribution • Over ${pct(over).toFixed(1)}% • Under ${pct(under).toFixed(1)}% • Prediction ${prediction}`;
-  } else {
-    const matches=stats[prediction]||0,differs=total-matches;
-    tnxBulkSetActionMeta('DIGITMATCH',pct(matches));tnxBulkSetActionMeta('DIGITDIFF',pct(differs));
-    const insight=document.getElementById('bulkLiveInsight');if(insight&&prices.length)insight.textContent=`Live ${prices.length}-tick distribution • Matches ${pct(matches).toFixed(1)}% • Differs ${pct(differs).toFixed(1)}% • Prediction ${prediction}`;
+async function tnxBuilderRun(){
+  tnxBuilderSync();
+  const status=document.getElementById('builderRunStatus');
+  if(!liveConnected || !activeAccount || !derivWS || derivWS.readyState!==WebSocket.OPEN){
+    if(status)status.textContent='🔴 Connect a REAL Deriv account first.';
+    showToast('🔴 A connected REAL Deriv account is required.');
+    return;
   }
-  const ex=document.getElementById('bulkExposureLabel');if(ex)ex.textContent=`${Math.max(0,tnxOpenCount())} open contracts`;
+
+  const stake=Number(document.getElementById('digitStake')?.value||0);
+  if(!Number.isFinite(stake)||stake<=0){
+    if(status)status.textContent='❌ Enter a valid REAL stake.';
+    return;
+  }
+
+  if(typeof tnxCanOpenTrade==='function' && !tnxCanOpenTrade(stake,'builder')){
+    if(status)status.textContent='🛑 REAL risk controls blocked this order.';
+    return;
+  }
+
+  const symbol=document.getElementById('digitSymbol')?.value||'';
+  const duration=Math.max(
+    digitDurationMin,
+    Math.min(digitDurationMax, Number(document.getElementById('digitDuration')?.value)||1)
+  );
+  const type=digitContractMode;
+  const labels={
+    DIGITEVEN:'EVEN', DIGITODD:'ODD',
+    DIGITOVER:'OVER', DIGITUNDER:'UNDER',
+    DIGITMATCH:'MATCHES', DIGITDIFF:'DIFFERS'
+  };
+  const label=labels[type]||type;
+  const prediction=Number(document.getElementById('digitPrediction')?.value||5);
+
+  if(!['DIGITEVEN','DIGITODD'].includes(type) && !Number.isInteger(prediction)){
+    if(status)status.textContent='❌ Invalid prediction.';
+    return;
+  }
+
+  if(!confirmRealTrade(
+    `TradeNovaX Bot Builder • REAL ${label}\n`+
+    `${symbol}\n`+
+    `Stake: ${stake.toFixed(2)} ${activeAccount.currency||'USD'}\n`+
+    `Duration: ${duration} ticks`+
+    (['DIGITEVEN','DIGITODD'].includes(type)?'':`\nPrediction: ${prediction}`)
+  )) return;
+
+  if(status)status.textContent='⏳ Requesting live REAL Deriv proposal…';
+
+  // Use the same live proposal path as the REAL digits terminal.
+  requestDigitProposal();
+
+  // requestDigitProposal creates digitProposal asynchronously.
+  // The proposal handler enables the normal REAL Buy button; this callback
+  // waits for that proposal and then purchases it without a demo/mock path.
+  const started=Date.now();
+  const waitForProposal=()=>{
+    if(digitProposal && digitProposal.id){
+      buyDigitContract();
+      return;
+    }
+    if(Date.now()-started>15000){
+      if(status)status.textContent='❌ REAL proposal timed out.';
+      return;
+    }
+    setTimeout(waitForProposal,100);
+  };
+  setTimeout(waitForProposal,150);
 }
 function tnxBulkSetActionMeta(type,p){const map={DIGITEVEN:'bulkEvenQuote',DIGITODD:'bulkOddQuote',DIGITOVER:'bulkOverQuote',DIGITUNDER:'bulkUnderQuote',DIGITMATCH:'bulkMatchesQuote',DIGITDIFF:'bulkDiffersQuote'};const e=document.getElementById(map[type]);const pctEl=document.querySelector(`[data-action-pct="${type}"]`);if(pctEl)pctEl.textContent=`${Number(p||0).toFixed(2)}%`;if(e&&!e.dataset.liveQuote)e.textContent='—'}
 function tnxBulkAutoToggle(){const e=document.getElementById('bulkAutoState');if(!e)return;const on=e.textContent==='OFF';e.textContent=on?'ARMED':'OFF';showToast(on?'⚙ Auto trader armed — no trade is placed until its execution conditions and REAL confirmation are satisfied.':'⚙ Auto trader disarmed.');}

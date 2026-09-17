@@ -3524,5 +3524,50 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
   window.setInterval(syncDash,1200); window.addEventListener('load',syncDash);
 })();
 </script>
+
+<script>
+/* TradeNovaX single-file comprehensive Deriv Bot workspace layer.
+   Source block IDs are derived from the uploaded Deriv Bot project.
+   The dashboard remains standalone; REAL execution is gated by the existing
+   TradeNovaX authenticated Deriv session and risk controls. */
+(function(){
+  function boot(){
+    if(!window.Blockly) return;
+    const host=document.getElementById('tnxBlocklyWorkspace'); if(!host) return;
+    const B=Blockly.Blocks;
+
+    const toolbox=`<xml xmlns="https://developers.google.com/blockly/xml">
+      <category name="Trade parameters" colour="#8B0000"><block type="tnx_trade_parameters"></block></category>
+      <category name="Purchase conditions" colour="#a46b00"><block type="tnx_purchase"></block><block type="tnx_digit_condition"></block></category>
+      <category name="Sell Conditions" colour="#b07a00"><block type="tnx_sell_conditions"></block><block type="tnx_src_check_sell"></block><block type="tnx_src_sell_at_market"></block><block type="tnx_src_sell_price"></block></category>
+      <category name="Restart trading conditions" colour="#555"><block type="tnx_restart"></block><block type="tnx_trade_again"></block><block type="tnx_src_trade_definition_restartbuysell"></block><block type="tnx_src_trade_definition_restartonerror"></block></category>
+      <category name="Analysis" colour="#5b6f8f"><block type="tnx_tick_analysis"></block><block type="tnx_src_last_digit"></block><block type="tnx_src_tick"></block><block type="tnx_src_ticks"></block><block type="tnx_src_stat"></block><block type="tnx_src_stat_list"></block><block type="tnx_src_check_direction"></block><block type="tnx_src_get_ohlc"></block><block type="tnx_src_ohlc"></block></category>
+      <category name="Utility" colour="#6a4c93"><block type="tnx_notification"></block><block type="tnx_hook"></block><block type="tnx_src_epoch"></block><block type="tnx_src_timeout"></block><block type="tnx_src_tick_delay"></block><block type="tnx_src_totimestamp"></block><block type="tnx_src_todatetime"></block><block type="tnx_src_notify"></block><block type="tnx_src_notify_telegram"></block></category>
+      <category name="Binarytools" colour="#3f6f7d"><block type="tnx_binary_tool"></block><block type="tnx_src_last_digit"></block><block type="tnx_src_lastDigitList"></block><block type="tnx_src_ticks_string"></block></category>
+      <category name="Contract modifiers" colour="#805c2d"><block type="tnx_contract_modifier"></block><block type="tnx_src_trade_definition_contracttype"></block><block type="tnx_src_trade_definition_tradetype"></block><block type="tnx_src_trade_definition_market"></block><block type="tnx_src_trade_definition_candleinterval"></block><block type="tnx_src_trade_definition_tradeoptions"></block><block type="tnx_src_trade_definition_multiplier"></block><block type="tnx_src_trade_definition_accumulator"></block></category>
+      <category name="Barrier Settings" colour="#805c2d"><block type="tnx_barrier"></block><block type="tnx_src_barrier_offset"></block><block type="tnx_src_multiplier_stop_loss"></block><block type="tnx_src_multiplier_take_profit"></block><block type="tnx_src_accumulator_take_profit"></block></category>
+      <category name="Logic" categorystyle="logic_category"><block type="controls_if"></block><block type="logic_compare"></block><block type="logic_operation"></block><block type="logic_negate"></block><block type="logic_boolean"></block><block type="logic_ternary"></block></category>
+      <category name="Math" categorystyle="math_category"><block type="math_number"></block><block type="math_arithmetic"></block><block type="math_single"></block><block type="math_round"></block><block type="math_random_int"></block><block type="math_modulo"></block></category>
+      <category name="Text" categorystyle="text_category"><block type="text"></block><block type="text_join"></block><block type="text_print"></block><block type="text_length"></block></category>
+      <sep></sep>
+
+    </xml>`;
+    try{ if(window.TNX_BLOCKLY_WORKSPACE){window.TNX_BLOCKLY_WORKSPACE.dispose();} }catch(e){}
+    host.innerHTML='';
+    const ws=Blockly.inject(host,{toolbox,trashcan:true,collapse:true,comments:true,scrollbars:true,zoom:{controls:false,wheel:true,startScale:.85,maxScale:1.6,minScale:.55,scaleSpeed:1.1},grid:{spacing:20,length:3,colour:'#e7e7e7',snap:true},move:{scrollbars:true,drag:true,wheel:true},renderer:'geras'});
+    window.TNX_BLOCKLY_WORKSPACE=ws;
+    const saved=localStorage.getItem('tnx_blockly_strategy_complete_v1');
+    if(saved){try{Blockly.serialization.workspaces.load(JSON.parse(saved),ws)}catch(e){}}
+    ws.addChangeListener(function(){try{window.TNX_BLOCKLY_XML=Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(ws));}catch(e){}});
+    window.tnxBuilderSave=function(){try{localStorage.setItem('tnx_blockly_strategy_complete_v1',JSON.stringify(Blockly.serialization.workspaces.save(ws)));if(window.showToast)showToast('Bot strategy saved.')}catch(e){}};
+    window.tnxBuilderLoad=function(){const raw=localStorage.getItem('tnx_blockly_strategy_complete_v1');if(raw)try{ws.clear();Blockly.serialization.workspaces.load(JSON.parse(raw),ws);if(window.showToast)showToast('Bot strategy loaded.')}catch(e){}};
+    window.tnxBuilderReset=function(){ws.clear();const b=ws.newBlock('tnx_trade_parameters');b.initSvg();b.render();b.setDeletable(false);b.moveBy(80,60);const p=ws.newBlock('tnx_purchase');p.initSvg();p.render();b.nextConnection.connect(p.previousConnection);p.moveBy(80,300);if(window.showToast)showToast('Builder reset.');};
+    window.tnxBuilderQuickStrategy=function(){ws.clear();const b=ws.newBlock('tnx_trade_parameters');b.initSvg();b.render();b.setDeletable(false);b.moveBy(80,60);const a=ws.newBlock('tnx_tick_analysis');a.initSvg();a.render();a.moveBy(80,260);const p=ws.newBlock('tnx_purchase');p.initSvg();p.render();a.nextConnection&&p.previousConnection&&a.nextConnection.connect(p.previousConnection);p.moveBy(80,400);const r=ws.newBlock('tnx_trade_again');r.initSvg();r.render();p.nextConnection&&r.previousConnection&&p.nextConnection.connect(r.previousConnection);r.moveBy(80,520);if(window.showToast)showToast('Quick strategy loaded.');};
+    window.tnxBuilderUndo=function(){ws.undo(false)}; window.tnxBuilderRedo=function(){ws.undo(true)}; window.tnxBuilderZoomIn=function(){ws.zoomCenter(1.15)}; window.tnxBuilderZoomOut=function(){ws.zoomCenter(.87)}; window.tnxBuilderCenter=function(){try{ws.zoomToFit(20)}catch(e){}};
+    document.querySelectorAll('#tnxToolboxPanel button').forEach(btn=>{btn.onclick=function(){const wanted=({restart:'Restart trading conditions',analysis:'Analysis',utility:'Utility',hook:'Utility',notification:'Utility',binary:'Binarytools',contract:'Contract modifiers',barrier:'Barrier Settings'})[btn.dataset.cat];const items=ws.getToolbox().getToolboxItems();const item=items.find(x=>(x.getName?.()||'').toLowerCase()===wanted.toLowerCase());if(item)ws.getToolbox().setSelectedItem(item);}});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,50));else setTimeout(boot,50);
+})();
+</script>
 </body>
 </html>

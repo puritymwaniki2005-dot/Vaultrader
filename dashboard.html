@@ -1199,6 +1199,12 @@ input,select,textarea{width:100%;min-width:0}
   .tnx-builder-sidebar .tnx-toolbox-panel,
   .tnx-builder-palette{display:none!important}
 
+  .tnx-builder-sidebar .tnx-blocks-menu-head{cursor:pointer;z-index:30}
+  .tnx-builder-sidebar.blocks-open .tnx-builder-search,
+  .tnx-builder-sidebar.blocks-open .tnx-toolbox-panel{display:block!important;position:absolute!important;left:12px!important;right:12px!important;top:72px!important;max-height:calc(100vh - 150px)!important;overflow:auto!important;background:#fff!important;z-index:25!important;border:1px solid #ddd!important;box-shadow:0 8px 24px rgba(0,0,0,.18)!important}
+  .tnx-builder-sidebar.blocks-open .tnx-builder-search{top:72px!important;padding:8px!important}
+  .tnx-builder-sidebar.blocks-open .tnx-toolbox-panel{top:125px!important}
+  .tnx-builder-sidebar.blocks-open .tnx-blocks-menu-head span{transform:rotate(180deg);display:inline-block}
   /* Vertical Blockly toolbar, as on the supplied mobile reference. */
   .tnx-builder-stage{
     position:absolute!important;
@@ -1300,6 +1306,17 @@ input,select,textarea{width:100%;min-width:0}
   .tnx-builder-stage{grid-column:2!important}
   .tnx-builder-summary{grid-column:3!important;display:flex!important}
 }
+</style>
+<style id="tnx-deriv-block-visual-fix">
+.tnx-builder-reference,.tnx-builder-stage,.tnx-blockly-workspace,.tnx-builder-stage .blocklySvg{background:#fff!important}
+.tnx-builder-stage .blocklyMainBackground{fill:#fff!important;stroke:#fff!important}
+.tnx-builder-stage .blocklyText{fill:#4a4a4a!important;color:#4a4a4a!important;font-family:Arial,Helvetica,sans-serif!important;font-size:14px!important;font-weight:400!important}
+.tnx-builder-stage .blocklyFieldText,.tnx-builder-stage .blocklyDropdownText{fill:#333!important}
+.tnx-builder-stage .blocklyFlyoutBackground{fill:#fff!important;fill-opacity:1!important}
+.tnx-builder-stage .blocklyFlyoutLabelText{fill:#333!important}
+.tnx-builder-stage .tnx-root-trade-parameters>.blocklyText{fill:#fff!important}
+.tnx-builder-stage .blocklyBlockCanvas,.tnx-builder-stage .blocklyBlockCanvas .blocklyDraggable{opacity:1!important}
+@media(max-width:700px){.tnx-builder-stage{background:#fff!important}.tnx-blockly-workspace{background:#fff!important;left:0!important;right:0!important;top:74px!important;bottom:52px!important}.tnx-builder-stage .blocklySvg,.tnx-builder-stage .blocklyMainBackground{background:#fff!important;fill:#fff!important}.tnx-builder-stage .blocklyText{font-size:14px!important}}
 </style>
 </head>
 <body>
@@ -1534,7 +1551,7 @@ input,select,textarea{width:100%;min-width:0}
 <div class="tnx-builder-reference" id="tnxExactBuilder">
   <aside class="tnx-builder-sidebar">
     <button class="tnx-quick-strategy" onclick="tnxBuilderQuickStrategy()">Quick strategy</button>
-    <div class="tnx-blocks-menu-head">Blocks menu <span>⌃</span></div>
+    <button type="button" class="tnx-blocks-menu-head" id="tnxBlocksMenuToggle" aria-expanded="false">Blocks Menu <span>⌃</span></button>
     <div class="tnx-builder-search"><span>⌕</span><input id="tnxBlockSearch" aria-label="Search blocks" placeholder="Search" type="text"></div>
     <div id="tnxToolboxPanel" class="tnx-toolbox-panel">
       <button data-cat="restart">Restart trading conditions <span>›</span></button>
@@ -3666,39 +3683,98 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
   function defineBlocks(){
     if(!window.Blockly) return;
     const B=Blockly.Blocks;
-    B['tnx_trade_parameters']={init:function(){
-      this.appendDummyInput().appendField('Trade parameters');
-      this.appendDummyInput('MARKET').appendField('Market').appendField(new Blockly.FieldDropdown([['Volatility 10 (1s)','1HZ10V'],['Volatility 25 (1s)','1HZ25V'],['Volatility 50 (1s)','1HZ50V'],['Volatility 75 (1s)','1HZ75V'],['Volatility 100 (1s)','1HZ100V']]),'SYMBOL');
-      this.appendDummyInput().appendField('Trade type').appendField(new Blockly.FieldDropdown([['Even/Odd','even-odd'],['Over/Under','over-under'],['Matches/Differs','matches-differs']]),'TYPE');
-      this.appendDummyInput().appendField('Contract').appendField(new Blockly.FieldDropdown([['Even','DIGITEVEN'],['Odd','DIGITODD'],['Over','DIGITOVER'],['Under','DIGITUNDER'],['Matches','DIGITMATCH'],['Differs','DIGITDIFF']]),'CONTRACT');
-      this.appendDummyInput().appendField('Ticks').appendField(new Blockly.FieldNumber(1,1,10,1),'DURATION');
-      this.appendDummyInput().appendField('Stake').appendField(new Blockly.FieldNumber(1,0.35,100000,.01),'STAKE');
-      this.appendDummyInput().appendField('Prediction').appendField(new Blockly.FieldNumber(5,0,9,1),'PREDICTION');
-      this.setNextStatement(true,null);this.setColour('#8B0000');this.setTooltip('REAL Deriv trade parameters');
+    const root='#a90000', nested='#e5e5e5', nested2='#dddddd', blue='#0b6ea8', green='#0b9b55';
+    const nonMovable=function(){this.setMovable(false);this.setDeletable(false);};
+
+    /* Deriv Bot-compatible Trade Parameters structure.  The visual hierarchy,
+       child blocks and labels mirror the supplied Deriv Bot source/main.xml. */
+    B['trade_definition']={init:function(){
+      this.appendDummyInput().appendField('▣  1. Trade parameters');
+      this.appendStatementInput('TRADE_OPTIONS');
+      this.appendDummyInput().appendField('Run once at start:');
+      this.appendStatementInput('INITIALIZATION');
+      this.appendDummyInput().appendField('Trade options:');
+      this.appendStatementInput('SUBMARKET');
+      this.setColour(root); this.setTooltip('Define the parameters of your contract.');
     }};
+    B['trade_definition_market']={init:function(){
+      this.appendDummyInput().appendField('Market:')
+        .appendField(new Blockly.FieldDropdown([
+          ['synthetic_index','synthetic_index'],['forex','forex'],['crypto','cryptocurrency'],['indices','indices']
+        ]),'MARKET_LIST')
+        .appendField('>')
+        .appendField(new Blockly.FieldDropdown([
+          ['random_index','random_index'],['continuous_indices','continuous_indices'],['major_pairs','major_pairs']
+        ]),'SUBMARKET_LIST')
+        .appendField('>')
+        .appendField(new Blockly.FieldDropdown([
+          ['Volatility 100 (1s) Index','1HZ100V'],['Volatility 75 (1s) Index','1HZ75V'],['Volatility 50 (1s) Index','1HZ50V'],['Volatility 25 (1s) Index','1HZ25V'],['Volatility 10 (1s) Index','1HZ10V']
+        ]),'SYMBOL_LIST');
+      this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour(nested);nonMovable.call(this);
+    }};
+    B['trade_definition_tradetype']={init:function(){
+      this.appendDummyInput().appendField('Trade Type:')
+        .appendField(new Blockly.FieldDropdown([['Up/Down','rise_fall'],['Digits','digits'],['Multiplier','multiplier'],['Accumulator','accumulator']]),'TRADETYPECAT_LIST')
+        .appendField('>')
+        .appendField(new Blockly.FieldDropdown([['Rise/Fall','rise_fall'],['Even/Odd','even_odd'],['Over/Under','over_under'],['Matches/Differs','matches_differs']]),'TRADETYPE_LIST');
+      this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour(nested);nonMovable.call(this);
+    }};
+    B['trade_definition_contracttype']={init:function(){
+      this.appendDummyInput().appendField('Contract Type:')
+        .appendField(new Blockly.FieldDropdown([['Both','both'],['Rise','CALL'],['Fall','PUT'],['Even','DIGITEVEN'],['Odd','DIGITODD'],['Over','DIGITOVER'],['Under','DIGITUNDER'],['Matches','DIGITMATCH'],['Differs','DIGITDIFF']]),'TYPE_LIST');
+      this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour(nested);nonMovable.call(this);
+    }};
+    B['trade_definition_candleinterval']={init:function(){
+      this.appendDummyInput().appendField('Default Candle Interval:')
+        .appendField(new Blockly.FieldDropdown([['1 minute','60'],['5 minutes','300'],['15 minutes','900'],['1 hour','3600'],['4 hours','14400']]),'CANDLEINTERVAL_LIST');
+      this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour(nested2);nonMovable.call(this);
+    }};
+    B['trade_definition_restartbuysell']={init:function(){
+      this.appendDummyInput().appendField('Restart buy/sell on error (disable for better performance):')
+        .appendField(new Blockly.FieldCheckbox('FALSE'),'TIME_MACHINE_ENABLED');
+      this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour(nested2);nonMovable.call(this);
+    }};
+    B['trade_definition_restartonerror']={init:function(){
+      this.appendDummyInput().appendField('Restart last trade on error (bot ignores the unsuccessful trade):')
+        .appendField(new Blockly.FieldCheckbox('TRUE'),'RESTARTONERROR');
+      this.setPreviousStatement(true,null);this.setNextStatement(false,null);this.setColour(nested2);nonMovable.call(this);
+    }};
+    B['trade_definition_tradeoptions']={init:function(){
+      this.appendDummyInput().appendField('Duration:')
+        .appendField(new Blockly.FieldDropdown([['Ticks','t'],['Seconds','s'],['Minutes','m'],['Hours','h']]),'DURATIONTYPE_LIST')
+        .appendField(new Blockly.FieldNumber(1,1,99999,1),'DURATION')
+        .appendField('Stake: USD')
+        .appendField(new Blockly.FieldNumber(1,0.35,100000,0.01),'AMOUNT');
+      this.setPreviousStatement(true,null);this.setNextStatement(false,null);this.setColour(nested);nonMovable.call(this);
+    }};
+
     B['tnx_tick_analysis']={init:function(){this.appendDummyInput().appendField('Analysis: last digit');this.setOutput(true,'Number');this.setColour('#5b6f8f')}};
     B['tnx_digit_condition']={init:function(){this.appendValueInput('VALUE').setCheck('Number').appendField('IF last digit');this.appendDummyInput().appendField(new Blockly.FieldDropdown([['=','EQ'],['≠','NEQ'],['>','GT'],['≥','GTE'],['<','LT'],['≤','LTE']]),'OP').appendField(new Blockly.FieldNumber(5,0,9,1),'DIGIT');this.setInputsInline(true);this.setOutput(true,'Boolean');this.setColour('#5b6f8f')}};
-    B['tnx_purchase']={init:function(){this.appendDummyInput().appendField('Purchase contract');this.appendDummyInput().appendField('Use configured contract');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#a46b00')}};
+    B['tnx_purchase']={init:function(){this.appendDummyInput().appendField('Purchase contract').appendField(new Blockly.FieldDropdown([['Rise','CALL'],['Fall','PUT'],['Even','DIGITEVEN'],['Odd','DIGITODD'],['Over','DIGITOVER'],['Under','DIGITUNDER'],['Matches','DIGITMATCH'],['Differs','DIGITDIFF']]),'PURCHASE_LIST');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour(blue)}};
     B['tnx_sell_conditions']={init:function(){this.appendDummyInput().appendField('Sell conditions');this.appendDummyInput().appendField('Sell at profit/loss');this.appendDummyInput().appendField(new Blockly.FieldNumber(0.01,-100000,100000,.01),'TARGET');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#b07a00')}};
-    B['tnx_trade_again']={init:function(){this.appendDummyInput().appendField('Trade again');this.appendDummyInput().appendField(new Blockly.FieldCheckbox('TRUE'),'ENABLED');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#7a7a7a')}};
-    B['tnx_notification']={init:function(){this.appendDummyInput().appendField('Custom notification');this.appendDummyInput().appendField(new Blockly.FieldTextInput('Trade completed'),'TEXT');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#6a4c93')}};
-    B['tnx_restart']={init:function(){this.appendDummyInput().appendField('Restart trading conditions');this.appendDummyInput().appendField(new Blockly.FieldCheckbox('TRUE'),'ENABLED');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#555')}};
-    B['tnx_binary_tool']={init:function(){this.appendDummyInput().appendField('Binarytools');this.appendDummyInput().appendField(new Blockly.FieldDropdown([['Last digit','LAST_DIGIT'],['Digit frequency','FREQUENCY'],['Tick count','TICK_COUNT']]),'TOOL');this.setOutput(true,null);this.setColour('#3f6f7d')}};
-    B['tnx_contract_modifier']={init:function(){this.appendDummyInput().appendField('Contract modifier');this.appendDummyInput().appendField(new Blockly.FieldDropdown([['Duration','DURATION'],['Stake','STAKE'],['Prediction','PREDICTION']]),'MOD');this.appendDummyInput().appendField(new Blockly.FieldNumber(1),'VALUE');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#805c2d')}};
-    B['tnx_barrier']={init:function(){this.appendDummyInput().appendField('Barrier settings');this.appendDummyInput().appendField('Barrier').appendField(new Blockly.FieldNumber(5,0,9,1),'BARRIER');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#805c2d')}};
-    B['tnx_hook']={init:function(){this.appendDummyInput().appendField('Virtual Hook Switcher');this.appendDummyInput().appendField(new Blockly.FieldDropdown([['Enabled','ON'],['Disabled','OFF']]),'STATE');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#68757d')}};
+    B['tnx_trade_again']={init:function(){this.appendDummyInput().appendField('Trade again');this.appendDummyInput().appendField(new Blockly.FieldCheckbox('TRUE'),'ENABLED');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour(green)}};
+    B['tnx_notification']={init:function(){this.appendDummyInput().appendField('Custom notification').appendField(new Blockly.FieldTextInput('Trade completed'),'TEXT');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#6a4c93')}};
+    B['tnx_restart']={init:function(){this.appendDummyInput().appendField('Restart trading conditions').appendField(new Blockly.FieldCheckbox('TRUE'),'ENABLED');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#555')}};
+    B['tnx_binary_tool']={init:function(){this.appendDummyInput().appendField('Binarytools').appendField(new Blockly.FieldDropdown([['Last digit','LAST_DIGIT'],['Digit frequency','FREQUENCY'],['Tick count','TICK_COUNT']]),'TOOL');this.setOutput(true,null);this.setColour('#3f6f7d')}};
+    B['tnx_contract_modifier']={init:function(){this.appendDummyInput().appendField('Contract modifier').appendField(new Blockly.FieldDropdown([['Duration','DURATION'],['Stake','STAKE'],['Prediction','PREDICTION']]),'MOD').appendField(new Blockly.FieldNumber(1),'VALUE');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#805c2d')}};
+    B['tnx_barrier']={init:function(){this.appendDummyInput().appendField('Barrier settings').appendField('Barrier').appendField(new Blockly.FieldNumber(5,0,9,1),'BARRIER');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#805c2d')}};
+    B['tnx_hook']={init:function(){this.appendDummyInput().appendField('Virtual Hook Switcher').appendField(new Blockly.FieldDropdown([['Enabled','ON'],['Disabled','OFF']]),'STATE');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#68757d')}};
   }
   function toolboxXml(){return `<xml xmlns="https://developers.google.com/blockly/xml">
-    <category name="Trade parameters" colour="#8B0000"><block type="tnx_trade_parameters"></block></category>
-    <category name="Analysis" colour="#5b6f8f"><block type="tnx_tick_analysis"></block><block type="tnx_digit_condition"><value name="VALUE"><block type="tnx_tick_analysis"></block></value></block></category>
-    <category name="Utility" colour="#6a4c93"><block type="tnx_notification"></block><block type="tnx_hook"></block></category>
-    <category name="Binarytools" colour="#3f6f7d"><block type="tnx_binary_tool"></block></category>
-    <category name="Contract modifiers" colour="#805c2d"><block type="tnx_contract_modifier"></block></category>
-    <category name="Barrier Settings" colour="#805c2d"><block type="tnx_barrier"></block></category>
-    <category name="Restart trading conditions" colour="#555"><block type="tnx_restart"></block><block type="tnx_trade_again"></block></category>
-    <category name="Contracts" colour="#a46b00"><block type="tnx_purchase"></block><block type="tnx_sell_conditions"></block></category>
+    <category id="trade_parameters" name="Trade parameters" colour="#a90000"><block type="trade_definition"></block><block type="trade_definition_tradeoptions"></block></category>
+    <category id="purchase_conditions" name="Purchase conditions" colour="#0b6ea8"><block type="tnx_purchase"></block><block type="tnx_digit_condition"></block></category>
+    <category id="sell_conditions" name="Sell conditions (optional)" colour="#0b6ea8"><block type="tnx_sell_conditions"></block></category>
+    <category id="trade_results" name="Restart trading conditions" colour="#0b9b55"><block type="tnx_trade_again"></block><block type="tnx_restart"></block></category>
+    <category id="analysis" name="Analysis" colour="#5b6f8f"><block type="tnx_tick_analysis"></block><block type="tnx_digit_condition"><value name="VALUE"><block type="tnx_tick_analysis"></block></value></block></category>
+    <category id="utility" name="Utility" colour="#6a4c93"><block type="tnx_notification"></block><block type="tnx_hook"></block></category>
+    <category id="binary" name="Binarytools" colour="#3f6f7d"><block type="tnx_binary_tool"></block></category>
+    <category id="contract" name="Contract modifiers" colour="#805c2d"><block type="tnx_contract_modifier"></block></category>
+    <category id="barrier" name="Barrier Settings" colour="#805c2d"><block type="tnx_barrier"></block></category>
     <sep></sep><category name="Logic" colour="#5C81A6"><block type="controls_if"></block><block type="logic_compare"></block><block type="logic_operation"></block></category>
     <category name="Math" colour="#5B67A5"><block type="math_number"></block><block type="math_arithmetic"></block></category>
+    <category name="Text" colour="#7459a6"><block type="text"></block><block type="text_join"></block></category>
+    <category name="Lists" colour="#7459a6"><block type="lists_create_with"></block><block type="lists_getIndex"></block></category>
+    <category name="Variables" custom="VARIABLE" colour="#A55B80"></category>
   </xml>`}
   function init(){
     if(!window.Blockly || !el('tnxBlocklyWorkspace')) return;
@@ -3706,24 +3782,56 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
     workspace=Blockly.inject('tnxBlocklyWorkspace',{toolbox:toolboxXml(),trashcan:true,zoom:{controls:false,wheel:true,startScale:.95,maxScale:1.5,minScale:.55,scaleSpeed:1.1},grid:{spacing:20,length:3,colour:'#eee',snap:true},move:{scrollbars:true,drag:true,wheel:true},renderer:'geras'});
     window.TNX_BLOCKLY_WORKSPACE=workspace;
     const saved=localStorage.getItem(savedKey);
-    if(saved){try{Blockly.serialization.workspaces.load(JSON.parse(saved),workspace)}catch(e){console.warn('Blockly restore failed',e)}}
-    else {
-      const b=workspace.newBlock('tnx_trade_parameters');
+    let restored=false;
+    if(saved){try{Blockly.serialization.workspaces.load(JSON.parse(saved),workspace);restored=workspace.getAllBlocks(true).some(b=>b.type==='trade_definition')}catch(e){console.warn('Blockly restore failed',e)}}
+    if(!restored) { workspace.clear();
+      const b=workspace.newBlock('trade_definition');
       b.initSvg(); b.render(); b.setDeletable(false);
-      const p=workspace.newBlock('tnx_purchase');
-      p.initSvg(); p.render();
-      try{p.previousConnection.connect(b.nextConnection)}catch(e){}
+      const market=workspace.newBlock('trade_definition_market'); market.initSvg(); market.render();
+      const tt=workspace.newBlock('trade_definition_tradetype'); tt.initSvg(); tt.render();
+      const ct=workspace.newBlock('trade_definition_contracttype'); ct.initSvg(); ct.render();
+      const ci=workspace.newBlock('trade_definition_candleinterval'); ci.initSvg(); ci.render();
+      const rb=workspace.newBlock('trade_definition_restartbuysell'); rb.initSvg(); rb.render();
+      const re=workspace.newBlock('trade_definition_restartonerror'); re.initSvg(); re.render();
+      const opt=workspace.newBlock('trade_definition_tradeoptions'); opt.initSvg(); opt.render();
+      try{b.getInput('TRADE_OPTIONS').connection.connect(market.previousConnection);market.nextConnection.connect(tt.previousConnection);tt.nextConnection.connect(ct.previousConnection);ct.nextConnection.connect(ci.previousConnection);ci.nextConnection.connect(rb.previousConnection);rb.nextConnection.connect(re.previousConnection);b.getInput('SUBMARKET').connection.connect(opt.previousConnection);}catch(e){}
       centerTradeParameters();
     }
     const search=el('tnxBlockSearch');
     if(search)search.addEventListener('input',function(){const q=this.value.trim().toLowerCase();document.querySelectorAll('#tnxToolboxPanel button').forEach(b=>b.style.display=(!q||b.textContent.toLowerCase().includes(q))?'flex':'none')});
+    const menuToggle=el('tnxBlocksMenuToggle');
+    if(menuToggle){menuToggle.onclick=function(ev){ev.preventDefault();ev.stopPropagation();tnxToggleBlocksMenu();};}
+    window.tnxToggleBlocksMenu=function(){
+      const sidebar=el('tnxExactBuilder')?.querySelector('.tnx-builder-sidebar');
+      const open=!(document.body.classList.contains('tnx-mobile-toolbox-open'));
+      if(sidebar) sidebar.classList.toggle('blocks-open',open);
+      document.body.classList.toggle('tnx-mobile-toolbox-open',open);
+      if(menuToggle){menuToggle.setAttribute('aria-expanded',String(open)); const sp=menuToggle.querySelector('span'); if(sp) sp.textContent=open?'⌃':'⌄';}
+      const tb=workspace?.getToolbox?.();
+      if(tb && open && window.innerWidth<=700){try{tb.setSelectedItem(null);}catch(e){}}
+    };
     document.querySelectorAll('#tnxToolboxPanel button').forEach(btn=>btn.addEventListener('click',function(){
       const cat=this.dataset.cat; const map={restart:'Restart trading conditions',analysis:'Analysis',utility:'Utility',notification:'Utility',binary:'Binarytools',contract:'Contract modifiers',barrier:'Barrier Settings',hook:'Utility'};
-      const tb=workspace.getToolbox(); if(tb){const item=tb.getToolboxItemById ? tb.getToolboxItemById(cat) : null;}
-      const xml=toolboxXml();
-      // Open Blockly flyout by selecting the matching category label.
-      const items=workspace.getToolbox()?.getToolboxItems?.()||[]; const target=items.find(i=>(i.getName?.()||'').toLowerCase()===((map[cat]||'').toLowerCase()));
-      if(target){workspace.getToolbox().setSelectedItem(target)}
+      const tb=workspace.getToolbox?.();
+      const items=tb?.getToolboxItems?.()||[];
+      const idMap={restart:'trade_results',analysis:'analysis',utility:'utility',notification:'utility',binary:'binary',contract:'contract',barrier:'barrier',hook:'utility'};
+      const target=items.find(i=>i.getId?.()===idMap[cat] || (i.getName?.()||'').toLowerCase()===(map[cat]||'').toLowerCase());
+      if(target){
+        try{
+          tb.setSelectedItem(target);
+        }catch(e){}
+        // Selecting a category closes the mobile Blocks Menu so the Blockly flyout/workspace is visible.
+        if(window.innerWidth<=700){
+          const sidebar=el('tnxExactBuilder')?.querySelector('.tnx-builder-sidebar');
+          sidebar?.classList.remove('blocks-open');
+          document.body.classList.remove('tnx-mobile-toolbox-open');
+          if(menuToggle){
+            menuToggle.setAttribute('aria-expanded','false');
+            const sp=menuToggle.querySelector('span');
+            if(sp) sp.textContent='⌄';
+          }
+        }
+      }
     }));
     workspace.addChangeListener(function(){window.TNX_BLOCKLY_XML=Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));});
     center();
@@ -3750,28 +3858,15 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
   function centerTradeParameters(){
     if(!workspace) return;
     try{
-      const b=workspace.getAllBlocks(true).find(x=>x.type==='tnx_trade_parameters');
+      const b=workspace.getAllBlocks(true).find(x=>x.type==='trade_definition');
       if(!b) return;
-      const mobile=window.innerWidth<700;
-      const current=b.getRelativeToSurfaceXY();
-      if(mobile){
-        /* Reference mobile layout: block starts in the visible workspace and
-           may extend beyond the phone viewport; it is not auto-centered into
-           a tiny scaled canvas. */
-        const targetX=50;
-        const targetY=28;
-        b.moveBy(targetX-current.x,targetY-current.y);
-        workspace.resize();
-        workspace.resizeContents();
-        return;
-      }
       const m=workspace.getMetrics();
-      const bw=b.getHeightWidth().width;
-      const targetX=Math.max(40,((m.viewWidth/workspace.scale)-bw)/2);
-      const targetY=92;
+      const current=b.getRelativeToSurfaceXY();
+      const mobile=window.innerWidth<700;
+      const targetX=mobile?34:Math.max(60,((m.viewWidth/workspace.scale)-b.getHeightWidth().width)/2);
+      const targetY=mobile?34:70;
       b.moveBy(targetX-current.x,targetY-current.y);
       workspace.resize();
-      workspace.resizeContents();
     }catch(e){}
   }
   window.tnxBuilderUndo=function(){if(workspace)workspace.undo(false)};
@@ -3798,17 +3893,32 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
   };
   window.tnxBuilderSave=function(){if(!workspace)return;localStorage.setItem(savedKey,JSON.stringify(Blockly.serialization.workspaces.save(workspace)));if(typeof showToast==='function')showToast('Bot strategy saved locally.');};
   window.tnxBuilderLoad=function(){if(!workspace)return;const raw=localStorage.getItem(savedKey);if(raw){try{Blockly.serialization.workspaces.load(JSON.parse(raw),workspace);if(typeof showToast==='function')showToast('Bot strategy loaded.')}catch(e){}}};
-  window.tnxBuilderReset=function(){if(!workspace)return;workspace.clear();const b=workspace.newBlock('tnx_trade_parameters');b.initSvg();b.render();b.setDeletable(false);const p=workspace.newBlock('tnx_purchase');p.initSvg();p.render();try{p.previousConnection.connect(b.nextConnection)}catch(e){}centerTradeParameters();if(typeof showToast==='function')showToast('Builder reset.');};
-  window.tnxBuilderQuickStrategy=function(){if(!workspace)return;workspace.clear();const b=workspace.newBlock('tnx_trade_parameters');b.initSvg();b.render();b.setDeletable(false);const a=workspace.newBlock('tnx_tick_analysis');a.initSvg();a.render();const c=workspace.newBlock('tnx_digit_condition');c.initSvg();c.render();const p=workspace.newBlock('tnx_purchase');p.initSvg();p.render();const r=workspace.newBlock('tnx_trade_again');r.initSvg();r.render();try{a.previousConnection.connect(b.nextConnection);p.previousConnection.connect(a.nextConnection);r.previousConnection.connect(p.nextConnection)}catch(e){}center();centerTradeParameters();if(typeof showToast==='function')showToast('Quick strategy loaded. Review before REAL execution.');};
+  window.tnxBuilderReset=function(){if(!workspace)return;workspace.clear();tnxBuilderQuickStrategy();if(typeof showToast==='function')showToast('Builder reset.');};
+  window.tnxBuilderQuickStrategy=function(){
+    if(!workspace)return;
+    workspace.clear();
+    const b=workspace.newBlock('trade_definition');b.initSvg();b.render();b.setDeletable(false);
+    const market=workspace.newBlock('trade_definition_market');market.initSvg();market.render();
+    const tt=workspace.newBlock('trade_definition_tradetype');tt.initSvg();tt.render();
+    const ct=workspace.newBlock('trade_definition_contracttype');ct.initSvg();ct.render();
+    const ci=workspace.newBlock('trade_definition_candleinterval');ci.initSvg();ci.render();
+    const rb=workspace.newBlock('trade_definition_restartbuysell');rb.initSvg();rb.render();
+    const re=workspace.newBlock('trade_definition_restartonerror');re.initSvg();re.render();
+    const opt=workspace.newBlock('trade_definition_tradeoptions');opt.initSvg();opt.render();
+    try{b.getInput('TRADE_OPTIONS').connection.connect(market.previousConnection);market.nextConnection.connect(tt.previousConnection);tt.nextConnection.connect(ct.previousConnection);ct.nextConnection.connect(ci.previousConnection);ci.nextConnection.connect(rb.previousConnection);rb.nextConnection.connect(re.previousConnection);b.getInput('SUBMARKET').connection.connect(opt.previousConnection);}catch(e){}
+    centerTradeParameters();
+    if(typeof showToast==='function')showToast('⚡ Deriv-style trade parameters loaded. Add purchase conditions before REAL execution.');
+  };
   const oldRun=window.tnxBuilderRun;
   window.tnxBuilderRun=async function(){
     if(!workspace){return oldRun&&oldRun()}
-    const blocks=workspace.getTopBlocks(true); const params=blocks.find(b=>b.type==='tnx_trade_parameters'); const purchase=workspace.getAllBlocks().find(b=>b.type==='tnx_purchase');
+    const blocks=workspace.getTopBlocks(true); const params=blocks.find(b=>b.type==='trade_definition'); const purchase=workspace.getAllBlocks().find(b=>b.type==='tnx_purchase');
     if(!params||!purchase){const st=el('builderRunStatus');if(st)st.textContent='🔴 Add Trade parameters and Purchase blocks first.';return}
-    const sym=params.getFieldValue('SYMBOL'), type=params.getFieldValue('TYPE'), contract=params.getFieldValue('CONTRACT');
-    const dur=Number(params.getFieldValue('DURATION')||1), stake=Number(params.getFieldValue('STAKE')||1), pred=Number(params.getFieldValue('PREDICTION')||5);
-    const ds=el('digitSymbol'), dc=el('digitDuration'), dst=el('digitStake'), dp=el('digitPrediction'), ca=el('builderContract'), tt=el('builderTradeType'), ia=el('builderInitialAction');
-    if(ds)ds.value=sym;if(dc)dc.value=dur;if(dst)dst.value=stake;if(dp)dp.value=pred;if(ca)ca.value=contract;if(tt)tt.value=type;if(ia)ia.value='trade';
+    const market=params.getChildByType('trade_definition_market'), tt=params.getChildByType('trade_definition_tradetype'), ct=params.getChildByType('trade_definition_contracttype'), opt=params.getChildByType('trade_definition_tradeoptions');
+    const sym=market?.getFieldValue('SYMBOL_LIST')||'1HZ100V', type=tt?.getFieldValue('TRADETYPE_LIST')||'rise_fall', contract=ct?.getFieldValue('TYPE_LIST')||'both';
+    const dur=Number(opt?.getFieldValue('DURATION')||1), stake=Number(opt?.getFieldValue('AMOUNT')||1), pred=5;
+    const ds=el('digitSymbol'), dc=el('digitDuration'), dst=el('digitStake'), dp=el('digitPrediction'), ca=el('builderContract'), ttControl=el('builderTradeType'), ia=el('builderInitialAction');
+    if(ds)ds.value=sym;if(dc)dc.value=dur;if(dst)dst.value=stake;if(dp)dp.value=pred;if(ca)ca.value=contract;if(ttControl)ttControl.value=type;if(ia)ia.value='trade';
     if(typeof tnxBuilderSync==='function')tnxBuilderSync();
     const st=el('builderRunStatus');
     if(!liveConnected||!activeAccount){if(st)st.textContent='🔴 Connect a REAL Deriv account first.';return}
@@ -3889,26 +3999,32 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
     const ws=window.TNX_BLOCKLY_WORKSPACE;
     if(!ws) return null;
     const blocks=ws.getAllBlocks(false);
-    const params=blocks.find(b=>b.type==='tnx_trade_parameters');
+    const params=blocks.find(b=>b.type==='trade_definition');
     const purchase=blocks.find(b=>b.type==='tnx_purchase');
     const condition=blocks.find(b=>b.type==='tnx_digit_condition');
     const restart=blocks.find(b=>b.type==='tnx_trade_again'||b.type==='tnx_restart');
     const sell=blocks.find(b=>b.type==='tnx_sell_conditions');
     const modifier=blocks.find(b=>b.type==='tnx_contract_modifier');
-    if(!params||!purchase) return null;
-    let symbol=params.getFieldValue('SYMBOL')||'1HZ100V';
-    let tradeType=params.getFieldValue('TYPE')||'even-odd';
-    let contract=purchase.getFieldValue?.('CONTRACT') || params.getFieldValue('CONTRACT') || 'DIGITEVEN';
-    let duration=Math.max(1,Number(params.getFieldValue('DURATION')||1));
-    let stake=Math.max(0.35,Number(params.getFieldValue('STAKE')||1));
-    let prediction=Number(purchase.getFieldValue?.('PREDICTION') ?? params.getFieldValue('PREDICTION') ?? 5);
+    if(!params) return null;
+    const market=params.getChildByType?.('trade_definition_market');
+    const tradeType=params.getChildByType?.('trade_definition_tradetype');
+    const contractType=params.getChildByType?.('trade_definition_contracttype');
+    const options=params.getChildByType?.('trade_definition_tradeoptions');
+    let symbol=market?.getFieldValue('SYMBOL_LIST')||'1HZ100V';
+    let tradeTypeValue=tradeType?.getFieldValue('TRADETYPE_LIST')||'rise_fall';
+    let contract=contractType?.getFieldValue('TYPE_LIST')||purchase?.getFieldValue?.('PURCHASE_LIST')||'both';
+    let duration=Math.max(1,Number(options?.getFieldValue('DURATION')||1));
+    let stake=Math.max(0.35,Number(options?.getFieldValue('AMOUNT')||1));
+    let prediction=Number(purchase?.getFieldValue?.('PREDICTION') ?? 5);
     if(modifier){
       const mod=modifier.getFieldValue('MOD'), val=Number(modifier.getFieldValue('VALUE')||1);
-      if(mod==='DURATION')duration=Math.max(1,val); if(mod==='STAKE')stake=Math.max(0.35,val); if(mod==='PREDICTION')prediction=Math.max(0,Math.min(9,val));
+      if(mod==='DURATION')duration=Math.max(1,val);
+      if(mod==='STAKE')stake=Math.max(0.35,val);
+      if(mod==='PREDICTION')prediction=Math.max(0,Math.min(9,val));
     }
     const enabled=restart ? (restart.getFieldValue('ENABLED')!=='FALSE') : false;
     const maxRuns=restart ? Math.max(1,Number(restart.getFieldValue('RUNS')||restart.getFieldValue('MAX_RUNS')||1)) : 1;
-    return {symbol,tradeType,contract,duration,stake,prediction,condition,enabled,maxRuns,sell};
+    return {symbol,tradeType:tradeTypeValue,contract,duration,stake,prediction,condition,enabled,maxRuns,sell};
   }
   function realReady(){return !!(liveConnected&&activeAccount&&String(activeAccount.account_type||'').toLowerCase()==='real');}
   function requestTrade(){
@@ -3999,5 +4115,81 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
 })();
 </script>
 
+<script id="tnx-trade-parameters-visual-hook">(function(){function m(){const w=window.TNX_BLOCKLY_WORKSPACE;if(!w||!w.getAllBlocks)return false;const b=w.getAllBlocks(true).find(x=>x.type==='trade_definition');if(b&&b.getSvgRoot){const r=b.getSvgRoot();if(r)r.classList.add('tnx-root-trade-parameters');return true}return false}let n=0;const t=setInterval(()=>{n++;if(m()||n>40)clearInterval(t)},150);document.addEventListener('tnx:blockly-ready',m)})();</script>
 </body>
-</html>
+</html><style id="tnx-layout-final-overlap-fix">
+/* FINAL BUILDER LAYOUT FIX: never let the Summary panel overlap the Blockly stage. */
+@media (min-width: 1101px){
+  .tnx-builder-reference{
+    display:grid!important;
+    grid-template-columns:278px minmax(480px,1fr) 320px!important;
+    width:100%!important;
+    min-width:0!important;
+    overflow:hidden!important;
+  }
+  .tnx-builder-sidebar{grid-column:1!important;min-width:0!important;width:auto!important;}
+  .tnx-builder-stage{
+    grid-column:2!important;
+    min-width:0!important;
+    width:auto!important;
+    position:relative!important;
+    overflow:hidden!important;
+  }
+  .tnx-builder-summary{
+    grid-column:3!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:320px!important;
+    position:relative!important;
+    inset:auto!important;
+    z-index:2!important;
+  }
+  .tnx-builder-toolbar-ref{
+    width:calc(100% - 32px)!important;
+    max-width:none!important;
+  }
+  .tnx-blockly-workspace{min-width:0!important;width:100%!important;}
+}
+@media (min-width:1101px) and (max-width:1240px){
+  .tnx-builder-reference{grid-template-columns:250px minmax(430px,1fr) 300px!important;}
+  .tnx-builder-sidebar{width:auto!important;}
+  .tnx-builder-summary{max-width:300px!important;}
+}
+@media (max-width:1100px) and (min-width:701px){
+  .tnx-builder-reference{display:grid!important;grid-template-columns:230px minmax(0,1fr)!important;}
+  .tnx-builder-summary{display:none!important;}
+  .tnx-builder-sidebar{grid-column:1!important;}
+  .tnx-builder-stage{grid-column:2!important;min-width:0!important;}
+}
+
+/* Robust mobile Blocks Menu: reveal the actual Blockly toolbox above the canvas. */
+@media(max-width:700px){
+  .tnx-builder-reference{overflow:visible!important;z-index:20!important}
+  .tnx-builder-sidebar{overflow:visible!important;z-index:100!important}
+  body.tnx-mobile-toolbox-open .tnx-builder-stage .blocklyToolboxDiv{
+    display:block!important;position:fixed!important;left:12px!important;right:12px!important;top:calc(var(--tnx-mobile-header,64px) + 78px)!important;
+    width:auto!important;height:min(62vh,520px)!important;max-height:62vh!important;overflow:auto!important;
+    background:#111923!important;border:1px solid #334255!important;border-radius:10px!important;
+    box-shadow:0 16px 45px rgba(0,0,0,.45)!important;z-index:100000!important;
+  }
+  body.tnx-mobile-toolbox-open .tnx-builder-stage .blocklyToolboxCategory{min-height:42px!important}
+  body.tnx-mobile-toolbox-open .tnx-builder-stage .blocklyToolboxCategoryLabel{color:#fff!important;font-size:14px!important}
+}
+
+@media(max-width:700px){
+  .tnx-builder-sidebar.blocks-open .tnx-toolbox-panel{
+    display:block!important;position:fixed!important;left:12px!important;right:12px!important;
+    top:calc(var(--tnx-mobile-header,64px) + 136px)!important;
+    width:auto!important;height:auto!important;max-height:60vh!important;overflow:auto!important;
+    padding:6px!important;background:#fff!important;border:1px solid #d4d8df!important;
+    border-radius:10px!important;box-shadow:0 18px 45px rgba(0,0,0,.35)!important;
+    z-index:100001!important;
+  }
+  .tnx-builder-sidebar.blocks-open .tnx-builder-search{
+    display:block!important;position:fixed!important;left:12px!important;right:12px!important;
+    top:calc(var(--tnx-mobile-header,64px) + 80px)!important;width:auto!important;
+    padding:8px!important;background:#fff!important;border:1px solid #d4d8df!important;
+    border-radius:10px 10px 0 0!important;z-index:100002!important;
+  }
+}
+</style>

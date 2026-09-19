@@ -52,7 +52,7 @@ TradeNovaX standalone live Deriv build:
 
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
-<title>TradeNovaX — Dashboard</title>
+<title>TradeNovaX - Dashboard</title>
 <link href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230A1628'/%3E%3Cpath d='M12 42L24 22l8 13 7-10 13 17H12z' fill='%23D4AF37'/%3E%3Ctext x='32' y='38' text-anchor='middle' font-family='Arial' font-size='18' font-weight='800' fill='%23fff'%3ETN%3C/text%3E%3C/svg%3E" rel="icon" type="image/svg+xml"/>
 <style>
         /* ===== RESET & VARIABLES ===== */
@@ -827,6 +827,56 @@ select.tnx-control option{background:#0b1020;color:#fff}
 .tnx-builder-stage .blocklyScrollbarHandle{fill:#aaa!important}
 @media(max-width:850px){.tnx-builder-sidebar{width:230px!important;flex-basis:230px!important}.tnx-builder-reference{height:680px!important}}
 </style>
+<style id="tnx-final-botbuilder-ui">
+/* FINAL TRADE NOVAX BOT BUILDER — target workspace layout */
+.tnx-builder-reference{
+  display:grid!important;
+  grid-template-columns:278px minmax(0,1fr) 370px!important;
+  width:100%!important;
+  height:720px!important;
+  background:#0b111b!important;
+  border:1px solid #1d2a3a!important;
+  border-radius:0!important;
+  overflow:hidden!important;
+  box-shadow:0 18px 55px rgba(0,0,0,.32)!important;
+}
+.tnx-builder-sidebar{grid-column:1!important;width:auto!important;min-width:0!important;flex:none!important;background:#101821!important;border-right:1px solid #273343!important;color:#e9edf3!important;padding:10px 10px 0!important;}
+.tnx-quick-strategy{height:52px!important;margin:0 0 12px!important;background:linear-gradient(105deg,#f32645 0%,#ff365d 50%,#d8a900 100%)!important;box-shadow:0 8px 20px rgba(0,0,0,.18)!important}
+.tnx-blocks-menu-head{background:#17212d!important;color:#e9edf3!important;border:0!important}
+.tnx-builder-search{background:#111923!important;border-color:#303c4b!important;color:#8994a3!important}
+.tnx-builder-search input{color:#e8edf4!important}
+.tnx-toolbox-panel{background:#101821!important}
+.tnx-toolbox-panel button{background:#101821!important;color:#dfe5ed!important;border-bottom:1px solid #263140!important;border-radius:0!important}
+.tnx-toolbox-panel button:hover,.tnx-toolbox-panel button.active{background:#182433!important;color:#fff!important}
+.tnx-builder-stage{grid-column:2!important;background:#0b111b!important;min-width:0!important;overflow:hidden!important}
+.tnx-builder-toolbar-ref{left:16px!important;top:12px!important;width:calc(100% - 32px)!important;max-width:780px!important;background:#121a24!important;border-color:#2a3747!important;box-shadow:0 8px 20px rgba(0,0,0,.16)!important}
+.tnx-builder-toolbar-ref button{background:#121a24!important;color:#dfe7f0!important}
+.tnx-builder-toolbar-ref i{background:#344151!important}
+.tnx-blockly-workspace{top:74px!important;bottom:52px!important;background:#0b111b!important}
+.tnx-builder-stage .blocklySvg{background:#0b111b!important}
+.tnx-builder-stage .blocklyMainBackground{fill:#0b111b!important;stroke:#182536!important}
+.tnx-builder-stage .blocklyText{fill:#fff!important;font-family:Arial,Helvetica,sans-serif!important}
+.tnx-builder-stage .blocklyFlyoutBackground{fill:#111923!important}
+.tnx-builder-stage .blocklyFlyout{box-shadow:0 10px 30px rgba(0,0,0,.4)!important}
+.tnx-builder-stage .blocklyScrollbarHandle{fill:#526175!important}
+.tnx-builder-bottom-ref{background:#0e151f!important;border-top:1px solid #273343!important;left:0!important;right:0!important}
+.tnx-builder-run-ref{height:48px!important;width:136px!important;background:linear-gradient(105deg,#f32645,#ff365d)!important}
+.tnx-builder-running-ref{background:#121a24!important;border-color:#2a3747!important;color:#e9edf3!important}
+.tnx-builder-running-ref div{background:#283546!important}
+.tnx-builder-footer-ref{color:#8e99a8!important}
+.tnx-builder-summary{grid-column:3!important;background:#0f1722!important;border-left:1px solid #273343!important;min-width:0;color:#edf2f7;display:flex;flex-direction:column;overflow:hidden}
+.tnx-summary-tabs{display:grid;grid-template-columns:repeat(3,1fr);height:54px;border-bottom:1px solid #273343;background:#101923}
+.tnx-summary-tabs button{border:0;background:transparent;color:#aeb8c5;font-weight:700;font-size:14px;cursor:pointer;position:relative}
+.tnx-summary-tabs button.active{color:#fff}.tnx-summary-tabs button.active:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:#ff3155}
+.tnx-summary-panel{display:none;min-height:0;flex:1}.tnx-summary-panel.active{display:flex;flex-direction:column}
+.tnx-summary-empty{height:270px;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;border-bottom:1px solid #202c3b;color:#aab4c2;padding:20px}
+.tnx-summary-empty p{line-height:1.55;font-size:13px}.tnx-summary-empty strong{color:#fff}.tnx-summary-bot{width:70px;height:70px;border-radius:18px;display:grid;place-items:center;font-size:40px;color:#8f9aaa;background:#172231;margin-bottom:18px}
+.tnx-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid #202c3b}.tnx-summary-grid div{padding:20px 10px;border-right:1px solid #202c3b;border-bottom:1px solid #202c3b;text-align:center}.tnx-summary-grid div:nth-child(3n){border-right:0}.tnx-summary-grid span{display:block;font-size:11px;color:#9ca7b6;margin-bottom:9px}.tnx-summary-grid strong{font-size:12px;color:#f2f5f8;font-weight:700}
+.tnx-summary-reset{margin:18px;border:1px solid #344456;background:#101923;color:#dfe5ed;border-radius:8px;padding:11px;font-weight:700;cursor:pointer}.tnx-summary-reset:hover{background:#172332}
+.tnx-summary-list{padding:18px;color:#9ca7b6;font-size:13px;overflow:auto}.tnx-summary-list span{display:block;padding:12px;border:1px solid #263444;border-radius:8px;background:#111923}
+@media(max-width:1100px){.tnx-builder-reference{grid-template-columns:230px minmax(0,1fr)!important}.tnx-builder-summary{display:none!important}.tnx-builder-sidebar{width:auto!important}.tnx-builder-toolbar-ref{max-width:none!important}.tnx-builder-stage{grid-column:2!important}}
+@media(max-width:700px){.tnx-builder-reference{grid-template-columns:190px minmax(620px,1fr)!important;height:680px!important;overflow-x:auto!important}.tnx-builder-sidebar{grid-column:1!important}.tnx-builder-stage{grid-column:2!important;min-width:620px!important}.tnx-blockly-workspace{min-width:620px!important}.tnx-builder-toolbar-ref{width:580px!important}.tnx-builder-summary{display:none!important}}
+</style>
 <style id="tnx-responsive-overhaul">
 /* TradeNovaX responsive/mobile navigation overhaul */
 :root{
@@ -1082,6 +1132,175 @@ input,select,textarea{width:100%;min-width:0}
 })();
 </script>
 <script src="https://unpkg.com/blockly@10.4.3/blockly.min.js"></script>
+
+<style id="tnx-botbuilder-exact-responsive-final">
+/* ============================================================
+   TRADE NOVAX BOT BUILDER — EXACT MOBILE/DESKTOP WORKSPACE
+   Mobile follows the supplied Deriv Bot reference:
+   compact Blocks Menu + Quick Strategy header, vertical toolbar,
+   large pannable Blockly canvas, no squeezed/scaled blocks.
+   ============================================================ */
+@media (max-width:700px){
+  .tnx-builder-reference{
+    display:block!important;
+    position:relative!important;
+    width:100%!important;
+    height:calc(100dvh - 150px)!important;
+    min-height:760px!important;
+    max-height:none!important;
+    overflow:hidden!important;
+    border:0!important;
+    border-radius:0!important;
+    background:#fff!important;
+  }
+
+  /* Compact mobile builder header */
+  .tnx-builder-sidebar{
+    position:absolute!important;
+    z-index:20!important;
+    top:0!important;
+    left:64px!important;
+    right:0!important;
+    width:auto!important;
+    height:76px!important;
+    min-height:76px!important;
+    padding:10px 12px!important;
+    background:#fff!important;
+    border:0!important;
+    border-bottom:1px solid #e3e3e3!important;
+    display:block!important;
+    overflow:visible!important;
+  }
+  .tnx-builder-sidebar .tnx-quick-strategy{
+    position:absolute!important;
+    top:10px!important;
+    right:12px!important;
+    width:240px!important;
+    max-width:calc(50% - 18px)!important;
+    height:52px!important;
+    margin:0!important;
+    font-size:17px!important;
+    border-radius:5px!important;
+  }
+  .tnx-builder-sidebar .tnx-blocks-menu-head{
+    position:absolute!important;
+    top:10px!important;
+    left:12px!important;
+    width:260px!important;
+    max-width:calc(50% - 18px)!important;
+    height:52px!important;
+    border:2px solid #d4af37!important;
+    border-radius:6px!important;
+    background:#fff!important;
+    color:#333!important;
+    font-size:18px!important;
+  }
+  .tnx-builder-sidebar .tnx-builder-search,
+  .tnx-builder-sidebar .tnx-toolbox-panel,
+  .tnx-builder-palette{display:none!important}
+
+  /* Vertical Blockly toolbar, as on the supplied mobile reference. */
+  .tnx-builder-stage{
+    position:absolute!important;
+    left:0!important;
+    top:76px!important;
+    right:0!important;
+    bottom:0!important;
+    width:auto!important;
+    min-width:0!important;
+    height:auto!important;
+    background:#fff!important;
+    overflow:hidden!important;
+  }
+  .tnx-builder-toolbar-ref{
+    position:absolute!important;
+    left:0!important;
+    top:0!important;
+    bottom:0!important;
+    width:64px!important;
+    max-width:none!important;
+    height:auto!important;
+    padding:10px 0!important;
+    border:0!important;
+    border-right:1px solid #e1e1e1!important;
+    border-radius:0!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:5px!important;
+    z-index:12!important;
+    box-shadow:none!important;
+  }
+  .tnx-builder-toolbar-ref button{
+    width:54px!important;
+    min-width:54px!important;
+    height:48px!important;
+    min-height:48px!important;
+    padding:0!important;
+    font-size:24px!important;
+    border:0!important;
+    background:#fff!important;
+  }
+  .tnx-builder-toolbar-ref i{
+    width:34px!important;
+    height:1px!important;
+    min-height:1px!important;
+    margin:4px 0!important;
+    background:#d8dadd!important;
+  }
+
+  /* Blockly remains a real large canvas; the phone viewport pans it. */
+  .tnx-blockly-workspace{
+    position:absolute!important;
+    left:64px!important;
+    right:0!important;
+    top:0!important;
+    bottom:52px!important;
+    width:auto!important;
+    min-width:0!important;
+    height:auto!important;
+    overflow:hidden!important;
+    background:#fff!important;
+    touch-action:none!important;
+  }
+  .tnx-blockly-workspace .blocklySvg{
+    width:100%!important;
+    height:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    background:#fff!important;
+  }
+  .tnx-builder-stage .blocklyMainBackground{
+    fill:#fff!important;
+    stroke:#fff!important;
+  }
+  .tnx-builder-stage .blocklyScrollbarHorizontal,
+  .tnx-builder-stage .blocklyScrollbarVertical{opacity:.75!important}
+
+  /* No desktop summary on phone. */
+  .tnx-builder-summary{display:none!important}
+
+  .tnx-builder-bottom-ref{
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    height:52px!important;
+    z-index:15!important;
+  }
+  .tnx-builder-run-ref{width:136px!important;height:48px!important;min-height:48px!important}
+  .tnx-builder-running-ref{width:290px!important;height:48px!important}
+  .tnx-builder-footer-ref{display:none!important}
+}
+
+@media (min-width:701px){
+  /* Desktop: keep the three-column Deriv-style builder intact. */
+  .tnx-builder-reference{display:grid!important;grid-template-columns:278px minmax(0,1fr) 370px!important}
+  .tnx-builder-sidebar{grid-column:1!important}
+  .tnx-builder-stage{grid-column:2!important}
+  .tnx-builder-summary{grid-column:3!important;display:flex!important}
+}
+</style>
 </head>
 <body>
 <div class="tnx-mobile-header" id="tnxMobileHeader">
@@ -1346,6 +1565,30 @@ input,select,textarea{width:100%;min-width:0}
       <div class="tnx-builder-footer-ref">(c) 2026 TradeNovaX &nbsp; ● &nbsp; <span id="builderClock">LIVE</span> &nbsp; | &nbsp; ☼ &nbsp; EN &nbsp; ⛶</div>
     </div>
   </section>
+  <aside class="tnx-builder-summary" id="tnxBuilderSummary">
+    <div class="tnx-summary-tabs">
+      <button class="active" data-summary-tab="summary">Summary</button>
+      <button data-summary-tab="transactions">Transactions</button>
+      <button data-summary-tab="journal">Journal</button>
+    </div>
+    <div class="tnx-summary-panel active" id="tnxSummaryPanelSummary">
+      <div class="tnx-summary-empty">
+        <div class="tnx-summary-bot">◉</div>
+        <p>When you're ready to trade, hit <strong>Run</strong>.<br>You'll be able to track your bot's<br>performance here.</p>
+      </div>
+      <div class="tnx-summary-grid">
+        <div><span>Total stake</span><strong id="builderTotalStake">0.00 USD</strong></div>
+        <div><span>Total payout</span><strong id="builderTotalPayout">0.00 USD</strong></div>
+        <div><span>No. of runs</span><strong id="builderRuns">0</strong></div>
+        <div><span>Contracts lost</span><strong id="builderLost">0</strong></div>
+        <div><span>Contracts won</span><strong id="builderWon">0</strong></div>
+        <div><span>Total profit/loss</span><strong id="builderPnl">0.00 USD</strong></div>
+      </div>
+      <button class="tnx-summary-reset" onclick="tnxBuilderResetStats()">Reset</button>
+    </div>
+    <div class="tnx-summary-panel" id="tnxSummaryPanelTransactions"><div class="tnx-summary-list" id="builderTransactions"><span>No transactions yet.</span></div></div>
+    <div class="tnx-summary-panel" id="tnxSummaryPanelJournal"><div class="tnx-summary-list" id="builderJournal"><span>Bot execution events will appear here.</span></div></div>
+  </aside>
 </div>
 <div class="tnx-builder-hidden-fields" aria-hidden="true">
   <select id="builderInitialAction"><option value="preview">Preview live proposal</option><option value="trade">Execute one confirmed REAL trade</option></select>
@@ -3464,6 +3707,14 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
     window.TNX_BLOCKLY_WORKSPACE=workspace;
     const saved=localStorage.getItem(savedKey);
     if(saved){try{Blockly.serialization.workspaces.load(JSON.parse(saved),workspace)}catch(e){console.warn('Blockly restore failed',e)}}
+    else {
+      const b=workspace.newBlock('tnx_trade_parameters');
+      b.initSvg(); b.render(); b.setDeletable(false);
+      const p=workspace.newBlock('tnx_purchase');
+      p.initSvg(); p.render();
+      try{p.previousConnection.connect(b.nextConnection)}catch(e){}
+      centerTradeParameters();
+    }
     const search=el('tnxBlockSearch');
     if(search)search.addEventListener('input',function(){const q=this.value.trim().toLowerCase();document.querySelectorAll('#tnxToolboxPanel button').forEach(b=>b.style.display=(!q||b.textContent.toLowerCase().includes(q))?'flex':'none')});
     document.querySelectorAll('#tnxToolboxPanel button').forEach(btn=>btn.addEventListener('click',function(){
@@ -3476,17 +3727,79 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
     }));
     workspace.addChangeListener(function(){window.TNX_BLOCKLY_XML=Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));});
     center();
+    centerTradeParameters();
   }
-  function center(){if(workspace)try{workspace.zoomToFit(20)}catch(e){}}
+  function center(){
+    if(!workspace) return;
+    try{
+      const mobile=window.innerWidth<700;
+      if(mobile){
+        /* On mobile Deriv Bot keeps a real-sized canvas and lets the user pan/zoom.
+           Do not cleanUp/fit the workspace because that makes blocks tiny. */
+        if(typeof workspace.setScale==='function') workspace.setScale(1.0);
+        workspace.resize();
+        workspace.resizeContents();
+        return;
+      }
+      if(typeof workspace.cleanUp==='function') workspace.cleanUp(0,56);
+      if(typeof workspace.setScale==='function') workspace.setScale(1.0);
+      workspace.resize();
+      workspace.resizeContents();
+    }catch(e){}
+  }
+  function centerTradeParameters(){
+    if(!workspace) return;
+    try{
+      const b=workspace.getAllBlocks(true).find(x=>x.type==='tnx_trade_parameters');
+      if(!b) return;
+      const mobile=window.innerWidth<700;
+      const current=b.getRelativeToSurfaceXY();
+      if(mobile){
+        /* Reference mobile layout: block starts in the visible workspace and
+           may extend beyond the phone viewport; it is not auto-centered into
+           a tiny scaled canvas. */
+        const targetX=50;
+        const targetY=28;
+        b.moveBy(targetX-current.x,targetY-current.y);
+        workspace.resize();
+        workspace.resizeContents();
+        return;
+      }
+      const m=workspace.getMetrics();
+      const bw=b.getHeightWidth().width;
+      const targetX=Math.max(40,((m.viewWidth/workspace.scale)-bw)/2);
+      const targetY=92;
+      b.moveBy(targetX-current.x,targetY-current.y);
+      workspace.resize();
+      workspace.resizeContents();
+    }catch(e){}
+  }
   window.tnxBuilderUndo=function(){if(workspace)workspace.undo(false)};
   window.tnxBuilderRedo=function(){if(workspace)workspace.undo(true)};
   window.tnxBuilderZoomIn=function(){if(workspace)workspace.zoomCenter(1.15)};
   window.tnxBuilderZoomOut=function(){if(workspace)workspace.zoomCenter(.87)};
   window.tnxBuilderCenter=center;
+  // Summary tabs for the production Bot Builder.
+  (function(){
+    const root=document.getElementById('tnxBuilderSummary'); if(!root) return;
+    root.querySelectorAll('[data-summary-tab]').forEach(btn=>btn.addEventListener('click',()=>{
+      const tab=btn.dataset.summaryTab;
+      root.querySelectorAll('[data-summary-tab]').forEach(x=>x.classList.toggle('active',x===btn));
+      root.querySelectorAll('.tnx-summary-panel').forEach(x=>x.classList.remove('active'));
+      const panel=document.getElementById('tnxSummaryPanel'+tab.charAt(0).toUpperCase()+tab.slice(1));
+      if(panel) panel.classList.add('active');
+    }));
+  })();
+  window.tnxBuilderResetStats=function(){
+    ['builderTotalStake','builderTotalPayout','builderPnl'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='0.00 USD';});
+    ['builderRuns','builderLost','builderWon'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='0';});
+    const t=document.getElementById('builderTransactions');if(t)t.innerHTML='<span>No transactions yet.</span>';
+    const j=document.getElementById('builderJournal');if(j)j.innerHTML='<span>Bot execution events will appear here.</span>';
+  };
   window.tnxBuilderSave=function(){if(!workspace)return;localStorage.setItem(savedKey,JSON.stringify(Blockly.serialization.workspaces.save(workspace)));if(typeof showToast==='function')showToast('Bot strategy saved locally.');};
   window.tnxBuilderLoad=function(){if(!workspace)return;const raw=localStorage.getItem(savedKey);if(raw){try{Blockly.serialization.workspaces.load(JSON.parse(raw),workspace);if(typeof showToast==='function')showToast('Bot strategy loaded.')}catch(e){}}};
-  window.tnxBuilderReset=function(){if(!workspace)return;workspace.clear();const b=workspace.newBlock('tnx_trade_parameters');b.initSvg();b.render();b.setDeletable(false);b.moveBy(70,80);const p=workspace.newBlock('tnx_purchase');p.initSvg();p.render();p.previousConnection.connect(b.nextConnection);p.moveBy(70,260);if(typeof showToast==='function')showToast('Builder reset.');};
-  window.tnxBuilderQuickStrategy=function(){if(!workspace)return;workspace.clear();const b=workspace.newBlock('tnx_trade_parameters');b.initSvg();b.render();b.setDeletable(false);b.moveBy(70,70);const a=workspace.newBlock('tnx_tick_analysis');a.initSvg();a.render();a.moveBy(70,230);const c=workspace.newBlock('tnx_digit_condition');c.initSvg();c.render();c.moveBy(300,230);const p=workspace.newBlock('tnx_purchase');p.initSvg();p.render();p.moveBy(70,380);const r=workspace.newBlock('tnx_trade_again');r.initSvg();r.render();r.moveBy(70,480);if(typeof showToast==='function')showToast('Quick strategy loaded. Review before REAL execution.');};
+  window.tnxBuilderReset=function(){if(!workspace)return;workspace.clear();const b=workspace.newBlock('tnx_trade_parameters');b.initSvg();b.render();b.setDeletable(false);const p=workspace.newBlock('tnx_purchase');p.initSvg();p.render();try{p.previousConnection.connect(b.nextConnection)}catch(e){}centerTradeParameters();if(typeof showToast==='function')showToast('Builder reset.');};
+  window.tnxBuilderQuickStrategy=function(){if(!workspace)return;workspace.clear();const b=workspace.newBlock('tnx_trade_parameters');b.initSvg();b.render();b.setDeletable(false);const a=workspace.newBlock('tnx_tick_analysis');a.initSvg();a.render();const c=workspace.newBlock('tnx_digit_condition');c.initSvg();c.render();const p=workspace.newBlock('tnx_purchase');p.initSvg();p.render();const r=workspace.newBlock('tnx_trade_again');r.initSvg();r.render();try{a.previousConnection.connect(b.nextConnection);p.previousConnection.connect(a.nextConnection);r.previousConnection.connect(p.nextConnection)}catch(e){}center();centerTradeParameters();if(typeof showToast==='function')showToast('Quick strategy loaded. Review before REAL execution.');};
   const oldRun=window.tnxBuilderRun;
   window.tnxBuilderRun=async function(){
     if(!workspace){return oldRun&&oldRun()}
@@ -3524,50 +3837,167 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
   window.setInterval(syncDash,1200); window.addEventListener('load',syncDash);
 })();
 </script>
-
-<script>
-/* TradeNovaX single-file comprehensive Deriv Bot workspace layer.
-   Source block IDs are derived from the uploaded Deriv Bot project.
-   The dashboard remains standalone; REAL execution is gated by the existing
-   TradeNovaX authenticated Deriv session and risk controls. */
+<script id="tnx-final-runtime-fix">
 (function(){
-  function boot(){
-    if(!window.Blockly) return;
-    const host=document.getElementById('tnxBlocklyWorkspace'); if(!host) return;
-    const B=Blockly.Blocks;
+  'use strict';
+  // Expose the shared runtime safely to modules that live in later script tags.
+  const shared = {
+    activeAccount: ()=>activeAccount,
+    liveConnected: ()=>liveConnected,
+    pending: ()=>pending,
+    lastTick: ()=>lastTick,
+    activeContracts: ()=>activeContracts,
+    tradingHalted: ()=>tnxTradingHalted
+  };
+  Object.entries(shared).forEach(([name,getter])=>{
+    try{
+      const d=Object.getOwnPropertyDescriptor(window,name);
+      if(!d || d.configurable){
+        Object.defineProperty(window,name,{configurable:true,enumerable:false,get:getter});
+      }
+    }catch(_){}
+  });
+  try{
+    const d=Object.getOwnPropertyDescriptor(window,'tnxTradingHalted');
+    if(!d || d.configurable){
+      Object.defineProperty(window,'tnxTradingHalted',{configurable:true,enumerable:false,get:()=>tnxTradingHalted,set:v=>{tnxTradingHalted=!!v}});
+    }
+  }catch(_){}
 
-    const toolbox=`<xml xmlns="https://developers.google.com/blockly/xml">
-      <category name="Trade parameters" colour="#8B0000"><block type="tnx_trade_parameters"></block></category>
-      <category name="Purchase conditions" colour="#a46b00"><block type="tnx_purchase"></block><block type="tnx_digit_condition"></block></category>
-      <category name="Sell Conditions" colour="#b07a00"><block type="tnx_sell_conditions"></block><block type="tnx_src_check_sell"></block><block type="tnx_src_sell_at_market"></block><block type="tnx_src_sell_price"></block></category>
-      <category name="Restart trading conditions" colour="#555"><block type="tnx_restart"></block><block type="tnx_trade_again"></block><block type="tnx_src_trade_definition_restartbuysell"></block><block type="tnx_src_trade_definition_restartonerror"></block></category>
-      <category name="Analysis" colour="#5b6f8f"><block type="tnx_tick_analysis"></block><block type="tnx_src_last_digit"></block><block type="tnx_src_tick"></block><block type="tnx_src_ticks"></block><block type="tnx_src_stat"></block><block type="tnx_src_stat_list"></block><block type="tnx_src_check_direction"></block><block type="tnx_src_get_ohlc"></block><block type="tnx_src_ohlc"></block></category>
-      <category name="Utility" colour="#6a4c93"><block type="tnx_notification"></block><block type="tnx_hook"></block><block type="tnx_src_epoch"></block><block type="tnx_src_timeout"></block><block type="tnx_src_tick_delay"></block><block type="tnx_src_totimestamp"></block><block type="tnx_src_todatetime"></block><block type="tnx_src_notify"></block><block type="tnx_src_notify_telegram"></block></category>
-      <category name="Binarytools" colour="#3f6f7d"><block type="tnx_binary_tool"></block><block type="tnx_src_last_digit"></block><block type="tnx_src_lastDigitList"></block><block type="tnx_src_ticks_string"></block></category>
-      <category name="Contract modifiers" colour="#805c2d"><block type="tnx_contract_modifier"></block><block type="tnx_src_trade_definition_contracttype"></block><block type="tnx_src_trade_definition_tradetype"></block><block type="tnx_src_trade_definition_market"></block><block type="tnx_src_trade_definition_candleinterval"></block><block type="tnx_src_trade_definition_tradeoptions"></block><block type="tnx_src_trade_definition_multiplier"></block><block type="tnx_src_trade_definition_accumulator"></block></category>
-      <category name="Barrier Settings" colour="#805c2d"><block type="tnx_barrier"></block><block type="tnx_src_barrier_offset"></block><block type="tnx_src_multiplier_stop_loss"></block><block type="tnx_src_multiplier_take_profit"></block><block type="tnx_src_accumulator_take_profit"></block></category>
-      <category name="Logic" categorystyle="logic_category"><block type="controls_if"></block><block type="logic_compare"></block><block type="logic_operation"></block><block type="logic_negate"></block><block type="logic_boolean"></block><block type="logic_ternary"></block></category>
-      <category name="Math" categorystyle="math_category"><block type="math_number"></block><block type="math_arithmetic"></block><block type="math_single"></block><block type="math_round"></block><block type="math_random_int"></block><block type="math_modulo"></block></category>
-      <category name="Text" categorystyle="text_category"><block type="text"></block><block type="text_join"></block><block type="text_print"></block><block type="text_length"></block></category>
-      <sep></sep>
-
-    </xml>`;
-    try{ if(window.TNX_BLOCKLY_WORKSPACE){window.TNX_BLOCKLY_WORKSPACE.dispose();} }catch(e){}
-    host.innerHTML='';
-    const ws=Blockly.inject(host,{toolbox,trashcan:true,collapse:true,comments:true,scrollbars:true,zoom:{controls:false,wheel:true,startScale:.85,maxScale:1.6,minScale:.55,scaleSpeed:1.1},grid:{spacing:20,length:3,colour:'#e7e7e7',snap:true},move:{scrollbars:true,drag:true,wheel:true},renderer:'geras'});
-    window.TNX_BLOCKLY_WORKSPACE=ws;
-    const saved=localStorage.getItem('tnx_blockly_strategy_complete_v1');
-    if(saved){try{Blockly.serialization.workspaces.load(JSON.parse(saved),ws)}catch(e){}}
-    ws.addChangeListener(function(){try{window.TNX_BLOCKLY_XML=Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(ws));}catch(e){}});
-    window.tnxBuilderSave=function(){try{localStorage.setItem('tnx_blockly_strategy_complete_v1',JSON.stringify(Blockly.serialization.workspaces.save(ws)));if(window.showToast)showToast('Bot strategy saved.')}catch(e){}};
-    window.tnxBuilderLoad=function(){const raw=localStorage.getItem('tnx_blockly_strategy_complete_v1');if(raw)try{ws.clear();Blockly.serialization.workspaces.load(JSON.parse(raw),ws);if(window.showToast)showToast('Bot strategy loaded.')}catch(e){}};
-    window.tnxBuilderReset=function(){ws.clear();const b=ws.newBlock('tnx_trade_parameters');b.initSvg();b.render();b.setDeletable(false);b.moveBy(80,60);const p=ws.newBlock('tnx_purchase');p.initSvg();p.render();b.nextConnection.connect(p.previousConnection);p.moveBy(80,300);if(window.showToast)showToast('Builder reset.');};
-    window.tnxBuilderQuickStrategy=function(){ws.clear();const b=ws.newBlock('tnx_trade_parameters');b.initSvg();b.render();b.setDeletable(false);b.moveBy(80,60);const a=ws.newBlock('tnx_tick_analysis');a.initSvg();a.render();a.moveBy(80,260);const p=ws.newBlock('tnx_purchase');p.initSvg();p.render();a.nextConnection&&p.previousConnection&&a.nextConnection.connect(p.previousConnection);p.moveBy(80,400);const r=ws.newBlock('tnx_trade_again');r.initSvg();r.render();p.nextConnection&&r.previousConnection&&p.nextConnection.connect(r.previousConnection);r.moveBy(80,520);if(window.showToast)showToast('Quick strategy loaded.');};
-    window.tnxBuilderUndo=function(){ws.undo(false)}; window.tnxBuilderRedo=function(){ws.undo(true)}; window.tnxBuilderZoomIn=function(){ws.zoomCenter(1.15)}; window.tnxBuilderZoomOut=function(){ws.zoomCenter(.87)}; window.tnxBuilderCenter=function(){try{ws.zoomToFit(20)}catch(e){}};
-    document.querySelectorAll('#tnxToolboxPanel button').forEach(btn=>{btn.onclick=function(){const wanted=({restart:'Restart trading conditions',analysis:'Analysis',utility:'Utility',hook:'Utility',notification:'Utility',binary:'Binarytools',contract:'Contract modifiers',barrier:'Barrier Settings'})[btn.dataset.cat];const items=ws.getToolbox().getToolboxItems();const item=items.find(x=>(x.getName?.()||'').toLowerCase()===wanted.toLowerCase());if(item)ws.getToolbox().setSelectedItem(item);}});
+  const R={running:false,pending:false,runs:0,maxRuns:1,lastSignal:null,currentContract:null,config:null,startedAt:0,sessionPnl:0};
+  window.TNX_BLOCKLY_RUNNER=R;
+  const $=id=>document.getElementById(id);
+  const status=msg=>{const e=$('builderRunStatus');if(e)e.textContent=msg;try{window.showToast?.(msg)}catch(_){} };
+  const lastDigit=()=>{
+    const t=lastTick;
+    if(!t) return null;
+    if(Number.isInteger(Number(t.digit))) return Number(t.digit);
+    const pip=Number(window.digitPipSize||1);
+    if(typeof window.digitLastDigit==='function' && Number.isFinite(Number(t.quote))) return window.digitLastDigit(Number(t.quote),pip);
+    return null;
+  };
+  function conditionPass(c,d){
+    if(!c) return true;
+    const v=Number(c.getFieldValue?.('DIGIT') ?? c.getFieldValue?.('VALUE') ?? 0);
+    switch(c.getFieldValue?.('OP')){
+      case 'EQ': return d===v; case 'NEQ': return d!==v; case 'GT': return d>v;
+      case 'GTE': return d>=v; case 'LT': return d<v; case 'LTE': return d<=v;
+      default: return true;
+    }
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,50));else setTimeout(boot,50);
+  function compileWorkspace(){
+    const ws=window.TNX_BLOCKLY_WORKSPACE;
+    if(!ws) return null;
+    const blocks=ws.getAllBlocks(false);
+    const params=blocks.find(b=>b.type==='tnx_trade_parameters');
+    const purchase=blocks.find(b=>b.type==='tnx_purchase');
+    const condition=blocks.find(b=>b.type==='tnx_digit_condition');
+    const restart=blocks.find(b=>b.type==='tnx_trade_again'||b.type==='tnx_restart');
+    const sell=blocks.find(b=>b.type==='tnx_sell_conditions');
+    const modifier=blocks.find(b=>b.type==='tnx_contract_modifier');
+    if(!params||!purchase) return null;
+    let symbol=params.getFieldValue('SYMBOL')||'1HZ100V';
+    let tradeType=params.getFieldValue('TYPE')||'even-odd';
+    let contract=purchase.getFieldValue?.('CONTRACT') || params.getFieldValue('CONTRACT') || 'DIGITEVEN';
+    let duration=Math.max(1,Number(params.getFieldValue('DURATION')||1));
+    let stake=Math.max(0.35,Number(params.getFieldValue('STAKE')||1));
+    let prediction=Number(purchase.getFieldValue?.('PREDICTION') ?? params.getFieldValue('PREDICTION') ?? 5);
+    if(modifier){
+      const mod=modifier.getFieldValue('MOD'), val=Number(modifier.getFieldValue('VALUE')||1);
+      if(mod==='DURATION')duration=Math.max(1,val); if(mod==='STAKE')stake=Math.max(0.35,val); if(mod==='PREDICTION')prediction=Math.max(0,Math.min(9,val));
+    }
+    const enabled=restart ? (restart.getFieldValue('ENABLED')!=='FALSE') : false;
+    const maxRuns=restart ? Math.max(1,Number(restart.getFieldValue('RUNS')||restart.getFieldValue('MAX_RUNS')||1)) : 1;
+    return {symbol,tradeType,contract,duration,stake,prediction,condition,enabled,maxRuns,sell};
+  }
+  function realReady(){return !!(liveConnected&&activeAccount&&String(activeAccount.account_type||'').toLowerCase()==='real');}
+  function requestTrade(){
+    if(!R.running||R.pending||!R.config||!realReady()||tnxTradingHalted) return;
+    if(R.runs>=R.maxRuns){R.running=false;status('⏹ Bot finished • maximum runs reached');return;}
+    const d=lastDigit(); if(d===null) return;
+    if(!conditionPass(R.config.condition,d)) return;
+    const epoch=Number(lastTick?.epoch||0); if(epoch && R.lastSignal===epoch)return; R.lastSignal=epoch||Date.now();
+    if(typeof tnxCanOpenTrade==='function'&&!tnxCanOpenTrade(R.config.stake,'blockly-builder')){R.running=false;status('🛑 REAL risk controls blocked the next trade');return;}
+    const payload={proposal:1,amount:R.config.stake,basis:'stake',contract_type:R.config.contract,currency:activeAccount.currency||'USD',duration:R.config.duration,duration_unit:'t',underlying_symbol:R.config.symbol,subscribe:1};
+    if(['DIGITOVER','DIGITUNDER','DIGITMATCH','DIGITDIFF'].includes(R.config.contract)) payload.barrier=String(R.config.prediction);
+    try{
+      const id=send(payload);
+      pending.set(id,{kind:'blocklyRunnerProposal',amount:R.config.stake,symbol:R.config.symbol,direction:R.config.contract,status:$('builderRunStatus'),config:R.config});
+      R.pending=true;
+      status('🟡 Live proposal requested • waiting for REAL purchase confirmation from Deriv…');
+    }catch(e){R.pending=false;status('❌ Proposal request failed: '+(e.message||e));}
+  }
+  window.tnxBuilderRun=async function(){
+    const cfg=compileWorkspace();
+    if(!cfg){status('🔴 Add Trade parameters and Purchase blocks first.');return;}
+    if(!realReady()){status('🔴 Connect a REAL Deriv account first.');return;}
+    if(typeof tnxCanOpenTrade==='function'&&!tnxCanOpenTrade(cfg.stake,'builder-start'))return;
+    const msg=`Run REAL bot\nAccount: ${activeAccount.account_id}\nMarket: ${cfg.symbol}\nContract: ${cfg.contract}\nStake: ${cfg.stake.toFixed(2)} ${activeAccount.currency||'USD'}\nDuration: ${cfg.duration} tick(s)\n${cfg.enabled?'Maximum runs: '+cfg.maxRuns:'Single run'}`;
+    if(typeof confirmRealTrade==='function'&&!confirmRealTrade(msg))return;
+    R.running=true;R.pending=false;R.runs=0;R.maxRuns=cfg.enabled?cfg.maxRuns:1;R.lastSignal=null;R.currentContract=null;R.config=cfg;R.startedAt=Date.now();R.sessionPnl=0;
+    try{subscribeTicks(cfg.symbol)}catch(e){}
+    status('🟢 BOT RUNNING REAL • waiting for configured live condition…');
+    requestTrade();
+  };
+  window.tnxBuilderStop=function(){R.running=false;R.pending=false;status('⏹ Bot stopped • existing REAL contracts remain open');};
+
+  const oldProposal=window.handleProposal;
+  window.handleProposal=function(d){
+    const ctx=pending?.get(d.req_id);
+    if(ctx?.kind==='blocklyRunnerProposal'){
+      pending.delete(d.req_id);R.pending=false;
+      const p=d.proposal||{};
+      if(!p.id){status('❌ Deriv returned no proposal ID.');return;}
+      if(typeof tnxCanOpenTrade==='function'&&!tnxCanOpenTrade(ctx.amount,'blockly-buy')){R.running=false;status('🛑 REAL risk controls blocked purchase');return;}
+      try{
+        const id=send({buy:p.id,price:Number(p.ask_price||ctx.amount)});
+        pending.set(id,{kind:'blocklyRunnerBuy',amount:ctx.amount,symbol:ctx.symbol,direction:ctx.direction,config:ctx.config,ask:Number(p.ask_price||ctx.amount),status:ctx.status});
+        R.pending=true;status('🟠 Live proposal accepted • purchasing REAL contract…');
+      }catch(e){status('❌ REAL purchase request failed: '+(e.message||e));}
+      return;
+    }
+    return oldProposal?.(d);
+  };
+  const oldBuy=window.handleBuy;
+  window.handleBuy=function(d){
+    const ctx=pending?.get(d.req_id);
+    if(ctx?.kind==='blocklyRunnerBuy'){
+      pending.delete(d.req_id);R.pending=false;R.runs++;
+      const id=d.buy?.contract_id;R.currentContract=id?String(id):null;
+      if(id){activeContracts.set(String(id),d.buy);try{send({proposal_open_contract:1,contract_id:id,subscribe:1})}catch(_){}
+      }
+      status(`🟢 REAL TRADE EXECUTED • ${ctx.direction} • Run ${R.runs}/${R.maxRuns}`);
+      try{renderPositions();updateSummary()}catch(_){}
+      return;
+    }
+    return oldBuy?.(d);
+  };
+  const oldContract=window.handleContract;
+  window.handleContract=function(c){
+    const id=String(c?.contract_id||'');
+    if(R.running&&id&&id===String(R.currentContract||'')){
+      const closed=!!c.is_sold||['won','lost','sold','expired'].includes(String(c.status||'').toLowerCase());
+      if(closed){
+        const pnl=Number(c.profit||0); if(Number.isFinite(pnl))R.sessionPnl+=pnl;
+        R.currentContract=null;
+        if(pnl<0)status(`🔴 Contract lost • P/L ${pnl.toFixed(2)} • waiting for next configured condition`); else status(`🟢 Contract closed • P/L ${pnl.toFixed(2)} • waiting for next configured condition`);
+        if(R.runs>=R.maxRuns){R.running=false;status('⏹ Bot completed • maximum runs reached');}
+      } else if(R.config?.sell && Number.isFinite(Number(c.profit))){
+        const target=Number(R.config.sell.getFieldValue?.('TARGET')||0.01);
+        if(Number(c.profit)>=target && !c.is_sold){try{send({sell:id,price:0});status('💰 Sell condition reached • closing REAL contract…')}catch(_) {}}
+      }
+    }
+    return oldContract?.(c);
+  };
+  const oldTick=window.onTick;
+  window.onTick=function(){
+    if(R.running){ if(!realReady()){R.running=false;R.pending=false;status('🔴 REAL Deriv connection lost • bot stopped');} else if(!R.pending&&!R.currentContract) requestTrade(); return; }
+    return oldTick?.();
+  };
+  // Prevent the previous floating safety strip from being recreated by old code.
+  document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('#tnxSafetyBar,.tnx-safety-bar,.tnx-risk-strip').forEach(e=>e.remove());});
 })();
 </script>
+
 </body>
 </html>

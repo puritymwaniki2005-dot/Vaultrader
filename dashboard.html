@@ -1307,17 +1307,69 @@ input,select,textarea{width:100%;min-width:0}
   .tnx-builder-summary{grid-column:3!important;display:flex!important}
 }
 </style>
-<style id="tnx-deriv-block-visual-fix">
-.tnx-builder-reference,.tnx-builder-stage,.tnx-blockly-workspace,.tnx-builder-stage .blocklySvg{background:#fff!important}
+
+<style id="tnx-final-deriv-reference-fix">
+/* ============================================================
+   FINAL DERIV/MKOREAN BUILDER REFERENCE FIX
+   Keep the real Blockly workspace; correct its visual hierarchy
+   and responsive layout instead of using a screenshot/shell.
+   ============================================================ */
+.tnx-builder-reference,
+.tnx-builder-stage,
+.tnx-blockly-workspace,
+.tnx-builder-stage .blocklySvg{background:#fff!important;color:#333!important}
 .tnx-builder-stage .blocklyMainBackground{fill:#fff!important;stroke:#fff!important}
-.tnx-builder-stage .blocklyText{fill:#4a4a4a!important;color:#4a4a4a!important;font-family:Arial,Helvetica,sans-serif!important;font-size:14px!important;font-weight:400!important}
-.tnx-builder-stage .blocklyFieldText,.tnx-builder-stage .blocklyDropdownText{fill:#333!important}
+.tnx-builder-stage .blocklyText,
+.tnx-builder-stage .blocklyFieldText,
+.tnx-builder-stage .blocklyDropdownText{fill:#4b4b4b!important;color:#4b4b4b!important;font-family:Arial,Helvetica,sans-serif!important}
 .tnx-builder-stage .blocklyFlyoutBackground{fill:#fff!important;fill-opacity:1!important}
 .tnx-builder-stage .blocklyFlyoutLabelText{fill:#333!important}
-.tnx-builder-stage .tnx-root-trade-parameters>.blocklyText{fill:#fff!important}
-.tnx-builder-stage .blocklyBlockCanvas,.tnx-builder-stage .blocklyBlockCanvas .blocklyDraggable{opacity:1!important}
-@media(max-width:700px){.tnx-builder-stage{background:#fff!important}.tnx-blockly-workspace{background:#fff!important;left:0!important;right:0!important;top:74px!important;bottom:52px!important}.tnx-builder-stage .blocklySvg,.tnx-builder-stage .blocklyMainBackground{background:#fff!important;fill:#fff!important}.tnx-builder-stage .blocklyText{font-size:14px!important}}
+.tnx-builder-stage .blocklyScrollbarHandle{fill:#b8b8b8!important}
+.tnx-builder-stage .blocklyBlockCanvas .blocklyDraggable{opacity:1!important}
+/* Root Trade Parameters title is white on Deriv red. */
+.tnx-builder-stage .tnx-root-trade-parameters .blocklyText,
+.tnx-builder-stage .tnx-root-trade-parameters .blocklyFieldText{fill:#fff!important;color:#fff!important}
+/* Its nested parameter blocks stay light gray with dark text. */
+.tnx-builder-stage .tnx-trade-child .blocklyText,
+.tnx-builder-stage .tnx-trade-child .blocklyFieldText,
+.tnx-builder-stage .tnx-trade-child .blocklyDropdownText{fill:#4b4b4b!important;color:#4b4b4b!important}
+
+/* Desktop: central workspace + right summary, no overlap. */
+@media (min-width:1101px){
+  .tnx-builder-reference{display:grid!important;grid-template-columns:278px minmax(520px,1fr) 320px!important;overflow:hidden!important}
+  .tnx-builder-sidebar{grid-column:1!important;width:auto!important;min-width:0!important}
+  .tnx-builder-stage{grid-column:2!important;min-width:0!important;width:auto!important;position:relative!important;overflow:hidden!important}
+  .tnx-builder-summary{grid-column:3!important;position:relative!important;inset:auto!important;width:auto!important;max-width:320px!important;min-width:0!important}
+  .tnx-builder-toolbar-ref{left:16px!important;right:16px!important;width:auto!important;max-width:none!important}
+  .tnx-blockly-workspace{left:0!important;right:0!important;width:100%!important;min-width:0!important}
+}
+
+/* Mobile: header buttons + vertical toolbar + large real Blockly canvas. */
+@media (max-width:700px){
+  .tnx-builder-reference{display:block!important;position:relative!important;width:100%!important;height:calc(100dvh - 150px)!important;min-height:720px!important;overflow:hidden!important;background:#fff!important;border:0!important;border-radius:0!important}
+  .tnx-builder-sidebar{position:absolute!important;left:64px!important;right:0!important;top:0!important;width:auto!important;height:76px!important;min-height:76px!important;padding:10px 12px!important;background:#fff!important;border:0!important;border-bottom:1px solid #ddd!important;z-index:100!important;overflow:visible!important}
+  .tnx-builder-sidebar .tnx-blocks-menu-head{position:absolute!important;left:12px!important;top:10px!important;width:calc(50% - 18px)!important;max-width:none!important;height:52px!important;margin:0!important;background:#fff!important;border:2px solid #d4af37!important;border-radius:6px!important;color:#333!important;font-size:18px!important;font-weight:800!important;z-index:130!important;cursor:pointer!important}
+  .tnx-builder-sidebar .tnx-quick-strategy{position:absolute!important;right:12px!important;top:10px!important;width:calc(50% - 18px)!important;max-width:none!important;height:52px!important;margin:0!important;border-radius:5px!important;font-size:17px!important;z-index:130!important}
+  .tnx-builder-sidebar .tnx-builder-search,.tnx-builder-sidebar .tnx-toolbox-panel,.tnx-builder-palette{display:none!important}
+  .tnx-builder-sidebar.blocks-open .tnx-builder-search{display:flex!important;position:absolute!important;left:12px!important;right:12px!important;top:70px!important;height:42px!important;margin:0!important;background:#fff!important;z-index:125!important;border:1px solid #d7dadd!important;box-shadow:0 8px 24px rgba(0,0,0,.18)!important}
+  .tnx-builder-sidebar.blocks-open .tnx-toolbox-panel{display:block!important;position:absolute!important;left:12px!important;right:12px!important;top:116px!important;max-height:calc(100dvh - 190px)!important;overflow:auto!important;background:#fff!important;z-index:124!important;border:1px solid #ddd!important;box-shadow:0 8px 24px rgba(0,0,0,.2)!important}
+  .tnx-builder-sidebar.blocks-open .tnx-toolbox-panel button{display:flex!important;width:100%!important;min-height:46px!important;align-items:center!important;justify-content:space-between!important;padding:0 14px!important;background:#fff!important;border:0!important;border-bottom:1px solid #ececec!important;color:#333!important;font-size:15px!important;font-weight:700!important;text-align:left!important}
+  .tnx-builder-sidebar.blocks-open .tnx-blocks-menu-head span{transform:rotate(180deg)!important;display:inline-block!important}
+  .tnx-builder-stage{position:absolute!important;left:0!important;right:0!important;top:76px!important;bottom:0!important;width:auto!important;height:auto!important;background:#fff!important;overflow:hidden!important}
+  .tnx-builder-toolbar-ref{position:absolute!important;left:0!important;top:0!important;bottom:52px!important;width:64px!important;height:auto!important;padding:10px 0!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;gap:5px!important;background:#fff!important;border:0!important;border-right:1px solid #ddd!important;border-radius:0!important;z-index:80!important}
+  .tnx-builder-toolbar-ref button{width:54px!important;height:48px!important;min-height:48px!important;background:#fff!important;color:#444!important;font-size:24px!important}
+  .tnx-builder-toolbar-ref i{width:34px!important;height:1px!important;min-height:1px!important;margin:4px 0!important;background:#d8dadd!important}
+  .tnx-blockly-workspace{position:absolute!important;left:64px!important;right:0!important;top:0!important;bottom:52px!important;width:auto!important;height:auto!important;min-width:0!important;background:#fff!important;overflow:hidden!important;touch-action:none!important}
+  .tnx-builder-stage .blocklySvg{background:#fff!important;width:100%!important;height:100%!important}
+  .tnx-builder-stage .blocklyMainBackground{fill:#fff!important;stroke:#fff!important}
+  .tnx-builder-summary{display:none!important}
+  .tnx-builder-bottom-ref{position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:52px!important;background:#fff!important;border-top:1px solid #ddd!important;z-index:90!important}
+  .tnx-builder-run-ref{height:48px!important;width:136px!important}
+  .tnx-builder-running-ref{height:48px!important;width:290px!important}
+  .tnx-builder-footer-ref{display:none!important}
+}
 </style>
+
 </head>
 <body>
 <div class="tnx-mobile-header" id="tnxMobileHeader">
@@ -4115,7 +4167,67 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
 })();
 </script>
 
-<script id="tnx-trade-parameters-visual-hook">(function(){function m(){const w=window.TNX_BLOCKLY_WORKSPACE;if(!w||!w.getAllBlocks)return false;const b=w.getAllBlocks(true).find(x=>x.type==='trade_definition');if(b&&b.getSvgRoot){const r=b.getSvgRoot();if(r)r.classList.add('tnx-root-trade-parameters');return true}return false}let n=0;const t=setInterval(()=>{n++;if(m()||n>40)clearInterval(t)},150);document.addEventListener('tnx:blockly-ready',m)})();</script>
+
+<script id="tnx-final-deriv-workspace-fix">
+(function(){
+  function markDerivBlocks(){
+    const ws=window.TNX_BLOCKLY_WORKSPACE;
+    if(!ws || !ws.getAllBlocks) return;
+    ws.getAllBlocks(true).forEach(function(b){
+      if(!b.getSvgRoot) return;
+      const g=b.getSvgRoot(); if(!g) return;
+      g.classList.remove('tnx-root-trade-parameters','tnx-trade-child');
+      if(b.type==='trade_definition') g.classList.add('tnx-root-trade-parameters');
+      else if(/^trade_definition_/.test(b.type)) g.classList.add('tnx-trade-child');
+    });
+  }
+  function placeMobile(){
+    const ws=window.TNX_BLOCKLY_WORKSPACE;
+    if(!ws) return;
+    try{
+      ws.setScale(1);
+      ws.resize();
+      const b=ws.getAllBlocks(true).find(x=>x.type==='trade_definition');
+      if(!b) return;
+      const p=b.getRelativeToSurfaceXY();
+      const targetX=window.innerWidth<=700?72:Math.max(60,((ws.getMetrics().viewWidth/ws.scale)-b.getHeightWidth().width)/2);
+      const targetY=window.innerWidth<=700?28:70;
+      b.moveBy(targetX-p.x,targetY-p.y);
+      ws.resize();
+      markDerivBlocks();
+    }catch(e){}
+  }
+  function closeMobileMenu(){
+    if(window.innerWidth>700) return;
+    const sidebar=document.querySelector('#tnxExactBuilder .tnx-builder-sidebar');
+    const toggle=document.getElementById('tnxBlocksMenuToggle');
+    if(sidebar) sidebar.classList.remove('blocks-open');
+    document.body.classList.remove('tnx-mobile-toolbox-open');
+    if(toggle){toggle.setAttribute('aria-expanded','false'); const sp=toggle.querySelector('span'); if(sp) sp.textContent='⌄';}
+  }
+  function wire(){
+    const toggle=document.getElementById('tnxBlocksMenuToggle');
+    if(toggle && !toggle.dataset.tnxFinal){
+      toggle.dataset.tnxFinal='1';
+      toggle.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();window.tnxToggleBlocksMenu&&window.tnxToggleBlocksMenu();});
+    }
+    document.querySelectorAll('#tnxToolboxPanel button').forEach(function(btn){
+      if(btn.dataset.tnxFinal) return;
+      btn.dataset.tnxFinal='1';
+      btn.addEventListener('click',function(){setTimeout(closeMobileMenu,0);});
+    });
+    markDerivBlocks();
+    setTimeout(placeMobile,80);
+    setTimeout(placeMobile,350);
+  }
+  let n=0;
+  const timer=setInterval(function(){
+    wire(); n++; if(window.TNX_BLOCKLY_WORKSPACE || n>80) clearInterval(timer);
+  },100);
+  window.addEventListener('resize',function(){setTimeout(placeMobile,80);});
+})();
+</script>
+
 </body>
 </html><style id="tnx-layout-final-overlap-fix">
 /* FINAL BUILDER LAYOUT FIX: never let the Summary panel overlap the Blockly stage. */

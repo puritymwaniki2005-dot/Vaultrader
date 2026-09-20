@@ -1317,7 +1317,7 @@ input,select,textarea{width:100%;min-width:0}
 </div>
 <div class="tnx-sidebar-overlay" id="tnxSidebarOverlay"></div>
 <div id="tnx-live-guard" style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#111827;color:#fff;padding:7px 14px;text-align:center;font:700 12px/1.3 Inter,Arial,sans-serif;letter-spacing:.04em;border-bottom:1px solid rgba(212,175,55,.35)">
-  🟢 DERIV TRADING MODE — REAL & DEMO ACCOUNTS — Every REAL BUY requires confirmation
+  🔴 REAL DERIV TRADING MODE — DEMO ACCOUNTS BLOCKED — Every BUY requires confirmation
 </div>
 <style>
   body{padding-top:32px!important}
@@ -1430,11 +1430,6 @@ input,select,textarea{width:100%;min-width:0}
 <div class="balance">
 <span id="balanceAmount">—</span> <span class="currency" id="balanceCurrency">USD</span>
 </div>
-<div class="account-selector" id="tnxAccountSelector" style="gap:.25rem;padding:.2rem .3rem;border-radius:9px;">
-  <span style="font-size:.72rem;color:var(--text-muted);padding:0 .3rem;">Account</span>
-  <button type="button" class="account-btn active-live" id="btnReal" data-account-type="real" onclick="window.switchAccountType('real')">REAL</button>
-  <button type="button" class="account-btn" id="btnDemo" data-account-type="demo" onclick="window.switchAccountType('demo')">DEMO</button>
-</div>
 <span class="deriv-status" id="derivStatus" title="Deriv connection status">🔗 Not connected</span>
 <button class="btn-load" id="tnxReconnectDeriv" onclick="window.connectDeriv?.(true)" style="width:auto;padding:.45rem .7rem;display:inline-flex;align-items:center;gap:.35rem;">↻ Connect</button>
 <button class="btn-logout" onclick="handleLogout()">Logout</button>
@@ -1446,20 +1441,20 @@ input,select,textarea{width:100%;min-width:0}
 <div class="page-content active" id="page-dashboard">
 <section class="tnx-dash-hero">
   <div>
-    <div class="tnx-eyebrow">TRADENOVAX • DERIV ACCOUNT</div>
+    <div class="tnx-eyebrow">TRADENOVAX • REAL DERIV ACCOUNT</div>
     <h2>Trading Dashboard</h2>
     <p>Monitor your authenticated account, live contracts and bot performance from one workspace.</p>
   </div>
   <div class="tnx-dash-hero-actions">
     <span class="tnx-live-pill" id="dashLivePill"><i></i><span id="dashLiveText">NOT CONNECTED</span></span>
     <button class="tnx-primary-btn" onclick="switchPage('bot')">▶ Open Bot Builder</button>
-    <button class="tnx-secondary-btn" onclick="window.connectDeriv?.(true)">↻ Connect</button>
+    <button class="tnx-secondary-btn" onclick="window.connectDeriv?.(true)">↻ Connect REAL</button>
   </div>
 </section>
 
 <section class="tnx-dash-metrics">
   <article class="tnx-metric-card tnx-metric-balance">
-    <div class="tnx-metric-icon">$</div><div><span>ACCOUNT BALANCE</span><strong id="dashBalance">—</strong><small id="balanceCurrencyDash">USD</small></div>
+    <div class="tnx-metric-icon">$</div><div><span>REAL BALANCE</span><strong id="dashBalance">—</strong><small id="balanceCurrencyDash">USD</small></div>
   </article>
   <article class="tnx-metric-card">
     <div class="tnx-metric-icon">◈</div><div><span>OPEN POSITIONS</span><strong id="dashOpenPositions">0</strong><small>Live contracts</small></div>
@@ -1498,7 +1493,7 @@ input,select,textarea{width:100%;min-width:0}
 <section class="tnx-dash-grid tnx-dash-grid-bottom">
   <article class="tnx-dash-panel">
     <div class="tnx-panel-head"><div><h3>Live Positions</h3><p>Only contracts currently held on your authenticated REAL Deriv account.</p></div><span class="tnx-count" id="dashPositionCount">0</span></div>
-    <div class="tnx-live-list" id="dashboardPositions"><div class="tnx-empty-state"><b>No open positions</b><span>Connect a Deriv account to see live contracts.</span></div></div>
+    <div class="tnx-live-list" id="dashboardPositions"><div class="tnx-empty-state"><b>No open real-money positions</b><span>Connect a REAL account to see live contracts.</span></div></div>
   </article>
 
   <article class="tnx-dash-panel">
@@ -1607,10 +1602,10 @@ input,select,textarea{width:100%;min-width:0}
   <input id="builderMaxTrades" value="1" type="number">
 </div>
 <div class="tnx-bot-workspace" style="margin-top:1.5rem;">
-<div class="tnx-bot-toolbar"><div><div class="tnx-live-pill"><span></span> DERIV EXECUTION</div><h3>Live Digits Terminal</h3><p>Use the builder above or the terminal below to inspect live ticks and proposals.</p></div><div class="tnx-terminal-meta"><span id="digitConnectionState">Disconnected</span><strong id="digitAccountMini">—</strong></div></div>
+<div class="tnx-bot-toolbar"><div><div class="tnx-live-pill"><span></span> REAL DERIV EXECUTION</div><h3>Live Digits Terminal</h3><p>Use the builder above or the terminal below to inspect live ticks and proposals.</p></div><div class="tnx-terminal-meta"><span id="digitConnectionState">Disconnected</span><strong id="digitAccountMini">—</strong></div></div>
 <div class="tnx-bot-grid">
-<section class="card tnx-market-card"><div class="tnx-card-head"><div><span class="eyebrow">LIVE MARKET</span><h3 id="digitMarketName">Select a market</h3></div><span class="tnx-real-badge">ACCOUNT</span></div><div class="tnx-price"><span id="digitLatestPrice">—</span><small id="digitLatestTime">Waiting for tick…</small></div><div class="tnx-digit-hero"><div class="tnx-last-digit" id="digitLastValue">—</div><div><strong>Last Digit</strong><span>Derived from live quote precision</span></div></div><div class="tnx-mini-chart" id="digitMiniChart"><div class="tnx-chart-grid"></div><svg id="digitChartSvg" preserveaspectratio="none" viewbox="0 0 800 260"></svg></div><div class="tnx-stat-title"><span>Digit frequency</span><span id="digitTickCount">0 ticks</span></div><div class="tnx-digit-bars" id="digitStats"></div></section>
-<section class="card tnx-order-card"><div class="tnx-card-head"><div><span class="eyebrow">ORDER TICKET</span><h3>Build Contract</h3></div><span class="tnx-real-badge">ACCOUNT</span></div><label>Trade type</label><div class="tnx-segment" id="digitTradeType"><button class="active" data-type="even-odd">Even / Odd</button><button data-type="over-under">Over / Under</button><button data-type="matches-differs">Matches / Differs</button></div><label>Contract</label><div class="tnx-segment" id="digitContractMode"><button class="active" data-mode="DIGITMATCH">Matches</button><button data-mode="DIGITDIFF">Differs</button></div><div class="tnx-form-row"><div><label for="digitPredictionTerminal">Prediction</label><select class="tnx-control" id="digitPredictionTerminal"></select></div><div><label for="digitDurationTerminal">Duration</label><input class="tnx-control" id="digitDurationTerminal" max="10" min="1" type="number" value="5"/></div></div><label for="digitStakeTerminal">Stake</label><div class="tnx-money-input"><span id="digitCurrency">USD</span><input id="digitStakeTerminal" min="0.35" step="0.01" type="number" value="1.00"/></div><div class="tnx-live-data-note" id="digitContractAvailability">Loading live contract limits from Deriv…</div><div class="tnx-proposal"><div><span>Ask price</span><strong id="digitAsk">—</strong></div><div><span>Payout</span><strong id="digitPayout">—</strong></div><div><span>Potential return</span><strong id="digitReturn">—</strong></div></div><div class="tnx-prediction" id="digitPredictionText">Waiting for a live proposal…</div><button class="tnx-buy-button" disabled="" id="digitBuyButton">BUY CONTRACT</button><div class="tnx-trade-status" id="digitTradeStatus">Connect your Deriv account to begin.</div></section>
+<section class="card tnx-market-card"><div class="tnx-card-head"><div><span class="eyebrow">LIVE MARKET</span><h3 id="digitMarketName">Select a market</h3></div><span class="tnx-real-badge">REAL</span></div><div class="tnx-price"><span id="digitLatestPrice">—</span><small id="digitLatestTime">Waiting for tick…</small></div><div class="tnx-digit-hero"><div class="tnx-last-digit" id="digitLastValue">—</div><div><strong>Last Digit</strong><span>Derived from live quote precision</span></div></div><div class="tnx-mini-chart" id="digitMiniChart"><div class="tnx-chart-grid"></div><svg id="digitChartSvg" preserveaspectratio="none" viewbox="0 0 800 260"></svg></div><div class="tnx-stat-title"><span>Digit frequency</span><span id="digitTickCount">0 ticks</span></div><div class="tnx-digit-bars" id="digitStats"></div></section>
+<section class="card tnx-order-card"><div class="tnx-card-head"><div><span class="eyebrow">ORDER TICKET</span><h3>Build Contract</h3></div><span class="tnx-real-badge">REAL</span></div><label>Trade type</label><div class="tnx-segment" id="digitTradeType"><button class="active" data-type="even-odd">Even / Odd</button><button data-type="over-under">Over / Under</button><button data-type="matches-differs">Matches / Differs</button></div><label>Contract</label><div class="tnx-segment" id="digitContractMode"><button class="active" data-mode="DIGITMATCH">Matches</button><button data-mode="DIGITDIFF">Differs</button></div><div class="tnx-form-row"><div><label for="digitPredictionTerminal">Prediction</label><select class="tnx-control" id="digitPredictionTerminal"></select></div><div><label for="digitDurationTerminal">Duration</label><input class="tnx-control" id="digitDurationTerminal" max="10" min="1" type="number" value="5"/></div></div><label for="digitStakeTerminal">Stake</label><div class="tnx-money-input"><span id="digitCurrency">USD</span><input id="digitStakeTerminal" min="0.35" step="0.01" type="number" value="1.00"/></div><div class="tnx-live-data-note" id="digitContractAvailability">Loading live contract limits from Deriv…</div><div class="tnx-proposal"><div><span>Ask price</span><strong id="digitAsk">—</strong></div><div><span>Payout</span><strong id="digitPayout">—</strong></div><div><span>Potential return</span><strong id="digitReturn">—</strong></div></div><div class="tnx-prediction" id="digitPredictionText">Waiting for a live proposal…</div><button class="tnx-buy-button" disabled="" id="digitBuyButton">BUY REAL CONTRACT</button><div class="tnx-trade-status" id="digitTradeStatus">Connect your REAL Deriv account to begin.</div></section>
 </div>
 </div>
 <div id="tnxQuickTemplates" style="margin-top:1.5rem;"><h3 style="font-size:1.6rem;margin-bottom:1rem;color:var(--gold);">⚡ Quick Templates</h3><div class="templates-grid"><div class="template-card" onclick="loadBotTemplate('even-odd-digit')"><div class="template-icon">🎯</div><div class="template-name">Even/Odd Digit</div><div class="template-desc">Live digit strategy</div><span class="badge-low">Risk aware</span></div><div class="template-card" onclick="loadBotTemplate('over-under')"><div class="template-icon">📉</div><div class="template-name">Over/Under</div><div class="template-desc">Live threshold strategy</div><span class="badge-low">Risk aware</span></div><div class="template-card" onclick="loadBotTemplate('rise-fall-simple')"><div class="template-icon">📊</div><div class="template-name">Rise/Fall</div><div class="template-desc">Manual live direction</div><span class="badge-medium">Risk aware</span></div></div></div>
@@ -1959,7 +1954,7 @@ The source XML is preserved exactly. Loading a definition does not place a trade
 <small>REAL DERIV</small>
 <strong id="tnxPinnedQuote">Waiting for live proposal…</strong>
 </div>
-<button disabled="" id="tnxPinnedBuyButton" type="button">BUY CONTRACT</button>
+<button disabled="" id="tnxPinnedBuyButton" type="button">BUY REAL CONTRACT</button>
 </div>
 <!-- ===== TOAST ===== -->
 <div class="toast" id="toast">
@@ -2054,11 +2049,11 @@ The source XML is preserved exactly. Loading a definition does not place a trade
 // ============================================================
 // TradeNovaX — FULL REAL DERIV DASHBOARD CLIENT
 // Current Deriv REST + authenticated WebSocket workflow.
-// REAL + DEMO ACCOUNT SUPPORT. No fake balances/trades.
+// REAL ACCOUNT ONLY. No demo fallback. No fake balances/trades.
 // ============================================================
 const BOT_BUILDER_URL='https://bot.tradenovax.co.ke/';
 const DERIV_API='https://api.derivws.com';
-let currentAccountType=(localStorage.getItem('tradenovax_account_type')||'real').toLowerCase()==='demo'?'demo':'real', derivToken=null, accounts=[], activeAccount=null, derivWS=null;
+let currentAccountType='real', derivToken=null, accounts=[], activeAccount=null, derivWS=null;
 let reqSeq=100, pending=new Map(), subscribedSymbol=null, tickBuffer=[], lastTick=null, tickSubscriptionId=null;
 let recentTransactions=[], activeContracts=new Map(), subscribedOpenContracts=new Set(), liveConnected=false, sessionPnl=0, countedClosedContracts=new Set(), historicalPnl=0, historicalTrades=0, historicalWins=0;
 let reconnectTimer=null, reconnectAttempts=0, digitDurationMin=1, digitDurationMax=10, digitDurationUnit='t', digitDefaultStake=10, digitContracts=[];
@@ -2070,72 +2065,41 @@ function readTokenFromStore(store){try{const token=store.getItem('deriv_access_t
 function getAccessToken(){for(const store of [sessionStorage,localStorage]){const token=readTokenFromStore(store);if(token)return token;}try{const raw=localStorage.getItem('deriv_tokens_backup')||sessionStorage.getItem('deriv_tokens_backup');if(raw){const data=JSON.parse(raw);const exp=Number(data?.expires_at||data?.expiry||0);const expiresAt=exp?(exp<100000000000?exp*1000:exp):(data?.expires_in?Date.now()+Number(data.expires_in)*1000:0);if(data?.access_token&&(!expiresAt||expiresAt>Date.now()))return data.access_token;}}catch{}return null}
 function apiHeaders(){const token=derivToken||getAccessToken();if(!token)throw new Error('No valid Deriv OAuth session. Sign in with Deriv again.');return {'Authorization':`Bearer ${token}`,'Accept':'application/json','Content-Type':'application/json'}}
 async function derivFetch(path,options={}){let res;try{res=await fetch(DERIV_API+path,{...options,headers:{...apiHeaders(),...(options.headers||{})}})}catch(err){throw new Error(`Network error reaching Deriv (${err?.message||'request failed'}). Check HTTPS/network access and try again.`)}let data={};try{data=await res.json()}catch{}if(!res.ok){const e=data?.errors?.[0]||{};const detail=e.message||data?.message||`HTTP ${res.status}`;throw new Error(`Deriv ${res.status} ${e.code?`[${e.code}] `:''}${detail}`)}return data}
-function accountType(){return String(activeAccount?.account_type||currentAccountType||'real').toLowerCase()==='demo'?'demo':'real'}
-function accountModeLabel(){return accountType()==='demo'?'DEMO':'REAL'}
-function isAccountReady(){return !!(liveConnected&&derivWS&&derivWS.readyState===WebSocket.OPEN&&activeAccount?.account_id)}
-function setConnection(ok,msg){
-  liveConnected=ok; updateDigitConnectionUI();
-  const mode=accountModeLabel();
-  const text=ok?`🟢 ${mode} connected`:`🔴 ${msg||'Disconnected'}`;
-  for(const id of ['derivStatus']){const e=document.getElementById(id);if(e){e.textContent=text;e.title=ok?`Authenticated ${mode} Deriv WebSocket is open`:String(msg||'Disconnected');e.style.color=ok?'var(--green)':'var(--red)'}}
-  const cd=document.getElementById('connectionDisplay');if(cd){cd.textContent=ok?`${mode} LIVE DATA`:(msg||'Disconnected');cd.style.color=ok?'var(--green)':'var(--red)'}
-  const dc=document.getElementById('dashConnection');if(dc){dc.textContent=ok?`${mode} Connected`:'Disconnected';dc.style.color=ok?'var(--green)':'var(--red)'}
-  const rb=document.getElementById('tnxReconnectDeriv');if(rb){rb.textContent=ok?`✓ ${mode} Connected`:'↻ Connect';rb.disabled=false;rb.style.opacity='1'}
-  const liveText=document.getElementById('dashLiveText');if(liveText)liveText.textContent=ok?`${mode} CONNECTED`:'NOT CONNECTED';
-  const mobile=document.getElementById('tnxMobileStatus');if(mobile)mobile.textContent=ok?mode:'OFFLINE';
-  tnxUpdateSafetyUI?.();
-}
+function setConnection(ok,msg){liveConnected=ok;updateDigitConnectionUI();const text=ok?'🟢 REAL connected':'🔴 '+(msg||'Disconnected');for(const id of ['derivStatus']){const e=document.getElementById(id);if(e){e.textContent=text;e.title=ok?'Authenticated REAL Deriv WebSocket is open':String(msg||'Disconnected');e.style.color=ok?'var(--green)':'var(--red)'}}const cd=document.getElementById('connectionDisplay');if(cd){cd.textContent=ok?'REAL LIVE DATA':(msg||'Disconnected');cd.style.color=ok?'var(--green)':'var(--red)'}const dc=document.getElementById('dashConnection');if(dc){dc.textContent=ok?'REAL Connected':'Disconnected';dc.style.color=ok?'var(--green)':'var(--red)'}const rb=document.getElementById('tnxReconnectDeriv');if(rb){rb.textContent=ok?'✓ REAL Connected':'↻ Connect';rb.disabled=ok;rb.style.opacity=ok?'.7':'1'}}
 function updateAccountUI(){
-  const account=activeAccount, mode=accountType();
-  const accountId=account?.account_id||'—', currency=account?.currency||'USD';
-  const type=mode.toUpperCase();
-  const mappings={accountIdDisplay:accountId,accountTypeDisplay:type,accountLabel:account?`${type} • ${accountId}`:`${type} ACCOUNT`,digitAccountMini:accountId,digitRiskAccount:accountId,digitCurrency:currency,dashAccountId:account?`${type} • ${accountId}`:`${type} account required`,balanceCurrencyDash:currency};
-  Object.entries(mappings).forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.textContent=value});
-  const real=document.getElementById('btnReal'), demo=document.getElementById('btnDemo');
-  if(real){real.style.display='inline-block';real.className=`account-btn ${mode==='real'?'active-live':''}`}
-  if(demo){demo.style.display='inline-block';demo.className=`account-btn ${mode==='demo'?'active-demo':''}`}
-  document.querySelectorAll('[data-account-type]').forEach(el=>{const t=String(el.dataset.accountType||'').toLowerCase();el.classList.toggle('active-live',t==='real'&&mode==='real');el.classList.toggle('active-demo',t==='demo'&&mode==='demo')});
-  const hero=document.querySelector('.tnx-eyebrow');if(hero)hero.textContent=`TRADENOVAX • ${type} DERIV ACCOUNT`;
-  document.querySelectorAll('.tnx-real-badge').forEach(el=>{el.textContent=type});
-  const title=document.querySelector('.tnx-bot-toolbar .tnx-live-pill');if(title)title.innerHTML=`<span></span> ${type} DERIV EXECUTION`;
-  const userStatus=document.getElementById('userStatus');if(userStatus)userStatus.textContent=`● ${type} ${isAccountReady()?'Online':'Selected'}`;
+  const account=activeAccount;
+  const accountId=account?.account_id||'—';
+  const currency=account?.currency||'USD';
+  const type=String(account?.account_type||'real').toUpperCase();
+  const status=account?'REAL':'—';
+  const mappings={
+    accountIdDisplay:accountId,
+    accountTypeDisplay:type,
+    accountLabel:account?`REAL • ${accountId}`:'REAL ACCOUNT',
+    digitAccountMini:accountId,
+    digitRiskAccount:accountId,
+    digitCurrency:currency
+  };
+  Object.entries(mappings).forEach(([id,value])=>{
+    const el=document.getElementById(id);
+    if(el) el.textContent=value;
+  });
+  const real=document.getElementById('btnReal');
+  if(real) real.className='account-btn active-live';
+  const demo=document.getElementById('btnDemo');
+  if(demo) demo.remove();
+  const selectors=document.querySelectorAll('[data-account-type]');
+  selectors.forEach(el=>{
+    const t=String(el.dataset.accountType||'').toLowerCase();
+    el.classList.toggle('active-live',t==='real'||t==='live');
+    if(t==='demo') el.style.display='none';
+  });
 }
-function updateUserIdentity(){const email=localStorage.getItem('deriv_user_email')||sessionStorage.getItem('deriv_user_email')||'',name=localStorage.getItem('deriv_user_name')||sessionStorage.getItem('deriv_user_name')||'',ee=document.getElementById('userEmail'),nn=document.getElementById('userName'),aa=document.getElementById('userAvatar');if(ee)ee.textContent=email||'Deriv account';if(nn)nn.textContent=name||`${accountModeLabel()} Trader`;if(aa)aa.textContent=(name||email||'D').trim().charAt(0).toUpperCase()}
-async function loadAccounts(){
-  setConnection(false,`Loading ${currentAccountType.toUpperCase()} account…`);
-  const r=await derivFetch('/trading/v1/options/accounts');
-  const list=Array.isArray(r?.data)?r.data:(Array.isArray(r?.accounts)?r.accounts:(r?.data&&typeof r.data==='object'?[r.data]:[]));
-  accounts=list.filter(a=>['real','demo'].includes(String(a?.account_type||'').toLowerCase())&&String(a?.status||'').toLowerCase()==='active'&&a?.account_id);
-  if(!accounts.length)throw new Error('No active Deriv trading accounts are available for this session.');
-  const wanted=currentAccountType==='demo'?'demo':'real';
-  const saved=localStorage.getItem(`tradenovax_${wanted}_account_id`);
-  const matching=accounts.filter(a=>String(a.account_type).toLowerCase()===wanted);
-  if(!matching.length) throw new Error(`No active ${wanted.toUpperCase()} Deriv account is available for this session.`);
-  activeAccount=matching.find(a=>String(a.account_id)===String(saved))||matching[0];
-  currentAccountType=accountType();
-  localStorage.setItem('tradenovax_account_type',currentAccountType);
-  localStorage.setItem(`tradenovax_${currentAccountType}_account_id`,activeAccount.account_id);
-  updateAccountUI();updateUserIdentity();
-}
-async function connectDeriv(force=false){
-  if(connectDeriv._busy&&!force)return;connectDeriv._busy=true;clearTimeout(reconnectTimer);
-  try{setConnection(false,`Authenticating ${currentAccountType.toUpperCase()} Deriv account…`);derivToken=getAccessToken();if(!derivToken){setConnection(false,'No Deriv access token');showToast('⚠️ Your Deriv login session is missing or expired. Please sign in with Deriv again.');return}await loadAccounts();setConnection(false,`${accountModeLabel()} account ${activeAccount.account_id} found — requesting secure connection…`);await openAuthenticatedWebSocket()}
-  catch(e){console.error('TradeNovaX Deriv connection:',e);setConnection(false,e?.message||'Connection failed');showToast('❌ '+(e?.message||'Deriv connection failed'))}
-  finally{connectDeriv._busy=false}
-}
+function updateUserIdentity(){const email=localStorage.getItem('deriv_user_email')||sessionStorage.getItem('deriv_user_email')||'';const name=localStorage.getItem('deriv_user_name')||sessionStorage.getItem('deriv_user_name')||'';const ee=document.getElementById('userEmail'),nn=document.getElementById('userName'),aa=document.getElementById('userAvatar');if(ee)ee.textContent=email||'Deriv account';if(nn)nn.textContent=name||'REAL Trader';if(aa)aa.textContent=(name||email||'D').trim().charAt(0).toUpperCase()}
+async function loadAccounts(){setConnection(false,'Loading REAL account…');const r=await derivFetch('/trading/v1/options/accounts');const list=Array.isArray(r?.data)?r.data:(Array.isArray(r?.accounts)?r.accounts:(r?.data&&typeof r.data==='object'?[r.data]:[]));accounts=list.filter(a=>String(a?.account_type||'').toLowerCase()==='real'&&String(a?.status||'').toLowerCase()==='active'&&a?.account_id);if(!accounts.length)throw new Error('No active REAL Deriv trading account is available. Demo accounts are disabled.');const saved=localStorage.getItem('tradenovax_real_account_id');activeAccount=accounts.find(a=>String(a.account_id)===String(saved))||accounts[0];currentAccountType='real';localStorage.setItem('tradenovax_real_account_id',activeAccount.account_id);updateAccountUI();updateUserIdentity()}
+async function connectDeriv(force=false){if(connectDeriv._busy&&!force)return;connectDeriv._busy=true;clearTimeout(reconnectTimer);try{setConnection(false,'Authenticating with Deriv…');derivToken=getAccessToken();if(!derivToken){setConnection(false,'No Deriv access token');showToast('⚠️ Your Deriv login session is missing or expired. Please sign in again.');return}await loadAccounts();setConnection(false,`REAL account ${activeAccount.account_id} found — requesting secure connection…`);await openAuthenticatedWebSocket()}catch(e){console.error('TradeNovaX Deriv connection:',e);setConnection(false,e?.message||'Connection failed');showToast('❌ '+(e?.message||'Deriv connection failed'))}finally{connectDeriv._busy=false}}
 window.connectDeriv=connectDeriv;
-async function openAuthenticatedWebSocket(){
-  if(!activeAccount?.account_id)throw new Error(`No active ${accountModeLabel()} Deriv account ID.`);
-  if(derivWS&&derivWS.readyState<=1)try{derivWS.close(1000,'reconnecting')}catch{}
-  const mode=accountModeLabel();setConnection(false,`Requesting one-time ${mode} WebSocket OTP…`);
-  const r=await derivFetch(`/trading/v1/options/accounts/${encodeURIComponent(activeAccount.account_id)}/otp`,{method:'POST'});const url=r?.data?.url;if(!url)throw new Error('Deriv OTP request succeeded but no WebSocket URL was returned.');
-  setConnection(false,`Opening authenticated ${mode} WebSocket…`);derivWS=new WebSocket(url);let opened=false;
-  const wsTimeout=setTimeout(()=>{if(!opened&&derivWS&&derivWS.readyState!==WebSocket.OPEN){try{derivWS.close(1000,'connection timeout')}catch{}setConnection(false,`${mode} WebSocket connection timed out.`)}},15000);
-  derivWS.onopen=()=>{opened=true;clearTimeout(wsTimeout);reconnectAttempts=0;setConnection(true);showToast(`✅ Connected to your ${mode} Deriv account`);send({balance:1,subscribe:1});send({transaction:1,subscribe:1});send({portfolio:1});send({proposal_open_contract:1,subscribe:1});send({active_symbols:'full',contract_type:['DIGITMATCH','DIGITDIFF','DIGITOVER','DIGITUNDER','DIGITEVEN','DIGITODD']});send({ticks:document.getElementById('digitSymbol')?.value||document.getElementById('chartSymbol')?.value||'R_100',subscribe:1});const ds=document.getElementById('digitSymbol')?.value||'R_100';requestDigitContractsFor(ds);refreshLiveData()};
-  derivWS.onmessage=e=>{try{handleDerivMessage(JSON.parse(e.data))}catch(err){console.error('Deriv message error',err)}};
-  derivWS.onerror=()=>{if(!opened)clearTimeout(wsTimeout);setConnection(false,`${mode} WebSocket error.`)};
-  derivWS.onclose=e=>{clearTimeout(wsTimeout);const detail=e?.reason?`${mode} WebSocket closed (${e.code}): ${e.reason}`:`${mode} WebSocket closed (${e.code||'unknown'})`;setConnection(false,detail);if(getAccessToken()&&reconnectAttempts<3&&!connectDeriv._busy){clearTimeout(reconnectTimer);reconnectTimer=setTimeout(()=>{reconnectAttempts++;connectDeriv()},2000*reconnectAttempts)}}
-}
+async function openAuthenticatedWebSocket(){if(!activeAccount?.account_id)throw new Error('No active REAL Deriv account ID.');if(String(activeAccount.account_type).toLowerCase()!=='real')throw new Error('Demo accounts are disabled.');if(derivWS&&derivWS.readyState<=1)try{derivWS.close(1000,'reconnecting')}catch{}setConnection(false,'Requesting one-time REAL WebSocket OTP…');const r=await derivFetch(`/trading/v1/options/accounts/${encodeURIComponent(activeAccount.account_id)}/otp`,{method:'POST'});const url=r?.data?.url;if(!url)throw new Error('Deriv OTP request succeeded but no WebSocket URL was returned.');setConnection(false,'Opening authenticated REAL WebSocket…');derivWS=new WebSocket(url);let opened=false;const wsTimeout=setTimeout(()=>{if(!opened&&derivWS&&derivWS.readyState!==WebSocket.OPEN){try{derivWS.close(1000,'connection timeout')}catch{}setConnection(false,'REAL WebSocket connection timed out. Check browser Network/Console for WebSocket errors.')}},15000);derivWS.onopen=()=>{opened=true;clearTimeout(wsTimeout);reconnectAttempts=0;setConnection(true);showToast('✅ Connected to your REAL Deriv account');send({balance:1,subscribe:1});send({transaction:1,subscribe:1});send({portfolio:1});send({proposal_open_contract:1,subscribe:1});send({active_symbols:'full',contract_type:['DIGITMATCH','DIGITDIFF','DIGITOVER','DIGITUNDER','DIGITEVEN','DIGITODD']});send({ticks:document.getElementById('digitSymbol')?.value||document.getElementById('chartSymbol')?.value||'R_100',subscribe:1});const ds=document.getElementById('digitSymbol')?.value||'R_100';requestDigitContractsFor(ds);refreshLiveData()};derivWS.onmessage=e=>{try{handleDerivMessage(JSON.parse(e.data))}catch(err){console.error('Deriv message error',err)}};derivWS.onerror=()=>{if(!opened)clearTimeout(wsTimeout);setConnection(false,'Authenticated REAL WebSocket error. Open DevTools → Network → WS for the close/error detail.')};derivWS.onclose=e=>{clearTimeout(wsTimeout);const detail=e?.reason?`REAL WebSocket closed (${e.code}): ${e.reason}`:`REAL WebSocket closed (${e.code||'unknown'})`;setConnection(false,detail);if(getAccessToken()&&reconnectAttempts<3&&!connectDeriv._busy){clearTimeout(reconnectTimer);reconnectTimer=setTimeout(()=>{reconnectAttempts++;connectDeriv()},2000*reconnectAttempts)}}}
 function send(payload){if(!derivWS||derivWS.readyState!==WebSocket.OPEN)throw new Error('Deriv connection is not ready.');const req_id=++reqSeq;derivWS.send(JSON.stringify({...payload,req_id}));return req_id}
 function handleDerivMessage(d){if(d.error){const ctx=pending.get(d.req_id);if(ctx){pending.delete(d.req_id);if(ctx.status)ctx.status.textContent='❌ '+d.error.message;if(ctx.kind==='digitProposal'){digitProposal=null;const b=digitEl('digitBuyButton');if(b)b.disabled=true}}console.error(d.error);showToast('❌ '+d.error.message);return}if(d.msg_type==='tick'){if(d.subscription?.id)tickSubscriptionId=d.subscription.id;return handleTick(d.tick)}switch(d.msg_type){case'balance':return handleBalance(d.balance);case'active_symbols':return populateSymbols(d.active_symbols||[]);case'contracts_for':return applyDigitContractLimits(d.contracts_for?.available||[],d.contracts_for?.symbol||subscribedSymbol||'');case'history':{const prices=(d.history?.prices||[]).map(Number).filter(Number.isFinite);const times=(d.history?.times||[]).map(Number);if(prices.length){const hist=prices.slice(-1000);const start=Math.max(0,times.length-hist.length);tickBuffer=hist.slice(-300).map((q,i)=>({epoch:Number(times[start+i]??Date.now()/1000),quote:q}));digitPrices=hist;if(Number(d.history?.pip_size)>0)digitPipSize=Number(d.history.pip_size);renderDigitStats();renderDigitChart();renderRealtimeChart();updateDigitConnectionUI();}return;}case'transaction':return addTransaction(d.transaction);case'proposal':if(digitProposalReq===d.req_id)return handleDigitProposal(d);return handleProposal(d);case'buy':if(pending.get(d.req_id)?.kind==='digitBuy')return handleDigitBuy(d);return handleBuy(d);case'proposal_open_contract':return handleContract(d.proposal_open_contract);case'portfolio':{
   const contracts=d.portfolio?.contracts||[];
@@ -2213,17 +2177,17 @@ function applyDigitContractLimits(list,symbol){
   requestDigitProposal();
 }
 
-async function switchAccountType(type){type=String(type||'').toLowerCase();if(type!=='real'&&type!=='demo'){return}if(currentAccountType===type&&activeAccount){updateAccountUI();return}currentAccountType=type;localStorage.setItem('tradenovax_account_type',type);try{if(derivWS&&derivWS.readyState<=1)derivWS.close(1000,'account switch');liveConnected=false;await loadAccounts();updateAccountUI();await openAuthenticatedWebSocket()}catch(e){showToast('❌ '+(e?.message||`Unable to switch to ${type.toUpperCase()} account`));setConnection(false,e?.message||'Account switch failed')}}
+function switchAccountType(type){if(type!=='live'&&type!=='real'){showToast('🚫 Demo accounts are permanently disabled.');return}if(!activeAccount){showToast('⚠️ Connect your REAL Deriv account first.');return}currentAccountType='real';updateAccountUI()}
 window.switchAccountType=switchAccountType;
-function requireTradingReady(){if(!isAccountReady())throw new Error(`${accountModeLabel()} Deriv account is not connected.`);}
-function confirmRealTrade(text){const mode=accountModeLabel();return window.confirm(mode==='real'?`⚠️ REAL MONEY\n\n${text}\n\nThis action sends a real order to your REAL Deriv account. Continue?`:`ℹ️ DEMO ACCOUNT\n\n${text}\n\nThis order uses your Deriv DEMO account and does not use real funds. Continue?`)}
+function requireTradingReady(){if(!liveConnected||!derivWS||derivWS.readyState!==WebSocket.OPEN)throw new Error('REAL Deriv account is not connected.');if(!activeAccount||String(activeAccount.account_type).toLowerCase()!=='real')throw new Error('REAL account required.')}
+function confirmRealTrade(text){return window.confirm(`⚠️ REAL MONEY\n\n${text}\n\nThis action sends a real order to Deriv. Continue?`)}
 function executeManualTrade(direction){const symbol=document.getElementById('manualSymbol')?.value,amount=Number(document.getElementById('manualStake')?.value),duration=Number(document.getElementById('manualDuration')?.value||1),unit=document.getElementById('manualDurationUnit')?.value||'m',status=document.getElementById('manualTradeStatus');if(!symbol||!Number.isFinite(amount)||amount<=0)return showToast('⚠️ Enter a valid market and stake.');if(!confirmRealTrade(`${direction==='CALL'?'BUY RISE':'BUY FALL'} • ${symbol}\nStake: ${amount.toFixed(2)} ${activeAccount?.currency||'USD'}\nDuration: ${duration} ${unit}`))return;try{requireTradingReady();if(status)status.textContent='⏳ Requesting live proposal…';const id=send({proposal:1,amount,basis:'stake',contract_type:direction==='CALL'?'CALL':'PUT',currency:activeAccount.currency||'USD',duration,duration_unit:unit,underlying_symbol:symbol,subscribe:1});pending.set(id,{kind:'manualProposal',direction,symbol,amount,status})}catch(e){if(status)status.textContent='❌ '+e.message;showToast('❌ '+e.message)}}window.executeManualTrade=executeManualTrade;
 function handleProposal(d){const p=d.proposal||{},ctx=p.id?findPendingProposal(d.req_id):null;if(!ctx)return;pending.delete(d.req_id);const ask=Math.max(0,Number(p.ask_price||ctx.amount));if(!tnxCanOpenTrade(ctx.amount,'proposal')){if(ctx.status)ctx.status.textContent='🛑 Risk controls blocked this order.';return}try{const id=send({buy:p.id,price:ask});pending.set(id,{kind:'buy',...ctx,ask});if(ctx.status)ctx.status.textContent='⏳ Confirming real purchase…'}catch(e){if(ctx.status)ctx.status.textContent='❌ '+e.message}}
 function findPendingProposal(req){return pending.get(req)||[...pending.values()].find(x=>x.kind==='bulkProposal'&&!x.buySent)||null}
 function handleBuy(d){const ctx=pending.get(d.req_id);if(!ctx)return;pending.delete(d.req_id);const b=d.buy||{},id=b.contract_id;if(id){activeContracts.set(String(id),b);try{send({proposal_open_contract:1,contract_id:id,subscribe:1})}catch{}}if(ctx.status)ctx.status.textContent=`✅ REAL trade executed • Contract ${id||'created'}`;showToast(`✅ REAL ${ctx.direction||'trade'} executed on ${ctx.symbol||''}`);renderPositions()}
 function handleContract(c){if(!c||!c.contract_id)return;const id=String(c.contract_id);const wasClosed=countedClosedContracts.has(id);activeContracts.set(id,c);const closed=c.is_sold||['won','lost','sold','expired'].includes(String(c.status||'').toLowerCase());if(closed&&!wasClosed){countedClosedContracts.add(id);sessionPnl+=Number(c.profit||0);subscribedOpenContracts.delete(id)}renderPositions();updateSummary();renderTradeActivity(c)}
 function updateActiveContracts(cs){activeContracts.clear();cs.forEach(c=>activeContracts.set(String(c.contract_id),c));renderPositions();updateSummary()}
-function renderPositions(){const contracts=[...activeContracts.values()].filter(c=>!c.is_sold&&!['won','lost','sold','expired'].includes(String(c.status||'').toLowerCase()));const html=contracts.length?`<table class="live-table"><thead><tr><th>Contract</th><th>Market</th><th>Type</th><th>Stake</th><th>Buy</th><th>Live P/L</th><th>Status</th><th></th></tr></thead><tbody>${contracts.map(c=>{const p=Number(c.profit||0),id=String(c.contract_id);return`<tr><td>${escapeHtml(id)}</td><td>${escapeHtml(c.underlying_symbol||c.symbol||'—')}</td><td>${escapeHtml(c.contract_type||'—')}</td><td>${fmt(c.buy_price,c.currency)}</td><td>${fmt(c.buy_price,c.currency)}</td><td class="${p>=0?'live-positive':'live-negative'}">${p>=0?'+':''}${fmtNum(p)} ${escapeHtml(c.currency||'')}</td><td>${escapeHtml(c.status||'open')}</td><td><button class="sell-btn" onclick="sellContract('${id}')">SELL</button></td></tr>`}).join('')}</tbody></table>`:`<div style="padding:2rem;text-align:center;color:var(--text-muted);">No open positions.</div>`;for(const id of ['positionsTable','dashboardPositions']){const e=document.getElementById(id);if(e)e.innerHTML=html}const b=document.getElementById('positionsBadge');if(b)b.textContent=contracts.length;const d=document.getElementById('dashOpenPositions');if(d)d.textContent=contracts.length}
+function renderPositions(){const contracts=[...activeContracts.values()].filter(c=>!c.is_sold&&!['won','lost','sold','expired'].includes(String(c.status||'').toLowerCase()));const html=contracts.length?`<table class="live-table"><thead><tr><th>Contract</th><th>Market</th><th>Type</th><th>Stake</th><th>Buy</th><th>Live P/L</th><th>Status</th><th></th></tr></thead><tbody>${contracts.map(c=>{const p=Number(c.profit||0),id=String(c.contract_id);return`<tr><td>${escapeHtml(id)}</td><td>${escapeHtml(c.underlying_symbol||c.symbol||'—')}</td><td>${escapeHtml(c.contract_type||'—')}</td><td>${fmt(c.buy_price,c.currency)}</td><td>${fmt(c.buy_price,c.currency)}</td><td class="${p>=0?'live-positive':'live-negative'}">${p>=0?'+':''}${fmtNum(p)} ${escapeHtml(c.currency||'')}</td><td>${escapeHtml(c.status||'open')}</td><td><button class="sell-btn" onclick="sellContract('${id}')">SELL</button></td></tr>`}).join('')}</tbody></table>`:`<div style="padding:2rem;text-align:center;color:var(--text-muted);">No open REAL positions.</div>`;for(const id of ['positionsTable','dashboardPositions']){const e=document.getElementById(id);if(e)e.innerHTML=html}const b=document.getElementById('positionsBadge');if(b)b.textContent=contracts.length;const d=document.getElementById('dashOpenPositions');if(d)d.textContent=contracts.length}
 function fmt(v,c){return `${Number(v??0).toFixed(2)} ${escapeHtml(c||activeAccount?.currency||'USD')}`};function fmtNum(v){return Number(v||0).toFixed(2)}
 function sellContract(contractId){const c=activeContracts.get(String(contractId));if(!c)return showToast('⚠️ Position not found.');const current=Number(c.bid_price??0);if(!confirmRealTrade(`SELL contract ${contractId}\nMarket: ${c.underlying_symbol||c.symbol||'—'}\nCurrent sell price: ${current.toFixed(2)}`))return;try{requireTradingReady();const id=send({sell:contractId,price:Math.max(0,current)});pending.set(id,{kind:'sell',contractId})}catch(e){showToast('❌ '+e.message)}}window.sellContract=sellContract;
 function handleSell(d){const s=d.sell||{};const ctx=pending.get(d.req_id);if(ctx)pending.delete(d.req_id);activeContracts.delete(String(s.contract_id||ctx?.contractId||''));showToast(`✅ Contract ${s.contract_id||ctx?.contractId||''} sold for ${Number(s.sold_for||0).toFixed(2)}`);renderPositions();refreshLiveData();try{send({profit_table:1,description:1,sort:'DESC',limit:50})}catch{}}
@@ -2246,7 +2210,7 @@ function tnxOpenCount(){return [...activeContracts.values()].filter(c=>!c.is_sol
 function tnxRiskBlock(reason){showToast('🛑 Trading blocked: '+reason);return false}
 function tnxCanOpenTrade(stake,source='trade'){
   if(tnxTradingHalted)return tnxRiskBlock('new trades are stopped.');
-  if(!isAccountReady())return tnxRiskBlock(`${accountModeLabel()} Deriv account is not connected.`);
+  if(!liveConnected||!activeAccount||String(activeAccount.account_type).toLowerCase()!=='real')return tnxRiskBlock('REAL Deriv account is not connected.');
   const amount=Number(stake);
   if(!Number.isFinite(amount)||amount<=0)return tnxRiskBlock('invalid stake.');
   if(amount>Number(tnxRisk.maxStake))return tnxRiskBlock(`stake exceeds ${tnxRisk.maxStake.toFixed(2)} maximum.`);
@@ -2256,7 +2220,7 @@ function tnxCanOpenTrade(stake,source='trade'){
   return true;
 }
 function tnxRecordClose(c){const profit=Number(c?.profit||0);if(!Number.isFinite(profit))return;if(profit<0)tnxLossStreak++;else if(profit>0)tnxLossStreak=0;tnxSessionRealizedPnl+=profit;if(-Math.min(0,tnxSessionRealizedPnl)>=Number(tnxRisk.maxLoss))tnxTradingHalted=true;if(tnxLossStreak>=Number(tnxRisk.maxLossStreak))tnxTradingHalted=true;tnxUpdateSafetyUI()}
-function tnxUpdateSafetyUI(){const dot=document.getElementById('tnxSafetyDot'),st=document.getElementById('tnxSafetyStatus');if(dot)dot.className='tnx-safe-dot '+(tnxTradingHalted?'stop':(liveConnected?'ok':''));if(st)st.textContent=tnxTradingHalted?'NEW TRADES STOPPED':(liveConnected?`${accountModeLabel()} trading ready`:`${accountModeLabel()} trading locked`);const fields=[['tnxMaxStake',tnxRisk.maxStake],['tnxMaxLoss',tnxRisk.maxLoss],['tnxMaxLossStreak',tnxRisk.maxLossStreak],['tnxMaxOpen',tnxRisk.maxOpen]];fields.forEach(([id,v])=>{const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=v})}
+function tnxUpdateSafetyUI(){const dot=document.getElementById('tnxSafetyDot'),st=document.getElementById('tnxSafetyStatus');if(dot)dot.className='tnx-safe-dot '+(tnxTradingHalted?'stop':(liveConnected?'ok':''));if(st)st.textContent=tnxTradingHalted?'NEW TRADES STOPPED':(liveConnected?'REAL trading ready':'REAL trading locked');const fields=[['tnxMaxStake',tnxRisk.maxStake],['tnxMaxLoss',tnxRisk.maxLoss],['tnxMaxLossStreak',tnxRisk.maxLossStreak],['tnxMaxOpen',tnxRisk.maxOpen]];fields.forEach(([id,v])=>{const e=document.getElementById(id);if(e&&document.activeElement!==e)e.value=v})}
 function tnxEmergencyStop(){tnxTradingHalted=true;tnxUpdateSafetyUI();showToast('🛑 New REAL trades stopped. Existing positions remain open.');}
 function tnxResetSession(){tnxSessionStartedAt=Date.now();tnxSessionRealizedPnl=0;tnxLossStreak=0;tnxTradingHalted=false;tnxUpdateSafetyUI()}
 function tnxAttachRiskUI(){
@@ -2300,7 +2264,7 @@ function tnxBuilderSync(){
 function tnxBuilderQuickStrategy(){const tt=document.getElementById('builderTradeType'),c=document.getElementById('builderContract'),a=document.getElementById('builderInitialAction');if(tt)tt.value='even-odd';if(c)c.value='DIGITEVEN';if(a)a.value='preview';tnxBuilderSync();showToast('⚡ Quick strategy loaded. Review live proposal before any REAL purchase.');}
 function tnxBuilderReset(){document.getElementById('builderTradeType').value='even-odd';document.getElementById('builderContract').value='DIGITEVEN';document.getElementById('builderInitialAction').value='preview';document.getElementById('digitDuration').value=1;document.getElementById('digitStake').value=1;tnxBuilderSync();showToast('↻ Builder reset.');}
 function tnxBuilderSave(){localStorage.setItem('tnx_builder_config',JSON.stringify({tradeType:document.getElementById('builderTradeType')?.value,contract:document.getElementById('builderContract')?.value,duration:document.getElementById('digitDuration')?.value,stake:document.getElementById('digitStake')?.value}));showToast('▣ Builder settings saved locally.');}
-async function tnxBuilderRun(){tnxBuilderSync();const status=document.getElementById('builderRunStatus');if(!isAccountReady()){if(status)status.textContent=`🔴 Connect your ${accountModeLabel()} Deriv account first.`;return}const action=document.getElementById('builderInitialAction')?.value||'preview';if(action==='preview'){requestDigitProposal();if(status)status.textContent='🟢 Live proposal requested • no trade placed';return}const stake=Number(document.getElementById('digitStake')?.value||0);if(!tnxCanOpenTrade(stake,'builder'))return;if(!confirmRealTrade(`Bot Builder • 1 REAL contract\n${activeAccount.account_id}\nStake: ${stake.toFixed(2)}`))return;requestDigitProposal();if(status)status.textContent='⏳ Live proposal requested • purchase follows the configured REAL confirmation workflow';}
+async function tnxBuilderRun(){tnxBuilderSync();const status=document.getElementById('builderRunStatus');if(!liveConnected||!activeAccount){if(status)status.textContent='🔴 Connect a REAL Deriv account first.';return}const action=document.getElementById('builderInitialAction')?.value||'preview';if(action==='preview'){requestDigitProposal();if(status)status.textContent='🟢 Live proposal requested • no trade placed';return}const stake=Number(document.getElementById('digitStake')?.value||0);if(!tnxCanOpenTrade(stake,'builder'))return;if(!confirmRealTrade(`Bot Builder • 1 REAL contract\n${activeAccount.account_id}\nStake: ${stake.toFixed(2)}`))return;requestDigitProposal();if(status)status.textContent='⏳ Live proposal requested • purchase follows the configured REAL confirmation workflow';}
 function tnxBulkRender(){
   const el=document.getElementById('bulkDigitRings'),recent=document.getElementById('bulkRecentDigits'),cur=document.getElementById('bulkCurrentTick');
   if(!el)return;
@@ -2444,7 +2408,7 @@ document.addEventListener('click',function(e){
   tnxNavigateFromLink(link);
 });
 
-function handleLogout(){if(derivWS)derivWS.close();tickSubscriptionId=null;pending.clear();activeContracts.clear();subscribedOpenContracts.clear();countedClosedContracts.clear();['deriv_access_token','deriv_token_expiry','deriv_auth_code','deriv_account_id','deriv_account_type','tradenovax_real_account_id','tradenovax_demo_account_id','tradenovax_account_type','deriv_user_email','deriv_user_name'].forEach(k=>{localStorage.removeItem(k);sessionStorage.removeItem(k)});sessionStorage.removeItem('tradenovax_pkce_verifier');sessionStorage.removeItem('tradenovax_oauth_state');showToast('👋 Logged out');setTimeout(()=>location.href='/',700)}window.handleLogout=handleLogout;
+function handleLogout(){if(derivWS)derivWS.close();tickSubscriptionId=null;pending.clear();activeContracts.clear();subscribedOpenContracts.clear();countedClosedContracts.clear();['deriv_access_token','deriv_token_expiry','deriv_auth_code','deriv_account_id','deriv_account_type','tradenovax_real_account_id','deriv_user_email','deriv_user_name'].forEach(k=>{localStorage.removeItem(k);sessionStorage.removeItem(k)});sessionStorage.removeItem('tradenovax_pkce_verifier');sessionStorage.removeItem('tradenovax_oauth_state');showToast('👋 Logged out');setTimeout(()=>location.href='/',700)}window.handleLogout=handleLogout;
 
 // ============================================================
 // NATIVE DIGITS TERMINAL — derived from the supplied Digits app
@@ -2981,7 +2945,7 @@ try{
     setModuleUI(); if(reason)showToast('⏹ '+old+' stopped: '+reason); else showToast('⏹ '+old+' stopped.');
   }
   function start(cfg){
-    if(!isAccountReady())return showToast(`⚠️ Connect an active ${accountModeLabel()} Deriv account first.`);
+    if(!window.liveConnected||!activeAccount||String(activeAccount.account_type).toLowerCase()!=='real')return showToast('⚠️ Connect an active REAL Deriv account first.');
     const stake=Number(cfg.stake); if(!Number.isFinite(stake)||stake<=0)return showToast('⚠️ Enter a valid stake.');
     if(typeof tnxCanOpenTrade==='function'&&!tnxCanOpenTrade(stake,cfg.id))return;
     const symbol=selectedSymbol(cfg.symbol); if(!symbol)return showToast('⚠️ Select a live Deriv market.');
@@ -3218,7 +3182,7 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
   }
   function realReady(){
     return !!(window.liveConnected && window.activeAccount &&
-      !!window.activeAccount.account_id &&
+      String(window.activeAccount.account_type||'').toLowerCase()==='real' &&
       window.derivWS && window.derivWS.readyState===WebSocket.OPEN);
   }
   function val(id, fallback){
@@ -3679,12 +3643,12 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
   async function runBuilder(){
     if(!state.blocks.some(x=>x.type==='params')){showToast('Add a Trade parameters block first.');return}
     const c=compile(),status=qs('#builderRunStatus');
-    if(!isAccountReady()){if(status)status.textContent=`🔴 Connect your ${accountModeLabel()} Deriv account first.`;showToast(`Connect your ${accountModeLabel()} Deriv account before running.`);return}
+    if(!window.liveConnected||!window.activeAccount){if(status)status.textContent='🔴 Connect a REAL Deriv account first.';showToast('Connect a REAL Deriv account before running.');return}
     const stake=Number(c.params.stake||1);if(typeof tnxCanOpenTrade==='function'&&!tnxCanOpenTrade(stake,'builder'))return;
     if(c.analysis){const op=c.analysis.operator,v=Number(c.analysis.value);const p=(window.digitPrices||[]).at(-1);if(Number.isFinite(p)&&typeof window.digitLastDigit==='function'){const d=window.digitLastDigit(p,window.digitPipSize||1);let ok=op==='equals'?d===v:op==='greater'?d>v:op==='less'?d<v:op==='even'?d%2===0:d%2===1;if(!ok){if(status)status.textContent='⏸ Condition not met • waiting for matching live tick';showToast('Condition not met on the latest tick.');return}}}
     const a=qs('#builderInitialAction');if(a)a.value='trade';const cc=qs('#builderContract');if(cc)cc.value=c.purchase?.contract||c.params.contract;const pr=qs('#digitPrediction');if(pr)pr.value=String(c.purchase?.prediction??5);const du=qs('#digitDuration');if(du)du.value=String(c.params.duration||1);const st=qs('#digitStake');if(st)st.value=String(c.params.stake||1);if(typeof tnxBuilderSync==='function')tnxBuilderSync();
-    if(typeof confirmRealTrade==='function'&&!confirmRealTrade(`Bot Builder • ${accountModeLabel()} contract\n${window.activeAccount.account_id||''}\nStake: ${stake.toFixed(2)} ${window.activeAccount.currency||'USD'}`))return;
-    if(typeof requestDigitProposal==='function')requestDigitProposal();if(status)status.textContent=`⏳ ${accountModeLabel()} Deriv proposal requested from compiled builder blocks`;
+    if(typeof confirmRealTrade==='function'&&!confirmRealTrade('Bot Builder • REAL contract\n'+(window.activeAccount.account_id||'')+'\nStake: '+stake.toFixed(2)))return;
+    if(typeof requestDigitProposal==='function')requestDigitProposal();if(status)status.textContent='⏳ REAL Deriv proposal requested from compiled builder blocks';
   }
   function saveBuilder(){localStorage.setItem('tnx_builder_blocks_v2',JSON.stringify(state.blocks));showToast('Builder saved locally.');}
   function loadBuilder(){try{const x=JSON.parse(localStorage.getItem('tnx_builder_blocks_v2')||'[]');if(Array.isArray(x)&&x.length)state.blocks=x}catch(_){}render()}
@@ -3860,7 +3824,7 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
     if(ds)ds.value=sym;if(dc)dc.value=dur;if(dst)dst.value=stake;if(dp)dp.value=pred;if(ca)ca.value=contract;if(tt)tt.value=type;if(ia)ia.value='trade';
     if(typeof tnxBuilderSync==='function')tnxBuilderSync();
     const st=el('builderRunStatus');
-    if(!isAccountReady()){if(st)st.textContent=`🔴 Connect a ${accountModeLabel()} Deriv account first.`;return}
+    if(!liveConnected||!activeAccount){if(st)st.textContent='🔴 Connect a REAL Deriv account first.';return}
     if(typeof tnxCanOpenTrade==='function'&&!tnxCanOpenTrade(stake,'builder'))return;
     if(typeof confirmRealTrade==='function'&&!confirmRealTrade(`Bot Builder • 1 REAL contract\n${activeAccount.account_id}\nStake: ${stake.toFixed(2)}`))return;
     if(typeof requestDigitProposal==='function')requestDigitProposal();
@@ -3892,7 +3856,6 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
   // Expose the shared runtime safely to modules that live in later script tags.
   const shared = {
     activeAccount: ()=>activeAccount,
-    derivWS: ()=>derivWS,
     liveConnected: ()=>liveConnected,
     pending: ()=>pending,
     lastTick: ()=>lastTick,
@@ -3960,7 +3923,7 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
     const maxRuns=restart ? Math.max(1,Number(restart.getFieldValue('RUNS')||restart.getFieldValue('MAX_RUNS')||1)) : 1;
     return {symbol,tradeType,contract,duration,stake,prediction,condition,enabled,maxRuns,sell};
   }
-  function realReady(){return isAccountReady();}
+  function realReady(){return !!(liveConnected&&activeAccount&&String(activeAccount.account_type||'').toLowerCase()==='real');}
   function requestTrade(){
     if(!R.running||R.pending||!R.config||!realReady()||tnxTradingHalted) return;
     if(R.runs>=R.maxRuns){R.running=false;status('⏹ Bot finished • maximum runs reached');return;}
@@ -3980,13 +3943,13 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
   window.tnxBuilderRun=async function(){
     const cfg=compileWorkspace();
     if(!cfg){status('🔴 Add Trade parameters and Purchase blocks first.');return;}
-    if(!realReady()){status(`🔴 Connect a ${accountModeLabel()} Deriv account first.`);return;}
+    if(!realReady()){status('🔴 Connect a REAL Deriv account first.');return;}
     if(typeof tnxCanOpenTrade==='function'&&!tnxCanOpenTrade(cfg.stake,'builder-start'))return;
     const msg=`Run REAL bot\nAccount: ${activeAccount.account_id}\nMarket: ${cfg.symbol}\nContract: ${cfg.contract}\nStake: ${cfg.stake.toFixed(2)} ${activeAccount.currency||'USD'}\nDuration: ${cfg.duration} tick(s)\n${cfg.enabled?'Maximum runs: '+cfg.maxRuns:'Single run'}`;
     if(typeof confirmRealTrade==='function'&&!confirmRealTrade(msg))return;
     R.running=true;R.pending=false;R.runs=0;R.maxRuns=cfg.enabled?cfg.maxRuns:1;R.lastSignal=null;R.currentContract=null;R.config=cfg;R.startedAt=Date.now();R.sessionPnl=0;
     try{subscribeTicks(cfg.symbol)}catch(e){}
-    status(`🟢 BOT RUNNING ${accountModeLabel()} • waiting for configured live condition…`);
+    status('🟢 BOT RUNNING REAL • waiting for configured live condition…');
     requestTrade();
   };
   window.tnxBuilderStop=function(){R.running=false;R.pending=false;status('⏹ Bot stopped • existing REAL contracts remain open');};
@@ -3998,11 +3961,11 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
       pending.delete(d.req_id);R.pending=false;
       const p=d.proposal||{};
       if(!p.id){status('❌ Deriv returned no proposal ID.');return;}
-      if(typeof tnxCanOpenTrade==='function'&&!tnxCanOpenTrade(ctx.amount,'blockly-buy')){R.running=false;status(`🛑 ${accountModeLabel()} risk controls blocked purchase`);return;}
+      if(typeof tnxCanOpenTrade==='function'&&!tnxCanOpenTrade(ctx.amount,'blockly-buy')){R.running=false;status('🛑 REAL risk controls blocked purchase');return;}
       try{
         const id=send({buy:p.id,price:Number(p.ask_price||ctx.amount)});
         pending.set(id,{kind:'blocklyRunnerBuy',amount:ctx.amount,symbol:ctx.symbol,direction:ctx.direction,config:ctx.config,ask:Number(p.ask_price||ctx.amount),status:ctx.status});
-        R.pending=true;status(`🟠 Live proposal accepted • purchasing ${accountModeLabel()} contract…`);
+        R.pending=true;status('🟠 Live proposal accepted • purchasing REAL contract…');
       }catch(e){status('❌ REAL purchase request failed: '+(e.message||e));}
       return;
     }
@@ -4016,7 +3979,7 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
       const id=d.buy?.contract_id;R.currentContract=id?String(id):null;
       if(id){activeContracts.set(String(id),d.buy);try{send({proposal_open_contract:1,contract_id:id,subscribe:1})}catch(_){}
       }
-      status(`🟢 ${accountModeLabel()} TRADE EXECUTED • ${ctx.direction} • Run ${R.runs}/${R.maxRuns}`);
+      status(`🟢 REAL TRADE EXECUTED • ${ctx.direction} • Run ${R.runs}/${R.maxRuns}`);
       try{renderPositions();updateSummary()}catch(_){}
       return;
     }
@@ -4041,7 +4004,7 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
   };
   const oldTick=window.onTick;
   window.onTick=function(){
-    if(R.running){ if(!realReady()){R.running=false;R.pending=false;status(`🔴 ${accountModeLabel()} Deriv connection lost • bot stopped`);} else if(!R.pending&&!R.currentContract) requestTrade(); return; }
+    if(R.running){ if(!realReady()){R.running=false;R.pending=false;status('🔴 REAL Deriv connection lost • bot stopped');} else if(!R.pending&&!R.currentContract) requestTrade(); return; }
     return oldTick?.();
   };
   // Prevent the previous floating safety strip from being recreated by old code.

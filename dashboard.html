@@ -2159,7 +2159,7 @@ function handleDerivMessage(d){if(d.error){const ctx=pending.get(d.req_id);if(ct
   return;
 }case'profit_table':return renderProfitTable(d.profit_table);case'sell':return handleSell(d)}}
 function handleBalance(b){if(!b)return;tnxUpdateSafetyUI();const amount=Number(b.balance??0),cur=b.currency||activeAccount?.currency||'USD';for(const id of ['balanceAmount','dashBalance']){const e=document.getElementById(id);if(e)e.textContent=amount.toFixed(2)}const c=document.getElementById('balanceCurrency');if(c)c.textContent=cur;const db=document.getElementById('dashBalance');if(db)db.textContent=`${amount.toFixed(2)} ${cur}`}
-function handleTick(t){if(!t)return;const q=Number(t.quote);if(!Number.isFinite(q))return;lastTick=t;updateDigitFromTick(t);tickBuffer.push({epoch:Number(t.epoch)||Date.now()/1000,quote:q});if(tickBuffer.length>300)tickBuffer.shift();const e=document.getElementById('latestTickDisplay');if(e)e.textContent=q.toFixed(5);renderRealtimeChart();runAIScanner(true);tnxBulkRender?.()}
+function handleTick(t){if(!t)return;const q=Number(t.quote);if(!Number.isFinite(q))return;lastTick=t;updateDigitFromTick(t);tickBuffer.push({epoch:Number(t.epoch)||Date.now()/1000,quote:q});if(tickBuffer.length>300)tickBuffer.shift();const e=document.getElementById('latestTickDisplay');if(e)e.textContent=q.toFixed(5);renderRealtimeChart();runAIScanner(true);tnxBulkRender?.();/* Feed every authenticated live tick directly into the Blockly builder runner. Previously the runner only checked once when Start was clicked, so it could remain forever at "Waiting for ... live tick" even though ticks were arriving. */try{const r=window.TNX_BLOCKLY_RUNNER;if(r?.running&&typeof r.requestTrade==='function')r.requestTrade()}catch(err){console.warn('Blockly live tick runner:',err)}}
 function populateSymbols(symbols){const filtered=symbols.filter(s=>s.exchange_is_open!==0&&s.is_trading_suspended!==1);const ids=['manualSymbol','bulkMarket','signalMarket','analysisSymbol','speedSymbol','chartSymbol','digitSymbol','botMarket','quickMarket'];ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;const old=el.value;el.innerHTML='';filtered.slice(0,250).forEach(s=>{const value=s.underlying_symbol||s.symbol;if(!value)return;const o=document.createElement('option');o.value=value;o.textContent=s.underlying_symbol_name||s.display_name||value;el.appendChild(o)});if([...el.options].some(o=>o.value===old))el.value=old});const builderSymbol=window.TNX_BLOCKLY_RUNNER?.running&&window.TNX_BLOCKLY_RUNNER?.config?.symbol;const chosen=builderSymbol||document.getElementById('digitSymbol')?.value || document.getElementById('chartSymbol')?.value;if(chosen && (!subscribedSymbol || subscribedSymbol!==chosen))subscribeTicks(chosen);updateDigitMarketUI();if(liveConnected&&chosen){requestDigitContractsFor(chosen);if(!builderSymbol)requestDigitProposal();}}
 function subscribeTicks(symbol){
   if(!symbol||!liveConnected)return;
@@ -4108,6 +4108,12 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
       status('🟡 Live proposal requested • waiting for purchase confirmation from Deriv…');
     }catch(e){R.pending=false;status('❌ Proposal request failed: '+(e.message||e));}
   }
+  /* Expose the live-tick entry point so the central tick handler can feed the
+     builder on every Deriv tick. This is intentionally a single shared path;
+     it prevents a bot from waiting forever after Start while live ticks are
+     already arriving on the authenticated WebSocket. */
+  R.requestTrade=requestTrade;
+
   window.tnxBuilderRun=async function(){
     const cfg=compileWorkspace();
     if(!cfg){status('🔴 Add Trade parameters and Purchase blocks first.');return;}

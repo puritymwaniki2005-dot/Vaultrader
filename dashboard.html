@@ -2159,7 +2159,16 @@ function handleDerivMessage(d){if(d.error){const ctx=pending.get(d.req_id);if(ct
   return;
 }case'profit_table':return renderProfitTable(d.profit_table);case'sell':return handleSell(d)}}
 function handleBalance(b){if(!b)return;tnxUpdateSafetyUI();const amount=Number(b.balance??0),cur=b.currency||activeAccount?.currency||'USD';for(const id of ['balanceAmount','dashBalance']){const e=document.getElementById(id);if(e)e.textContent=amount.toFixed(2)}const c=document.getElementById('balanceCurrency');if(c)c.textContent=cur;const db=document.getElementById('dashBalance');if(db)db.textContent=`${amount.toFixed(2)} ${cur}`}
-function handleTick(t){if(!t)return;const q=Number(t.quote);if(!Number.isFinite(q))return;lastTick=t;updateDigitFromTick(t);tickBuffer.push({epoch:Number(t.epoch)||Date.now()/1000,quote:q});if(tickBuffer.length>300)tickBuffer.shift();const e=document.getElementById('latestTickDisplay');if(e)e.textContent=q.toFixed(5);renderRealtimeChart();runAIScanner(true);tnxBulkRender?.();/* Feed every authenticated live tick directly into the Blockly builder runner. Previously the runner only checked once when Start was clicked, so it could remain forever at "Waiting for ... live tick" even though ticks were arriving. */try{const r=window.TNX_BLOCKLY_RUNNER;if(r?.running&&typeof r.requestTrade==='function')r.requestTrade()}catch(err){console.warn('Blockly live tick runner:',err)}}
+function handleTick(t){
+  if(!t)return;
+  const q=Number(t.quote);
+  if(!Number.isFinite(q))return;
+  /* Normalize the symbol on the shared tick object. Some Deriv responses
+     expose it as symbol while older/partial payloads may omit it. The active
+     subscription remains the authoritative symbol in that case. */
+  if(!t.symbol && subscribedSymbol)t.symbol=subscribedSymbol;
+  lastTick=t;
+  updateDigitFromTick(t);tickBuffer.push({epoch:Number(t.epoch)||Date.now()/1000,quote:q});if(tickBuffer.length>300)tickBuffer.shift();const e=document.getElementById('latestTickDisplay');if(e)e.textContent=q.toFixed(5);renderRealtimeChart();runAIScanner(true);tnxBulkRender?.();/* Feed every authenticated live tick directly into the Blockly builder runner. Previously the runner only checked once when Start was clicked, so it could remain forever at "Waiting for ... live tick" even though ticks were arriving. */try{const r=window.TNX_BLOCKLY_RUNNER;if(r?.running&&typeof r.requestTrade==='function')r.requestTrade()}catch(err){console.warn('Blockly live tick runner:',err)}}
 function populateSymbols(symbols){const filtered=symbols.filter(s=>s.exchange_is_open!==0&&s.is_trading_suspended!==1);const ids=['manualSymbol','bulkMarket','signalMarket','analysisSymbol','speedSymbol','chartSymbol','digitSymbol','botMarket','quickMarket'];ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;const old=el.value;el.innerHTML='';filtered.slice(0,250).forEach(s=>{const value=s.underlying_symbol||s.symbol;if(!value)return;const o=document.createElement('option');o.value=value;o.textContent=s.underlying_symbol_name||s.display_name||value;el.appendChild(o)});if([...el.options].some(o=>o.value===old))el.value=old});const builderSymbol=window.TNX_BLOCKLY_RUNNER?.running&&window.TNX_BLOCKLY_RUNNER?.config?.symbol;const chosen=builderSymbol||document.getElementById('digitSymbol')?.value || document.getElementById('chartSymbol')?.value;if(chosen && (!subscribedSymbol || subscribedSymbol!==chosen))subscribeTicks(chosen);updateDigitMarketUI();if(liveConnected&&chosen){requestDigitContractsFor(chosen);if(!builderSymbol)requestDigitProposal();}}
 function subscribeTicks(symbol){
   if(!symbol||!liveConnected)return;
@@ -2565,9 +2574,24 @@ function digitPipFromPip(pip){
   return i<0?0:s.length-i-1;
 }
 function digitLastDigit(price,pip){
-  const s=Number(price).toFixed(Math.max(0,pip));
+  const p=Math.max(0,Number(pip)||0);
+  const s=Number(price).toFixed(p);
   return Number(s.charAt(s.length-1));
 }
+/* Shared live-digit API for the bot runner and analysis modules.  The
+   previous build kept these helpers inside the dashboard script scope while
+   the later Blockly runner looked them up on window, so a normal Deriv tick
+   (which does not contain a precomputed digit field) was treated as
+   "waiting for live tick" forever. */
+try{
+  window.digitLastDigit=digitLastDigit;
+  Object.defineProperty(window,'digitPipSize',{
+    configurable:true,
+    enumerable:false,
+    get:()=>digitPipSize,
+    set:v=>{const n=Number(v);if(Number.isFinite(n)&&n>=0)digitPipSize=n;}
+  });
+}catch(_){}
 function digitFmt(v){
   const n=Number(v);
   return Number.isFinite(n)?n.toFixed(2):'—';
@@ -4041,9 +4065,15 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
     const t=lastTick;
     if(!t) return null;
     if(Number.isInteger(Number(t.digit))) return Number(t.digit);
-    const pip=Number(window.digitPipSize||1);
-    if(typeof window.digitLastDigit==='function' && Number.isFinite(Number(t.quote))) return window.digitLastDigit(Number(t.quote),pip);
-    return null;
+    const quote=Number(t.quote);
+    if(!Number.isFinite(quote)) return null;
+    const pip=Math.max(0,Number(window.digitPipSize||1));
+    if(typeof window.digitLastDigit==='function') return window.digitLastDigit(quote,pip);
+    /* Final fallback: derive the last displayed decimal digit directly from
+       the quote. This keeps the bot independent of a Deriv-provided `digit`
+       field, which is not guaranteed on tick messages. */
+    const s=quote.toFixed(pip);
+    return Number(s.charAt(s.length-1));
   };
   function conditionPass(c,d){
     if(!c) return true;
@@ -4123,7 +4153,7 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
     if(typeof confirmRealTrade==='function'&&!confirmRealTrade(msg))return;
     R.running=true;R.pending=false;R.runs=0;R.maxRuns=cfg.enabled?cfg.maxRuns:1;R.lastSignal=null;R.currentContract=null;R.config=cfg;R.startedAt=Date.now();R.sessionPnl=0;
     try{subscribeTicks(cfg.symbol)}catch(e){status('❌ Could not subscribe to '+cfg.symbol+': '+(e.message||e));R.running=false;return;}
-    status(`🟢 BOT RUNNING ${String(activeAccount?.account_type||'').toUpperCase()} • ${cfg.symbol} • waiting for configured live condition…`);
+    status(`🟢 BOT RUNNING ${String(activeAccount?.account_type||'').toUpperCase()} • ${cfg.symbol} • live condition engine active`);
     requestTrade();
   };
   window.tnxBuilderStop=function(){R.running=false;R.pending=false;status('⏹ Bot stopped • existing REAL contracts remain open');};

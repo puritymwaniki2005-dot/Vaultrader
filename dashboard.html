@@ -2601,12 +2601,26 @@ function initDigitTerminal(){
     requestDigitProposal();
   });
 
-  pred?.addEventListener('change',()=>{
-    digitSelectedDigit=Number(pred.value);
+  const predTerminal=document.getElementById('digitPredictionTerminal');
+  const syncPrediction=(value)=>{
+    const n=Number(value);
+    if(Number.isFinite(n)) digitSelectedDigit=n;
+    if(pred && pred.value!==String(digitSelectedDigit)) pred.value=String(digitSelectedDigit);
+    if(predTerminal && predTerminal.value!==String(digitSelectedDigit)) predTerminal.value=String(digitSelectedDigit);
     updateDigitPrediction();
     requestDigitProposal();
-  });
+  };
+  pred?.addEventListener('change',()=>syncPrediction(pred.value));
+  predTerminal?.addEventListener('change',()=>syncPrediction(predTerminal.value));
+
   ['digitStake','digitDuration'].forEach(id=>digitEl(id)?.addEventListener('input',requestDigitProposal));
+  ['digitStakeTerminal','digitDurationTerminal'].forEach(id=>digitEl(id)?.addEventListener('input',()=>{
+    const source=digitEl(id);
+    const target=id==='digitStakeTerminal'?'digitStake':'digitDuration';
+    const t=digitEl(target);
+    if(source && t) t.value=source.value;
+    requestDigitProposal();
+  }));
   sym?.addEventListener('change',()=>{
     const s=sym.value;
     if(s){
@@ -2638,15 +2652,17 @@ function renderDigitModes(){
 }
 
 function renderDigitPredictionOptions(){
-  const p=digitEl('digitPrediction');
-  if(!p)return;
+  const selects=[digitEl('digitPrediction'),digitEl('digitPredictionTerminal')].filter(Boolean);
+  if(!selects.length)return;
   const needsDigit=!['DIGITEVEN','DIGITODD'].includes(digitContractMode);
-  p.disabled=!needsDigit;
-  if(!needsDigit){
-    p.innerHTML=`<option value="0">${digitContractMode==='DIGITEVEN'?'Even':'Odd'}</option>`;
-  }else{
-    p.innerHTML=Array.from({length:10},(_,i)=>`<option value="${i}" ${i===digitSelectedDigit?'selected':''}>${i}</option>`).join('');
-  }
+  const html=needsDigit
+    ? Array.from({length:10},(_,i)=>`<option value="${i}" ${i===digitSelectedDigit?'selected':''}>${i}</option>`).join('')
+    : `<option value="0">${digitContractMode==='DIGITEVEN'?'Even':'Odd'}</option>`;
+  selects.forEach(p=>{
+    p.disabled=!needsDigit;
+    p.innerHTML=html;
+    p.value=String(digitSelectedDigit);
+  });
   updateDigitPrediction();
 }
 

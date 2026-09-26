@@ -2160,7 +2160,7 @@ function handleDerivMessage(d){if(d.error){const ctx=pending.get(d.req_id);if(ct
 }case'profit_table':return renderProfitTable(d.profit_table);case'sell':return handleSell(d)}}
 function handleBalance(b){if(!b)return;tnxUpdateSafetyUI();const amount=Number(b.balance??0),cur=b.currency||activeAccount?.currency||'USD';for(const id of ['balanceAmount','dashBalance']){const e=document.getElementById(id);if(e)e.textContent=amount.toFixed(2)}const c=document.getElementById('balanceCurrency');if(c)c.textContent=cur;const db=document.getElementById('dashBalance');if(db)db.textContent=`${amount.toFixed(2)} ${cur}`}
 function handleTick(t){if(!t)return;const q=Number(t.quote);if(!Number.isFinite(q))return;lastTick=t;updateDigitFromTick(t);tickBuffer.push({epoch:Number(t.epoch)||Date.now()/1000,quote:q});if(tickBuffer.length>300)tickBuffer.shift();const e=document.getElementById('latestTickDisplay');if(e)e.textContent=q.toFixed(5);renderRealtimeChart();runAIScanner(true);tnxBulkRender?.()}
-function populateSymbols(symbols){const filtered=symbols.filter(s=>s.exchange_is_open!==0&&s.is_trading_suspended!==1);const ids=['manualSymbol','bulkMarket','signalMarket','analysisSymbol','speedSymbol','chartSymbol','digitSymbol','botMarket','quickMarket'];ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;const old=el.value;el.innerHTML='';filtered.slice(0,250).forEach(s=>{const value=s.underlying_symbol||s.symbol;if(!value)return;const o=document.createElement('option');o.value=value;o.textContent=s.underlying_symbol_name||s.display_name||value;el.appendChild(o)});if([...el.options].some(o=>o.value===old))el.value=old});const builderSymbol=window.TNX_BLOCKLY_RUNNER?.running&&window.TNX_BLOCKLY_RUNNER?.config?.symbol;const chosen=builderSymbol||document.getElementById('digitSymbol')?.value || document.getElementById('chartSymbol')?.value;if(chosen && (!subscribedSymbol || subscribedSymbol!==chosen))subscribeTicks(chosen);updateDigitMarketUI();if(liveConnected&&!builderSymbol){requestDigitContractsFor(chosen);requestDigitProposal();}}
+function populateSymbols(symbols){const filtered=symbols.filter(s=>s.exchange_is_open!==0&&s.is_trading_suspended!==1);const ids=['manualSymbol','bulkMarket','signalMarket','analysisSymbol','speedSymbol','chartSymbol','digitSymbol','botMarket','quickMarket'];ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;const old=el.value;el.innerHTML='';filtered.slice(0,250).forEach(s=>{const value=s.underlying_symbol||s.symbol;if(!value)return;const o=document.createElement('option');o.value=value;o.textContent=s.underlying_symbol_name||s.display_name||value;el.appendChild(o)});if([...el.options].some(o=>o.value===old))el.value=old});const builderSymbol=window.TNX_BLOCKLY_RUNNER?.running&&window.TNX_BLOCKLY_RUNNER?.config?.symbol;const chosen=builderSymbol||document.getElementById('digitSymbol')?.value || document.getElementById('chartSymbol')?.value;if(chosen && (!subscribedSymbol || subscribedSymbol!==chosen))subscribeTicks(chosen);updateDigitMarketUI();if(liveConnected&&chosen){requestDigitContractsFor(chosen);if(!builderSymbol)requestDigitProposal();}}
 function subscribeTicks(symbol){
   if(!symbol||!liveConnected)return;
   symbol=String(symbol);
@@ -2603,11 +2603,14 @@ function initDigitTerminal(){
 
   const predTerminal=document.getElementById('digitPredictionTerminal');
   const syncPrediction=(value)=>{
+    if(['DIGITEVEN','DIGITODD'].includes(digitContractMode)){
+      renderDigitPredictionOptions();
+      requestDigitProposal();
+      return;
+    }
     const n=Number(value);
-    if(Number.isFinite(n)) digitSelectedDigit=n;
-    if(pred && pred.value!==String(digitSelectedDigit)) pred.value=String(digitSelectedDigit);
-    if(predTerminal && predTerminal.value!==String(digitSelectedDigit)) predTerminal.value=String(digitSelectedDigit);
-    updateDigitPrediction();
+    if(Number.isFinite(n)) digitSelectedDigit=Math.max(0,Math.min(9,n));
+    renderDigitPredictionOptions();
     requestDigitProposal();
   };
   pred?.addEventListener('change',()=>syncPrediction(pred.value));
@@ -2624,8 +2627,10 @@ function initDigitTerminal(){
   sym?.addEventListener('change',()=>{
     const s=sym.value;
     if(s){
-      subscribeTicks(s);
       digitProposal=null;
+      requestDigitContractsFor(s);
+      subscribeTicks(s);
+      updateDigitMarketUI();
       requestDigitProposal();
     }
   });
@@ -2654,14 +2659,20 @@ function renderDigitModes(){
 function renderDigitPredictionOptions(){
   const selects=[digitEl('digitPrediction'),digitEl('digitPredictionTerminal')].filter(Boolean);
   if(!selects.length)return;
-  const needsDigit=!['DIGITEVEN','DIGITODD'].includes(digitContractMode);
+  const parity=['DIGITEVEN','DIGITODD'].includes(digitContractMode);
+  const needsDigit=!parity;
   const html=needsDigit
-    ? Array.from({length:10},(_,i)=>`<option value="${i}" ${i===digitSelectedDigit?'selected':''}>${i}</option>`).join('')
-    : `<option value="0">${digitContractMode==='DIGITEVEN'?'Even':'Odd'}</option>`;
+    ? Array.from({length:10},(_,i)=>`<option value="${i}">${i}</option>`).join('')
+    : `<option value="${digitContractMode}">${digitContractMode==='DIGITEVEN'?'Even':'Odd'}</option>`;
   selects.forEach(p=>{
-    p.disabled=!needsDigit;
+    p.disabled=parity;
     p.innerHTML=html;
-    p.value=String(digitSelectedDigit);
+    if(needsDigit){
+      const value=String(Math.max(0,Math.min(9,Number(digitSelectedDigit)||0)));
+      p.value=value;
+    }else{
+      p.value=digitContractMode;
+    }
   });
   updateDigitPrediction();
 }
@@ -2743,6 +2754,14 @@ function requestDigitProposal(){
   const amount=Number(digitEl('digitStake')?.value);
   const duration=Math.max(digitDurationMin,Math.min(digitDurationMax,Number(digitEl('digitDuration')?.value)||digitDurationMin));
   if(!symbol||!Number.isFinite(amount)||amount<=0)return;
+  const availableTypes=new Set((digitContracts||[]).map(c=>String(c.contract_type||'')));
+  if(availableTypes.size && !availableTypes.has(digitContractMode)){
+    digitProposal=null;
+    digitSet('digitAsk','—'); digitSet('digitPayout','—'); digitSet('digitReturn','—');
+    const buy=digitEl('digitBuyButton'); if(buy)buy.disabled=true;
+    digitSet('digitTradeStatus',`⚠️ ${digitContractMode} is not currently available for ${symbol}.`);
+    return;
+  }
 
   digitProposal=null;
   digitSet('digitAsk','Loading…'); digitSet('digitPayout','Loading…'); digitSet('digitReturn','Loading…');

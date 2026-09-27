@@ -4238,3 +4238,197 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
   .tnx-builder-stage{grid-column:2!important;min-width:0!important;}
 }
 </style>
+
+<script id="tnx-reference-bot-engine-v2">
+(function(){
+  'use strict';
+  /*
+   * TradeNovaX reference-style bot engine.
+   * Lifecycle mirrors the extracted bot architecture:
+   * BEFORE_PURCHASE -> DURING_PURCHASE -> CONTRACT_CLOSED -> BEFORE_PURCHASE
+   * The existing TradeNovaX UI, WebSocket and Blockly workspace remain the UI/API layer.
+   */
+  const R=window.TNX_BLOCKLY_RUNNER||(window.TNX_BLOCKLY_RUNNER={});
+  Object.assign(R,{
+    phase:'STOP',running:false,pending:false,runs:0,maxRuns:100,lastSignal:null,
+    currentContract:null,config:null,sessionPnl:0,startedAt:0,
+    contractRecoveryTimer:null,nextRunTimer:null,stopReason:null
+  });
+  window.TNX_REFERENCE_BOT=R;
+
+  const $=id=>document.getElementById(id);
+  const mode=()=>String(window.activeAccount?.account_type||'').toUpperCase()||'DERIV';
+  const status=msg=>{const e=$('builderRunStatus');if(e)e.textContent=msg;try{window.showToast?.(msg)}catch(_){} };
+  const connected=()=>!!(window.liveConnected&&window.activeAccount&&window.derivWS&&window.derivWS.readyState===WebSocket.OPEN&&['REAL','DEMO'].includes(mode()));
+  const clearTimers=()=>{clearTimeout(R.contractRecoveryTimer);clearTimeout(R.nextRunTimer);R.contractRecoveryTimer=null;R.nextRunTimer=null;};
+  const digit=()=>{
+    const t=window.lastTick||null;if(!t)return null;
+    if(Number.isInteger(Number(t.digit)))return Number(t.digit);
+    const pip=Number(window.digitPipSize||1);
+    if(typeof window.digitLastDigit==='function'&&Number.isFinite(Number(t.quote)))return Number(window.digitLastDigit(Number(t.quote),pip));
+    const s=String(t.quote);const m=s.replace(/[^0-9]/g,'');return m?Number(m.slice(-1)):null;
+  };
+  const conditionPass=c=>{
+    if(!c)return true;const d=digit();if(d===null)return false;
+    const get=n=>c.getFieldValue?.(n);
+    const v=Number(get('DIGIT')??get('VALUE')??0);
+    switch(get('OP')){case'NEQ':return d!==v;case'GT':return d>v;case'GTE':return d>=v;case'LT':return d<v;case'LTE':return d<=v;case'EQ':return d===v;default:return true;}
+  };
+  function compileReference(){
+    const ws=window.TNX_BLOCKLY_WORKSPACE;if(!ws)return null;
+    const blocks=ws.getAllBlocks(false);
+    const p=blocks.find(b=>b.type==='tnx_trade_parameters');
+    const buy=blocks.find(b=>b.type==='tnx_purchase');
+    const cond=blocks.find(b=>b.type==='tnx_digit_condition');
+    const restart=blocks.find(b=>b.type==='tnx_trade_again'||b.type==='tnx_restart');
+    const sell=blocks.find(b=>b.type==='tnx_sell_conditions');
+    const mod=blocks.find(b=>b.type==='tnx_contract_modifier');
+    if(!p||!buy)return null;
+    let symbol=p.getFieldValue('SYMBOL')||$('builderMarketSymbol')?.value||$('digitSymbol')?.value||'1HZ100V';
+    let contract=buy.getFieldValue?.('CONTRACT')||p.getFieldValue('CONTRACT')||$('builderContract')?.value||'DIGITEVEN';
+    let duration=Math.max(1,Number(p.getFieldValue('DURATION')||$('digitDuration')?.value||1));
+    let stake=Math.max(0.35,Number(p.getFieldValue('STAKE')||$('digitStake')?.value||1));
+    let prediction=Number(buy.getFieldValue?.('PREDICTION')??p.getFieldValue('PREDICTION')??$('digitPrediction')?.value??5);
+    if(mod){const m=mod.getFieldValue('MOD'),v=Number(mod.getFieldValue('VALUE')||1);if(m==='DURATION')duration=Math.max(1,v);if(m==='STAKE')stake=Math.max(.35,v);if(m==='PREDICTION')prediction=Math.max(0,Math.min(9,v));}
+    const enabled=restart ? restart.getFieldValue('ENABLED')!=='FALSE' : true;
+    const raw=restart?.getFieldValue('RUNS')??restart?.getFieldValue('MAX_RUNS')??$('mkoreanMaxRuns')?.value??100;
+    const maxRuns=Math.max(1,Math.min(100,Number(raw)||100));
+    return {symbol,contract,duration,stake,prediction,condition:cond,restart,sell,enabled,maxRuns};
+  }
+  function stop(reason){
+    clearTimers();R.running=false;R.pending=false;R.currentContract=null;R.phase='STOP';R.stopReason=reason||'Stopped by user.';status('⏹ '+R.stopReason);
+  }
+  function recover(id){
+    clearTimeout(R.contractRecoveryTimer);
+    R.contractRecoveryTimer=setTimeout(()=>{
+      if(!R.running||R.currentContract!==String(id)||!window.send)return;
+      try{window.send({proposal_open_contract:1,contract_id:String(id),subscribe:1});}catch(_){}
+    },1500);
+  }
+  function scheduleNext(){
+    clearTimeout(R.nextRunTimer);
+    if(!R.running||R.pending||R.currentContract||R.runs>=R.maxRuns)return;
+    R.nextRunTimer=setTimeout(()=>{if(R.running&&!R.pending&&!R.currentContract){R.phase='BEFORE_PURCHASE';R.lastSignal=null;status(`🔄 Run ${R.runs}/${R.maxRuns} completed • waiting for next live condition…`);evaluateTick();}},80);
+  }
+  function evaluateTick(){
+    if(!R.running||R.pending||R.currentContract||!R.config)return;
+    if(!connected()){stop(`${mode()} Deriv connection lost`);return;}
+    if(window.tnxTradingHalted){stop(`${mode()} trading is halted by safety controls`);return;}
+    if(R.runs>=R.maxRuns){stop('Bot finished • maximum runs reached');return;}
+    if(!conditionPass(R.config.condition))return;
+    const epoch=Number(window.lastTick?.epoch||0);if(epoch&&R.lastSignal===epoch)return;R.lastSignal=epoch||Date.now();
+    if(typeof window.tnxCanOpenTrade==='function'&&!window.tnxCanOpenTrade(R.config.stake,'reference-bot')){stop('Risk controls blocked the next trade');return;}
+    const payload={proposal:1,amount:R.config.stake,basis:'stake',contract_type:R.config.contract,currency:window.activeAccount.currency||'USD',duration:R.config.duration,duration_unit:'t',underlying_symbol:R.config.symbol,subscribe:1};
+    if(['DIGITOVER','DIGITUNDER','DIGITMATCH','DIGITDIFF'].includes(R.config.contract))payload.barrier=String(R.config.prediction);
+    try{
+      R.phase='BEFORE_PURCHASE';R.pending=true;
+      const req=window.send(payload);
+      window.pending.set(req,{kind:'tnxReferenceProposal',amount:R.config.stake,symbol:R.config.symbol,direction:R.config.contract,config:R.config,status:$('builderRunStatus')});
+      status(`🟡 ${mode()} proposal requested • waiting for Deriv…`);
+    }catch(e){R.pending=false;stop('Proposal request failed: '+(e.message||e));}
+  }
+  R.evaluateTick=evaluateTick;R.scheduleNextRun=scheduleNext;R.recoverContract=recover;R.stopCleanly=stop;
+
+  window.tnxBuilderRun=async function(){
+    const cfg=compileReference();
+    if(!cfg){status('🔴 Add Trade parameters and Purchase blocks first.');return;}
+    if(!connected()){status(`🔴 Connect a REAL or DEMO Deriv account first.`);return;}
+    if(typeof window.tnxCanOpenTrade==='function'&&!window.tnxCanOpenTrade(cfg.stake,'reference-bot-start'))return;
+    const accountMode=mode();
+    const msg=`Run ${accountMode} bot\nAccount: ${window.activeAccount.account_id}\nMarket: ${cfg.symbol}\nContract: ${cfg.contract}\nStake: ${cfg.stake.toFixed(2)} ${window.activeAccount.currency||'USD'}\nDuration: ${cfg.duration} tick(s)\n${cfg.enabled?'Maximum runs: '+cfg.maxRuns:'Single run'}`;
+    if(typeof window.confirmRealTrade==='function'&&!window.confirmRealTrade(msg))return;
+    clearTimers();R.running=true;R.pending=false;R.phase='BEFORE_PURCHASE';R.runs=0;R.maxRuns=cfg.enabled?cfg.maxRuns:1;R.lastSignal=null;R.currentContract=null;R.config=cfg;R.startedAt=Date.now();R.sessionPnl=0;R.stopReason=null;
+    try{window.subscribeTicks(cfg.symbol);}catch(e){stop('Could not subscribe to '+cfg.symbol+': '+(e.message||e));return;}
+    status(`🟢 BOT RUNNING ${accountMode} • ${cfg.symbol} • waiting for live condition…`);
+    evaluateTick();
+  };
+  window.tnxBuilderStop=()=>stop('Stopped by user.');
+
+  // Proposal stage: BEFORE_PURCHASE -> BUYING.
+  const previousProposal=window.handleProposal;
+  if(!previousProposal.__tnxReferenceV2){
+    const wrappedProposal=function(d){
+      const ctx=window.pending?.get(d?.req_id);
+      if(ctx?.kind==='tnxReferenceProposal'){
+        window.pending.delete(d.req_id);R.pending=false;
+        const p=d.proposal||{};
+        if(!p.id){stop('Deriv returned no proposal ID');return;}
+        if(typeof window.tnxCanOpenTrade==='function'&&!window.tnxCanOpenTrade(ctx.amount,'reference-bot-buy')){stop('Risk controls blocked the purchase');return;}
+        try{
+          const req=window.send({buy:p.id,price:Number(p.ask_price??ctx.amount)});
+          R.phase='DURING_PURCHASE';R.pending=true;
+          window.pending.set(req,{kind:'tnxReferenceBuy',amount:ctx.amount,symbol:ctx.symbol,direction:ctx.direction,config:ctx.config,status:ctx.status});
+          status(`🟠 ${mode()} proposal accepted • purchasing contract…`);
+        }catch(e){stop('Purchase request failed: '+(e.message||e));}
+        return;
+      }
+      return previousProposal?.apply(this,arguments);
+    };
+    wrappedProposal.__tnxReferenceV2=true;window.handleProposal=wrappedProposal;
+  }
+
+  // Purchase stage: count a run ONLY after Deriv returns a real contract_id.
+  const previousBuy=window.handleBuy;
+  if(!previousBuy.__tnxReferenceV2){
+    const wrappedBuy=function(d){
+      const ctx=window.pending?.get(d?.req_id);
+      if(ctx?.kind==='tnxReferenceBuy'){
+        window.pending.delete(d.req_id);R.pending=false;
+        const id=d.buy?.contract_id;
+        if(!id){stop('Deriv purchase returned no contract ID');return;}
+        R.currentContract=String(id);R.phase='DURING_PURCHASE';R.runs++;
+        try{window.activeContracts?.set(String(id),d.buy);}catch(_){}
+        try{window.send({proposal_open_contract:1,contract_id:String(id),subscribe:1});}catch(e){stop('Could not subscribe to contract: '+(e.message||e));return;}
+        status(`🟢 ${mode()} CONTRACT OPEN • Run ${R.runs}/${R.maxRuns} • ${ctx.direction}`);
+        try{window.renderPositions?.();window.updateSummary?.();}catch(_){}
+        return;
+      }
+      return previousBuy?.apply(this,arguments);
+    };
+    wrappedBuy.__tnxReferenceV2=true;window.handleBuy=wrappedBuy;
+  }
+
+  // Contract stage: DURING_PURCHASE -> CLOSED -> BEFORE_PURCHASE.
+  const previousContract=window.handleContract;
+  if(!previousContract.__tnxReferenceV2){
+    const wrappedContract=function(c){
+      const id=String(c?.contract_id||'');
+      const isOur=id&&R.currentContract===id;
+      const result=previousContract?.apply(this,arguments);
+      if(!R.running||!isOur)return result;
+      const closed=!!c?.is_sold||['won','lost','sold','expired'].includes(String(c?.status||'').toLowerCase());
+      if(!closed){recover(id);return result;}
+      clearTimeout(R.contractRecoveryTimer);R.currentContract=null;R.pending=false;R.phase='CONTRACT_CLOSED';
+      const pnl=Number(c?.profit||0);if(Number.isFinite(pnl))R.sessionPnl+=pnl;
+      if(R.runs>=R.maxRuns){R.running=false;R.phase='STOP';status(`⏹ Bot finished • maximum runs reached • ${R.runs}/${R.maxRuns} • session P/L ${R.sessionPnl.toFixed(2)}`);}
+      else{status(`🔄 Contract closed • P/L ${Number.isFinite(pnl)?pnl.toFixed(2):'0.00'} • Run ${R.runs}/${R.maxRuns} • waiting for next condition…`);scheduleNext();}
+      return result;
+    };
+    wrappedContract.__tnxReferenceV2=true;window.handleContract=wrappedContract;
+    try{handleContract=wrappedContract;}catch(_){}
+  }
+
+  // BEFORE_PURCHASE is driven by the central Deriv tick path.
+  const previousTick=window.onTick;
+  if(!previousTick.__tnxReferenceV2){
+    const wrappedTick=function(){
+      const result=previousTick?.apply(this,arguments);
+      if(R.running&&!R.pending&&!R.currentContract)evaluateTick();
+      return result;
+    };
+    wrappedTick.__tnxReferenceV2=true;window.onTick=wrappedTick;
+  }
+
+  // Keep the Blockly Restart block aligned with the reference application's 1-100 range.
+  function patchRestartDefault(){
+    try{
+      const ws=window.TNX_BLOCKLY_WORKSPACE;if(!ws)return;
+      ws.getAllBlocks(false).filter(b=>b.type==='tnx_trade_again'||b.type==='tnx_restart').forEach(b=>{
+        if(Number(b.getFieldValue?.('RUNS'))<1){try{b.setFieldValue('100','RUNS')}catch(_){}
+        }
+      });
+    }catch(_){}
+  }
+  window.addEventListener('load',patchRestartDefault);setTimeout(patchRestartDefault,1000);
+})();
+</script>

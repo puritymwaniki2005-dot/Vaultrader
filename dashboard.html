@@ -3686,7 +3686,7 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
     if(type==='analysis')return {type,condition:'last-digit',operator:'equals',value:7};
     if(type==='purchase')return {type,contract:'DIGITEVEN',prediction:5};
     if(type==='sell')return {type,condition:'sell-available'};
-    if(type==='restart')return {type,enabled:true,maxRuns:1};
+    if(type==='restart')return {type,enabled:true,maxRuns:100};
     return {type,message:'TradeNovaX bot notification'};
   }
   function syncFromParams(b){
@@ -3777,9 +3777,9 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
     B['tnx_digit_condition']={init:function(){this.appendValueInput('VALUE').setCheck('Number').appendField('IF last digit');this.appendDummyInput().appendField(new Blockly.FieldDropdown([['=','EQ'],['≠','NEQ'],['>','GT'],['≥','GTE'],['<','LT'],['≤','LTE']]),'OP').appendField(new Blockly.FieldNumber(5,0,9,1),'DIGIT');this.setInputsInline(true);this.setOutput(true,'Boolean');this.setColour('#5b6f8f')}};
     B['tnx_purchase']={init:function(){this.appendDummyInput().appendField('Purchase contract');this.appendDummyInput().appendField('Use configured contract');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#a46b00')}};
     B['tnx_sell_conditions']={init:function(){this.appendDummyInput().appendField('Sell conditions');this.appendDummyInput().appendField('Sell at profit/loss');this.appendDummyInput().appendField(new Blockly.FieldNumber(0.01,-100000,100000,.01),'TARGET');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#b07a00')}};
-    B['tnx_trade_again']={init:function(){this.appendDummyInput().appendField('Trade again');this.appendDummyInput().appendField(new Blockly.FieldCheckbox('TRUE'),'ENABLED');this.appendDummyInput().appendField('Maximum runs').appendField(new Blockly.FieldNumber(50,1,1000,1),'RUNS');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#7a7a7a')}};
+    B['tnx_trade_again']={init:function(){this.appendDummyInput().appendField('Trade again');this.appendDummyInput().appendField(new Blockly.FieldCheckbox('TRUE'),'ENABLED');this.appendDummyInput().appendField('Maximum runs').appendField(new Blockly.FieldNumber(100,1,100,1),'RUNS');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#7a7a7a')}};
     B['tnx_notification']={init:function(){this.appendDummyInput().appendField('Custom notification');this.appendDummyInput().appendField(new Blockly.FieldTextInput('Trade completed'),'TEXT');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#6a4c93')}};
-    B['tnx_restart']={init:function(){this.appendDummyInput().appendField('Restart trading conditions');this.appendDummyInput().appendField(new Blockly.FieldCheckbox('TRUE'),'ENABLED');this.appendDummyInput().appendField('Maximum runs').appendField(new Blockly.FieldNumber(50,1,1000,1),'RUNS');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#555')}};
+    B['tnx_restart']={init:function(){this.appendDummyInput().appendField('Restart trading conditions');this.appendDummyInput().appendField(new Blockly.FieldCheckbox('TRUE'),'ENABLED');this.appendDummyInput().appendField('Maximum runs').appendField(new Blockly.FieldNumber(100,1,100,1),'RUNS');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#555')}};
     B['tnx_binary_tool']={init:function(){this.appendDummyInput().appendField('Binarytools');this.appendDummyInput().appendField(new Blockly.FieldDropdown([['Last digit','LAST_DIGIT'],['Digit frequency','FREQUENCY'],['Tick count','TICK_COUNT']]),'TOOL');this.setOutput(true,null);this.setColour('#3f6f7d')}};
     B['tnx_contract_modifier']={init:function(){this.appendDummyInput().appendField('Contract modifier');this.appendDummyInput().appendField(new Blockly.FieldDropdown([['Duration','DURATION'],['Stake','STAKE'],['Prediction','PREDICTION']]),'MOD');this.appendDummyInput().appendField(new Blockly.FieldNumber(1),'VALUE');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#805c2d')}};
     B['tnx_barrier']={init:function(){this.appendDummyInput().appendField('Barrier settings');this.appendDummyInput().appendField('Barrier').appendField(new Blockly.FieldNumber(5,0,9,1),'BARRIER');this.setPreviousStatement(true,null);this.setNextStatement(true,null);this.setColour('#805c2d')}};
@@ -3972,7 +3972,7 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
     }
   }catch(_){}
 
-  const R={running:false,pending:false,runs:0,maxRuns:1,lastSignal:null,currentContract:null,config:null,startedAt:0,sessionPnl:0};
+  const R={running:false,pending:false,runs:0,maxRuns:100,lastSignal:null,currentContract:null,config:null,startedAt:0,sessionPnl:0,contractRecoveryTimer:null};
   window.TNX_BLOCKLY_RUNNER=R;
   const $=id=>document.getElementById(id);
   const status=msg=>{const e=$('builderRunStatus');if(e)e.textContent=msg;try{window.showToast?.(msg)}catch(_){} };
@@ -4015,7 +4015,7 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
       if(mod==='DURATION')duration=Math.max(1,val); if(mod==='STAKE')stake=Math.max(0.35,val); if(mod==='PREDICTION')prediction=Math.max(0,Math.min(9,val));
     }
     const enabled=restart ? (restart.getFieldValue('ENABLED')!=='FALSE') : false;
-    const maxRuns=restart ? Math.max(1,Number(restart.getFieldValue('RUNS')||restart.getFieldValue('MAX_RUNS')||document.getElementById('mkoreanMaxRuns')?.value||50)) : 1;
+    const maxRuns=restart ? Math.max(1,Number(restart.getFieldValue('RUNS')||restart.getFieldValue('MAX_RUNS')||document.getElementById('mkoreanMaxRuns')?.value||100)) : 1;
     return {symbol,tradeType,contract,duration,stake,prediction,condition,enabled,maxRuns,sell};
   }
   function realReady(){return !!(liveConnected&&activeAccount&&derivWS&&derivWS.readyState===WebSocket.OPEN&&['real','demo'].includes(String(activeAccount.account_type||'').toLowerCase()));}
@@ -4040,7 +4040,8 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
     if(!cfg){status('🔴 Add Trade parameters and Purchase blocks first.');return;}
     if(!realReady()){status('🔴 Connect a REAL or DEMO Deriv account first.');return;}
     if(typeof tnxCanOpenTrade==='function'&&!tnxCanOpenTrade(cfg.stake,'builder-start'))return;
-    const msg=`Run REAL bot\nAccount: ${activeAccount.account_id}\nMarket: ${cfg.symbol}\nContract: ${cfg.contract}\nStake: ${cfg.stake.toFixed(2)} ${activeAccount.currency||'USD'}\nDuration: ${cfg.duration} tick(s)\n${cfg.enabled?'Maximum runs: '+cfg.maxRuns:'Single run'}`;
+    const accountMode=String(activeAccount.account_type||'REAL').toUpperCase();
+    const msg=`Run ${accountMode} bot\nAccount: ${activeAccount.account_id}\nMarket: ${cfg.symbol}\nContract: ${cfg.contract}\nStake: ${cfg.stake.toFixed(2)} ${activeAccount.currency||'USD'}\nDuration: ${cfg.duration} tick(s)\n${cfg.enabled?'Maximum runs: '+cfg.maxRuns:'Single run'}`;
     if(typeof confirmRealTrade==='function'&&!confirmRealTrade(msg))return;
     R.running=true;R.pending=false;R.runs=0;R.maxRuns=cfg.enabled?cfg.maxRuns:1;R.lastSignal=null;R.currentContract=null;R.config=cfg;R.startedAt=Date.now();R.sessionPnl=0;
     try{subscribeTicks(cfg.symbol)}catch(e){}
@@ -4107,6 +4108,69 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
 })();
 </script>
 
+
+<script id="tnx-reference-engine-recovery">
+(function(){
+  'use strict';
+  const R=window.TNX_BLOCKLY_RUNNER;
+  if(!R) return;
+  const runnerStatus=msg=>{const e=document.getElementById('builderRunStatus');if(e)e.textContent=msg;};
+  const scheduleNextRun=()=>{
+    if(!R.running||R.pending||R.currentContract||R.runs>=R.maxRuns)return;
+    clearTimeout(R.contractRecoveryTimer);
+    R.contractRecoveryTimer=setTimeout(()=>{
+      if(R.running&&!R.pending&&!R.currentContract&&typeof window.onTick==='function') window.onTick();
+    },50);
+  };
+  // Reference-engine behavior: after a sell/close transaction, request the open-contract
+  // state again if Deriv has not delivered the closing update promptly.
+  const recover=contractId=>{
+    if(!contractId||!window.send)return;
+    clearTimeout(R.contractRecoveryTimer);
+    R.contractRecoveryTimer=setTimeout(()=>{
+      if(!R.running||R.currentContract!==String(contractId))return;
+      try{window.send({proposal_open_contract:1,contract_id:String(contractId)});}catch(_){ }
+    },1500);
+  };
+  R.scheduleNextRun=scheduleNextRun;
+  R.recoverContract=recover;
+  R.stopCleanly=function(message){
+    R.running=false;R.pending=false;R.currentContract=null;clearTimeout(R.contractRecoveryTimer);
+    runnerStatus(message||'⏹ Bot stopped');
+  };
+  // Ensure a completed contract can advance to the next run without requiring a manual restart.
+  const oldHandleContract=window.handleContract;
+  if(typeof oldHandleContract==='function' && !oldHandleContract.__tnxReferenceWrapped){
+    const wrapped=function(c){
+      const id=String(c?.contract_id||'');
+      const before=R.currentContract;
+      const closed=!!c?.is_sold||['won','lost','sold','expired'].includes(String(c?.status||'').toLowerCase());
+      const result=oldHandleContract.apply(this,arguments);
+      if(R.running&&id&&before===id){
+        if(closed){
+          clearTimeout(R.contractRecoveryTimer);
+          if(R.runs>=R.maxRuns){
+            R.running=false;R.currentContract=null;
+            runnerStatus('⏹ Bot finished • maximum runs reached');
+          }else{
+            R.currentContract=null;
+            R.pending=false;
+            R.lastSignal=null;
+            runnerStatus(`🔄 Run ${R.runs}/${R.maxRuns} completed • waiting for next configured live condition…`);
+            scheduleNextRun();
+          }
+        }else if(c?.is_sold===false || String(c?.status||'').toLowerCase()==='open'){
+          recover(id);
+        }
+      }
+      return result;
+    };
+    wrapped.__tnxReferenceWrapped=true;
+    window.handleContract=wrapped;
+    try{handleContract=wrapped;}catch(_){ }
+  }
+})();
+</script>
 
 <script id="tnx-final-live-engine-hardening">
 (function(){

@@ -1170,7 +1170,7 @@
                     }
                     
                     setTimeout(() => {
-                        window.location.href = '/dashboard';
+                        window.location.href = new URL('dashboard.html', window.location.href).href;
                     }, 1500);
                     
                     return tokenData;

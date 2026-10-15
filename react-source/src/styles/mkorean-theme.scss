@@ -1,0 +1,42 @@
+/*
+ * TradeNovaX — Mkorean-inspired React UI theme.
+ * Visual-only overrides. Authentication, API, risk checks and trade execution remain unchanged.
+ */
+:root {
+    --tnx-bg: #08111f;
+    --tnx-panel: #101d30;
+    --tnx-panel-raised: #14243a;
+    --tnx-panel-hover: #192b43;
+    --tnx-border: rgba(156, 181, 211, 0.16);
+    --tnx-text: #edf5ff;
+    --tnx-muted: #92a5bd;
+    --tnx-accent: #4de2b1;
+    --tnx-accent-strong: #16b887;
+    --tnx-blue: #67a9ff;
+    --tnx-radius: 18px;
+    --tnx-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+}
+body.theme, body.theme--light, body.theme--dark {
+    --general-main-1: var(--tnx-bg);
+    --general-section-1: var(--tnx-panel);
+    --general-section-2: var(--tnx-panel-raised);
+    --general-section-5: var(--tnx-panel-hover);
+    --text-general: var(--tnx-text);
+    --text-prominent: var(--tnx-text);
+    --text-less-prominent: var(--tnx-muted);
+    --border-normal: var(--tnx-border);
+    background: var(--tnx-bg);
+    color: var(--tnx-text);
+}
+html, body, #root { min-height: 100%; background-color: var(--tnx-bg); }
+button, input, select, textarea { font: inherit; }
+button, [role='button'] { transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease; }
+:focus-visible { outline: 2px solid var(--tnx-accent) !important; outline-offset: 3px; }
+input, select, textarea { border-radius: 10px; }
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-track { background: #0a1423; }
+::-webkit-scrollbar-thumb { background: #2b405a; border: 2px solid #0a1423; border-radius: 20px; }
+::-webkit-scrollbar-thumb:hover { background: #3d5a78; }
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}

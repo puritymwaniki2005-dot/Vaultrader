@@ -52,8 +52,8 @@ const BOT_TEMPLATES = [
     // ===== 2. PROFITS MINER BOT (QUICK) =====
     {
         id: 'profits-miner',
-        name: 'PROFITS MINER BOT',
-        type: BOT_TYPES.QUICK,
+        name: '@PROFITS MINER BOT',
+        type: BOT_TYPES.PREMIUM,
         strategy: BOT_STRATEGIES.RISE_FALL,
         description: '⭐ Premium automated trading bot with advanced algorithms.',
         icon: '🚀',
@@ -65,14 +65,14 @@ const BOT_TEMPLATES = [
         stop_loss: 10,
         take_profit: 20,
         status: 'stopped',
-        badge: 'QUICK BOT'
+        badge: '⭐ PREMIUM'
     },
 
-    // ===== 3. MKOREAN SV7 2025 (PREMIUM) =====
+    // ===== 3. MKOREAN SV7 2025 (FREE) =====
     {
         id: 'sv7-2025',
         name: 'Mkorean SV7 2025',
-        type: BOT_TYPES.PREMIUM,
+        type: BOT_TYPES.FREE,
         strategy: BOT_STRATEGIES.EVEN_ODD,
         description: 'Automate your trades with this efficient bot strategy.',
         icon: '🤖',
@@ -84,7 +84,7 @@ const BOT_TEMPLATES = [
         stop_loss: 3,
         take_profit: 8,
         status: 'stopped',
-        badge: '⭐ PREMIUM'
+        badge: '🎁 FREE'
     },
 
     // ===== 4. QUANTUM EDGE AI (FREE + QUICK) =====

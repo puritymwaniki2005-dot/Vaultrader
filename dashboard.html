@@ -4192,6 +4192,143 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
   }
 })();
 </script>
+
+<style id="tnx-mkorean-reference-theme">
+/* Vaultrader visual alignment: premium Mkorean-inspired palette and tighter workspace hierarchy.
+   This layer changes presentation only; existing trading handlers and IDs are preserved. */
+:root{
+  --gold:#ffd21a;--gold-dark:#ff8a00;--gold-light:#ffe58a;
+  --navy:#170008;--navy-light:#2a0b20;--bg:#0b0615;
+  --card:rgba(24,8,27,.94);--text:#f8f4ff;--text-muted:#b6a7c4;
+  --border:rgba(255,210,26,.16);--green:#35d49a;--red:#ff647c;
+}
+body{
+  background:
+    radial-gradient(900px 500px at 10% 0%,rgba(255,42,12,.10),transparent 65%),
+    radial-gradient(800px 600px at 90% 80%,rgba(105,38,255,.12),transparent 70%),
+    #0b0615!important;
+  color:var(--text)!important;
+}
+.sidebar{
+  background:linear-gradient(180deg,#19000a 0%,#16071f 100%)!important;
+  border-right:1px solid rgba(255,210,26,.18)!important;
+  box-shadow:10px 0 35px rgba(0,0,0,.15);
+}
+.sidebar-brand{border-bottom-color:rgba(255,210,26,.16)!important;padding-top:1.4rem!important}
+.logo-icon,.sidebar-user .avatar{
+  background:linear-gradient(135deg,#ffe46b,#ff9b00 65%,#ff4b12)!important;
+  color:#21030a!important;box-shadow:0 6px 20px rgba(255,138,0,.18);
+}
+.brand-text span{color:var(--gold)!important}
+.sidebar-nav .nav-label{color:#9e8ba8!important;letter-spacing:1.4px!important;font-weight:800}
+.sidebar-nav a{
+  margin:3px 10px!important;padding:1rem 1.1rem!important;border:1px solid transparent!important;
+  border-radius:11px!important;border-left-width:3px!important;
+  color:#b9adc7!important;transition:background .18s ease,border-color .18s ease,transform .18s ease!important;
+}
+.sidebar-nav a:hover{
+  background:rgba(255,255,255,.045)!important;color:#fff!important;
+  border-color:rgba(255,210,26,.10)!important;transform:translateX(2px);
+}
+.sidebar-nav a.active{
+  color:#ffe27a!important;border-color:rgba(255,210,26,.18)!important;
+  border-left-color:#ffd21a!important;
+  background:linear-gradient(100deg,rgba(255,151,0,.17),rgba(111,30,91,.12))!important;
+  box-shadow:inset 0 0 0 1px rgba(255,210,26,.035);
+}
+.sidebar-nav a .badge{
+  background:linear-gradient(135deg,#ffd21a,#ff8a00)!important;color:#24030a!important;
+  border-radius:7px!important;padding:.25rem .65rem!important;font-size:.9rem!important;
+}
+.sidebar-footer{background:#16071f!important;border-top-color:rgba(255,210,26,.15)!important}
+.main-content{min-width:0}
+.topbar{
+  background:rgba(15,5,22,.91)!important;backdrop-filter:blur(18px);
+  border-bottom-color:rgba(255,210,26,.13)!important;padding:1.35rem 0!important;
+}
+.topbar-left h1{font-size:2.15rem!important;letter-spacing:-.035em}
+.topbar-left .page-sub{color:#a99ab9!important}
+.topbar-right .balance{color:#ffd21a!important}
+.btn-logout{border-radius:10px!important}
+.card,.execution-panel,.ai-scanner,.bot-card,.tnx-dash-panel{
+  background:linear-gradient(145deg,rgba(31,12,34,.97),rgba(15,7,24,.97))!important;
+  border-color:rgba(255,210,26,.13)!important;border-radius:17px!important;
+  box-shadow:0 12px 32px rgba(0,0,0,.12);
+}
+.bot-card{padding:1.8rem!important;position:relative;overflow:hidden}
+.bot-card:before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,#ffd21a,#ff4b12);opacity:.75;
+}
+.bot-card:hover{
+  border-color:rgba(255,210,26,.4)!important;transform:translateY(-3px)!important;
+  box-shadow:0 18px 35px rgba(0,0,0,.23)!important;
+}
+.bot-card .bot-name{font-size:1.55rem!important;letter-spacing:-.02em}
+.bot-card .bot-desc{line-height:1.65!important;color:#b6a7c4!important}
+.bot-badge.premium{background:linear-gradient(135deg,#ffd21a,#ff8a00)!important;color:#24030a!important}
+.bot-badge.free{background:rgba(53,212,154,.13)!important;color:#63e8b7!important}
+.btn-load,.btn-run,.tnx-primary-btn{
+  background:linear-gradient(120deg,#ffd21a 0%,#ff9b00 58%,#ff5b12 100%)!important;
+  color:#21030a!important;border:0!important;border-radius:10px!important;
+  box-shadow:0 7px 20px rgba(255,138,0,.13);
+}
+.btn-load:hover,.btn-run:hover,.tnx-primary-btn:hover{filter:brightness(1.06);box-shadow:0 10px 24px rgba(255,138,0,.22)!important}
+.btn-bot,.tnx-secondary-btn{
+  border:1px solid rgba(255,210,26,.2)!important;background:rgba(255,255,255,.035)!important;
+  border-radius:9px!important;color:#f8f4ff!important;
+}
+.btn-bot:hover{border-color:#ffd21a!important}
+.execution-tabs{border-bottom-color:rgba(255,210,26,.14)!important}
+.tab-btn.active{color:#ffd21a!important;border-bottom-color:#ffd21a!important}
+.summary-item,.run-section,.scanner-results{
+  background:rgba(255,255,255,.025)!important;border-color:rgba(255,210,26,.1)!important;
+}
+.tnx-dash-hero{
+  background:radial-gradient(circle at 90% 0%,rgba(255,138,0,.12),transparent 40%),linear-gradient(135deg,#210713,#14091f)!important;
+  border-color:rgba(255,210,26,.18)!important;border-radius:20px!important;
+}
+.tnx-eyebrow,.tnx-metric-balance strong{color:#ffd21a!important}
+.tnx-metric-card{
+  background:linear-gradient(145deg,rgba(32,12,35,.98),rgba(17,7,26,.98))!important;
+  border-color:rgba(255,255,255,.075)!important;border-radius:16px!important;
+}
+.tnx-metric-icon{background:rgba(255,210,26,.1)!important;color:#ffd21a!important}
+.tnx-live-pill.live{color:#63e8b7!important}
+.tnx-builder-reference{
+  background:#fff!important;border:1px solid #e3e5e9!important;border-radius:12px!important;
+  box-shadow:0 18px 45px rgba(0,0,0,.18)!important;
+}
+.tnx-builder-sidebar{background:#fff!important;color:#30323a!important;border-right:1px solid #e1e3e7!important}
+.tnx-builder-stage{background:#fff!important}
+.tnx-builder-toolbar-ref{background:#fff!important;border-color:#dedfe4!important;border-radius:8px!important}
+.tnx-builder-toolbar-ref button{color:#3b3e46!important}
+.tnx-builder-summary{background:#fff!important;color:#292d35!important;border-left:1px solid #e1e3e7!important}
+.tnx-summary-tabs{background:#f7f7f9!important;border-bottom:1px solid #e3e5e9!important}
+.tnx-summary-tabs button{color:#6c717a!important}
+.tnx-summary-tabs button.active{color:#a90000!important;border-bottom-color:#a90000!important}
+.tnx-summary-grid>div{background:#f7f7f9!important;border-color:#e8e9ed!important;color:#30323a!important}
+.tnx-summary-grid span,.tnx-summary-empty p{color:#6b707a!important}
+.tnx-builder-bottom-ref{background:#fff!important;border-top:1px solid #e2e4e8!important;color:#656b76!important}
+.tnx-builder-run-ref{background:linear-gradient(120deg,#ffd21a,#ff8a00)!important;color:#21030a!important;border-radius:8px!important}
+.tnx-builder-footer-ref{color:#737986!important}
+.tnx-ref-tabs{border-bottom:1px solid rgba(255,210,26,.14)!important}
+.tnx-ref-tab{border-radius:10px 10px 0 0!important}
+@media(max-width:900px){
+  .main-content{padding-left:1.2rem!important;padding-right:1.2rem!important}
+  .topbar{padding:.9rem 0!important}
+  .tnx-dash-hero{align-items:flex-start!important;flex-direction:column!important;padding:2rem!important}
+  .tnx-dash-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:560px){
+  .tnx-dash-metrics{grid-template-columns:1fr 1fr!important;gap:8px!important}
+  .tnx-metric-card{padding:12px!important;gap:8px!important}
+  .tnx-metric-card strong{font-size:17px!important}
+  .sidebar-nav a{margin:2px 7px!important}
+  .card,.execution-panel,.ai-scanner{padding:1.35rem!important}
+}
+</style>
+
 </body>
 </html><style id="tnx-layout-final-overlap-fix">
 /* FINAL BUILDER LAYOUT FIX: never let the Summary panel overlap the Blockly stage. */

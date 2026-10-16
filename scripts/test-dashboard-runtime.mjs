@@ -28,6 +28,9 @@ for (const required of [
   'proposal_open_contract:1',
   'R.sessionPnl+=pnl',
   'window.tnxBuilderStop=()=>stop',
+  'waiting for a NEW live tick',
+  'R.sellRequestedFor!==id',
+  'proposal_open_contract:1,contract_id:String(contractId)',
 ]) {
   assert.ok(runner.includes(required), 'Consolidated runtime missing required flow: ' + required);
 }
@@ -61,6 +64,9 @@ try {
     })[name] },
     { type: 'tnx_purchase', getFieldValue: (name) => ({
       CONTRACT: 'DIGITEVEN', PREDICTION: '5'
+    })[name] },
+    { type: 'tnx_sell_conditions', getFieldValue: (name) => ({
+      TARGET: '0.20'
     })[name] },
   ];
   let reqId = 100;
@@ -110,7 +116,13 @@ try {
     'Confirmed buy must start contract monitoring.');
   assert.equal(mockWindow.TNX_BLOCKLY_RUNNER.runs, 1, 'Run count must increment only after a contract ID exists.');
   mockWindow.handleContract({
-    contract_id: 123456, is_sold: true, status: 'won', profit: 0.35, buy_price: 0.35,
+    contract_id: 123456, is_sold: false, status: 'open', profit: 0.25, bid_price: 0.60,
+  });
+  const sellCall = calls.find((call) => call.payload.sell === '123456');
+  assert.ok(sellCall, 'Configured sell target must issue a sell request once its threshold is met.');
+  assert.equal(sellCall.payload.price, 0.60, 'Sell request must use the latest bid price.');
+  mockWindow.handleContract({
+    contract_id: 123456, is_sold: true, status: 'sold', profit: 0.35, buy_price: 0.35,
   });
   assert.equal(mockWindow.TNX_BLOCKLY_RUNNER.running, false,
     'Single-run bot must stop after its contract closes.');

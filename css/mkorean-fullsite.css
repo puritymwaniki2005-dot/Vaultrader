@@ -5,20 +5,20 @@
    workspace, account state and risk-confirmation logic are retained.
    ========================================================== */
 :root{
-  --vx-ink:#080712;
-  --vx-ink-2:#100b1b;
-  --vx-panel:#171020;
-  --vx-panel-2:#201329;
-  --vx-red:#790d2a;
-  --vx-red-2:#a31837;
-  --vx-gold:#ffd54a;
-  --vx-gold-2:#ff9d22;
-  --vx-cyan:#49e5ff;
+  --vx-ink:#08111f;
+  --vx-ink-2:#0b1728;
+  --vx-panel:#101d30;
+  --vx-panel-2:#14243a;
+  --vx-red:#0b1728;
+  --vx-red-2:#16415a;
+  --vx-gold:#4de2b1;
+  --vx-gold-2:#16b887;
+  --vx-cyan:#67a9ff;
   --vx-blue:#568bff;
-  --vx-purple:#9d72ff;
+  --vx-purple:#4de2b1;
   --vx-text:#f7f3ff;
-  --vx-muted:#b6a9c7;
-  --vx-border:rgba(255,213,74,.18);
+  --vx-muted:#92a5bd;
+  --vx-border:rgba(156,181,211,.16);
   --vx-green:#38e6a1;
   --vx-danger:#ff617d;
   --vx-radius:16px;
@@ -27,20 +27,20 @@
 html{scroll-behavior:smooth}
 body{
   background:
-    radial-gradient(ellipse at 12% 0%,rgba(139,13,53,.19),transparent 35%),
-    radial-gradient(ellipse at 92% 32%,rgba(104,48,202,.13),transparent 38%),
+    radial-gradient(ellipse at 12% 0%,rgba(77,226,177,.10),transparent 35%),
+    radial-gradient(ellipse at 92% 32%,rgba(103,169,255,.08),transparent 38%),
     var(--vx-ink)!important;
   color:var(--vx-text);
 }
 button,a,input,select,textarea{transition:background-color .18s ease,border-color .18s ease,box-shadow .18s ease,color .18s ease,transform .18s ease}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--vx-cyan)!important;outline-offset:3px}
-::selection{background:rgba(255,213,74,.35);color:#fff}
+::selection{background:rgba(77,226,177,.28);color:#fff}
 
 /* ---------- Public landing page ---------- */
 .lp__page{position:relative;isolation:isolate;color:var(--vx-text)!important}
 .lp__page:before{
   content:"";position:absolute;z-index:-1;pointer-events:none;inset:0 0 auto;height:780px;
-  background:radial-gradient(ellipse at 50% 0%,rgba(115,12,43,.22),transparent 68%);
+  background:radial-gradient(ellipse at 50% 0%,rgba(77,226,177,.08),transparent 68%);
 }
 .lp__page .layout{max-width:1440px;padding-inline:clamp(1.6rem,4vw,5.6rem)}
 .lp__topbar{
@@ -57,7 +57,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   min-height:43px;border-radius:10px!important;font-weight:800!important;letter-spacing:.01em;
 }
 .lp__topbar-btn--ghost,.lp__hero-btn--outline{
-  border:1px solid rgba(255,213,74,.35)!important;background:rgba(255,255,255,.025)!important;color:#fff!important;
+  border:1px solid rgba(77,226,177,.28)!important;background:rgba(255,255,255,.025)!important;color:#fff!important;
 }
 .lp__topbar-btn--ghost:hover,.lp__hero-btn--outline:hover{background:rgba(255,213,74,.09)!important;border-color:var(--vx-gold)!important;transform:translateY(-1px)}
 .lp__topbar-btn--primary,.lp__hero-btn--primary{
@@ -127,7 +127,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 .lp__feature-card:before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,var(--vx-gold),var(--vx-red-2),var(--vx-purple));opacity:.85}
 .lp__feature-card:hover{transform:translateY(-5px);border-color:rgba(255,213,74,.3)!important;box-shadow:var(--vx-shadow)}
-.lp__feature-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:13px!important;background:linear-gradient(135deg,rgba(255,213,74,.18),rgba(157,114,255,.13))!important;border:1px solid rgba(255,213,74,.2)!important}
+.lp__feature-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:13px!important;background:linear-gradient(135deg,rgba(156,181,211,.16),rgba(157,114,255,.13))!important;border:1px solid rgba(255,213,74,.2)!important}
 .lp__feature-title{color:#fff!important;font-size:1.8rem!important;font-weight:850!important}
 .lp__feature-desc{color:#bcb0cc!important;line-height:1.75!important}
 .lp__reviews-ticker{border-block:1px solid rgba(255,213,74,.12)!important;background:#0d0916!important}
@@ -177,7 +177,7 @@ body:has(#page-dashboard) .topbar{
 }
 .sidebar{
   background:linear-gradient(180deg,#210817 0%,#150b1f 46%,#0d0917 100%)!important;
-  border-right:1px solid rgba(255,213,74,.18)!important;box-shadow:12px 0 34px rgba(0,0,0,.2)!important;
+  border-right:1px solid rgba(156,181,211,.16)!important;box-shadow:12px 0 34px rgba(0,0,0,.2)!important;
 }
 .sidebar-brand{border-bottom-color:rgba(255,213,74,.16)!important}
 .sidebar-brand .logo-icon,.sidebar-user .avatar{
@@ -204,7 +204,7 @@ body:has(#page-dashboard) .topbar{
 .sidebar-footer .footer-item{color:#b6a9c7!important}
 .main-content{background:transparent!important;min-width:0}
 .topbar{color:#fff!important}
-.topbar-left .menu-toggle{border:1px solid rgba(255,213,74,.18)!important;border-radius:10px!important;background:rgba(255,255,255,.03)!important}
+.topbar-left .menu-toggle{border:1px solid rgba(156,181,211,.16)!important;border-radius:10px!important;background:rgba(255,255,255,.03)!important}
 .page-title,.topbar h1,.page-content h1,.page-content h2{color:#fff!important}
 .page-sub{color:#b6a9c7!important}
 .topbar-right .balance,.balance{color:var(--vx-gold)!important;font-weight:850!important}

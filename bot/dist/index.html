@@ -19,10 +19,10 @@
         <meta charset="UTF-8" />
         <base href="/bot/dist/" />
         <script>
-            // The bundled Blockly app expects its own root route. Keep the document and assets
-            // served from /bot/dist while presenting "/" to its client-side router.
-            if (window.location.pathname !== "/") {
-                window.history.replaceState(null, "", "/" + window.location.search + window.location.hash);
+            // The bundled app uses React Router basename="/bot". Keep the document and
+            // assets served from /bot/dist, but expose a matching route inside the iframe.
+            if (!window.location.pathname.startsWith("/bot")) {
+                window.history.replaceState(null, "", "/bot/" + window.location.search + window.location.hash);
             }
         </script>
         <link rel="icon" type="image/svg+xml" href="/deriv-logo.svg" />

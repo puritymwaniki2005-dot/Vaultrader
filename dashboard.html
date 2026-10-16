@@ -940,6 +940,91 @@ select.tnx-control option{background:#0b1020;color:#fff}
             .sidebar-nav a { min-height: 3.5rem; padding: .7rem .8rem !important; font-size: 1.1rem !important; }
             .main-content { padding: 0 1rem 1.5rem !important; padding-top: 13rem !important; }
         }
+
+        /* Mkorean reference pass: white utility header, deep-red navigation, light builder viewport. */
+        .sidebar {
+          background:#ffffff !important;
+          color:#333333 !important;
+          border-bottom:1px solid #d8dadd !important;
+          box-shadow:none !important;
+        }
+        .sidebar-brand {
+          background:#ffffff !important;
+          color:#333333 !important;
+          border-bottom:0 !important;
+          padding:.7rem 1.5rem !important;
+        }
+        .brand-text { color:#3d3d3d !important; }
+        .brand-text span { color:#a00008 !important; }
+        .logo-icon {
+          background:linear-gradient(135deg,#a90008,#e2b600) !important;
+          color:#ffffff !important;
+          border-radius:4px !important;
+        }
+        .sidebar-user {
+          background:#ffffff !important;
+          color:#333333 !important;
+        }
+        .sidebar-user .name { color:#333333 !important; }
+        .sidebar-user .status { color:#159b72 !important; }
+        .sidebar-nav {
+          background:#300000 !important;
+          border-top:0 !important;
+          border-bottom:0 !important;
+          padding:.25rem .5rem !important;
+          gap:0 !important;
+        }
+        .sidebar-nav a {
+          color:#ffffff !important;
+          border-radius:0 !important;
+          border:0 !important;
+          min-height:5.2rem !important;
+          padding:1.2rem 1.45rem !important;
+          font-size:1.25rem !important;
+          font-weight:800 !important;
+        }
+        .sidebar-nav a .icon { color:#ffd400 !important; }
+        .sidebar-nav a .badge {
+          background:#ffc400 !important;
+          color:#280000 !important;
+          border-radius:1rem !important;
+        }
+        .sidebar-nav a:hover { background:#510000 !important; color:#ffffff !important; }
+        .sidebar-nav a.active {
+          background:#9d0000 !important;
+          color:#ffffff !important;
+          border:0 !important;
+          border-bottom:3px solid #ffc900 !important;
+        }
+        .sidebar-nav .nav-label { display:none !important; }
+        .main-content { background:#f1f2f4 !important; }
+        body.tnx-bot-active { background:#f1f2f4 !important; }
+        body.tnx-bot-active .main-content {
+          background:#f1f2f4 !important;
+          padding:0 !important;
+          padding-top:11.7rem !important;
+        }
+        body.tnx-bot-active .topbar { display:none !important; }
+        body.tnx-bot-active #page-bot {
+          margin:0 !important;
+          padding:0 !important;
+          background:#f1f2f4 !important;
+        }
+        body.tnx-bot-active #page-bot .tnx-ref-tabs { display:none !important; }
+        body.tnx-bot-active #tnxOriginalBotFrame {
+          display:block !important;
+          width:100% !important;
+          height:calc(100vh - 12.2rem) !important;
+          min-height:640px !important;
+          border:0 !important;
+          border-radius:0 !important;
+          background:#f1f2f4 !important;
+        }
+        body.tnx-bot-active .sidebar-footer { display:none !important; }
+        @media (max-width:760px) {
+          body.tnx-bot-active .main-content { padding-top:10.5rem !important; }
+          body.tnx-bot-active #tnxOriginalBotFrame { height:calc(100vh - 10.5rem) !important; }
+        }
 </style>
 <style id="tnx-final-botbuilder-ui">
 /* FINAL TRADE NOVAX BOT BUILDER — target workspace layout */

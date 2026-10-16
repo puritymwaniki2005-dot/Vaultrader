@@ -3,17 +3,22 @@
  * Visual-only overrides. Authentication, API, risk checks and trade execution remain unchanged.
  */
 :root {
+    color-scheme: dark;
     --tnx-bg: #08111f;
+    --tnx-bg-soft: #0b1728;
     --tnx-panel: #101d30;
     --tnx-panel-raised: #14243a;
     --tnx-panel-hover: #192b43;
     --tnx-border: rgba(156, 181, 211, 0.16);
+    --tnx-border-strong: rgba(156, 181, 211, 0.28);
     --tnx-text: #edf5ff;
     --tnx-muted: #92a5bd;
     --tnx-accent: #4de2b1;
     --tnx-accent-strong: #16b887;
     --tnx-blue: #67a9ff;
+    --tnx-danger: #ff6b81;
     --tnx-radius: 18px;
+    --tnx-radius-sm: 12px;
     --tnx-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
 }
 body.theme, body.theme--light, body.theme--dark {
@@ -28,15 +33,52 @@ body.theme, body.theme--light, body.theme--dark {
     background: var(--tnx-bg);
     color: var(--tnx-text);
 }
-html, body, #root { min-height: 100%; background-color: var(--tnx-bg); }
+html { min-height: 100%; background: var(--tnx-bg); }
+body, #root { min-height: 100%; background-color: var(--tnx-bg); }
+body { color: var(--tnx-text); }
 button, input, select, textarea { font: inherit; }
-button, [role='button'] { transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease; }
+button, [role='button'] {
+    transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
 :focus-visible { outline: 2px solid var(--tnx-accent) !important; outline-offset: 3px; }
-input, select, textarea { border-radius: 10px; }
+input, select, textarea { border-radius: var(--tnx-radius-sm); }
+::selection { color: #04140f; background: var(--tnx-accent); }
 ::-webkit-scrollbar { width: 9px; height: 9px; }
 ::-webkit-scrollbar-track { background: #0a1423; }
 ::-webkit-scrollbar-thumb { background: #2b405a; border: 2px solid #0a1423; border-radius: 20px; }
 ::-webkit-scrollbar-thumb:hover { background: #3d5a78; }
+
+/* Consistent visual language for common dashboard surfaces. */
+.tab__dashboard,
+.tab__dashboard__content,
+.quick-panel { color: var(--tnx-text); }
+.tab__dashboard__header .subtitle { color: var(--tnx-muted); }
+.quick-panel {
+    border-color: var(--tnx-border);
+    border-radius: var(--tnx-radius);
+}
+button:not(:disabled):hover,
+[role='button']:not([aria-disabled='true']):hover {
+    border-color: var(--tnx-border-strong);
+}
+button:disabled,
+[role='button'][aria-disabled='true'] {
+    cursor: not-allowed;
+    opacity: 0.58;
+}
+a { text-underline-offset: 3px; }
+a:focus-visible { border-radius: 4px; }
+
+@media (max-width: 768px) {
+    :root { --tnx-radius: 14px; }
+    .tab__dashboard__content { padding-inline: 12px; }
+    .quick-panel { max-width: 100%; }
+}
 @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }

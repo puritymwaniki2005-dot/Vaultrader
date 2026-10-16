@@ -2412,7 +2412,7 @@ function switchPage(page){
   // Keep the original Blockly app inside the existing dashboard shell.
   if(page==='bot' && target){
     if(!document.getElementById('tnxOriginalBotFrame')){
-      target.innerHTML = '<iframe id="tnxOriginalBotFrame" title="Original Blockly Trading Bot" src="/bot/dist/index.html" style="display:block;width:100%;height:calc(100vh - 110px);min-height:720px;border:0;border-radius:12px;background:#fff" loading="eager" allow="clipboard-read; clipboard-write"></iframe>';
+      target.innerHTML = '<iframe id="tnxOriginalBotFrame" title="Original Blockly Trading Bot" src="/bot/" style="display:block;width:100%;height:calc(100vh - 110px);min-height:720px;border:0;border-radius:12px;background:#fff" loading="eager" allow="clipboard-read; clipboard-write"></iframe>';
     }
     document.querySelectorAll('.page-content').forEach(p=>p.classList.remove('active'));
     target.classList.add('active');

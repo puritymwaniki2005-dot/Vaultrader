@@ -2416,11 +2416,17 @@ function tnxSyncOriginalBotAccount(){
   const id=String(account.account_id);
   const currency=String(account.currency||'USD');
   try{
+    const expiryRaw=Number(localStorage.getItem('deriv_token_expiry')||sessionStorage.getItem('deriv_token_expiry')||0);
+    const expiresAt=expiryRaw?(expiryRaw<100000000000?expiryRaw*1000:expiryRaw):Date.now()+30*60*1000;
+    const tokenRecord={access_token:token,expires_at:Math.floor(expiresAt/1000)};
+    // The original bot's auth service reads auth_info before it will expose the builder.
+    localStorage.setItem('auth_info',JSON.stringify(tokenRecord));
     localStorage.setItem('authToken',token);
     localStorage.setItem('active_loginid',id);
     localStorage.setItem('account_type',String(account.account_type||'demo').toLowerCase());
     localStorage.setItem('accountsList',JSON.stringify({[id]:token}));
-    localStorage.setItem('clientAccounts',JSON.stringify({[id]:{currency}}));
+    localStorage.setItem('clientAccounts',JSON.stringify({[id]:{currency,token}}));
+    localStorage.setItem('client_account_details',JSON.stringify([{loginid:id,currency,balance:account.balance||0,is_virtual:String(account.account_type).toLowerCase()==='demo'}]));
     return true;
   }catch(e){console.error('Unable to share Deriv session with Blockly bot:',e);return false}
 }

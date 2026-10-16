@@ -1108,6 +1108,140 @@ select.tnx-control option{background:#0b1020;color:#fff}
           body.tnx-bot-active .topbar-right .deriv-status { display:none !important; }
           body.tnx-bot-active .main-content { padding-top:10.7rem !important; }
         }
+
+        /* GLOBAL MKOREAN-STYLE SHELL: all TradeNovaX pages, not only Bot Builder. */
+        body {
+          background:#f1f2f4 !important;
+          color:#303238 !important;
+        }
+        .sidebar {
+          position:fixed !important;
+          inset:0 0 auto 0 !important;
+          width:100% !important;
+          height:auto !important;
+          max-height:132px !important;
+          padding:0 !important;
+          overflow:visible !important;
+          display:grid !important;
+          grid-template-columns:minmax(220px,1fr) auto;
+          grid-template-rows:60px 62px;
+          gap:0 !important;
+          background:#ffffff !important;
+          color:#303238 !important;
+          border:0 !important;
+          border-bottom:1px solid #d7d9dd !important;
+          box-shadow:none !important;
+          z-index:250 !important;
+        }
+        .sidebar-brand {
+          grid-column:1;grid-row:1;
+          display:flex !important;align-items:center !important;
+          padding:.5rem 1.5rem !important;
+          background:#fff !important;color:#333 !important;border:0 !important;
+        }
+        .brand-text {color:#3d3d3d !important}
+        .brand-text span {color:#a00008 !important}
+        .logo-icon {background:linear-gradient(135deg,#a90008,#e2b600) !important;color:#fff !important;border-radius:4px !important}
+        .sidebar-user {
+          grid-column:2;grid-row:1;
+          display:flex !important;align-items:center !important;
+          padding:.4rem 1.2rem !important;
+          background:#fff !important;color:#333 !important;border:0 !important;
+        }
+        .sidebar-user .name {color:#333 !important}
+        .sidebar-user .email {display:none !important}
+        .sidebar-user .status {color:#159b72 !important}
+        .sidebar-nav {
+          grid-column:1/-1;grid-row:2;
+          display:flex !important;flex-direction:row !important;align-items:stretch !important;
+          flex-wrap:nowrap !important;gap:0 !important;
+          width:100% !important;min-width:0 !important;
+          padding:0 .5rem !important;margin:0 !important;
+          overflow-x:auto !important;overflow-y:hidden !important;
+          white-space:nowrap !important;scrollbar-width:thin;
+          background:#300000 !important;border:0 !important;
+        }
+        .sidebar-nav .nav-label {display:none !important}
+        .sidebar-nav a {
+          display:inline-flex !important;flex:0 0 auto !important;flex-direction:row !important;
+          align-items:center !important;justify-content:center !important;gap:.65rem !important;
+          width:auto !important;min-width:max-content !important;min-height:62px !important;
+          padding:.9rem 1.25rem !important;margin:0 !important;
+          border:0 !important;border-radius:0 !important;
+          background:transparent !important;color:#fff !important;
+          font-size:1.2rem !important;font-weight:800 !important;white-space:nowrap !important;
+        }
+        .sidebar-nav a .icon {color:#ffd400 !important}
+        .sidebar-nav a .badge {background:#ffc400 !important;color:#280000 !important;border-radius:1rem !important}
+        .sidebar-nav a:hover {background:#510000 !important;color:#fff !important}
+        .sidebar-nav a.active {background:#9d0000 !important;color:#fff !important;border:0 !important;border-bottom:3px solid #ffc900 !important}
+        .sidebar-footer,.sidebar-overlay,.tnx-sidebar-overlay {display:none !important}
+        .main-content {
+          margin-left:0 !important;
+          width:100% !important;
+          min-width:0 !important;
+          padding:0 1.25rem 2rem !important;
+          padding-top:9rem !important;
+          background:#f1f2f4 !important;
+          color:#303238 !important;
+        }
+        .topbar {
+          display:flex !important;
+          position:relative !important;
+          top:auto !important;
+          flex-direction:row !important;
+          align-items:center !important;
+          justify-content:space-between !important;
+          flex-wrap:wrap !important;
+          gap:.8rem !important;
+          padding:1rem 0 !important;
+          margin:0 0 1rem !important;
+          background:transparent !important;
+          border-bottom:1px solid #d7d9dd !important;
+          box-shadow:none !important;
+          z-index:20 !important;
+        }
+        .topbar-left h1 {color:#25262b !important}
+        .topbar-left .page-sub {color:#777b83 !important}
+        .topbar-right {gap:.65rem !important}
+        .topbar-right .balance {color:#36b6b4 !important}
+        .topbar-right .balance .currency {color:#555 !important}
+        .account-selector {background:#fff !important;border-color:#dedfe2 !important}
+        .account-selector label {color:#444 !important}
+        .account-selector .account-btn {background:#fff !important;color:#333 !important;border-color:#dedfe2 !important}
+        .account-selector .account-btn.active-live {color:#009a75 !important;border-color:#00b78b !important}
+        .deriv-status {color:#159b72 !important}
+        .page-content {color:#303238 !important}
+        .card,.tnx-dash-hero,.tnx-bulk-terminal,.tnx-builder-shell,.tnx-panel,.panel,.stat-card {
+          background:#fff !important;color:#303238 !important;border-color:#dfe1e5 !important;
+          box-shadow:0 1px 2px rgba(0,0,0,.04) !important;
+        }
+        .card h1,.card h2,.card h3,.page-content h1,.page-content h2,.page-content h3,
+        .tnx-dash-hero h2 {color:#303238 !important}
+        .page-content p,.page-content label,.page-content small {color:#62666e}
+        input,select,textarea {
+          background:#fff !important;color:#303238 !important;border-color:#d3d6dc !important;
+        }
+        .tnx-ref-tabs {background:#300000 !important}
+        .tnx-ref-tab {background:#300000 !important;color:#fff !important}
+        .tnx-ref-tab.active {background:#9d0000 !important;color:#fff !important;border-bottom-color:#ffc900 !important}
+        /* Keep the embedded real Blockly Builder using the same fixed site shell. */
+        body.tnx-bot-active .main-content {padding:0 !important;padding-top:9rem !important}
+        body.tnx-bot-active .topbar {display:flex !important;position:relative !important;top:auto !important;left:auto !important;right:auto !important;height:auto !important;min-height:0 !important;padding:1rem 0 !important;margin:0 1.25rem 1rem !important;background:transparent !important;justify-content:space-between !important;flex-wrap:wrap !important}
+        body.tnx-bot-active .topbar-left {display:none !important}
+        body.tnx-bot-active .topbar-right {justify-content:flex-end !important;width:100% !important}
+        body.tnx-bot-active #page-bot {padding:0 !important;margin:0 !important;background:#f1f2f4 !important}
+        body.tnx-bot-active #tnxOriginalBotFrame {height:calc(100vh - 9rem) !important;min-height:640px !important;background:#f1f2f4 !important}
+        @media(max-width:760px) {
+          .sidebar {grid-template-columns:minmax(0,1fr) auto !important;grid-template-rows:54px 58px !important;max-height:112px !important}
+          .sidebar-brand {padding:.4rem .7rem !important}
+          .sidebar-user {padding:.3rem .6rem !important}
+          .sidebar-user .user-info {display:none !important}
+          .sidebar-nav a {min-height:58px !important;padding:.7rem .8rem !important;font-size:1.05rem !important}
+          .main-content {padding:0 .7rem 1.2rem !important;padding-top:7.7rem !important}
+          body.tnx-bot-active .main-content {padding-top:7.7rem !important}
+          body.tnx-bot-active #tnxOriginalBotFrame {height:calc(100vh - 7.7rem) !important}
+        }
 </style>
 <style id="tnx-final-botbuilder-ui">
 /* FINAL TRADE NOVAX BOT BUILDER — target workspace layout */

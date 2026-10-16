@@ -25,6 +25,8 @@ for (const required of [
   "kind:'tnxReferenceBuy'",
   'window.TNX_CORE_HANDLERS?.handleContract',
   'd?.error',
+  'retryCount:0',
+  "['PriceMoved','InvalidContractProposal'].includes(code)",
   'proposal_open_contract:1',
   'R.sessionPnl+=pnl',
   'window.tnxBuilderStop=()=>stop',
@@ -131,11 +133,26 @@ try {
   assert.match(statusNode.textContent, /maximum runs reached/,
     'UI status must reflect the completed run.');
 
-  // Verify a rejected proposal fails closed without sending a buy.
+  // Recover a transient source-bot proposal error by requesting a fresh proposal.
   mockWindow.lastTick = { epoch: 101, digit: 4, quote: 123.5 };
   await mockWindow.tnxBuilderRun();
+  const initialRetryProposal = calls.filter((call) => call.payload.proposal === 1).at(-1);
+  assert.ok(initialRetryProposal, 'A new test run should request another proposal.');
+  mockWindow.handleProposal({ req_id: initialRetryProposal.id, error: { code: 'PriceMoved', message: 'price moved' } });
+  const retriedProposal = calls.filter((call) => call.payload.proposal === 1).at(-1);
+  assert.notEqual(retriedProposal.id, initialRetryProposal.id,
+    'PriceMoved should trigger a new proposal request.');
+  assert.equal(mockWindow.TNX_BLOCKLY_RUNNER.running, true,
+    'A recoverable proposal error should not stop the bot.');
+  assert.equal(mockWindow.TNX_BLOCKLY_RUNNER.pending, true,
+    'The retry must retain the pending guard.');
+
+  // Verify a non-recoverable rejected proposal fails closed without sending a buy.
+  mockWindow.lastTick = { epoch: 102, digit: 4, quote: 123.6 };
+  mockWindow.TNX_BLOCKLY_RUNNER.stop('prepare rejection test');
+  await mockWindow.tnxBuilderRun();
   const rejectedProposal = calls.filter((call) => call.payload.proposal === 1).at(-1);
-  assert.ok(rejectedProposal, 'A new test run should request another proposal.');
+  assert.ok(rejectedProposal, 'A fresh run should request a proposal after reset.');
   const buyCountBeforeReject = calls.filter((call) => Object.hasOwn(call.payload, 'buy')).length;
   mockWindow.handleProposal({ req_id: rejectedProposal.id, error: { message: 'proposal rejected in test' } });
   assert.equal(mockWindow.TNX_BLOCKLY_RUNNER.running, false,
@@ -146,7 +163,7 @@ try {
     'Proposal rejection must be visible to the user.');
 
   console.log('Vaultrader dashboard checks passed; syntax-checked ' + count +
-    ' inline scripts and simulated proposal → buy → contract close + rejection.');
+    ' inline scripts and simulated proposal → buy → contract close, transient retry + rejection.');
 } finally {
   rmSync(tempRoot, { recursive: true, force: true });
 }

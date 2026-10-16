@@ -1025,6 +1025,89 @@ select.tnx-control option{background:#0b1020;color:#fff}
           body.tnx-bot-active .main-content { padding-top:10.5rem !important; }
           body.tnx-bot-active #tnxOriginalBotFrame { height:calc(100vh - 10.5rem) !important; }
         }
+
+        /* Place language, account mode, and live Deriv status in the top utility strip like Mkorean. */
+        body.tnx-bot-active .topbar {
+          display:flex !important;
+          position:fixed !important;
+          top:0 !important;
+          left:0 !important;
+          right:0 !important;
+          height:60px !important;
+          min-height:60px !important;
+          padding:0 1.5rem !important;
+          margin:0 !important;
+          background:#ffffff !important;
+          border-bottom:1px solid #d7d9dd !important;
+          z-index:260 !important;
+          flex-direction:row !important;
+          align-items:center !important;
+          justify-content:flex-end !important;
+          flex-wrap:nowrap !important;
+          gap:1.1rem !important;
+          box-sizing:border-box !important;
+        }
+        body.tnx-bot-active .topbar-left { display:none !important; }
+        body.tnx-bot-active .topbar-right {
+          display:flex !important;
+          flex-direction:row !important;
+          align-items:center !important;
+          justify-content:flex-end !important;
+          flex-wrap:nowrap !important;
+          gap:.8rem !important;
+          width:100% !important;
+          min-width:0 !important;
+          overflow-x:auto !important;
+          white-space:nowrap !important;
+        }
+        body.tnx-bot-active #tnxThemeToggle,
+        body.tnx-bot-active #tnxLanguage {
+          color:#303238 !important;
+          background:#ffffff !important;
+          border:1px solid #dedfe2 !important;
+          flex:0 0 auto !important;
+        }
+        body.tnx-bot-active .topbar-right .balance {
+          color:#36b6b4 !important;
+          flex:0 0 auto !important;
+          white-space:nowrap !important;
+        }
+        body.tnx-bot-active .topbar-right .balance .currency { color:#555 !important; }
+        body.tnx-bot-active .account-selector {
+          background:#ffffff !important;
+          border:1px solid #dedfe2 !important;
+          flex:0 0 auto !important;
+          white-space:nowrap !important;
+        }
+        body.tnx-bot-active .account-selector label { color:#444 !important; }
+        body.tnx-bot-active .account-selector .account-btn {
+          color:#333 !important;
+          background:#ffffff !important;
+          border-color:#dedfe2 !important;
+        }
+        body.tnx-bot-active .account-selector .account-btn.active-live {
+          color:#009a75 !important;
+          border-color:#00b78b !important;
+        }
+        body.tnx-bot-active #derivStatus {
+          color:#159b72 !important;
+          flex:0 0 auto !important;
+          white-space:nowrap !important;
+        }
+        body.tnx-bot-active #tnxReconnectDeriv,
+        body.tnx-bot-active .btn-logout {
+          flex:0 0 auto !important;
+          white-space:nowrap !important;
+        }
+        body.tnx-bot-active .main-content { padding-top:12.2rem !important; }
+        @media(max-width:760px) {
+          body.tnx-bot-active .topbar { height:56px !important; min-height:56px !important; padding:0 .6rem !important; }
+          body.tnx-bot-active .topbar-right { gap:.45rem !important; }
+          body.tnx-bot-active .topbar-right .balance { font-size:1.25rem !important; }
+          body.tnx-bot-active .account-selector label { display:none !important; }
+          body.tnx-bot-active .topbar-right .deriv-status { display:none !important; }
+          body.tnx-bot-active .main-content { padding-top:10.7rem !important; }
+        }
 </style>
 <style id="tnx-final-botbuilder-ui">
 /* FINAL TRADE NOVAX BOT BUILDER — target workspace layout */

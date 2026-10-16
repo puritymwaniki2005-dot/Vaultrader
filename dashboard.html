@@ -58,16 +58,16 @@ TradeNovaX standalone live Deriv build:
         /* ===== RESET & VARIABLES ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --gold: #D4AF37;
-            --gold-dark: #B8960F;
-            --gold-light: #E8CD6E;
-            --navy: #0A1628;
-            --navy-light: #1A2A4A;
-            --bg: #060E1E;
-            --card: rgba(10, 22, 40, 0.9);
+            --gold: #4DE2B1;
+            --gold-dark: #16B887;
+            --gold-light: #8AF0D0;
+            --navy: #0B1728;
+            --navy-light: #14243A;
+            --bg: #08111F;
+            --card: rgba(16, 29, 48, 0.96);
             --text: #FFFFFF;
-            --text-muted: #8899BB;
-            --border: rgba(212, 175, 55, 0.15);
+            --text-muted: #92A5BD;
+            --border: rgba(156, 181, 211, 0.16);
             --green: #00C853;
             --red: #FF1744;
             --sidebar-width: 240px;
@@ -833,6 +833,17 @@ select.tnx-control option{background:#0b1020;color:#fff}
 .tnx-builder-stage .blocklyMainBackground{stroke:#fff!important}
 .tnx-builder-stage .blocklyScrollbarHandle{fill:#aaa!important}
 @media(max-width:850px){.tnx-builder-sidebar{width:230px!important;flex-basis:230px!important}.tnx-builder-reference{height:680px!important}}
+
+        /* Mkorean-inspired live dashboard polish: visual-only; trading logic untouched. */
+        :root { --panel-radius: 18px; }
+        .sidebar, .sidebar-footer { background: #0b1728; }
+        .sidebar { border-right-color: rgba(156,181,211,.16); }
+        .sidebar-nav a.active { background: rgba(77,226,177,.10); }
+        .sidebar-nav a:hover { background: rgba(156,181,211,.07); }
+        .logo-icon, .sidebar-user .avatar { color: #06151a; }
+        :focus-visible { outline: 2px solid #4de2b1; outline-offset: 3px; }
+        ::-webkit-scrollbar-thumb { background: #2b405a; }
+        ::-webkit-scrollbar-thumb:hover { background: #4de2b1; }
 </style>
 <style id="tnx-final-botbuilder-ui">
 /* FINAL TRADE NOVAX BOT BUILDER — target workspace layout */

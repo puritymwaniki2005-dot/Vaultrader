@@ -149,7 +149,7 @@ try {
 
   // Verify a non-recoverable rejected proposal fails closed without sending a buy.
   mockWindow.lastTick = { epoch: 102, digit: 4, quote: 123.6 };
-  mockWindow.TNX_BLOCKLY_RUNNER.stop('prepare rejection test');
+  mockWindow.tnxBuilderStop();
   await mockWindow.tnxBuilderRun();
   const rejectedProposal = calls.filter((call) => call.payload.proposal === 1).at(-1);
   assert.ok(rejectedProposal, 'A fresh run should request a proposal after reset.');

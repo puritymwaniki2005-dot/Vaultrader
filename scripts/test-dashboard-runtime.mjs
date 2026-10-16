@@ -3,6 +3,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { runInNewContext } from 'node:vm';
 
 const root = process.cwd();
 const htmlPath = path.join(root, 'dashboard.html');
@@ -46,7 +47,94 @@ try {
       'Inline dashboard script #' + count + ' has a syntax error:\n' + (check.stderr || check.stdout));
   }
   assert.ok(count > 10, 'Expected to syntax-check the dashboard inline JavaScript.');
-  console.log('Vaultrader dashboard checks passed; syntax-checked ' + count + ' inline scripts.');
+
+  // Exercise the real consolidated Blockly runner with a mocked authenticated
+  // demo WebSocket. No Deriv credentials or live orders are used in this test.
+  const scriptEnd = runner.indexOf('</script>');
+  assert.ok(scriptEnd > 0, 'Consolidated runner script must close cleanly.');
+  const runtimeSource = runner.slice(runner.indexOf('>') + 1, scriptEnd);
+  const calls = [];
+  const statusNode = { textContent: '' };
+  const blocks = [
+    { type: 'tnx_trade_parameters', getFieldValue: (name) => ({
+      SYMBOL: 'R_10', DURATION: '1', STAKE: '0.35'
+    })[name] },
+    { type: 'tnx_purchase', getFieldValue: (name) => ({
+      CONTRACT: 'DIGITEVEN', PREDICTION: '5'
+    })[name] },
+  ];
+  let reqId = 100;
+  const mockWindow = {
+    TNX_BLOCKLY_RUNNER: {},
+    TNX_BLOCKLY_WORKSPACE: { getAllBlocks: () => blocks },
+    activeAccount: { account_type: 'demo', account_id: 'VRTC123', currency: 'USD' },
+    liveConnected: true,
+    derivWS: { readyState: 1 },
+    pending: new Map(),
+    activeContracts: new Map(),
+    lastTick: { epoch: 100, digit: 4, quote: 123.4 },
+    send: (payload) => { const id = ++reqId; calls.push({ id, payload }); return id; },
+    subscribeTicks: () => {},
+    tnxCanOpenTrade: () => true,
+    confirmRealTrade: () => true,
+    showToast: () => {},
+    TNX_CORE_HANDLERS: {
+      handleContract: (contract) => {
+        mockWindow.activeContracts.set(String(contract.contract_id), contract);
+      },
+    },
+    handleProposal: () => {},
+    handleBuy: () => {},
+    handleContract: () => {},
+    onTick: () => {},
+  };
+  const mockDocument = { getElementById: (id) => id === 'builderRunStatus' ? statusNode : null };
+  runInNewContext(runtimeSource, {
+    window: mockWindow, document: mockDocument,
+    WebSocket: { OPEN: 1 }, setTimeout, clearTimeout, console,
+  });
+
+  await mockWindow.tnxBuilderRun();
+  const proposalCall = calls.find((call) => call.payload.proposal === 1);
+  assert.ok(proposalCall, 'Starting the Blockly bot must request a Deriv proposal.');
+  assert.equal(mockWindow.TNX_BLOCKLY_RUNNER.pending, true, 'Proposal request must set the pending guard.');
+  mockWindow.handleProposal({
+    req_id: proposalCall.id,
+    proposal: { id: 'proposal-demo-1', ask_price: 0.35 },
+  });
+  const buyCall = calls.find((call) => call.payload.buy === 'proposal-demo-1');
+  assert.ok(buyCall, 'Accepted proposal must be followed by a purchase request.');
+  mockWindow.handleBuy({ req_id: buyCall.id, buy: { contract_id: 123456, buy_price: 0.35 } });
+  assert.ok(calls.some((call) => call.payload.proposal_open_contract === 1 &&
+    String(call.payload.contract_id) === '123456'),
+    'Confirmed buy must start contract monitoring.');
+  assert.equal(mockWindow.TNX_BLOCKLY_RUNNER.runs, 1, 'Run count must increment only after a contract ID exists.');
+  mockWindow.handleContract({
+    contract_id: 123456, is_sold: true, status: 'won', profit: 0.35, buy_price: 0.35,
+  });
+  assert.equal(mockWindow.TNX_BLOCKLY_RUNNER.running, false,
+    'Single-run bot must stop after its contract closes.');
+  assert.equal(mockWindow.TNX_BLOCKLY_RUNNER.sessionPnl, 0.35,
+    'Closed contract profit must be reflected in session P/L.');
+  assert.match(statusNode.textContent, /maximum runs reached/,
+    'UI status must reflect the completed run.');
+
+  // Verify a rejected proposal fails closed without sending a buy.
+  mockWindow.lastTick = { epoch: 101, digit: 4, quote: 123.5 };
+  await mockWindow.tnxBuilderRun();
+  const rejectedProposal = calls.filter((call) => call.payload.proposal === 1).at(-1);
+  assert.ok(rejectedProposal, 'A new test run should request another proposal.');
+  const buyCountBeforeReject = calls.filter((call) => Object.hasOwn(call.payload, 'buy')).length;
+  mockWindow.handleProposal({ req_id: rejectedProposal.id, error: { message: 'proposal rejected in test' } });
+  assert.equal(mockWindow.TNX_BLOCKLY_RUNNER.running, false,
+    'A rejected proposal must stop the runner rather than hanging.');
+  assert.equal(calls.filter((call) => Object.hasOwn(call.payload, 'buy')).length, buyCountBeforeReject,
+    'A rejected proposal must never trigger a buy.');
+  assert.match(statusNode.textContent, /proposal rejected in test/,
+    'Proposal rejection must be visible to the user.');
+
+  console.log('Vaultrader dashboard checks passed; syntax-checked ' + count +
+    ' inline scripts and simulated proposal → buy → contract close + rejection.');
 } finally {
   rmSync(tempRoot, { recursive: true, force: true });
 }

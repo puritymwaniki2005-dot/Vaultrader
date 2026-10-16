@@ -25,52 +25,57 @@
           (() => {
             const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
             const labels = ['Dashboard', 'Bot Builder', 'Charts', 'Tutorials'];
+            const important = (node, name, value) => node.style.setProperty(name, value, 'important');
             const hasMenuLabels = node => {
               const value = normalize(node.innerText || node.textContent);
               return labels.every(label => value.includes(label));
             };
-            const important = (node, name, value) => node.style.setProperty(name, value, 'important');
+            const hide = node => {
+              if (!node) return;
+              node.classList.add('tnx-hide-inner-navigation');
+              important(node, 'display', 'none');
+            };
             const cleanEmbeddedChrome = () => {
-              // Find the smallest rendered container that owns all four app navigation items.
-              const candidates = Array.from(document.querySelectorAll('#root *'))
-                .filter(node => hasMenuLabels(node))
+              // The parent dashboard now owns the site's navigation. Remove the duplicate
+              // Deriv-app menu so the Blockly canvas starts directly beneath the app header.
+              const menuCandidates = Array.from(document.querySelectorAll('#root *'))
+                .filter(hasMenuLabels)
                 .filter(node => !Array.from(node.children).some(hasMenuLabels));
-              const menu = candidates
+              const menu = menuCandidates
                 .filter(node => /^(NAV|UL|OL)$/.test(node.tagName) || node.getAttribute('role') === 'tablist')
                 .sort((a,b) => a.querySelectorAll('*').length - b.querySelectorAll('*').length)[0]
-                || candidates.sort((a,b) => a.querySelectorAll('*').length - b.querySelectorAll('*').length)[0];
-              if (menu) {
-                menu.classList.add('tnx-mkorean-horizontal-nav');
-                // Apply layout directly as well as through CSS, so framework styles cannot keep it vertical.
-                ['display','flex'];
-                important(menu, 'display', 'flex');
-                important(menu, 'flex-direction', 'row');
-                important(menu, 'align-items', 'center');
-                important(menu, 'justify-content', 'flex-start');
-                important(menu, 'flex-wrap', 'nowrap');
-                important(menu, 'width', '100%');
-                important(menu, 'max-width', '100%');
-                important(menu, 'overflow-x', 'auto');
-                important(menu, 'white-space', 'nowrap');
-                important(menu, 'gap', '8px');
-                important(menu, 'padding', '8px 12px');
-                important(menu, 'box-sizing', 'border-box');
-                Array.from(menu.querySelectorAll('a,button,[role="tab"],li')).forEach(item => {
-                  important(item, 'display', 'inline-flex');
-                  important(item, 'flex', '0 0 auto');
-                  important(item, 'flex-direction', 'row');
-                  important(item, 'align-items', 'center');
-                  important(item, 'width', 'auto');
-                  important(item, 'min-width', 'max-content');
-                  important(item, 'white-space', 'nowrap');
-                });
+                || menuCandidates.sort((a,b) => a.querySelectorAll('*').length - b.querySelectorAll('*').length)[0];
+              if (menu) hide(menu);
+              // Remove the duplicate in-app login/signup strip shown above the Blockly menu.
+              const authLabels = Array.from(document.querySelectorAll('#root *')).filter(node => {
+                if (node.children.length > 8) return false;
+                const t = normalize(node.innerText || node.textContent).toLowerCase();
+                return t.includes('log in') && t.includes('sign up');
+              });
+              const authStrip = authLabels
+                .filter(node => !Array.from(node.children).some(child => {
+                  const t = normalize(child.innerText || child.textContent).toLowerCase();
+                  return t.includes('log in') && t.includes('sign up');
+                }))
+                .sort((a,b) => a.querySelectorAll('*').length - b.querySelectorAll('*').length)[0];
+              if (authStrip) {
+                const strip = authStrip.closest('header') || authStrip.parentElement;
+                if (strip && strip !== document.getElementById('root')) hide(strip);
               }
+              // Use the Mkorean-style light Blockly workspace, while preserving the live
+              // Blockly controls, account connection UI and trade execution logic.
+              document.body.style.setProperty('background', '#f5f6f8', 'important');
+              document.querySelectorAll('.blocklyMainBackground').forEach(node => node.style.setProperty('fill', '#ffffff', 'important'));
+              document.querySelectorAll('.blocklyToolboxDiv').forEach(node => {
+                node.style.setProperty('background', '#f0f1f3', 'important');
+                node.style.setProperty('color', '#303238', 'important');
+              });
+              document.querySelectorAll('.blocklyFlyoutBackground').forEach(node => node.style.setProperty('fill', '#f1f2f4', 'important'));
               document.querySelectorAll('body *').forEach(node => {
                 if (node.children.length) return;
                 const value = normalize(node.textContent);
                 if (value.includes('DERIV TRADING MODE') && value.includes('REAL BUY requires confirmation')) {
-                  const banner = node.closest('[role="alert"], .notice, .banner, .alert') || node;
-                  banner.classList.add('tnx-hide-inner-navigation');
+                  hide(node.closest('[role="alert"], .notice, .banner, .alert') || node);
                 }
               });
             };

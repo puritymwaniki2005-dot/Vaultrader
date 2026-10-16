@@ -4062,7 +4062,7 @@ window.tnxDownloadMkoreanXML = tnxDownloadMkoreanXML;
     const accountMode=String(activeAccount.account_type||'REAL').toUpperCase();
     const msg=`Run ${accountMode} bot\nAccount: ${activeAccount.account_id}\nMarket: ${cfg.symbol}\nContract: ${cfg.contract}\nStake: ${cfg.stake.toFixed(2)} ${activeAccount.currency||'USD'}\nDuration: ${cfg.duration} tick(s)\n${cfg.enabled?'Maximum runs: '+cfg.maxRuns:'Single run'}`;
     if(typeof confirmRealTrade==='function'&&!confirmRealTrade(msg))return;
-    R.running=true;R.pending=false;R.runs=0;R.maxRuns=cfg.enabled?cfg.maxRuns:1;R.lastSignal=null;R.currentContract=null;R.config=cfg;R.startedAt=Date.now();R.sessionPnl=0;
+    R.running=true;R.pending=false;R.runs=0;R.maxRuns=cfg.enabled?cfg.maxRuns:1;R.lastSignal=null;R.currentContract=null;R.sellRequestedFor=null;R.config=cfg;R.startedAt=Date.now();R.sessionPnl=0;
     try{subscribeTicks(cfg.symbol)}catch(e){}
     status(`🟢 BOT RUNNING ${String(activeAccount.account_type||'REAL').toUpperCase()} • ${R.config.symbol} • waiting for configured live condition…`);
     requestTrade();

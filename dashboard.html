@@ -4449,13 +4449,13 @@ body{
     clearTimeout(R.contractRecoveryTimer);
     R.contractRecoveryTimer=setTimeout(()=>{
       if(!R.running||String(R.currentContract)!==String(contractId)||!window.send)return;
-      try{window.send({proposal_open_contract:1,contract_id:String(contractId),subscribe:1});}catch(_){}
+      try{window.send({proposal_open_contract:1,contract_id:String(contractId)});}catch(_){}
     },1500);
   }
   function scheduleNext(){
     clearTimeout(R.nextRunTimer);
     if(!R.running||R.pending||R.currentContract||R.runs>=R.maxRuns)return;
-    R.nextRunTimer=setTimeout(()=>{if(R.running&&!R.pending&&!R.currentContract){R.phase='BEFORE_PURCHASE';R.lastSignal=null;status(`🔄 Run ${R.runs}/${R.maxRuns} completed • waiting for next live condition…`);evaluateTick();}},80);
+    R.nextRunTimer=setTimeout(()=>{if(R.running&&!R.pending&&!R.currentContract){R.phase='BEFORE_PURCHASE';status(`🔄 Run ${R.runs}/${R.maxRuns} completed • waiting for a NEW live tick…`);evaluateTick();}},80);
   }
   function evaluateTick(){
     if(!R.running||R.pending||R.currentContract||!R.config)return;
@@ -4548,7 +4548,20 @@ body{
         : previousContract?.apply(this,arguments);
       if(!R.running||!ours)return result;
       const closed=!!c?.is_sold||['won','lost','sold','expired'].includes(String(c?.status||'').toLowerCase());
-      if(!closed){recover(id);return result;}
+      if(!closed){
+        const target=Number(R.config?.sell?.getFieldValue?.('TARGET'));
+        const profit=Number(c?.profit);
+        const targetReached=R.config?.sell&&Number.isFinite(target)&&target!==0&&Number.isFinite(profit)&&((target>0&&profit>=target)||(target<0&&profit<=target));
+        if(targetReached&&R.sellRequestedFor!==id){
+          R.sellRequestedFor=id;
+          try{
+            const req=window.send({sell:id,price:Math.max(0,Number(c?.bid_price||0))});
+            window.pending.set(req,{kind:'tnxReferenceSell',contractId:id,status:$('builderRunStatus')});
+            status(`🟠 Sell target ${target.toFixed(2)} reached • requesting contract close…`);
+          }catch(e){R.sellRequestedFor=null;stop('Automatic sell request failed: '+(e.message||e));}
+        }
+        recover(id);return result;
+      }
       clearTimeout(R.contractRecoveryTimer);R.currentContract=null;R.sellRequestedFor=null;R.pending=false;R.phase='CONTRACT_CLOSED';
       const pnl=Number(c?.profit||0);if(Number.isFinite(pnl))R.sessionPnl+=pnl;
       if(R.runs>=R.maxRuns){R.running=false;R.phase='STOP';status(`⏹ Bot finished • maximum runs reached • ${R.runs}/${R.maxRuns} • session P/L ${R.sessionPnl.toFixed(2)}`);}

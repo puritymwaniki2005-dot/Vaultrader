@@ -97,5 +97,25 @@
             })(window, document, [].slice);
         </script>
         <!-- End LiveChat script -->
-    </body>
+    
+        <script>
+            // Vaultrader embeds this application specifically as its Bot Builder.
+            // Wait for React to mount, then select the original app's Bot Builder tab once.
+            (function () {
+                var attempts = 0;
+                var timer = window.setInterval(function () {
+                    attempts += 1;
+                    var builder = document.getElementById("id-bot-builder");
+                    if (builder) {
+                        window.clearInterval(timer);
+                        if (!builder.classList.contains("active") && !builder.getAttribute("aria-current")) {
+                            builder.click();
+                        }
+                    } else if (attempts >= 80) {
+                        window.clearInterval(timer);
+                    }
+                }, 250);
+            })();
+        </script>
+</body>
 </html>

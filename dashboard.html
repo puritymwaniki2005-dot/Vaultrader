@@ -2242,6 +2242,7 @@ function handleProposal(d){const p=d.proposal||{},ctx=p.id?findPendingProposal(d
 function findPendingProposal(req){return pending.get(req)||[...pending.values()].find(x=>x.kind==='bulkProposal'&&!x.buySent)||null}
 function handleBuy(d){const ctx=pending.get(d.req_id);if(!ctx)return;pending.delete(d.req_id);const b=d.buy||{},id=b.contract_id,mode=String(activeAccount?.account_type||'real').toUpperCase();if(!id){const msg='Deriv returned no contract ID. No trade was confirmed.';if(ctx.status)ctx.status.textContent='❌ '+msg;showToast('❌ '+msg);return}activeContracts.set(String(id),b);try{send({proposal_open_contract:1,contract_id:id,subscribe:1})}catch(e){console.warn('Contract monitoring subscription failed:',e)}if(ctx.status)ctx.status.textContent=`✅ ${mode} trade executed • Contract ${id}`;showToast(`✅ ${mode} ${ctx.direction||'trade'} executed on ${ctx.symbol||''}`);renderPositions()}
 function handleContract(c){if(!c||!c.contract_id)return;const id=String(c.contract_id);const wasClosed=countedClosedContracts.has(id);activeContracts.set(id,c);const closed=c.is_sold||['won','lost','sold','expired'].includes(String(c.status||'').toLowerCase());if(closed&&!wasClosed){countedClosedContracts.add(id);sessionPnl+=Number(c.profit||0);subscribedOpenContracts.delete(id)}renderPositions();updateSummary();renderTradeActivity(c)}
+window.TNX_CORE_HANDLERS=Object.freeze({handleProposal,handleBuy,handleContract});
 function updateActiveContracts(cs){activeContracts.clear();cs.forEach(c=>activeContracts.set(String(c.contract_id),c));renderPositions();updateSummary()}
 function renderPositions(){const contracts=[...activeContracts.values()].filter(c=>!c.is_sold&&!['won','lost','sold','expired'].includes(String(c.status||'').toLowerCase()));const html=contracts.length?`<table class="live-table"><thead><tr><th>Contract</th><th>Market</th><th>Type</th><th>Stake</th><th>Buy</th><th>Live P/L</th><th>Status</th><th></th></tr></thead><tbody>${contracts.map(c=>{const p=Number(c.profit||0),id=String(c.contract_id);return`<tr><td>${escapeHtml(id)}</td><td>${escapeHtml(c.underlying_symbol||c.symbol||'—')}</td><td>${escapeHtml(c.contract_type||'—')}</td><td>${fmt(c.buy_price,c.currency)}</td><td>${fmt(c.buy_price,c.currency)}</td><td class="${p>=0?'live-positive':'live-negative'}">${p>=0?'+':''}${fmtNum(p)} ${escapeHtml(c.currency||'')}</td><td>${escapeHtml(c.status||'open')}</td><td><button class="sell-btn" onclick="sellContract('${id}')">SELL</button></td></tr>`}).join('')}</tbody></table>`:`<div style="padding:2rem;text-align:center;color:var(--text-muted);">No open positions.</div>`;for(const id of ['positionsTable','dashboardPositions']){const e=document.getElementById(id);if(e)e.innerHTML=html}const b=document.getElementById('positionsBadge');if(b)b.textContent=contracts.length;const d=document.getElementById('dashOpenPositions');if(d)d.textContent=contracts.length}
 function fmt(v,c){return `${Number(v??0).toFixed(2)} ${escapeHtml(c||activeAccount?.currency||'USD')}`};function fmtNum(v){return Number(v||0).toFixed(2)}
@@ -4542,7 +4543,9 @@ body{
   if(!previousContract?.__tnxReferenceV2){
     const wrappedContract=function(c){
       const id=String(c?.contract_id||''),ours=id&&String(R.currentContract||'')===id;
-      const result=previousContract?.apply(this,arguments);
+      const result=ours
+        ? (window.TNX_CORE_HANDLERS?.handleContract||previousContract)?.apply(this,arguments)
+        : previousContract?.apply(this,arguments);
       if(!R.running||!ours)return result;
       const closed=!!c?.is_sold||['won','lost','sold','expired'].includes(String(c?.status||'').toLowerCase());
       if(!closed){recover(id);return result;}
@@ -4558,7 +4561,10 @@ body{
   // A tick is allowed to evaluate a Blockly bot only once; the existing tick handler owns the stream.
   const previousTick=window.onTick;
   if(!previousTick?.__tnxReferenceV2){
-    const wrappedTick=function(){const result=previousTick?.apply(this,arguments);if(R.running&&!R.pending&&!R.currentContract)evaluateTick();return result;};
+    const wrappedTick=function(){
+      if(R.running){if(!R.pending&&!R.currentContract)evaluateTick();return;}
+      return previousTick?.apply(this,arguments);
+    };
     wrappedTick.__tnxReferenceV2=true;window.onTick=wrappedTick;
     try{onTick=wrappedTick}catch(_){}
   }

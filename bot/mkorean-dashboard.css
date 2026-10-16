@@ -172,3 +172,104 @@ body.theme, body.theme--light, body.theme--dark {
   .tab__dashboard .quick-panel .load-strategy__container,
   .tab__dashboard .quick-panel [class*="strategy-card"] { border-radius: 14px !important; }
 }
+
+/* Compact horizontal navigation inspired by the Mkorean reference.
+   This only styles the app-level menu. Blockly's left toolbox stays intact. */
+.tnx-mkorean-horizontal-nav {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  flex-wrap: nowrap !important;
+  gap: .35rem !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+  min-width: 0 !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  white-space: nowrap !important;
+  padding: .55rem clamp(.8rem, 1.5vw, 1.8rem) !important;
+  margin: 0 !important;
+  background: linear-gradient(90deg, #250008 0%, #4b0010 45%, #210013 100%) !important;
+  border-top: 1px solid rgba(255,210,26,.12) !important;
+  border-bottom: 1px solid rgba(255,210,26,.2) !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #6b3a28 transparent !important;
+  position: relative !important;
+  z-index: 1000 !important;
+}
+.tnx-mkorean-horizontal-nav > ul,
+.tnx-mkorean-horizontal-nav > ol {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  gap: .35rem !important;
+  width: max-content !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+.tnx-mkorean-horizontal-nav li {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.tnx-mkorean-horizontal-nav > * {
+  flex: 0 0 auto !important;
+  min-width: max-content !important;
+}
+.tnx-mkorean-horizontal-nav :is(a, button, [role="tab"]) {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: .5rem !important;
+  min-height: 4.1rem !important;
+  width: auto !important;
+  min-width: max-content !important;
+  max-width: none !important;
+  padding: .9rem 1.25rem !important;
+  margin: 0 !important;
+  border: 1px solid transparent !important;
+  border-radius: .85rem !important;
+  background: transparent !important;
+  color: #f7f0fa !important;
+  font-size: 1.25rem !important;
+  font-weight: 750 !important;
+  line-height: 1.2 !important;
+  text-decoration: none !important;
+  text-transform: none !important;
+  white-space: nowrap !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+.tnx-mkorean-horizontal-nav :is(a, button, [role="tab"]):hover {
+  background: rgba(255,210,26,.1) !important;
+  border-color: rgba(255,210,26,.18) !important;
+  color: #ffe56a !important;
+}
+.tnx-mkorean-horizontal-nav :is(a, button, [role="tab"]).active,
+.tnx-mkorean-horizontal-nav :is(a, button, [role="tab"])[aria-current="page"],
+.tnx-mkorean-horizontal-nav :is(a, button, [role="tab"])[aria-selected="true"] {
+  background: linear-gradient(110deg, #7d000c, #a0060b) !important;
+  border-color: rgba(255,210,26,.18) !important;
+  color: #fff !important;
+}
+@media (max-width: 700px) {
+  .tnx-mkorean-horizontal-nav {
+    gap: .2rem !important;
+    padding: .45rem .65rem !important;
+  }
+  .tnx-mkorean-horizontal-nav :is(a, button, [role="tab"]) {
+    min-height: 3.8rem !important;
+    padding: .75rem .95rem !important;
+    font-size: 1.15rem !important;
+  }
+}
+/* Banner cleanup remains independent from the now-visible horizontal menu. */
+.tnx-hide-inner-navigation { display: none !important; }

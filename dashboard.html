@@ -2608,6 +2608,7 @@ function tnxSyncOriginalBotAccount(){
 }
 window.tnxSyncOriginalBotAccount=tnxSyncOriginalBotAccount;
 function switchPage(page){
+  document.body.classList.toggle('tnx-bot-active', page === 'bot');
   const target=document.getElementById('page-'+page);
   // Keep the original Blockly app inside the existing dashboard shell.
   if(page==='bot' && target){

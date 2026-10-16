@@ -2911,11 +2911,19 @@ window.addEventListener('beforeunload',()=>{
 })();
 </script>
 <script id="tnx-live-state-accessors">
+/* Bridge the page's lexical trading state to the independently loaded bot engines.
+   Keep getters live so reconnects/account switches never leave stale snapshots. */
 try{
   Object.defineProperty(window,'liveConnected',{configurable:true,get:()=>typeof liveConnected!=='undefined'&&liveConnected});
   Object.defineProperty(window,'subscribedSymbol',{configurable:true,get:()=>typeof subscribedSymbol!=='undefined'?subscribedSymbol:''});
   Object.defineProperty(window,'lastTick',{configurable:true,get:()=>typeof lastTick!=='undefined'?lastTick:null});
-}catch(e){}
+  Object.defineProperty(window,'activeAccount',{configurable:true,get:()=>typeof activeAccount!=='undefined'?activeAccount:null});
+  Object.defineProperty(window,'derivWS',{configurable:true,get:()=>typeof derivWS!=='undefined'?derivWS:null});
+  Object.defineProperty(window,'pending',{configurable:true,get:()=>typeof pending!=='undefined'?pending:null});
+  Object.defineProperty(window,'activeContracts',{configurable:true,get:()=>typeof activeContracts!=='undefined'?activeContracts:null});
+  Object.defineProperty(window,'digitPipSize',{configurable:true,get:()=>typeof digitPipSize!=='undefined'?digitPipSize:1});
+  window.send=(payload)=>send(payload);
+}catch(e){console.error('TradeNovaX bot state bridge failed:',e)}
 </script>
 <script id="tnx-production-final-controller">
 (function(){

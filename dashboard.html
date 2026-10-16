@@ -4398,67 +4398,58 @@ body{
 <script id="tnx-reference-bot-engine-v2">
 (function(){
   'use strict';
-  /*
-   * TradeNovaX reference-style bot engine.
-   * Lifecycle mirrors the extracted bot architecture:
-   * BEFORE_PURCHASE -> DURING_PURCHASE -> CONTRACT_CLOSED -> BEFORE_PURCHASE
-   * The existing TradeNovaX UI, WebSocket and Blockly workspace remain the UI/API layer.
-   */
-  const R=window.TNX_BLOCKLY_RUNNER||(window.TNX_BLOCKLY_RUNNER={});
-  Object.assign(R,{
-    phase:'STOP',running:false,pending:false,runs:0,maxRuns:100,lastSignal:null,
-    currentContract:null,config:null,sessionPnl:0,startedAt:0,sellRequestedFor:null,
-    contractRecoveryTimer:null,nextRunTimer:null,stopReason:null
-  });
-  window.TNX_REFERENCE_BOT=R;
-
+  // One owner for Blockly execution: keep the existing workspace, authenticated
+  // Deriv WebSocket, risk checks, pending map and contract lifecycle.
+  const R=window.TNX_BLOCKLY_RUNNER;
+  if(!R) return;
   const $=id=>document.getElementById(id);
-  const mode=()=>String(window.activeAccount?.account_type||'').toUpperCase()||'DERIV';
-  const status=msg=>{const e=$('builderRunStatus');if(e)e.textContent=msg;try{window.showToast?.(msg)}catch(_){} };
+  const status=msg=>{const e=$('builderRunStatus');if(e)e.textContent=msg;try{window.showToast?.(msg)}catch(_){}};
+  const mode=()=>String(window.activeAccount?.account_type||'DERIV').toUpperCase();
   const connected=()=>!!(window.liveConnected&&window.activeAccount&&window.derivWS&&window.derivWS.readyState===WebSocket.OPEN&&['REAL','DEMO'].includes(mode()));
   const clearTimers=()=>{clearTimeout(R.contractRecoveryTimer);clearTimeout(R.nextRunTimer);R.contractRecoveryTimer=null;R.nextRunTimer=null;};
-  const digit=()=>{
+  const lastDigit=()=>{
     const t=window.lastTick||null;if(!t)return null;
     if(Number.isInteger(Number(t.digit)))return Number(t.digit);
     const pip=Number(window.digitPipSize||1);
     if(typeof window.digitLastDigit==='function'&&Number.isFinite(Number(t.quote)))return Number(window.digitLastDigit(Number(t.quote),pip));
-    const s=String(t.quote);const m=s.replace(/[^0-9]/g,'');return m?Number(m.slice(-1)):null;
+    const s=String(t.quote??'').replace(/[^0-9]/g,'');return s?Number(s.slice(-1)):null;
   };
-  const conditionPass=c=>{
-    if(!c)return true;const d=digit();if(d===null)return false;
-    const get=n=>c.getFieldValue?.(n);
-    const v=Number(get('DIGIT')??get('VALUE')??0);
+  const conditionPass=(block,d)=>{
+    if(!block)return true;if(d===null||d===undefined||!Number.isFinite(Number(d)))return false;
+    const get=n=>block.getFieldValue?.(n),v=Number(get('DIGIT')??get('VALUE')??0);
     switch(get('OP')){case'NEQ':return d!==v;case'GT':return d>v;case'GTE':return d>=v;case'LT':return d<v;case'LTE':return d<=v;case'EQ':return d===v;default:return true;}
   };
-  function compileReference(){
+  function compileWorkspace(){
     const ws=window.TNX_BLOCKLY_WORKSPACE;if(!ws)return null;
     const blocks=ws.getAllBlocks(false);
-    const p=blocks.find(b=>b.type==='tnx_trade_parameters');
-    const buy=blocks.find(b=>b.type==='tnx_purchase');
-    const cond=blocks.find(b=>b.type==='tnx_digit_condition');
+    const params=blocks.find(b=>b.type==='tnx_trade_parameters');
+    const purchase=blocks.find(b=>b.type==='tnx_purchase');
+    const condition=blocks.find(b=>b.type==='tnx_digit_condition');
     const restart=blocks.find(b=>b.type==='tnx_trade_again'||b.type==='tnx_restart');
     const sell=blocks.find(b=>b.type==='tnx_sell_conditions');
-    const mod=blocks.find(b=>b.type==='tnx_contract_modifier');
-    if(!p||!buy)return null;
-    let symbol=p.getFieldValue('SYMBOL')||$('builderMarketSymbol')?.value||$('digitSymbol')?.value||'1HZ100V';
-    let contract=buy.getFieldValue?.('CONTRACT')||p.getFieldValue('CONTRACT')||$('builderContract')?.value||'DIGITEVEN';
-    let duration=Math.max(1,Number(p.getFieldValue('DURATION')||$('digitDuration')?.value||1));
-    let stake=Math.max(0.35,Number(p.getFieldValue('STAKE')||$('digitStake')?.value||1));
-    let prediction=Number(buy.getFieldValue?.('PREDICTION')??p.getFieldValue('PREDICTION')??$('digitPrediction')?.value??5);
-    if(mod){const m=mod.getFieldValue('MOD'),v=Number(mod.getFieldValue('VALUE')||1);if(m==='DURATION')duration=Math.max(1,v);if(m==='STAKE')stake=Math.max(.35,v);if(m==='PREDICTION')prediction=Math.max(0,Math.min(9,v));}
-    const enabled=restart ? restart.getFieldValue('ENABLED')!=='FALSE' : true;
+    const modifier=blocks.find(b=>b.type==='tnx_contract_modifier');
+    if(!params||!purchase)return null;
+    let symbol=params.getFieldValue('SYMBOL')||$('builderMarketSymbol')?.value||$('digitSymbol')?.value||'1HZ100V';
+    let contract=purchase.getFieldValue?.('CONTRACT')||params.getFieldValue('CONTRACT')||$('builderContract')?.value||'DIGITEVEN';
+    let duration=Math.max(1,Number(params.getFieldValue('DURATION')||$('digitDuration')?.value||1));
+    let stake=Math.max(.35,Number(params.getFieldValue('STAKE')||$('digitStake')?.value||1));
+    let prediction=Number(purchase.getFieldValue?.('PREDICTION')??params.getFieldValue('PREDICTION')??$('digitPrediction')?.value??5);
+    if(modifier){const m=modifier.getFieldValue('MOD'),v=Number(modifier.getFieldValue('VALUE')||1);if(m==='DURATION')duration=Math.max(1,v);if(m==='STAKE')stake=Math.max(.35,v);if(m==='PREDICTION')prediction=Math.max(0,Math.min(9,v));}
+    const enabled=restart ? restart.getFieldValue('ENABLED')!=='FALSE' : false;
     const raw=restart?.getFieldValue('RUNS')??restart?.getFieldValue('MAX_RUNS')??$('mkoreanMaxRuns')?.value??100;
     const maxRuns=Math.max(1,Math.min(100,Number(raw)||100));
-    return {symbol,contract,duration,stake,prediction,condition:cond,restart,sell,enabled,maxRuns};
+    return {symbol,contract,duration,stake,prediction,condition,restart,sell,enabled,maxRuns};
   }
   function stop(reason){
-    clearTimers();R.running=false;R.pending=false;R.currentContract=null;R.phase='STOP';R.stopReason=reason||'Stopped by user.';status('⏹ '+R.stopReason);
+    clearTimers();R.running=false;R.pending=false;R.currentContract=null;R.phase='STOP';R.stopReason=reason||'Stopped by user.';
+    for(const [id,ctx] of window.pending||[]){if(String(ctx?.kind||'').startsWith('tnxReference'))window.pending.delete(id);}
+    status('⏹ '+R.stopReason);
   }
-  function recover(id){
+  function recover(contractId){
     clearTimeout(R.contractRecoveryTimer);
     R.contractRecoveryTimer=setTimeout(()=>{
-      if(!R.running||R.currentContract!==String(id)||!window.send)return;
-      try{window.send({proposal_open_contract:1,contract_id:String(id),subscribe:1});}catch(_){}
+      if(!R.running||String(R.currentContract)!==String(contractId)||!window.send)return;
+      try{window.send({proposal_open_contract:1,contract_id:String(contractId),subscribe:1});}catch(_){}
     },1500);
   }
   function scheduleNext(){
@@ -4471,49 +4462,52 @@ body{
     if(!connected()){stop(`${mode()} Deriv connection lost`);return;}
     if(window.tnxTradingHalted){stop(`${mode()} trading is halted by safety controls`);return;}
     if(R.runs>=R.maxRuns){stop('Bot finished • maximum runs reached');return;}
-    if(!conditionPass(R.config.condition))return;
+    const digit=lastDigit();if(!conditionPass(R.config.condition,digit))return;
     const epoch=Number(window.lastTick?.epoch||0);if(epoch&&R.lastSignal===epoch)return;R.lastSignal=epoch||Date.now();
-    if(typeof window.tnxCanOpenTrade==='function'&&!window.tnxCanOpenTrade(R.config.stake,'reference-bot')){stop('Risk controls blocked the next trade');return;}
+    if(typeof window.tnxCanOpenTrade==='function'&&!window.tnxCanOpenTrade(R.config.stake,'blockly-builder')){stop('Risk controls blocked the next trade');return;}
     const payload={proposal:1,amount:R.config.stake,basis:'stake',contract_type:R.config.contract,currency:window.activeAccount.currency||'USD',duration:R.config.duration,duration_unit:'t',underlying_symbol:R.config.symbol,subscribe:1};
     if(['DIGITOVER','DIGITUNDER','DIGITMATCH','DIGITDIFF'].includes(R.config.contract))payload.barrier=String(R.config.prediction);
     try{
-      R.phase='BEFORE_PURCHASE';R.pending=true;
-      const req=window.send(payload);
+      const req=window.send(payload);R.pending=true;R.phase='BEFORE_PURCHASE';
       window.pending.set(req,{kind:'tnxReferenceProposal',amount:R.config.stake,symbol:R.config.symbol,direction:R.config.contract,config:R.config,status:$('builderRunStatus')});
       status(`🟡 ${mode()} proposal requested • waiting for Deriv…`);
     }catch(e){R.pending=false;stop('Proposal request failed: '+(e.message||e));}
   }
-  R.evaluateTick=evaluateTick;R.scheduleNextRun=scheduleNext;R.recoverContract=recover;R.stopCleanly=stop;
-
+  Object.assign(R,{evaluateTick,scheduleNextRun:scheduleNext,recoverContract:recover,stopCleanly:stop});
+  window.TNX_REFERENCE_BOT=R;
   window.tnxBuilderRun=async function(){
-    const cfg=compileReference();
+    const cfg=compileWorkspace();
     if(!cfg){status('🔴 Add Trade parameters and Purchase blocks first.');return;}
-    if(!connected()){status(`🔴 Connect a REAL or DEMO Deriv account first.`);return;}
+    if(!connected()){status('🔴 Connect a REAL or DEMO Deriv account first.');return;}
     if(typeof window.tnxCanOpenTrade==='function'&&!window.tnxCanOpenTrade(cfg.stake,'reference-bot-start'))return;
     const accountMode=mode();
     const msg=`Run ${accountMode} bot\nAccount: ${window.activeAccount.account_id}\nMarket: ${cfg.symbol}\nContract: ${cfg.contract}\nStake: ${cfg.stake.toFixed(2)} ${window.activeAccount.currency||'USD'}\nDuration: ${cfg.duration} tick(s)\n${cfg.enabled?'Maximum runs: '+cfg.maxRuns:'Single run'}`;
     if(typeof window.confirmRealTrade==='function'&&!window.confirmRealTrade(msg))return;
-    clearTimers();R.running=true;R.pending=false;R.phase='BEFORE_PURCHASE';R.runs=0;R.maxRuns=cfg.enabled?cfg.maxRuns:1;R.lastSignal=null;R.currentContract=null;R.config=cfg;R.startedAt=Date.now();R.sessionPnl=0;R.stopReason=null;
-    try{window.subscribeTicks(cfg.symbol);}catch(e){stop('Could not subscribe to '+cfg.symbol+': '+(e.message||e));return;}
+    clearTimers();
+    // Clear orphaned runner requests only, not manual or digit terminal requests.
+    for(const [id,ctx] of window.pending||[]){if(String(ctx?.kind||'').startsWith('tnxReference')||String(ctx?.kind||'').startsWith('blocklyRunner'))window.pending.delete(id);}
+    Object.assign(R,{phase:'BEFORE_PURCHASE',running:true,pending:false,runs:0,maxRuns:cfg.enabled?cfg.maxRuns:1,lastSignal:null,currentContract:null,config:cfg,startedAt:Date.now(),sessionPnl:0,sellRequestedFor:null,stopReason:null});
+    try{window.subscribeTicks(cfg.symbol)}catch(e){stop('Could not subscribe to '+cfg.symbol+': '+(e.message||e));return;}
     status(`🟢 BOT RUNNING ${accountMode} • ${cfg.symbol} • waiting for live condition…`);
     evaluateTick();
   };
   window.tnxBuilderStop=()=>stop('Stopped by user.');
 
-  // Proposal stage: BEFORE_PURCHASE -> BUYING.
+  // Wrap the shared dispatcher once. Non-Blockly requests continue through the existing handlers.
   const previousProposal=window.handleProposal;
-  if(!previousProposal.__tnxReferenceV2){
+  if(!previousProposal?.__tnxReferenceV2){
     const wrappedProposal=function(d){
       const ctx=window.pending?.get(d?.req_id);
       if(ctx?.kind==='tnxReferenceProposal'){
         window.pending.delete(d.req_id);R.pending=false;
+        if(d?.error){stop('Deriv rejected proposal: '+(d.error.message||d.error.code||'unknown error'));return;}
         const p=d.proposal||{};
         if(!p.id){stop('Deriv returned no proposal ID');return;}
-        if(typeof window.tnxCanOpenTrade==='function'&&!window.tnxCanOpenTrade(ctx.amount,'reference-bot-buy')){stop('Risk controls blocked the purchase');return;}
+        if(typeof window.tnxCanOpenTrade==='function'&&!window.tnxCanOpenTrade(ctx.amount,'blockly-buy')){stop('Risk controls blocked the purchase');return;}
         try{
           const req=window.send({buy:p.id,price:Number(p.ask_price??ctx.amount)});
-          R.phase='DURING_PURCHASE';R.pending=true;
-          window.pending.set(req,{kind:'tnxReferenceBuy',amount:ctx.amount,symbol:ctx.symbol,direction:ctx.direction,config:ctx.config,status:ctx.status});
+          R.phase='BUYING';R.pending=true;
+          window.pending.set(req,{kind:'tnxReferenceBuy',amount:ctx.amount,symbol:ctx.symbol,direction:ctx.direction,config:ctx.config,status:ctx.status,ask:Number(p.ask_price??ctx.amount)});
           status(`🟠 ${mode()} proposal accepted • purchasing contract…`);
         }catch(e){stop('Purchase request failed: '+(e.message||e));}
         return;
@@ -4521,52 +4515,38 @@ body{
       return previousProposal?.apply(this,arguments);
     };
     wrappedProposal.__tnxReferenceV2=true;window.handleProposal=wrappedProposal;
+    try{handleProposal=wrappedProposal}catch(_){}
   }
-
-  // Purchase stage: count a run ONLY after Deriv returns a real contract_id.
   const previousBuy=window.handleBuy;
-  if(!previousBuy.__tnxReferenceV2){
+  if(!previousBuy?.__tnxReferenceV2){
     const wrappedBuy=function(d){
       const ctx=window.pending?.get(d?.req_id);
       if(ctx?.kind==='tnxReferenceBuy'){
         window.pending.delete(d.req_id);R.pending=false;
-        const id=d.buy?.contract_id;
+        if(d?.error){stop('Deriv rejected purchase: '+(d.error.message||d.error.code||'unknown error'));return;}
+        const bought=d?.buy||{},id=bought.contract_id;
         if(!id){stop('Deriv purchase returned no contract ID');return;}
-        R.currentContract=String(id);R.phase='DURING_PURCHASE';R.runs++;
-        try{window.activeContracts?.set(String(id),d.buy);}catch(_){}
-        try{window.send({proposal_open_contract:1,contract_id:String(id),subscribe:1});}catch(e){stop('Could not subscribe to contract: '+(e.message||e));return;}
+        R.currentContract=String(id);R.runs++;R.phase='DURING_PURCHASE';
+        try{window.activeContracts?.set(String(id),bought)}catch(_){}
+        try{window.send({proposal_open_contract:1,contract_id:String(id),subscribe:1});}
+        catch(e){stop('Could not subscribe to contract: '+(e.message||e));return;}
         status(`🟢 ${mode()} CONTRACT OPEN • Run ${R.runs}/${R.maxRuns} • ${ctx.direction}`);
-        try{window.renderPositions?.();window.updateSummary?.();}catch(_){}
+        try{window.renderPositions?.();window.updateSummary?.();window.refreshLiveData?.()}catch(_){}
         return;
       }
       return previousBuy?.apply(this,arguments);
     };
     wrappedBuy.__tnxReferenceV2=true;window.handleBuy=wrappedBuy;
+    try{handleBuy=wrappedBuy}catch(_){}
   }
-
-  // Contract stage: DURING_PURCHASE -> CLOSED -> BEFORE_PURCHASE.
   const previousContract=window.handleContract;
-  if(!previousContract.__tnxReferenceV2){
+  if(!previousContract?.__tnxReferenceV2){
     const wrappedContract=function(c){
-      const id=String(c?.contract_id||'');
-      const isOur=id&&R.currentContract===id;
+      const id=String(c?.contract_id||''),ours=id&&String(R.currentContract||'')===id;
       const result=previousContract?.apply(this,arguments);
-      if(!R.running||!isOur)return result;
+      if(!R.running||!ours)return result;
       const closed=!!c?.is_sold||['won','lost','sold','expired'].includes(String(c?.status||'').toLowerCase());
-      if(!closed){
-        const target=Number(R.config?.sell?.getFieldValue?.('TARGET'));
-        const profit=Number(c?.profit);
-        const targetReached=R.config?.sell&&Number.isFinite(target)&&target!==0&&Number.isFinite(profit)&&((target>0&&profit>=target)||(target<0&&profit<=target));
-        if(targetReached&&R.sellRequestedFor!==id){
-          R.sellRequestedFor=id;
-          try{
-            const req=window.send({sell:id,price:Math.max(0,Number(c?.bid_price||0))});
-            window.pending.set(req,{kind:'tnxReferenceSell',contractId:id,status:$('builderRunStatus')});
-            status(`🟠 Sell target ${target.toFixed(2)} reached • requesting contract close…`);
-          }catch(e){R.sellRequestedFor=null;stop('Automatic sell request failed: '+(e.message||e));}
-        }
-        recover(id);return result;
-      }
+      if(!closed){recover(id);return result;}
       clearTimeout(R.contractRecoveryTimer);R.currentContract=null;R.sellRequestedFor=null;R.pending=false;R.phase='CONTRACT_CLOSED';
       const pnl=Number(c?.profit||0);if(Number.isFinite(pnl))R.sessionPnl+=pnl;
       if(R.runs>=R.maxRuns){R.running=false;R.phase='STOP';status(`⏹ Bot finished • maximum runs reached • ${R.runs}/${R.maxRuns} • session P/L ${R.sessionPnl.toFixed(2)}`);}
@@ -4574,33 +4554,16 @@ body{
       return result;
     };
     wrappedContract.__tnxReferenceV2=true;window.handleContract=wrappedContract;
-    try{handleContract=wrappedContract;}catch(_){}
+    try{handleContract=wrappedContract}catch(_){}
   }
-
-  // BEFORE_PURCHASE is driven by the central Deriv tick path.
+  // A tick is allowed to evaluate a Blockly bot only once; the existing tick handler owns the stream.
   const previousTick=window.onTick;
-  if(!previousTick.__tnxReferenceV2){
-    const wrappedTick=function(){
-      const result=previousTick?.apply(this,arguments);
-      if(R.running&&!R.pending&&!R.currentContract)evaluateTick();
-      return result;
-    };
+  if(!previousTick?.__tnxReferenceV2){
+    const wrappedTick=function(){const result=previousTick?.apply(this,arguments);if(R.running&&!R.pending&&!R.currentContract)evaluateTick();return result;};
     wrappedTick.__tnxReferenceV2=true;window.onTick=wrappedTick;
+    try{onTick=wrappedTick}catch(_){}
   }
-
-  // Keep the Blockly Restart block aligned with the reference application's 1-100 range.
-  function patchRestartDefault(){
-    try{
-      const ws=window.TNX_BLOCKLY_WORKSPACE;if(!ws)return;
-      ws.getAllBlocks(false).filter(b=>b.type==='tnx_trade_again'||b.type==='tnx_restart').forEach(b=>{
-        if(Number(b.getFieldValue?.('RUNS'))<1){try{b.setFieldValue('100','RUNS')}catch(_){}
-        }
-      });
-    }catch(_){}
-  }
-  window.addEventListener('load',patchRestartDefault);setTimeout(patchRestartDefault,1000);
 })();
 </script>
-
-<!-- Full-site Mkorean-inspired theme: load after legacy inline overrides. -->
-<link rel="stylesheet" href="css/mkorean-fullsite.css?v=20261016">
+</body>
+</html>

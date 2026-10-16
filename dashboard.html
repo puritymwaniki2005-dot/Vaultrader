@@ -4469,7 +4469,7 @@ body{
     if(['DIGITOVER','DIGITUNDER','DIGITMATCH','DIGITDIFF'].includes(R.config.contract))payload.barrier=String(R.config.prediction);
     try{
       const req=window.send(payload);R.pending=true;R.phase='BEFORE_PURCHASE';
-      window.pending.set(req,{kind:'tnxReferenceProposal',amount:R.config.stake,symbol:R.config.symbol,direction:R.config.contract,config:R.config,status:$('builderRunStatus')});
+      window.pending.set(req,{kind:'tnxReferenceProposal',amount:R.config.stake,symbol:R.config.symbol,direction:R.config.contract,config:R.config,status:$('builderRunStatus'),payload,retryCount:0});
       status(`🟡 ${mode()} proposal requested • waiting for Deriv…`);
     }catch(e){R.pending=false;stop('Proposal request failed: '+(e.message||e));}
   }
@@ -4500,7 +4500,21 @@ body{
       const ctx=window.pending?.get(d?.req_id);
       if(ctx?.kind==='tnxReferenceProposal'){
         window.pending.delete(d.req_id);R.pending=false;
-        if(d?.error){stop('Deriv rejected proposal: '+(d.error.message||d.error.code||'unknown error'));return;}
+        if(d?.error){
+          const code=String(d.error.code||'');
+          // Match the source bot's recoverable proposal behavior for transient price/proposal errors.
+          // Retry with a fresh proposal request, bounded to avoid an infinite retry loop.
+          if(['PriceMoved','InvalidContractProposal'].includes(code)&&Number(ctx.retryCount||0)<3&&ctx.payload){
+            try{
+              const retryReq=window.send({...ctx.payload});
+              window.pending.set(retryReq,{...ctx,kind:'tnxReferenceProposal',retryCount:Number(ctx.retryCount||0)+1});
+              R.pending=true;R.phase='BEFORE_PURCHASE';
+              status('🟡 Proposal changed ('+code+') • retry '+(Number(ctx.retryCount||0)+1)+'/3…');
+            }catch(e){stop('Proposal retry failed: '+(e.message||e));}
+            return;
+          }
+          stop('Deriv rejected proposal: '+(d.error.message||code||'unknown error'));return;
+        }
         const p=d.proposal||{};
         if(!p.id){stop('Deriv returned no proposal ID');return;}
         if(typeof window.tnxCanOpenTrade==='function'&&!window.tnxCanOpenTrade(ctx.amount,'blockly-buy')){stop('Risk controls blocked the purchase');return;}

@@ -10,7 +10,7 @@ export class IframeAuthService {
     private static instance: IframeAuthService;
     private isIframe: boolean = false;
     private token: string | null = null;
-    private accountType: string = 'live';
+    private accountTypeValue: string = 'live';
     private isAuthenticated: boolean = false;
 
     private constructor() {
@@ -38,7 +38,7 @@ export class IframeAuthService {
     }
 
     get accountType(): string {
-        return this.accountType || localStorage.getItem('account_type') || 'live';
+        return this.accountTypeValue || localStorage.getItem('account_type') || 'live';
     }
 
     initialize() {
@@ -52,7 +52,7 @@ export class IframeAuthService {
         if (urlToken) {
             console.log('🔑 Token found in URL');
             this.token = urlToken;
-            this.accountType = urlAccount || 'live';
+            this.accountTypeValue = urlAccount || localStorage.getItem('account_type') || 'live';
             localStorage.setItem('deriv_access_token', urlToken);
             localStorage.setItem('account_type', this.accountType);
             
@@ -64,10 +64,11 @@ export class IframeAuthService {
             if (storedToken) {
                 console.log('🔑 Token found in localStorage');
                 this.token = storedToken;
-                this.accountType = localStorage.getItem('account_type') || 'live';
+                this.accountTypeValue = localStorage.getItem('account_type') || 'live';
             }
         }
 
+        this.isAuthenticated = Boolean(this.token);
         this.setupMessageListener();
 
         setTimeout(() => {
@@ -107,8 +108,12 @@ export class IframeAuthService {
             switch (data.type) {
                 case 'AUTH':
                     console.log('🔐 Auth request from parent');
+                    if (typeof data.token !== 'string' || data.token.trim().length === 0) {
+                        this.sendMessage('AUTH_ERROR', { message: 'A valid access token is required.' });
+                        break;
+                    }
                     this.token = data.token;
-                    this.accountType = data.accountType || 'live';
+                    this.accountTypeValue = typeof data.accountType === 'string' ? data.accountType : 'live';
                     localStorage.setItem('deriv_access_token', this.token);
                     localStorage.setItem('account_type', this.accountType);
                     this.isAuthenticated = true;
@@ -124,8 +129,9 @@ export class IframeAuthService {
                     
                 case 'SWITCH_ACCOUNT':
                     console.log('🔄 Switching account:', data.accountType);
-                    this.accountType = data.accountType;
-                    localStorage.setItem('account_type', this.accountType);
+                    if (typeof data.accountType !== 'string' || !data.accountType.trim()) break;
+                    this.accountTypeValue = data.accountType;
+                    localStorage.setItem('account_type', this.accountTypeValue);
                     this.sendMessage('ACCOUNT_SWITCHED', { accountType: this.accountType });
                     break;
                     

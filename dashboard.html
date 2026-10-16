@@ -2421,11 +2421,13 @@ function tnxSyncOriginalBotAccount(){
     const tokenRecord={access_token:token,expires_at:Math.floor(expiresAt/1000)};
     // The original bot's auth service reads auth_info before it will expose the builder.
     localStorage.setItem('auth_info',JSON.stringify(tokenRecord));
-    localStorage.setItem('authToken',token);
     localStorage.setItem('active_loginid',id);
     localStorage.setItem('account_type',String(account.account_type||'demo').toLowerCase());
-    localStorage.setItem('accountsList',JSON.stringify({[id]:token}));
-    localStorage.setItem('clientAccounts',JSON.stringify({[id]:{currency,token}}));
+    // Do not put the OAuth access token into accountsList/authToken: the original
+    // bot expects per-account trading tokens there, not the REST OAuth bearer token.
+    // Preserve the bot's real account-token map if it was populated by its OAuth flow.
+    if(!localStorage.getItem('accountsList')) localStorage.setItem('accountsList','{}');
+    if(!localStorage.getItem('clientAccounts')) localStorage.setItem('clientAccounts','{}');
     localStorage.setItem('client_account_details',JSON.stringify([{loginid:id,currency,balance:account.balance||0,is_virtual:String(account.account_type).toLowerCase()==='demo'}]));
     return true;
   }catch(e){console.error('Unable to share Deriv session with Blockly bot:',e);return false}

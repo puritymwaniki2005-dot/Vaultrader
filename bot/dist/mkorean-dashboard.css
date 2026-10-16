@@ -1,17 +1,17 @@
 /* Mkorean-inspired React dashboard layer — visual only; trading logic untouched. */
 :root {
-  --mk-bg: #08111f;
-  --mk-panel: #101d30;
-  --mk-panel-raised: #14243a;
-  --mk-panel-hover: #192b43;
-  --mk-border: rgba(156, 181, 211, .16);
-  --mk-text: #edf5ff;
-  --mk-muted: #92a5bd;
-  --mk-accent: #4de2b1;
-  --mk-accent-strong: #16b887;
-  --mk-blue: #67a9ff;
-  --mk-radius: 18px;
-  --mk-shadow: 0 16px 40px rgba(0, 0, 0, .18);
+  --mk-bg: #0b0712;
+  --mk-panel: #160b1c;
+  --mk-panel-raised: #211020;
+  --mk-panel-hover: #301321;
+  --mk-border: rgba(255, 191, 0, .20);
+  --mk-text: #f7f1fb;
+  --mk-muted: #b9a9c3;
+  --mk-accent: #ffbf00;
+  --mk-accent-strong: #ff8a00;
+  --mk-blue: #e4b93f;
+  --mk-radius: 14px;
+  --mk-shadow: 0 16px 40px rgba(0, 0, 0, .28);
 }
 html:has(.bot), body:has(.bot), body.theme {
   background: var(--mk-bg);
@@ -33,9 +33,9 @@ body.theme, body.theme--light, body.theme--dark {
 .bot, .bot-dashboard, .tab__dashboard, .tab__dashboard__content {
   color: var(--mk-text);
 }
-.bot-dashboard { background: radial-gradient(ellipse at 76% 0%, rgba(34, 113, 126, .14), transparent 36%), var(--mk-bg); }
+.bot-dashboard { background: radial-gradient(ellipse at 76% 0%, rgba(255, 191, 0, .07), transparent 36%), var(--mk-bg); }
 .header, .header__container, .layout__header, .dc-header {
-  background: rgba(8, 17, 31, .94) !important;
+  background: rgba(11, 7, 18, .96) !important;
   color: var(--mk-text) !important;
   border-bottom: 1px solid var(--mk-border) !important;
   box-shadow: 0 8px 28px rgba(0,0,0,.12);
@@ -81,7 +81,7 @@ body.theme, body.theme--light, body.theme--dark {
 .tab__dashboard .quick-panel .db-card,
 .tab__dashboard .quick-panel .strategy-card,
 .tab__dashboard .quick-panel [class*="strategy-card"] {
-  background: linear-gradient(145deg, rgba(20,36,58,.96), rgba(14,26,43,.96)) !important;
+  background: linear-gradient(145deg, rgba(33,16,32,.98), rgba(22,11,28,.98)) !important;
   border: 1px solid var(--mk-border) !important;
   border-radius: var(--mk-radius) !important;
   box-shadow: var(--mk-shadow);
@@ -90,7 +90,7 @@ body.theme, body.theme--light, body.theme--dark {
 .tab__dashboard .quick-panel .dc-card:hover,
 .tab__dashboard .quick-panel .load-strategy__container:hover,
 .tab__dashboard .quick-panel [class*="strategy-card"]:hover {
-  border-color: rgba(77,226,177,.48) !important;
+  border-color: rgba(255,191,0,.55) !important;
   transform: translateY(-2px);
   box-shadow: 0 18px 44px rgba(0,0,0,.24);
 }
@@ -105,13 +105,13 @@ body.theme, body.theme--light, body.theme--dark {
 .tab__dashboard .dc-btn--primary, .bot .dc-btn--primary,
 .tab__dashboard button[class*="primary"], .bot button[class*="primary"] {
   background: linear-gradient(135deg, var(--mk-accent), var(--mk-accent-strong)) !important;
-  color: #052019 !important;
+  color: #211000 !important;
   border-color: transparent !important;
   font-weight: 700;
 }
 .tab__dashboard input, .tab__dashboard select, .tab__dashboard textarea,
 .bot input, .bot select, .bot textarea {
-  background: #0b1728 !important;
+  background: #130a19 !important;
   color: var(--mk-text) !important;
   border-color: var(--mk-border) !important;
   border-radius: 10px !important;
@@ -144,9 +144,9 @@ body.theme, body.theme--light, body.theme--dark {
 .tab__dashboard .dc-popover, .bot .dc-popover, .dc-tooltip { border-radius: 10px; }
 .bot .run-panel__container { border-left: 1px solid var(--mk-border); }
 .bot .toolbar, .bot .toolbar__section { background: var(--mk-panel) !important; }
-.bot .blocklyToolboxDiv { background: #0d1a2b !important; border-right: 1px solid var(--mk-border); }
-.bot .blocklyFlyoutBackground { fill: #122138 !important; }
-.bot .blocklyMainBackground { stroke: rgba(156,181,211,.12) !important; }
+.bot .blocklyToolboxDiv { background: #160b1c !important; border-right: 1px solid var(--mk-border); }
+.bot .blocklyFlyoutBackground { fill: #281224 !important; }
+.bot .blocklyMainBackground { stroke: rgba(255,191,0,.12) !important; }
 .bot .injectionDiv { border-radius: 12px; overflow: hidden; }
 .tab__dashboard__info-panel, .db-info-panel {
   background: var(--mk-panel) !important;
@@ -155,8 +155,8 @@ body.theme, body.theme--light, body.theme--dark {
   border-radius: var(--mk-radius);
 }
 ::-webkit-scrollbar { width: 9px; height: 9px; }
-::-webkit-scrollbar-track { background: #0a1423; }
-::-webkit-scrollbar-thumb { background: #2b405a; border-radius: 20px; border: 2px solid #0a1423; }
+::-webkit-scrollbar-track { background: #0b0712; }
+::-webkit-scrollbar-thumb { background: #69411d; border-radius: 20px; border: 2px solid #0a1423; }
 ::-webkit-scrollbar-thumb:hover { background: #3d5a78; }
 @media (min-width: 1200px) {
   .tab__dashboard__content { max-width: 1680px; margin-inline: auto; }
@@ -171,4 +171,36 @@ body.theme, body.theme--light, body.theme--dark {
   .tab__dashboard .quick-panel .dc-card,
   .tab__dashboard .quick-panel .load-strategy__container,
   .tab__dashboard .quick-panel [class*="strategy-card"] { border-radius: 14px !important; }
+}
+
+/* Native Vaultrader integration: full-width workspace and gold-accent controls. */
+html, body, #root { width: 100%; max-width: 100%; }
+.tab__dashboard__content {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  box-sizing: border-box;
+}
+.tab__dashboard__content .dc-btn--primary,
+.bot .dc-btn--primary,
+.tab__dashboard__content button[class*="primary"],
+.bot button[class*="primary"] {
+  background: linear-gradient(120deg, #ffbf00, #ff8a00) !important;
+  color: #190c12 !important;
+}
+.bot .run-panel__container,
+.bot .run-panel,
+.bot [class*="run-panel"] {
+  border-color: var(--mk-border) !important;
+}
+.bot .blocklyToolboxDiv { border-right-color: var(--mk-border) !important; }
+.bot .blocklyFlyoutBackground { fill: #241020 !important; }
+.bot .blocklyScrollbarHandle { fill: #80602b !important; }
+.bot .blocklyScrollbarBackground { fill: #160b1c !important; }
+@media (min-width: 1200px) {
+  .tab__dashboard__content { max-width: none !important; margin-inline: 0 !important; }
+}
+@media (max-width: 768px) {
+  .tab__dashboard__content { padding: 12px 8px !important; }
+  .bot .run-panel__container { max-width: 100vw; }
 }

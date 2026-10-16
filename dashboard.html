@@ -844,6 +844,102 @@ select.tnx-control option{background:#0b1020;color:#fff}
         :focus-visible { outline: 2px solid #4de2b1; outline-offset: 3px; }
         ::-webkit-scrollbar-thumb { background: #2b405a; }
         ::-webkit-scrollbar-thumb:hover { background: #4de2b1; }
+
+        /* Mkorean-inspired site-wide horizontal navigation. Applies to every dashboard page. */
+        :root { --sidebar-width: 0px; }
+        .sidebar {
+            position: fixed !important;
+            inset: 0 0 auto 0 !important;
+            width: 100% !important;
+            height: auto !important;
+            max-height: 190px !important;
+            padding: 0 !important;
+            overflow: visible !important;
+            display: grid !important;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            grid-template-rows: auto auto;
+            align-items: center;
+            gap: 0 1.2rem;
+            border-right: 0 !important;
+            border-bottom: 1px solid var(--border) !important;
+            background: var(--navy) !important;
+            box-shadow: 0 8px 28px rgba(0,0,0,.24);
+            z-index: 200 !important;
+        }
+        .sidebar-brand {
+            grid-column: 1;
+            grid-row: 1;
+            padding: .9rem 1.5rem !important;
+            border: 0 !important;
+            white-space: nowrap;
+        }
+        .sidebar-user {
+            grid-column: 3;
+            grid-row: 1;
+            padding: .6rem 1.2rem !important;
+            border: 0 !important;
+            min-width: 0;
+        }
+        .sidebar-user .avatar { width: 30px !important; height: 30px !important; }
+        .sidebar-user .email { display: none; }
+        .sidebar-nav {
+            grid-column: 1 / -1;
+            grid-row: 2;
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            flex-wrap: nowrap !important;
+            gap: .35rem !important;
+            width: 100% !important;
+            min-width: 0;
+            padding: .55rem .9rem !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            white-space: nowrap !important;
+            border-top: 1px solid var(--border);
+            scrollbar-width: thin;
+            scrollbar-color: var(--gold) transparent;
+        }
+        .sidebar-nav .nav-label { display: none !important; }
+        .sidebar-nav a {
+            display: inline-flex !important;
+            flex: 0 0 auto !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: .55rem !important;
+            min-height: 3.8rem;
+            width: auto !important;
+            padding: .85rem 1.1rem !important;
+            border: 1px solid transparent !important;
+            border-radius: 10px !important;
+            white-space: nowrap !important;
+            font-size: 1.2rem !important;
+        }
+        .sidebar-nav a.active {
+            border: 1px solid rgba(77,226,177,.4) !important;
+            border-left-color: var(--gold) !important;
+            background: rgba(77,226,177,.10) !important;
+        }
+        .sidebar-nav a .badge { margin-left: .2rem !important; }
+        .sidebar-footer { display: none !important; }
+        .main-content {
+            margin-left: 0 !important;
+            padding: 0 2rem 2rem !important;
+            padding-top: 15rem !important;
+            min-width: 0;
+        }
+        .topbar { top: 0 !important; }
+        .sidebar-overlay { display: none !important; }
+        @media (max-width: 760px) {
+            .sidebar { grid-template-columns: minmax(0,1fr) auto !important; max-height: 180px !important; }
+            .sidebar-brand { grid-column: 1; padding: .7rem .9rem !important; }
+            .sidebar-user { grid-column: 2; padding: .5rem .8rem !important; }
+            .sidebar-user .user-info { display: none; }
+            .sidebar-nav { padding: .4rem .5rem !important; gap: .2rem !important; }
+            .sidebar-nav a { min-height: 3.5rem; padding: .7rem .8rem !important; font-size: 1.1rem !important; }
+            .main-content { padding: 0 1rem 1.5rem !important; padding-top: 13rem !important; }
+        }
 </style>
 <style id="tnx-final-botbuilder-ui">
 /* FINAL TRADE NOVAX BOT BUILDER — target workspace layout */

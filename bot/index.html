@@ -25,30 +25,42 @@
           (() => {
             const normalize = value => String(value || '').replace(/\\s+/g, ' ').trim();
             const labels = ['Dashboard', 'Bot Builder', 'Charts', 'Tutorials'];
+            const hasMenuLabels = node => {
+              const value = normalize(node.innerText || node.textContent);
+              return labels.every(label => value.includes(label));
+            };
             const cleanEmbeddedChrome = () => {
-              const navCandidates = Array.from(document.querySelectorAll('nav, [role="tablist"], ul'))
-                .filter(node => {
-                  const text = normalize(node.innerText);
-                  return labels.every(label => text.includes(label));
-                });
-              // Prefer the actual primary navigation container; style only one node
-              // so nested nav/ul wrappers do not become competing horizontal bars.
-              const menu = navCandidates.find(node => node.tagName === 'NAV') ||
-                navCandidates.find(node => node.getAttribute('role') === 'tablist') ||
-                navCandidates.find(node => node.tagName === 'UL');
-              navCandidates.forEach(node => node.classList.toggle('tnx-mkorean-horizontal-nav', node === menu));
+              // The Deriv app's menu is not consistently rendered as nav/ul/tablist.
+              // Find the smallest real container holding all four menu labels.
+              const candidates = Array.from(document.querySelectorAll('body *'))
+                .filter(node => node.id !== 'root' && hasMenuLabels(node))
+                .filter(node => !Array.from(node.children).some(hasMenuLabels));
+              const menu = candidates
+                .filter(node => /^(NAV|UL|OL)$/.test(node.tagName) || node.getAttribute('role') === 'tablist')
+                .sort((a,b) => a.querySelectorAll('*').length - b.querySelectorAll('*').length)[0]
+                || candidates.sort((a,b) => a.querySelectorAll('*').length - b.querySelectorAll('*').length)[0];
+              document.querySelectorAll('.tnx-mkorean-horizontal-nav').forEach(node => {
+                if (node !== menu) node.classList.remove('tnx-mkorean-horizontal-nav');
+              });
+              if (menu) menu.classList.add('tnx-mkorean-horizontal-nav');
               document.querySelectorAll('body *').forEach(node => {
                 if (node.children.length) return;
-                const text = normalize(node.textContent);
-                if (text.includes('DERIV TRADING MODE') && text.includes('REAL BUY requires confirmation')) {
+                const value = normalize(node.textContent);
+                if (value.includes('DERIV TRADING MODE') && value.includes('REAL BUY requires confirmation')) {
                   const banner = node.closest('[role="alert"], .notice, .banner, .alert') || node;
                   banner.classList.add('tnx-hide-inner-navigation');
                 }
               });
             };
-            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', cleanEmbeddedChrome);
-            else cleanEmbeddedChrome();
-            new MutationObserver(cleanEmbeddedChrome).observe(document.documentElement, {childList:true,subtree:true});
+            let queued = false;
+            const scheduleCleanup = () => {
+              if (queued) return;
+              queued = true;
+              requestAnimationFrame(() => { queued = false; cleanEmbeddedChrome(); });
+            };
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scheduleCleanup);
+            else scheduleCleanup();
+            new MutationObserver(scheduleCleanup).observe(document.documentElement, {childList:true,subtree:true});
           })();
         </script>
         <base href="/bot/dist/" />

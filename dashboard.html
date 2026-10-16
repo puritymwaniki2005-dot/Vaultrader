@@ -2439,7 +2439,7 @@ function switchPage(page){
   if(page==='bot' && target){
     if(!document.getElementById('tnxOriginalBotFrame')){
       tnxSyncOriginalBotAccount();
-      target.innerHTML = '<iframe id="tnxOriginalBotFrame" title="Original Blockly Trading Bot" src="/bot/" style="display:block;width:100%;height:calc(100vh - 110px);min-height:720px;border:0;border-radius:12px;background:#fff" loading="eager" allow="clipboard-read; clipboard-write"></iframe>';
+      target.innerHTML = '<iframe id="tnxOriginalBotFrame" title="Original Blockly Trading Bot" src="/bot/" style="display:block;width:100%;height:calc(100vh - 145px);min-height:680px;border:0;border-radius:0;background:#0b0712;overflow:hidden" loading="eager" allow="clipboard-read; clipboard-write"></iframe>';
     }
     document.querySelectorAll('.page-content').forEach(p=>p.classList.remove('active'));
     target.classList.add('active');

@@ -23,71 +23,77 @@
         </style>
         <script>
           (() => {
+            const important = (node, name, value) => node && node.style.setProperty(name, value, 'important');
             const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
             const labels = ['Dashboard', 'Bot Builder', 'Charts', 'Tutorials'];
-            const important = (node, name, value) => node.style.setProperty(name, value, 'important');
-            const hasMenuLabels = node => {
-              const value = normalize(node.innerText || node.textContent);
-              return labels.every(label => value.includes(label));
+            const hasLabels = node => {
+              const t = normalize(node && (node.innerText || node.textContent));
+              return labels.every(label => t.includes(label));
             };
             const hide = node => {
-              if (!node) return;
+              if (!node || node.id === 'root' || node === document.body) return;
               node.classList.add('tnx-hide-inner-navigation');
               important(node, 'display', 'none');
             };
-            const cleanEmbeddedChrome = () => {
-              // The parent dashboard now owns the site's navigation. Remove the duplicate
-              // Deriv-app menu so the Blockly canvas starts directly beneath the app header.
-              const menuCandidates = Array.from(document.querySelectorAll('#root *'))
-                .filter(hasMenuLabels)
-                .filter(node => !Array.from(node.children).some(hasMenuLabels));
-              const menu = menuCandidates
-                .filter(node => /^(NAV|UL|OL)$/.test(node.tagName) || node.getAttribute('role') === 'tablist')
-                .sort((a,b) => a.querySelectorAll('*').length - b.querySelectorAll('*').length)[0]
-                || menuCandidates.sort((a,b) => a.querySelectorAll('*').length - b.querySelectorAll('*').length)[0];
-              if (menu) hide(menu);
-              // Remove the duplicate in-app login/signup strip shown above the Blockly menu.
-              const authLabels = Array.from(document.querySelectorAll('#root *')).filter(node => {
-                if (node.children.length > 8) return false;
-                const t = normalize(node.innerText || node.textContent).toLowerCase();
-                return t.includes('log in') && t.includes('sign up');
-              });
-              const authStrip = authLabels
-                .filter(node => !Array.from(node.children).some(child => {
-                  const t = normalize(child.innerText || child.textContent).toLowerCase();
-                  return t.includes('log in') && t.includes('sign up');
-                }))
-                .sort((a,b) => a.querySelectorAll('*').length - b.querySelectorAll('*').length)[0];
-              if (authStrip) {
-                const strip = authStrip.closest('header') || authStrip.parentElement;
-                if (strip && strip !== document.getElementById('root')) hide(strip);
-              }
-              // Use the Mkorean-style light Blockly workspace, while preserving the live
-              // Blockly controls, account connection UI and trade execution logic.
-              document.body.style.setProperty('background', '#f5f6f8', 'important');
+            const applyWorkspace = () => {
+              document.body.style.setProperty('background', '#f1f2f4', 'important');
               document.querySelectorAll('.blocklyMainBackground').forEach(node => node.style.setProperty('fill', '#ffffff', 'important'));
               document.querySelectorAll('.blocklyToolboxDiv').forEach(node => {
                 node.style.setProperty('background', '#f0f1f3', 'important');
                 node.style.setProperty('color', '#303238', 'important');
               });
               document.querySelectorAll('.blocklyFlyoutBackground').forEach(node => node.style.setProperty('fill', '#f1f2f4', 'important'));
-              document.querySelectorAll('body *').forEach(node => {
-                if (node.children.length) return;
-                const value = normalize(node.textContent);
-                if (value.includes('DERIV TRADING MODE') && value.includes('REAL BUY requires confirmation')) {
-                  hide(node.closest('[role="alert"], .notice, .banner, .alert') || node);
+              document.querySelectorAll('.blocklyScrollbarBackground').forEach(node => node.style.setProperty('fill', '#e4e5e7', 'important'));
+            };
+            const cleanEmbeddedChrome = () => {
+              const root = document.getElementById('root');
+              if (!root) return;
+              // The outer Vaultrader dashboard owns the site menu and header. Hide the
+              // duplicate inner menu by walking up from the stable Bot Builder tab ID.
+              const builder = root.querySelector('#id-bot-builder');
+              if (builder) {
+                let node = builder;
+                for (let level = 0; node && node.parentElement && level < 7; level++, node = node.parentElement) {
+                  if (hasLabels(node)) {
+                    hide(node);
+                    break;
+                  }
                 }
+              }
+              // Fallback for builds where the tab ID changes: hide the smallest ancestor
+              // that contains the four app tabs, preferring a real nav/tablist.
+              if (!builder || root.querySelectorAll('.tnx-hide-inner-navigation').length === 0) {
+                const candidates = Array.from(root.querySelectorAll('nav,[role="tablist"],ul,ol,div'))
+                  .filter(hasLabels)
+                  .sort((a,b) => a.querySelectorAll('*').length - b.querySelectorAll('*').length);
+                if (candidates[0]) hide(candidates[0]);
+              }
+              // Hide only the embedded auth strip; leave the actual Vaultrader header intact.
+              const login = Array.from(root.querySelectorAll('a,button,[role="button"]'))
+                .find(node => normalize(node.innerText || node.textContent).toLowerCase() === 'log in');
+              const signup = Array.from(root.querySelectorAll('a,button,[role="button"]'))
+                .find(node => normalize(node.innerText || node.textContent).toLowerCase() === 'sign up');
+              if (login && signup) {
+                let common = login.parentElement;
+                while (common && common !== root && !common.contains(signup)) common = common.parentElement;
+                if (common && common !== root) {
+                  // Climb to the compact header row, not the entire application root.
+                  let strip = common;
+                  for (let i=0; i<4 && strip.parentElement && strip.parentElement !== root; i++) strip=strip.parentElement;
+                  hide(strip);
+                }
+              }
+              const warning = Array.from(root.querySelectorAll('body *')).find(node => {
+                const t=normalize(node.textContent);
+                return !node.children.length && t.includes('DERIV TRADING MODE') && t.includes('REAL BUY requires confirmation');
               });
+              if (warning) hide(warning.closest('[role="alert"],.notice,.banner,.alert') || warning);
+              applyWorkspace();
             };
-            let queued = false;
-            const scheduleCleanup = () => {
-              if (queued) return;
-              queued = true;
-              requestAnimationFrame(() => { queued = false; cleanEmbeddedChrome(); });
-            };
-            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scheduleCleanup);
-            else scheduleCleanup();
-            new MutationObserver(scheduleCleanup).observe(document.documentElement, {childList:true,subtree:true});
+            let queued=false;
+            const schedule=()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;cleanEmbeddedChrome();});};
+            if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
+            new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
           })();
         </script>
         <base href="/bot/dist/" />

@@ -28,7 +28,7 @@
             const cleanEmbeddedChrome = () => {
               document.querySelectorAll('nav, [role="tablist"], ul').forEach(node => {
                 const text = normalize(node.innerText);
-                if (labels.every(label => text.includes(label))) node.classList.add('tnx-hide-inner-navigation');
+                if (labels.every(label => text.includes(label))) node.classList.add('tnx-mkorean-horizontal-nav');
               });
               document.querySelectorAll('body *').forEach(node => {
                 if (node.children.length) return;

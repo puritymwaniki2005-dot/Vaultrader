@@ -2408,6 +2408,11 @@ function escapeHtml(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;',
 const pageTitles={dashboard:'Dashboard',positions:'Live Positions',bot:'Bot Builder',manual:'Manual Trader',bulk:'Bulk Trader',premium:'Premium AI Bots',smart:'Smart AI',free:'Free Bots',quick:'Quick Bot',signal:'Signal AI',copy:'Copy Trader',analysis:'Analysis Tools',speedbot:'Speedbot',automated:'Automated',chart:'Chart','bots-store':'Bots Store',reports:'Reports'};
 const pageSubs={dashboard:'Live REAL Deriv account overview',positions:'Real open contracts and live P/L',bot:'Build, test, and deploy real Deriv strategies',manual:'Real-time manual trading',bulk:'Real contract execution',premium:'Strategy library',smart:'Live-market analysis',free:'Strategy library',quick:'Quick strategy configuration',signal:'Live tick signal detection',copy:'Copy-trading framework',analysis:'Live tick analysis',speedbot:'Execution controls',automated:'Pre-built strategies',chart:'Real-time Deriv tick chart','bots-store':'Strategy library',reports:'Real Deriv performance'};
 function switchPage(page){
+  // Use the original Blockly trading application shipped in bot/dist, not the legacy imitation builder.
+  if(page==='bot'){
+    window.location.assign('/bot/dist/index.html');
+    return true;
+  }
   const target=document.getElementById('page-'+page);
   if(!target){showToast('⚠️ Section unavailable: '+page);return false;}
   document.querySelectorAll('.page-content').forEach(p=>p.classList.remove('active'));

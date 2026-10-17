@@ -196,5 +196,50 @@
                 }, 250);
             })();
         </script>
+
+        <script>
+          // Keep Blockly's real workspace sized to the visible mobile viewport.
+          // This uses Blockly APIs when exposed by the bundled app; it does not transform
+          // SVG nodes directly, which would misalign pointer/touch interactions.
+          (() => {
+            let lastWidth = 0;
+            let lastScale = 0;
+            let queued = false;
+            const getBlockly = () => window.Blockly || window.blockly || null;
+            const resizeWorkspace = () => {
+              const width = Math.max(320, document.documentElement.clientWidth || window.innerWidth || 320);
+              const mobile = width <= 700;
+              const blockly = getBlockly();
+              const workspace = blockly && typeof blockly.getMainWorkspace === 'function'
+                ? blockly.getMainWorkspace()
+                : null;
+              const canvas = document.querySelector('.blocklySvg, .blocklyWorkspace, .blocklyMainBackground');
+              if (!canvas) return;
+              const targetScale = mobile ? (width <= 420 ? 0.82 : 0.92) : 1;
+              if (workspace && typeof workspace.setScale === 'function' && Math.abs(lastScale-targetScale) > 0.01) {
+                try { workspace.setScale(targetScale); lastScale = targetScale; } catch (_) {}
+              }
+              if (workspace && blockly && typeof blockly.svgResize === 'function') {
+                try { blockly.svgResize(workspace); } catch (_) {}
+              }
+              if (width !== lastWidth) {
+                lastWidth = width;
+                document.querySelectorAll('.blocklyToolboxDiv').forEach(node => {
+                  node.style.maxWidth = mobile ? (width <= 420 ? '118px' : '136px') : '';
+                });
+              }
+            };
+            const schedule = () => {
+              if (queued) return;
+              queued = true;
+              requestAnimationFrame(() => { queued = false; resizeWorkspace(); });
+            };
+            window.addEventListener('resize', schedule, { passive: true });
+            window.addEventListener('orientationchange', () => setTimeout(schedule, 150), { passive: true });
+            new MutationObserver(schedule).observe(document.documentElement, { childList: true, subtree: true });
+            setInterval(schedule, 1200);
+            schedule();
+          })();
+        </script>
 </body>
 </html>

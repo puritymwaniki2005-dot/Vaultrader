@@ -215,7 +215,7 @@
                 : null;
               const canvas = document.querySelector('.blocklySvg, .blocklyWorkspace, .blocklyMainBackground');
               if (!canvas) return;
-              const targetScale = mobile ? (width <= 420 ? 0.82 : 0.92) : 1;
+              const targetScale = 1; // Match the reference: keep Blockly blocks at full readable scale on phones.
               if (workspace && typeof workspace.setScale === 'function' && Math.abs(lastScale-targetScale) > 0.01) {
                 try { workspace.setScale(targetScale); lastScale = targetScale; } catch (_) {}
               }

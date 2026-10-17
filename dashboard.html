@@ -5547,5 +5547,21 @@ body{
  .topbar-right #tnxReconnectDeriv{padding:0 8px!important}
 }
 </style>
+<style id="tnx-mobile-toolbar-layout-correction">
+@media(max-width:760px){
+.topbar-right{display:grid!important;grid-template-columns:38px 56px minmax(0,1fr) minmax(0,1fr)!important;grid-template-areas:"theme lang balance balance" "modes modes connect logout"!important;gap:6px!important;overflow:visible!important;white-space:normal!important;padding:8px!important;align-items:stretch!important}
+.topbar-right #tnxThemeToggle{grid-area:theme!important;width:38px!important;min-width:38px!important;justify-content:center!important}
+.topbar-right #tnxLanguage{grid-area:lang!important;width:56px!important;min-width:56px!important}
+.topbar-right .balance{grid-area:balance!important;width:100%!important;min-width:0!important;justify-content:center!important;box-sizing:border-box!important}
+.topbar-right #accountSelector{grid-area:modes!important;width:100%!important;min-width:0!important;justify-content:center!important;box-sizing:border-box!important}
+.topbar-right #tnxReconnectDeriv{grid-area:connect!important;width:100%!important;min-width:0!important;padding:0 4px!important;box-sizing:border-box!important}
+.topbar-right .btn-logout{grid-area:logout!important;width:100%!important;min-width:0!important;padding:0 4px!important;box-sizing:border-box!important}
+#tnxBalanceMenu{z-index:2147483000!important;max-width:calc(100vw - 24px)!important}
+#page-dashboard #dashLivePill{width:max-content!important;max-width:100%!important;min-height:28px!important;line-height:1.2!important;padding:6px 10px!important}
+#page-dashboard #dashLivePill span{white-space:nowrap!important}
+#page-dashboard .tnx-dash-hero-actions{grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"status" "builder" "connect"!important}
+#toast{z-index:100000!important;bottom:calc(20px + env(safe-area-inset-bottom))!important;max-width:calc(100vw - 28px)!important;left:14px!important;right:14px!important;width:auto!important;box-sizing:border-box!important}
+}
+</style>
 </body>
 </html>

@@ -5503,5 +5503,49 @@ body{
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
 })();
 </script>
+
+<style id="tnx-force-mobile-account-toolbar">
+@media(max-width:760px){
+  .main-content{padding-top:12px!important}
+  .topbar{
+    display:flex!important;flex-direction:column!important;align-items:stretch!important;
+    gap:10px!important;padding:8px 0 12px!important;margin:0 0 12px!important;
+    height:auto!important;min-height:0!important;overflow:visible!important;
+  }
+  .topbar-left{display:flex!important;align-items:center!important;gap:10px!important;width:100%!important}
+  .topbar-right{
+    display:flex!important;visibility:visible!important;opacity:1!important;
+    position:static!important;transform:none!important;float:none!important;
+    flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;
+    gap:6px!important;width:100%!important;max-width:100%!important;min-width:0!important;
+    padding:7px!important;margin:0!important;overflow-x:auto!important;overflow-y:visible!important;
+    white-space:nowrap!important;background:#fff!important;border:1px solid #e0e4e9!important;
+    border-radius:12px!important;box-sizing:border-box!important;
+  }
+  .topbar-right>*{display:flex!important;visibility:visible!important;opacity:1!important;position:static!important;transform:none!important;float:none!important;flex:0 0 auto!important;margin:0!important}
+  .topbar-right #tnxThemeToggle{width:36px!important;min-width:36px!important;height:38px!important;padding:0!important;justify-content:center!important;background:#fff!important;color:#8f0008!important}
+  .topbar-right #tnxLanguage{width:56px!important;min-width:56px!important;height:38px!important;padding:4px!important;color:#24252b!important;background:#fff!important;border:1px solid #dfe2e7!important}
+  .topbar-right .balance{
+    display:flex!important;align-items:center!important;gap:4px!important;
+    min-width:max-content!important;padding:8px 10px!important;margin:0!important;
+    background:#f1fbfb!important;border:1px solid #9bdcdb!important;border-radius:9px!important;
+    color:#178d98!important;font-size:14px!important;font-weight:800!important;
+    cursor:pointer!important;position:relative!important;z-index:2!important;
+  }
+  .topbar-right .balance .currency{color:#178d98!important;font-size:11px!important}
+  .topbar-right #accountSelector{display:flex!important;align-items:center!important;gap:4px!important;padding:3px!important;min-width:max-content!important;background:#fff!important;border:1px solid #dfe2e7!important;border-radius:9px!important}
+  .topbar-right #accountSelector label{display:none!important}
+  .topbar-right #accountSelector .account-btn{display:inline-flex!important;min-width:45px!important;min-height:32px!important;padding:5px 7px!important;font-size:11px!important}
+  .topbar-right #derivStatus{display:none!important}
+  .topbar-right #tnxReconnectDeriv{display:inline-flex!important;min-height:38px!important;padding:0 10px!important;align-items:center!important;justify-content:center!important;background:linear-gradient(110deg,#ffca00,#ff7900)!important;color:#241000!important;border:0!important;border-radius:9px!important;font-size:12px!important}
+  .topbar-right .btn-logout{display:inline-flex!important;min-height:36px!important;padding:0 10px!important;align-items:center!important;justify-content:center!important;background:#fff!important;color:#a00018!important;border:1px solid #e8c9cf!important;border-radius:9px!important;font-size:12px!important}
+  #tnxBalanceMenu{z-index:999999!important}
+}
+@media(max-width:420px){
+ .topbar-right{gap:5px!important;padding:5px!important}
+ .topbar-right .balance{font-size:12px!important;padding:7px!important}
+ .topbar-right #tnxReconnectDeriv{padding:0 8px!important}
+}
+</style>
 </body>
 </html>

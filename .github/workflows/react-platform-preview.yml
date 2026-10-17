@@ -1,0 +1,32 @@
+name: React Platform Preview Build
+on:
+  push:
+    branches:
+      - feature/react-platform-migration
+    paths:
+      - "react-platform/**"
+      - ".github/workflows/react-platform-preview.yml"
+  pull_request:
+    paths:
+      - "react-platform/**"
+      - ".github/workflows/react-platform-preview.yml"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: react-platform
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: react-platform/package.json
+      - run: npm install
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tradenovax-react-platform-preview
+          path: react-platform/dist
+          if-no-files-found: error

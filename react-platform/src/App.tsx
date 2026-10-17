@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import LandingPage from './LandingPage';
 import { Activity, Bot, ChartNoAxesCombined, ChevronDown, Crown, Hand, LayoutDashboard, LogOut, Menu, Search, ShieldCheck, Sparkles, Wallet, X, Zap } from 'lucide-react';
 
 const modules = [

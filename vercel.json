@@ -1,12 +1,19 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "**",
-      "use": "@vercel/static"
-    }
-  ],
+  "installCommand": "cd react-platform && npm install",
+  "buildCommand": "cd react-platform && node scripts/prepare-deploy.mjs && npm run build",
+  "outputDirectory": "react-platform/dist",
   "routes": [
+    {
+      "src": "/",
+      "has": [{ "type": "query", "key": "code" }],
+      "dest": "/legacy-index.html"
+    },
+    {
+      "src": "/",
+      "has": [{ "type": "query", "key": "error" }],
+      "dest": "/legacy-index.html"
+    },
     {
       "src": "/",
       "dest": "/index.html"

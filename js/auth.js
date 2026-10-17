@@ -98,14 +98,14 @@ async function signIn(email, password) {
 async function logout() {
     if (DEMO_MODE) {
         localStorage.removeItem('tradenovax_demo_user')
-        window.location.href = '/index.html'
+        window.location.href = '/legacy-index.html'
         return
     }
     
     const supabase = getSupabase();
     if (!supabase) {
         localStorage.removeItem('tradenovax_demo_user')
-        window.location.href = '/index.html'
+        window.location.href = '/legacy-index.html'
         return
     }
     

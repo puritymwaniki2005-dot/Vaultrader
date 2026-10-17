@@ -1,0 +1,44 @@
+name: React Platform Preview Build
+on:
+  push:
+    branches:
+      - feature/react-platform-migration
+    paths:
+      - "react-platform/**"
+      - "vercel.json"
+      - "js/auth.js"
+      - ".github/workflows/react-platform-preview.yml"
+  pull_request:
+    paths:
+      - "react-platform/**"
+      - "vercel.json"
+      - "js/auth.js"
+      - ".github/workflows/react-platform-preview.yml"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: react-platform
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: react-platform/package.json
+      - run: npm install
+      - run: node scripts/prepare-deploy.mjs
+      - run: npm run build
+      - name: Verify production routes are preserved
+        run: |
+          test -f dist/index.html
+          test -f dist/legacy-index.html
+          test -f dist/dashboard.html
+          test -f dist/bot/index.html
+          test -f dist/CNAME
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tradenovax-react-platform-preview
+          path: react-platform/dist
+          if-no-files-found: error

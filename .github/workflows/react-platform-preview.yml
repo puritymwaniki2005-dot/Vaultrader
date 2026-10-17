@@ -5,10 +5,14 @@ on:
       - feature/react-platform-migration
     paths:
       - "react-platform/**"
+      - "vercel.json"
+      - "js/auth.js"
       - ".github/workflows/react-platform-preview.yml"
   pull_request:
     paths:
       - "react-platform/**"
+      - "vercel.json"
+      - "js/auth.js"
       - ".github/workflows/react-platform-preview.yml"
 jobs:
   build:
@@ -24,7 +28,15 @@ jobs:
           cache: npm
           cache-dependency-path: react-platform/package.json
       - run: npm install
+      - run: node scripts/prepare-deploy.mjs
       - run: npm run build
+      - name: Verify production routes are preserved
+        run: |
+          test -f dist/index.html
+          test -f dist/legacy-index.html
+          test -f dist/dashboard.html
+          test -f dist/bot/index.html
+          test -f dist/CNAME
       - uses: actions/upload-artifact@v4
         with:
           name: tradenovax-react-platform-preview

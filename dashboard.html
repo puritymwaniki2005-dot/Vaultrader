@@ -5249,5 +5249,92 @@ body{
   }
 })();
 </script>
+
+<style id="tnx-dashboard-mobile-cleanup">
+/* Final mobile dashboard cleanup: prevent wrapped controls, overlapping Logout, and low-contrast cards. */
+@media(max-width:760px){
+  body{background:#f1f2f4!important;color:#303238!important}
+  .sidebar{height:104px!important;max-height:104px!important;min-height:104px!important;grid-template-rows:48px 56px!important}
+  .main-content{padding:112px 10px 28px!important;overflow-x:hidden!important}
+  .topbar{
+    display:flex!important;flex-direction:column!important;align-items:stretch!important;
+    justify-content:flex-start!important;gap:8px!important;width:100%!important;
+    margin:0 0 10px!important;padding:8px 2px 10px!important;
+    background:transparent!important;border-bottom:1px solid #d9dce0!important;
+    overflow:visible!important;
+  }
+  .topbar-left{display:flex!important;align-items:center!important;min-width:0!important}
+  .topbar-left h1{font-size:19px!important;line-height:1.2!important;color:#25262b!important;margin:0!important}
+  .topbar-left .page-sub{color:#777b83!important}
+  .topbar-right{
+    position:static!important;inset:auto!important;transform:none!important;float:none!important;
+    display:flex!important;flex-direction:row!important;align-items:center!important;
+    justify-content:flex-start!important;flex-wrap:nowrap!important;gap:6px!important;
+    width:100%!important;min-width:0!important;max-width:100%!important;
+    padding:0!important;margin:0!important;overflow-x:auto!important;overflow-y:visible!important;
+    white-space:nowrap!important;box-sizing:border-box!important;
+  }
+  .topbar-right>*{
+    position:static!important;inset:auto!important;float:none!important;transform:none!important;
+    flex:0 0 auto!important;margin:0!important;max-width:none!important;box-sizing:border-box!important;
+  }
+  #tnxThemeToggle{width:38px!important;min-width:38px!important;height:40px!important;padding:0!important}
+  #tnxLanguage{width:68px!important;min-width:68px!important;height:40px!important;padding:5px!important;color:#303238!important;background:#fff!important}
+  .topbar-right .balance{font-size:12px!important;color:#269e9d!important;min-width:max-content!important}
+  .topbar-right .balance .currency{font-size:10px!important}
+  .account-selector{display:flex!important;align-items:center!important;gap:4px!important;padding:4px!important;min-width:max-content!important;background:#fff!important;border:1px solid #dedfe2!important;border-radius:8px!important}
+  .account-selector label{display:none!important}
+  .account-selector .account-btn{font-size:11px!important;padding:7px 8px!important;min-width:44px!important}
+  .deriv-status{display:none!important}
+  #tnxReconnectDeriv{height:40px!important;padding:0 10px!important;font-size:12px!important;border-radius:8px!important}
+  .btn-logout{display:inline-flex!important;align-items:center!important;justify-content:center!important;position:static!important;inset:auto!important;transform:none!important;float:none!important;flex:0 0 auto!important;height:38px!important;padding:0 10px!important;margin:0!important;border-radius:8px!important;background:#fff!important;border:1px solid #e0cbd1!important;color:#a00028!important;font-size:12px!important;z-index:auto!important}
+  .tnx-dash-hero{
+    display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:14px!important;
+    width:100%!important;min-width:0!important;margin:0 0 12px!important;padding:16px!important;
+    background:#fff!important;color:#303238!important;border:1px solid #e0e2e6!important;
+    border-radius:14px!important;box-shadow:0 2px 8px rgba(0,0,0,.04)!important;box-sizing:border-box!important;
+  }
+  .tnx-dash-hero *{color:inherit}
+  .tnx-dash-hero .tnx-eyebrow{color:#a00008!important;font-size:11px!important;letter-spacing:1.4px!important}
+  .tnx-dash-hero h2{font-size:23px!important;line-height:1.2!important;color:#25262b!important;margin:7px 0!important}
+  .tnx-dash-hero p{font-size:14px!important;line-height:1.5!important;color:#62666e!important;margin:0!important}
+  .tnx-dash-hero-actions{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:8px!important;width:100%!important}
+  .tnx-dash-hero-actions button{flex:1 1 140px!important;min-width:0!important;min-height:42px!important;padding:10px!important;font-size:12px!important;white-space:normal!important}
+  .tnx-live-pill{flex:0 0 auto!important;max-width:100%!important}
+  .tnx-dash-metrics{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;width:100%!important;margin:0 0 12px!important}
+  .tnx-metric-card{
+    display:flex!important;align-items:center!important;gap:9px!important;min-width:0!important;
+    padding:12px 10px!important;background:#fff!important;color:#303238!important;
+    border:1px solid #e0e2e6!important;border-radius:12px!important;box-shadow:0 1px 3px rgba(0,0,0,.04)!important;
+  }
+  .tnx-metric-card>div:last-child{min-width:0!important}
+  .tnx-metric-card span{font-size:10px!important;letter-spacing:1px!important;color:#777b83!important;overflow-wrap:anywhere!important}
+  .tnx-metric-card strong{display:block!important;font-size:17px!important;line-height:1.25!important;color:#25262b!important;overflow-wrap:anywhere!important}
+  .tnx-metric-card small{display:block!important;font-size:10px!important;line-height:1.35!important;color:#777b83!important;overflow-wrap:anywhere!important}
+  .tnx-metric-icon{width:38px!important;height:38px!important;min-width:38px!important;display:flex!important;align-items:center!important;justify-content:center!important;background:#fff6df!important;color:#a00008!important;border-radius:10px!important}
+  #dashConnection{font-size:14px!important}
+  .tnx-dash-grid,.tnx-dash-grid-bottom{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:10px!important;width:100%!important}
+  .tnx-dash-panel,.tnx-dash-performance,.card{
+    min-width:0!important;padding:14px!important;background:#fff!important;color:#303238!important;
+    border:1px solid #e0e2e6!important;border-radius:12px!important;box-shadow:0 1px 3px rgba(0,0,0,.04)!important;
+  }
+  .tnx-dash-panel h3,.tnx-dash-panel strong,.tnx-dash-panel .tnx-panel-head h3{color:#303238!important}
+  .tnx-dash-panel p,.tnx-dash-panel span,.tnx-dash-panel small{color:#62666e!important}
+  .tnx-performance-row{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .tnx-performance-row>div{min-width:0!important;background:#f7f8fa!important;border:1px solid #e7e9ed!important;border-radius:8px!important;padding:10px!important}
+  .tnx-performance-row strong{color:#25262b!important}
+}
+@media(max-width:420px){
+  .main-content{padding-left:7px!important;padding-right:7px!important}
+  .topbar-right{gap:5px!important}
+  .topbar-right .balance{font-size:11px!important}
+  #tnxLanguage{min-width:58px!important;width:58px!important}
+  .tnx-dash-hero{padding:13px!important}
+  .tnx-dash-hero h2{font-size:21px!important}
+  .tnx-metric-card{padding:10px 8px!important;gap:7px!important}
+  .tnx-metric-icon{width:32px!important;height:32px!important;min-width:32px!important}
+  .tnx-metric-card strong{font-size:15px!important}
+}
+</style>
 </body>
 </html>

@@ -5392,5 +5392,40 @@ body{
   #page-dashboard .tnx-dash-hero-actions .tnx-secondary-btn{min-height:46px!important;font-size:13px!important}
 }
 </style>
+
+<style id="tnx-dashboard-reference-final">
+/* Apply the approved visual mockup to the live dashboard at mobile sizes. */
+#page-dashboard .tnx-dash-hero{background:#fff!important;color:#20242c!important;border:1px solid #e0e4e9!important;border-radius:20px!important;box-shadow:0 3px 12px rgba(20,25,35,.05)!important}
+#page-dashboard .tnx-dash-hero h2{color:#20242c!important}
+#page-dashboard .tnx-dash-hero p{color:#69717e!important}
+#page-dashboard .tnx-dash-hero .tnx-eyebrow{color:#9b0008!important}
+#page-dashboard .tnx-metric-card,#page-dashboard .tnx-dash-panel{background:#fff!important;color:#20242c!important;border:1px solid #e1e5ea!important;border-radius:18px!important;box-shadow:0 3px 12px rgba(20,25,35,.045)!important}
+#page-dashboard .tnx-metric-card span,#page-dashboard .tnx-metric-card small,#page-dashboard .tnx-dash-panel p{color:#707783!important}
+#page-dashboard .tnx-metric-card strong,#page-dashboard .tnx-dash-panel h3{color:#20242c!important}
+#page-dashboard .tnx-metric-icon{background:#fff5d9!important;color:#b0000b!important;border-radius:13px!important}
+#page-dashboard .tnx-dash-hero-actions .tnx-primary-btn{background:linear-gradient(110deg,#a80008,#ff8a00)!important;color:#fff!important;border:0!important}
+#page-dashboard .tnx-dash-hero-actions .tnx-secondary-btn{background:#fff!important;color:#8f0008!important;border:1px solid #a9000b!important}
+@media(max-width:760px){
+ #page-dashboard .tnx-dash-hero{padding:18px!important;gap:16px!important;margin-bottom:12px!important}
+ #page-dashboard .tnx-dash-hero h2{font-size:25px!important;line-height:1.2!important}
+ #page-dashboard .tnx-dash-hero p{font-size:15px!important;line-height:1.5!important}
+ #page-dashboard .tnx-dash-hero-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-areas:"status status" "builder connect"!important;gap:10px!important;align-items:stretch!important;width:100%!important}
+ #page-dashboard #dashLivePill{grid-area:status!important;display:flex!important;position:static!important;width:max-content!important;max-width:100%!important;min-height:32px!important;padding:7px 12px!important;margin:0!important;background:#f4f8f6!important;border:1px solid #dcebe4!important;border-radius:24px!important;color:#364d43!important;font-size:11px!important;letter-spacing:.07em!important;white-space:normal!important}
+ #page-dashboard .tnx-dash-hero-actions .tnx-primary-btn{grid-area:builder!important}
+ #page-dashboard .tnx-dash-hero-actions .tnx-secondary-btn{grid-area:connect!important}
+ #page-dashboard .tnx-dash-hero-actions .tnx-primary-btn,#page-dashboard .tnx-dash-hero-actions .tnx-secondary-btn{position:static!important;inset:auto!important;transform:none!important;float:none!important;width:100%!important;min-width:0!important;max-width:none!important;min-height:50px!important;margin:0!important;padding:10px!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;white-space:normal!important;overflow-wrap:anywhere!important;line-height:1.25!important;font-size:13px!important;border-radius:11px!important;box-sizing:border-box!important;opacity:1!important;visibility:visible!important}
+ #page-dashboard .tnx-dash-metrics{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+ #page-dashboard .tnx-metric-card{padding:13px 10px!important;min-width:0!important;gap:9px!important}
+ #page-dashboard .tnx-metric-card span{font-size:10px!important;letter-spacing:.07em!important}
+ #page-dashboard .tnx-metric-card strong{font-size:17px!important;overflow-wrap:anywhere!important}
+ #page-dashboard .tnx-dash-panel{padding:15px!important}
+}
+@media(max-width:420px){
+ #page-dashboard .tnx-dash-hero{padding:14px!important}
+ #page-dashboard .tnx-dash-hero h2{font-size:22px!important}
+ #page-dashboard .tnx-dash-hero-actions{grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"status" "builder" "connect"!important}
+ #page-dashboard .tnx-dash-hero-actions .tnx-primary-btn,#page-dashboard .tnx-dash-hero-actions .tnx-secondary-btn{min-height:46px!important;font-size:14px!important}
+}
+</style>
 </body>
 </html>

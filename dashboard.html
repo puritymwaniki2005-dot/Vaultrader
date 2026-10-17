@@ -5427,5 +5427,81 @@ body{
  #page-dashboard .tnx-dash-hero-actions .tnx-primary-btn,#page-dashboard .tnx-dash-hero-actions .tnx-secondary-btn{min-height:46px!important;font-size:14px!important}
 }
 </style>
+
+<style id="tnx-account-dropdown-style">
+#balanceAmount,#balanceCurrency{cursor:pointer}
+.topbar .balance[role="button"]{cursor:pointer;user-select:none;border-radius:9px;padding:7px 9px;transition:background .15s ease;outline-offset:2px}
+.topbar .balance[role="button"]:hover,.topbar .balance[aria-expanded="true"]{background:rgba(55,182,180,.09)}
+#tnxBalanceMenu{position:fixed;z-index:99999;width:260px;max-width:calc(100vw - 24px);padding:12px;background:#fff;color:#25262b;border:1px solid #dfe2e7;border-radius:14px;box-shadow:0 14px 42px rgba(10,12,18,.22);display:none}
+#tnxBalanceMenu[aria-hidden="false"]{display:block}
+#tnxBalanceMenu .tnx-menu-heading{font-size:11px;font-weight:800;letter-spacing:.12em;color:#7a7f88;padding:3px 5px 10px}
+#tnxBalanceMenu .tnx-menu-account{display:flex;align-items:center;gap:9px;padding:10px;border:1px solid #e4e6ea;border-radius:10px;margin-bottom:10px;background:#f8f9fa}
+#tnxBalanceMenu .tnx-menu-dot{width:10px;height:10px;border-radius:50%;background:#c60013;flex:0 0 10px}
+#tnxBalanceMenu .tnx-menu-account strong{display:block;font-size:13px;color:#25262b}
+#tnxBalanceMenu .tnx-menu-account small{display:block;font-size:11px;color:#747985;margin-top:2px;overflow-wrap:anywhere}
+#tnxBalanceMenu .tnx-menu-modes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+#tnxBalanceMenu button{min-height:42px;border-radius:8px;font-weight:800;font-size:13px;cursor:pointer}
+#tnxBalanceMenu .tnx-menu-mode{background:#fff;color:#3a3d44;border:1px solid #d9dce2}
+#tnxBalanceMenu .tnx-menu-mode.active-live{border-color:#00a77c;background:#eafaf4;color:#007b5b}
+#tnxBalanceMenu .tnx-menu-mode.active-demo{border-color:#e0a900;background:#fff7dc;color:#8b6200}
+#tnxBalanceMenu .tnx-menu-logout{width:100%;background:#fff;color:#a00018;border:1px solid #e8c9cf}
+#tnxBalanceMenu .tnx-menu-logout:hover{background:#fff2f4}
+@media(max-width:760px){#tnxBalanceMenu{width:250px} .topbar .balance[role="button"]{padding:5px 6px}}
+</style>
+<script id="tnx-balance-account-menu">
+(function(){
+ function setup(){
+   const balance=document.querySelector('.topbar-right .balance');
+   const topbar=document.querySelector('.topbar');
+   if(!balance||!topbar||document.getElementById('tnxBalanceMenu'))return;
+   balance.setAttribute('role','button');
+   balance.setAttribute('tabindex','0');
+   balance.setAttribute('aria-haspopup','menu');
+   balance.setAttribute('aria-expanded','false');
+   balance.setAttribute('aria-label','Account balance and account options');
+   balance.title='Tap to switch REAL/DEMO account or log out';
+   const menu=document.createElement('div');
+   menu.id='tnxBalanceMenu';menu.setAttribute('role','menu');menu.setAttribute('aria-hidden','true');
+   menu.innerHTML='<div class="tnx-menu-heading">DERIV ACCOUNT</div><div class="tnx-menu-account"><span class="tnx-menu-dot"></span><div><strong id="tnxMenuMode">ACCOUNT</strong><small id="tnxMenuAccountId">Select an account</small></div></div><div class="tnx-menu-modes"><button type="button" role="menuitem" class="tnx-menu-mode" data-mode="real">REAL</button><button type="button" role="menuitem" class="tnx-menu-mode" data-mode="demo">DEMO</button></div><button type="button" role="menuitem" class="tnx-menu-logout">↪ Log out</button>';
+   document.body.appendChild(menu);
+   function position(){
+     const r=balance.getBoundingClientRect(),w=Math.min(260,window.innerWidth-24);
+     let left=Math.max(12,Math.min(r.right-w,window.innerWidth-w-12));
+     let top=r.bottom+8;
+     if(top+250>window.innerHeight)top=Math.max(12,r.top-210);
+     menu.style.left=left+'px';menu.style.top=top+'px';
+   }
+   function refresh(){
+     const mode=(document.getElementById('btnDemo')?.classList.contains('active-demo'))?'DEMO':'REAL';
+     const accountId=document.getElementById('dashAccountId')?.textContent||'Account not connected';
+     const modeEl=document.getElementById('tnxMenuMode'),idEl=document.getElementById('tnxMenuAccountId');
+     if(modeEl)modeEl.textContent=mode+' ACCOUNT';
+     if(idEl)idEl.textContent=accountId;
+     menu.querySelectorAll('[data-mode]').forEach(b=>{
+       b.classList.toggle('active-live',b.dataset.mode==='real'&&mode==='REAL');
+       b.classList.toggle('active-demo',b.dataset.mode==='demo'&&mode==='DEMO');
+       b.setAttribute('aria-pressed',String((b.dataset.mode||'').toUpperCase()===mode));
+     });
+   }
+   function open(){refresh();position();menu.setAttribute('aria-hidden','false');balance.setAttribute('aria-expanded','true')}
+   function close(){menu.setAttribute('aria-hidden','true');balance.setAttribute('aria-expanded','false')}
+   function toggle(){menu.getAttribute('aria-hidden')==='false'?close():open()}
+   balance.addEventListener('click',e=>{e.preventDefault();toggle()});
+   balance.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}if(e.key==='Escape')close()});
+   menu.addEventListener('click',e=>{
+     const modeButton=e.target.closest('[data-mode]');
+     if(modeButton){const fn=window.switchAccountType;if(typeof fn==='function')fn(modeButton.dataset.mode);close();return}
+     if(e.target.closest('.tnx-menu-logout')){close();if(typeof window.handleLogout==='function')window.handleLogout()}
+   });
+   document.addEventListener('click',e=>{if(!menu.contains(e.target)&&!balance.contains(e.target))close()});
+   document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+   window.addEventListener('resize',()=>{if(menu.getAttribute('aria-hidden')==='false')position()},{passive:true});
+   window.addEventListener('scroll',()=>{if(menu.getAttribute('aria-hidden')==='false')position()},{passive:true});
+   const observer=new MutationObserver(()=>{if(menu.getAttribute('aria-hidden')==='false')refresh()});
+   observer.observe(document.getElementById('dashAccountId')||topbar,{childList:true,subtree:true,characterData:true});
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
+})();
+</script>
 </body>
 </html>

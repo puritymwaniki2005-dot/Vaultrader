@@ -383,3 +383,66 @@ html, body, #root {
   .bot .blocklyToolboxDiv { max-width: 118px !important; min-width: 96px !important; }
   .bot .run-panel__container { font-size: 12px !important; }
 }
+
+
+/* Screenshot reference pass: Mkorean mobile Bot Builder composition */
+@media (max-width: 700px) {
+  html, body, #root { width:100% !important; max-width:100% !important; overflow:hidden !important; }
+  #root { height:100dvh !important; min-height:100dvh !important; }
+  body.theme, body.theme--light { background:#f1f2f4 !important; color:#303238 !important; }
+  .header, .header__container, .layout__header, .dc-header {
+    background:#fff !important; color:#303238 !important; box-shadow:none !important;
+    border-bottom:1px solid #d9dce0 !important;
+  }
+  .tab__dashboard__content {
+    height:calc(100dvh - 19rem) !important;
+    min-height:0 !important;
+    padding:5px 0 0 !important;
+    margin:0 !important;
+    gap:5px !important;
+    overflow:hidden !important;
+    background:#f1f2f4 !important;
+  }
+  .tab__dashboard__header { padding:4px 8px !important; margin:0 !important; }
+  .tab__dashboard__header .title,.tab__dashboard__header h2 { font-size:1.6rem !important; }
+  .bot, .bot__content, .tab__dashboard, .tab__dashboard__content,
+  .tab__dashboard__body, .blockly-container, .blocklyDiv, .bot .injectionDiv {
+    width:100% !important; max-width:100% !important; min-width:0 !important;
+    box-sizing:border-box !important;
+  }
+  .bot { height:100% !important; min-height:0 !important; background:#fff !important; }
+  .bot .toolbar, .bot .toolbar__section {
+    display:flex !important; flex-wrap:nowrap !important; gap:4px !important;
+    width:100% !important; max-width:100% !important; overflow-x:auto !important;
+    background:#fff !important; border:1px solid #d9dce0 !important;
+  }
+  .bot .blocklyToolboxDiv {
+    background:#f1f2f4 !important; border-right:1px solid #d7d9dd !important;
+    max-width:80px !important; min-width:64px !important; overflow-x:hidden !important;
+  }
+  .bot .blocklyTreeLabel, .bot .blocklyToolboxCategoryLabel { font-size:11px !important; }
+  .bot .blocklyMainBackground { fill:#fff !important; stroke:#e5e6e8 !important; }
+  .bot .blocklyFlyoutBackground { fill:#f1f2f4 !important; }
+  .bot .blocklyScrollbarBackground { fill:#e4e5e7 !important; }
+  /* Match the red block families shown in the supplied Mkorean screenshots. */
+  .bot .blocklyBlockCanvas > g > .blocklyPath,
+  .bot .blocklyBlockCanvas .blocklyPath { fill:#a00000 !important; stroke:#820000 !important; }
+  .bot .blocklyBlockCanvas .blocklyText,
+  .bot .blocklyBlockCanvas .blocklyEditableText text { fill:#fff !important; }
+  .bot .blocklyFlyout .blocklyPath { fill:#a00000 !important; stroke:#820000 !important; }
+  .bot .blocklyFlyout .blocklyText { fill:#fff !important; }
+  .bot .run-panel__container, .bot .run-panel, .bot [class*="run-panel"] {
+    position:fixed !important; left:0 !important; right:0 !important; bottom:24px !important;
+    width:100% !important; max-width:100% !important; z-index:500 !important;
+    background:#fff !important; box-sizing:border-box !important;
+    padding:8px 12px !important; border-top:1px solid #d7d9dd !important;
+  }
+  .bot .run-panel__container button, .bot .run-panel button {
+    min-height:48px !important; border-radius:5px !important;
+  }
+}
+@media (max-width: 420px) {
+  .tab__dashboard__content { height:calc(100dvh - 18rem) !important; }
+  .bot .blocklyToolboxDiv { max-width:70px !important; min-width:58px !important; }
+  .bot .run-panel__container, .bot .run-panel, .bot [class*="run-panel"] { bottom:24px !important; }
+}

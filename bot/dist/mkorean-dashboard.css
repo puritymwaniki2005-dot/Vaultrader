@@ -481,3 +481,83 @@ html, body, #root {
   }
   .bot .blocklySvg{min-height:480px!important}
 }
+
+/* Final Bot Builder-only reference alignment: match the Mkorean workspace without altering Blockly logic. */
+:root{
+ --mk-bg:#f1f2f4;--mk-panel:#fff;--mk-panel-raised:#fff;--mk-panel-hover:#f7f8fa;
+ --mk-border:#dfe2e6;--mk-text:#303238;--mk-muted:#737780;--mk-accent:#ffcc00;--mk-accent-strong:#ff8a00;
+}
+html,body,#root{width:100%!important;max-width:100%!important;min-width:0!important;overflow-x:hidden!important}
+body.theme,body.theme--light,body.theme--dark{background:#f1f2f4!important;color:#303238!important}
+#root{background:#f1f2f4!important}
+.header,.header__container,.layout__header,.dc-header{
+ background:#fff!important;color:#303238!important;border-bottom:1px solid #dfe2e6!important;
+ box-shadow:none!important;backdrop-filter:none!important
+}
+.header button,.header a,.header__container button,.header__container a{color:#303238}
+.tab__dashboard__content{background:#f1f2f4!important;color:#303238!important}
+.tab__dashboard__header .title,.tab__dashboard__header h2{color:#303238!important}
+.tab__dashboard__header .subtitle,.tab__dashboard__header p{color:#737780!important}
+.tnx-mkorean-horizontal-nav{
+ display:flex!important;flex-direction:row!important;align-items:stretch!important;flex-wrap:nowrap!important;
+ width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;
+ white-space:nowrap!important;gap:0!important;background:#300006!important;border-bottom:4px solid #ffcc00!important;
+ scrollbar-width:thin!important;scrollbar-color:#ffcc00 #300006!important
+}
+.tnx-mkorean-horizontal-nav :is(a,button,[role="tab"]){
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;
+ min-height:5.4rem!important;padding:1.2rem 1.8rem!important;background:#300006!important;color:#fff!important;
+ border:0!important;border-bottom:4px solid transparent!important;border-radius:0!important;
+ font-size:1.45rem!important;font-weight:800!important;white-space:nowrap!important
+}
+.tnx-mkorean-horizontal-nav :is(a,button,[role="tab"]).active,
+.tnx-mkorean-horizontal-nav :is(a,button,[role="tab"])[aria-current="page"],
+.tnx-mkorean-horizontal-nav :is(a,button,[role="tab"])[aria-selected="true"]{
+ background:#a30008!important;color:#fff!important;border-bottom-color:#ffcc00!important
+}
+.bot .toolbar,.bot .toolbar__section{
+ display:flex!important;align-items:center!important;flex-wrap:nowrap!important;gap:.5rem!important;
+ max-width:100%!important;overflow-x:auto!important;background:#fff!important;color:#303238!important;
+ border:1px solid #dfe2e6!important;border-radius:.6rem!important
+}
+.bot .blocklyToolboxDiv{background:#f1f2f4!important;border-right:1px solid #dfe2e6!important}
+.bot .blocklyMainBackground{fill:#fff!important;stroke:#e5e6e8!important}
+.bot .blocklyFlyoutBackground{fill:#f1f2f4!important}
+.bot .blocklyScrollbarBackground{fill:#e4e5e7!important}
+.bot .run-panel__container,.bot .run-panel,.bot [class*="run-panel"]{
+ background:#fff!important;color:#303238!important;border-top:1px solid #dfe2e6!important;box-shadow:0 -3px 12px rgba(0,0,0,.06)!important
+}
+@media(min-width:701px){
+ .tab__dashboard__content{padding:1.2rem 1.6rem!important;gap:1.2rem!important;min-height:calc(100vh - 10rem)!important}
+ .bot,.bot__content,.tab__dashboard__body,.blockly-container,.blocklyDiv,.bot .injectionDiv{
+  min-width:0!important;max-width:100%!important;box-sizing:border-box!important
+ }
+ .bot .blocklyToolboxDiv{min-width:245px!important;max-width:300px!important}
+}
+@media(max-width:700px){
+ html,body,#root{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important}
+ #root>div{height:auto!important;min-height:100dvh!important;max-width:100%!important}
+ .tab__dashboard__content{height:auto!important;min-height:calc(100dvh - 16rem)!important;max-height:none!important;overflow:visible!important;padding:6px 4px 8rem!important;gap:6px!important}
+ .tab__dashboard__header{padding:4px 8px 8px!important;margin:0!important}
+ .tab__dashboard__header .title,.tab__dashboard__header h2{font-size:1.8rem!important;line-height:1.2!important}
+ .tnx-mkorean-horizontal-nav :is(a,button,[role="tab"]){min-height:4.8rem!important;padding:.9rem 1.2rem!important;font-size:1.25rem!important}
+ .bot,.bot__content,.tab__dashboard,.tab__dashboard__body,.blockly-container,.blocklyDiv,.bot .injectionDiv{
+  width:100%!important;max-width:100%!important;min-width:0!important;height:calc(100dvh - 24rem)!important;min-height:460px!important;max-height:none!important;box-sizing:border-box!important
+ }
+ .bot .blocklySvg{width:100%!important;height:100%!important;min-height:460px!important}
+ .bot .blocklyToolboxDiv{width:76px!important;min-width:60px!important;max-width:76px!important}
+ .bot .blocklyTreeRow{padding-left:4px!important;padding-right:2px!important}
+ .bot .blocklyTreeLabel,.bot .blocklyToolboxCategoryLabel{font-size:11px!important;line-height:1.2!important;white-space:normal!important}
+ .bot .blocklyFlyout{max-width:82vw!important}
+ .bot .run-panel__container,.bot .run-panel,.bot [class*="run-panel"]{
+  position:sticky!important;left:auto!important;right:auto!important;bottom:0!important;width:100%!important;max-width:100%!important;
+  z-index:500!important;display:flex!important;justify-content:center!important;box-sizing:border-box!important;padding:8px!important
+ }
+ .bot .run-panel__container button,.bot .run-panel button{min-height:46px!important;border-radius:5px!important}
+}
+@media(max-width:420px){
+ .tab__dashboard__content{padding-inline:2px!important}
+ .bot,.bot__content,.tab__dashboard__body,.blockly-container,.blocklyDiv,.bot .injectionDiv{height:calc(100dvh - 22rem)!important;min-height:480px!important}
+ .bot .blocklySvg{min-height:480px!important}
+ .tnx-mkorean-horizontal-nav :is(a,button,[role="tab"]){padding:.8rem 1rem!important;font-size:1.15rem!important}
+}

@@ -1,27 +1,27 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Activity, Bot, ChartNoAxesCombined, ChevronDown, Crown, Hand, LayoutDashboard, LogOut, Menu, Search, ShieldCheck, Sparkles, Wallet, X, Zap } from 'lucide-react';
 
 const modules = [
-  ['Dashboard', LayoutDashboard, '/dashboard.html'],
-  ['Bot Builder', Bot, '/bot/'],
-  ['Manual Trader', Hand, '/dashboard.html#manual-trader'],
-  ['Bulk Trader', Activity, '/dashboard.html#bulk-trader'],
-  ['Live Positions', ChartNoAxesCombined, '/dashboard.html#positions'],
-  ['Free Bots', Bot, '/dashboard.html#free-bots'],
-  ['Premium AI Bots', Crown, '/dashboard.html#premium-bots'],
-  ['Smart AI', Sparkles, '/dashboard.html#smart-ai'],
-  ['Quick Bot', Zap, '/dashboard.html#quick-bot'],
-  ['Analysis Tools', Search, '/dashboard.html#analysis'],
-  ['Hedging', ShieldCheck, '/dashboard.html#hedging'],
+  { title: 'Dashboard', icon: LayoutDashboard, href: '/dashboard.html', text: 'Overview and account workspace.' },
+  { title: 'Bot Builder', icon: Bot, href: '/bot/', text: 'Build and run strategies in the existing Blockly workspace.' },
+  { title: 'Manual Trader', icon: Hand, href: '/dashboard.html#manual-trader', text: 'Access the existing manual trading tools.' },
+  { title: 'Bulk Trader', icon: Activity, href: '/dashboard.html#bulk-trader', text: 'Access existing bulk trading tools.' },
+  { title: 'Live Positions', icon: ChartNoAxesCombined, href: '/dashboard.html#positions', text: 'Review contracts in the trading workspace.' },
+  { title: 'Free Bots', icon: Bot, href: '/dashboard.html#free-bots', text: 'Explore available bot templates.' },
+  { title: 'Premium AI Bots', icon: Crown, href: '/dashboard.html#premium-bots', text: 'Open premium strategy tools.' },
+  { title: 'Smart AI', icon: Sparkles, href: '/dashboard.html#smart-ai', text: 'Explore smart analysis tools.' },
+  { title: 'Quick Bot', icon: Zap, href: '/dashboard.html#quick-bot', text: 'Open quick strategy controls.' },
+  { title: 'Analysis Tools', icon: Search, href: '/dashboard.html#analysis', text: 'Review market analysis and signals.' },
+  { title: 'Hedging', icon: ShieldCheck, href: '/dashboard.html#hedging', text: 'Open hedging tools and controls.' },
 ] as const;
 
 function AccountMenu({ close }: { close: () => void }) {
   return <div className="account-popover" role="dialog" aria-label="Account menu">
     <div className="account-tabs"><strong>Account controls</strong><button onClick={close} aria-label="Close"><X size={17}/></button></div>
-    <div className="account-info"><span className="account-icon"><Wallet size={20}/></span><div><strong>Deriv account</strong><p>Use the existing authenticated session to select REAL or DEMO and view your live balance.</p></div></div>
+    <div className="account-info"><span className="account-icon"><Wallet size={20}/></span><div><strong>Deriv account</strong><p>Account switching and logout remain handled by the existing dashboard until session integration is completed in this preview.</p></div></div>
     <a href="/dashboard.html#account"><ShieldCheck size={18}/> Account settings</a>
-    <a href="/dashboard.html#logout"><LogOut size={18}/> Logout <span>Open account controls</span></a>
-    <p className="account-note">This preview does not fabricate balances or change account state.</p>
+    <a href="/dashboard.html#logout"><LogOut size={18}/> Open logout controls</a>
+    <p className="account-note">This preview does not change your account, disconnect a session, or fabricate live balances.</p>
   </div>;
 }
 function Metric({ icon: Icon, title, detail }: { icon: typeof Wallet; title: string; detail: string }) {
@@ -34,6 +34,8 @@ export default function App() {
   const [accountOpen, setAccountOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [active, setActive] = useState('Dashboard');
+  const [moduleSearch, setModuleSearch] = useState('');
+  const filteredModules = useMemo(() => modules.filter((item) => `${item.title} ${item.text}`.toLowerCase().includes(moduleSearch.trim().toLowerCase())), [moduleSearch]);
   return <div className="app-shell">
     <header className="topbar">
       <a className="brand" href="/"><span className="brand-mark">TN</span><span>TradeNova<span className="brand-x">X</span></span></a>
@@ -42,14 +44,14 @@ export default function App() {
     </header>
     <button className="mobile-menu-toggle" onClick={() => setMobileMenuOpen(v => !v)} aria-expanded={mobileMenuOpen}>{mobileMenuOpen ? <X/> : <Menu/>}<span>Modules</span></button>
     <nav className={'module-nav ' + (mobileMenuOpen ? 'mobile-open' : '')} aria-label="Main navigation">
-      {modules.map(([label, Icon, href]) => <a key={label} href={href} className={active === label ? 'nav-item active' : 'nav-item'} onClick={() => { setActive(label); setMobileMenuOpen(false); }}><Icon size={19}/><span>{label}</span></a>)}
+      {modules.map(({title: label, icon: Icon, href}) => <a key={label} href={href} className={active === label ? 'nav-item active' : 'nav-item'} onClick={() => { setActive(label); setMobileMenuOpen(false); }}><Icon size={19}/><span>{label}</span></a>)}
     </nav>
     <div className="subbar"><div><i className="live-dot"/> Workspace <span className="subbar-separator">/</span> {active}</div><span className="preview-label">React migration preview</span></div>
     <main className="page-content">
-      <section className="hero"><div className="eyebrow"><i className="live-dot"/> TRADENOVAX · DERIV ACCOUNT</div><h1>Trading Dashboard</h1><p className="hero-copy">Monitor your authenticated Deriv account, live contracts and bot performance from one workspace.</p><div className="hero-actions"><div className="connection"><i className="status-dot"/> Live values load from your Deriv session</div><a className="primary-button" href="/bot/"><Bot size={19}/> Open Bot Builder</a><a className="secondary-button" href="/dashboard.html#connect">Connect Deriv</a></div></section>
-      <section className="metrics"><Metric icon={Wallet} title="Balance" detail="Live account balance · USD"/><Metric icon={Activity} title="Open positions" detail="Live contract data"/><Metric icon={ChartNoAxesCombined} title="Session P/L" detail="Authenticated session"/><Metric icon={ShieldCheck} title="Connection" detail="Status from Deriv session"/></section>
-      <section className="panel"><div className="panel-heading"><div><h2>Bot Performance</h2><p>Live statistics from your TradeNovaX session</p></div><a className="text-link" href="/bot/">Build strategy →</a></div><div className="stats">{[['Total trades','—'],['Win rate','—'],['Profit/Loss','—'],['Average stake','—']].map(([label,value]) => <div className="stat" key={label}><span>{label}</span><strong>{value}</strong></div>)}</div><div className="empty-chart"><ChartNoAxesCombined size={30}/><strong>Live trading data appears when the session supplies it.</strong></div></section>
-      <section className="module-grid"><ModuleCard icon={Bot} title="Bot Builder" text="Build and run strategies in the existing Blockly workspace." href="/bot/"/><ModuleCard icon={Hand} title="Manual Trader" text="Open the existing manual trading module." href="/dashboard.html#manual-trader"/><ModuleCard icon={Activity} title="Bulk Trader" text="Access existing bulk trading tools." href="/dashboard.html#bulk-trader"/><ModuleCard icon={ChartNoAxesCombined} title="Live Positions" text="Review contracts in the trading workspace." href="/dashboard.html#positions"/></section>
+      <section className="hero"><div className="eyebrow"><i className="live-dot"/> TRADENOVAX · DERIV ACCOUNT</div><h1>Trading Dashboard</h1><p className="hero-copy">A unified workspace for your trading modules. The existing production dashboard and trading engine remain in place while the React interface is migrated and tested.</p><div className="hero-actions"><div className="connection"><i className="status-dot"/> Live account metrics are not yet connected to this preview</div><a className="primary-button" href="/bot/"><Bot size={19}/> Open Bot Builder</a><a className="secondary-button" href="/dashboard.html#connect">Open existing dashboard</a></div></section>
+      <section className="metrics"><Metric icon={Wallet} title="Balance" detail="Live account balance not connected"/><Metric icon={Activity} title="Open positions" detail="Live contract data not connected"/><Metric icon={ChartNoAxesCombined} title="Session P/L" detail="Session data not connected"/><Metric icon={ShieldCheck} title="Connection" detail="Existing dashboard manages session"/></section>
+      <section className="panel"><div className="panel-heading"><div><h2>Bot Performance</h2><p>Performance metrics will appear after session integration</p></div><a className="text-link" href="/bot/">Build strategy →</a></div><div className="stats">{[['Total trades','—'],['Win rate','—'],['Profit/Loss','—'],['Average stake','—']].map(([label,value]) => <div className="stat" key={label}><span>{label}</span><strong>{value}</strong></div>)}</div><div className="empty-chart"><ChartNoAxesCombined size={30}/><strong>No performance data is being simulated in this preview.</strong></div></section>
+      <section className="modules-section"><div className="panel-heading module-section-heading"><div><h2>Trading modules</h2><p>Search all available module entry points.</p></div><span className="module-count">{filteredModules.length} of {modules.length}</span></div><label className="module-search"><Search size={18}/><input value={moduleSearch} onChange={e => setModuleSearch(e.target.value)} placeholder="Search modules (e.g. bot, positions, hedging)" aria-label="Search trading modules"/>{moduleSearch && <button onClick={() => setModuleSearch('')} aria-label="Clear search"><X size={16}/></button>}</label><div className="module-grid">{filteredModules.map(item => <ModuleCard key={item.title} icon={item.icon} title={item.title} text={item.text} href={item.href}/>)}</div>{filteredModules.length === 0 && <div className="no-results">No modules match “{moduleSearch}”. Try another search.</div>}</section>
     </main>
     <footer className="footer"><strong>TradeNovaX</strong><span>Migration preview · Existing production routes remain unchanged.</span></footer>
   </div>;

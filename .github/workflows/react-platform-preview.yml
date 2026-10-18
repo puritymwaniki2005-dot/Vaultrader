@@ -1,44 +1,65 @@
-name: React Platform Preview Build
+name: Build and deploy TradeNovaX React site
 on:
   push:
     branches:
-      - feature/react-platform-migration
+      - main
     paths:
       - "react-platform/**"
       - "vercel.json"
       - "js/auth.js"
       - ".github/workflows/react-platform-preview.yml"
-  pull_request:
-    paths:
-      - "react-platform/**"
-      - "vercel.json"
-      - "js/auth.js"
-      - ".github/workflows/react-platform-preview.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: react-platform
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: react-platform/package.json
-      - run: npm install
-      - run: node scripts/prepare-deploy.mjs
-      - run: npm run build
-      - name: Verify production routes are preserved
+      - name: Install React dependencies
+        working-directory: react-platform
+        run: npm install
+      - name: Prepare full site while preserving legacy routes
+        working-directory: react-platform
+        run: node scripts/prepare-deploy.mjs
+      - name: Build React landing and dashboard shell
+        working-directory: react-platform
+        run: npm run build
+      - name: Verify preserved production routes
         run: |
-          test -f dist/index.html
-          test -f dist/legacy-index.html
-          test -f dist/dashboard.html
-          test -f dist/bot/index.html
-          test -f dist/CNAME
-      - uses: actions/upload-artifact@v4
+          test -f react-platform/dist/index.html
+          test -f react-platform/dist/legacy-index.html
+          test -f react-platform/dist/dashboard.html
+          test -f react-platform/dist/bot/index.html
+          test -f react-platform/dist/CNAME
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: tradenovax-react-platform-preview
           path: react-platform/dist
-          if-no-files-found: error
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

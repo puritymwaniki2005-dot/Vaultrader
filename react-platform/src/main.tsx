@@ -4,7 +4,8 @@ import App from './App';
 import LandingPage from './LandingPage';
 import './styles.css';
 
-const isLandingPreview = new URLSearchParams(window.location.search).get('view') === 'landing';
+const view = new URLSearchParams(window.location.search).get('view');
+const showDashboardPreview = view === 'dashboard';
 createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>{isLandingPreview ? <LandingPage /> : <App />}</React.StrictMode>
+  <React.StrictMode>{showDashboardPreview ? <App /> : <LandingPage />}</React.StrictMode>
 );

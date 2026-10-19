@@ -2888,7 +2888,7 @@ function subscribePublicTicks(symbol){
   let ws;try{ws=new WebSocket('wss://ws.derivws.com/websockets/v3?app_id=1089');publicTickWS=ws}catch(e){console.warn('Public tick feed could not start:',e);return}
   let opened=false;
   const historyReq=++publicTickReq;
-  ws.onopen=()=>{opened=true;try{
+  ws.onopen=()=>{opened=true;const insight=document.getElementById('bulkLiveInsight');if(insight)insight.textContent=`WebSocket connected • requesting live ticks for ${symbol}…`;console.info('TradeNovaX public tick WebSocket opened',{symbol,historyReq});try{
     // Deriv documents ticks_history + subscribe:1 as one history-and-live stream.
     // This avoids racing a history request against a separate ticks subscription.
     ws.send(JSON.stringify({ticks_history:symbol,end:'latest',count:120,style:'ticks',subscribe:1,req_id:historyReq}));
@@ -2897,7 +2897,7 @@ function subscribePublicTicks(symbol){
   ws.onmessage=event=>{
     let data;try{data=JSON.parse(event.data)}catch{return}
     if(data.error){console.warn('Public tick feed error:',symbol,data.error.message||data.error.code,data.error.code,data);const insight=document.getElementById('bulkLiveInsight');if(insight&&publicTickSymbol===symbol)insight.textContent='Live feed error: '+(data.error.message||data.error.code||'Unknown Deriv error');if(data.req_id===historyReq||data.echo_req?.req_id===historyReq||data.echo_req?.ticks_history===symbol)scheduleRetry();return}
-    if(data.msg_type==='history' && data.history && (data.req_id===historyReq||data.echo_req?.req_id===historyReq||data.echo_req?.ticks_history===symbol) && publicTickWS===ws && publicTickSymbol===symbol){
+    if(data.msg_type==='history' && data.history && publicTickWS===ws && publicTickSymbol===symbol && (data.req_id===historyReq||data.echo_req?.req_id===historyReq||data.echo_req?.ticks_history===symbol||(!data.req_id&&!data.echo_req?.req_id))){
       const rawPrices=data.history.prices||[],rawTimes=data.history.times||[];
       const prices=rawPrices.map(Number).filter(Number.isFinite),times=rawTimes.map(Number);
       if(prices.length && publicTickSymbol===symbol){
@@ -2916,8 +2916,8 @@ function subscribePublicTicks(symbol){
       const latest=document.getElementById('latestTickDisplay');if(latest)latest.textContent=quote.toFixed(Math.max(0,Number(t.pip_size??digitPipSize)));
     }
   };
-  ws.onerror=()=>{console.warn('Public tick WebSocket error for',symbol);scheduleRetry()};
-  ws.onclose=()=>{if(publicTickWS===ws){publicTickWS=null;if(publicTickSymbol===symbol)publicTickReconnect=setTimeout(()=>subscribePublicTicks(symbol),5000)}};
+  ws.onerror=event=>{console.warn('Public tick WebSocket error for',symbol,event);const insight=document.getElementById('bulkLiveInsight');if(insight&&publicTickSymbol===symbol)insight.textContent=`WebSocket error while loading ${symbol}. Retrying live feed…`;scheduleRetry()};
+  ws.onclose=event=>{if(publicTickWS===ws){publicTickWS=null;if(publicTickSymbol===symbol){const insight=document.getElementById('bulkLiveInsight');if(insight)insight.textContent=`Live feed disconnected (${event.code||'no code'}). Reconnecting to ${symbol}…`;publicTickReconnect=setTimeout(()=>subscribePublicTicks(symbol),5000)}}};
 }
 window.subscribePublicTicks=subscribePublicTicks;
 function requestDigitContractsFor(symbol){

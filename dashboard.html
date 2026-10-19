@@ -6205,5 +6205,92 @@ body.tnx-bot-active .sidebar,body.tnx-bot-active .sidebar-overlay{display:none!i
   .tnx-global-nav{display:none!important;visibility:hidden!important;height:0!important;min-height:0!important;overflow:hidden!important;margin:0!important;padding:0!important;border:0!important}
   .tnx-mkoreen-nav{display:flex!important;visibility:visible!important;height:auto!important;min-height:0!important;overflow-x:auto!important}
 }
-</style></body>
+</style>
+<style id="tnx-mobile-layout-notification-final-20261020">
+/* Final correction based on the live mobile screenshot: one header, no covering notices. */
+@media (max-width: 900px) {
+  html, body { width:100%!important; max-width:100%!important; overflow-x:hidden!important; }
+  .tnx-mobile-header { display:none!important; }
+  body { padding-top:0!important; }
+  .main-content { min-width:0!important; width:100%!important; margin-left:0!important; padding-left:12px!important; padding-right:12px!important; }
+  .main-content>.topbar {
+    position:relative!important; top:auto!important; left:auto!important; right:auto!important;
+    width:calc(100% + 24px)!important; min-height:60px!important; height:auto!important;
+    margin:0 -12px 0!important; padding:8px 9px!important;
+    display:flex!important; flex-flow:row nowrap!important; align-items:center!important;
+    justify-content:space-between!important; gap:5px!important; overflow:visible!important;
+    z-index:100!important;
+  }
+  .main-content>.topbar .topbar-left { flex:0 1 auto!important; min-width:0!important; gap:5px!important; }
+  .main-content>.topbar .topbar-left:before { width:30px!important;height:30px!important;flex-basis:30px!important; }
+  .main-content>.topbar .topbar-left:after { font-size:13px!important; }
+  .main-content>.topbar .topbar-left .menu-toggle { width:34px!important;height:34px!important;min-width:34px!important; }
+  .main-content>.topbar .topbar-right { flex:0 1 auto!important; min-width:0!important; gap:4px!important; }
+  .main-content>.topbar .account-selector { display:flex!important; flex:0 0 auto!important; gap:2px!important; padding:2px!important; }
+  .main-content>.topbar .account-btn { min-width:0!important; padding:5px 6px!important; font-size:10px!important; }
+  .main-content>.topbar .balance { display:none!important; }
+  .tnx-mkoreen-nav {
+    position:relative!important; top:auto!important; z-index:50!important;
+    width:calc(100% + 24px)!important; margin:0 -12px 14px!important;
+    display:flex!important; flex-flow:row nowrap!important; overflow-x:auto!important;
+    overflow-y:hidden!important; max-width:none!important; white-space:nowrap!important;
+    overscroll-behavior-x:contain!important; -webkit-overflow-scrolling:touch!important;
+    scrollbar-width:none!important;
+  }
+  .tnx-mkoreen-nav::-webkit-scrollbar { display:none!important; }
+  .tnx-mkoreen-nav a { flex:0 0 auto!important; min-width:max-content!important; padding:13px 16px!important; font-size:14px!important; }
+  .tnx-mkoreen-nav .tnx-mkoreen-nav-icon { min-width:64px!important; justify-content:center!important; }
+  .page-content#page-dashboard { min-width:0!important; width:100%!important; }
+  .tnx-dash-hero { margin-top:0!important; }
+  #tnxMarketFeedNotice {
+    position:relative!important; inset:auto!important; display:block!important;
+    width:auto!important; max-width:none!important; margin:0 0 12px!important;
+    padding:10px 12px!important; box-sizing:border-box!important;
+    z-index:2!important; font-size:12px!important; box-shadow:none!important;
+  }
+  #tnxMarketFeedNotice button { padding:5px 8px!important; margin-top:5px!important; font-size:12px!important; }
+  #toast {
+    position:fixed!important; top:auto!important; left:12px!important; right:12px!important;
+    bottom:calc(env(safe-area-inset-bottom, 0px) + 16px)!important;
+    width:auto!important; max-width:none!important; z-index:2147482000!important;
+    pointer-events:none!important; padding:10px 13px!important; font-size:13px!important;
+  }
+  .toast { top:auto!important; bottom:calc(env(safe-area-inset-bottom, 0px) + 16px)!important; left:12px!important; right:12px!important; width:auto!important; max-width:none!important; }
+}
+@media (max-width: 380px) {
+  .main-content>.topbar .topbar-left:after { font-size:12px!important; }
+  .main-content>.topbar .account-btn { padding:4px 5px!important; font-size:9px!important; }
+  .tnx-mkoreen-nav a { padding:12px 13px!important; }
+}
+</style>
+<script id="tnx-mobile-notice-flow-final-20261020">
+(function(){
+  function placeMarketNotice(){
+    var notice=document.getElementById('tnxMarketFeedNotice');
+    var page=document.getElementById('page-dashboard');
+    if(notice && page && notice.parentElement!==page){
+      page.insertBefore(notice,page.firstElementChild);
+    }
+    if(notice){
+      var msg=document.getElementById('tnxMarketFeedMessage');
+      var dismiss=function(){var n=document.getElementById('tnxMarketFeedNotice');if(n)n.remove();};
+      if(msg && /Loaded \\d+ live market symbols/i.test(msg.textContent||'')){
+        setTimeout(dismiss,7000);
+      } else {
+        var observer=new MutationObserver(function(){
+          if(msg && /Loaded \\d+ live market symbols/i.test(msg.textContent||'')){
+            observer.disconnect();setTimeout(dismiss,7000);
+          }
+        });
+        if(msg)observer.observe(msg,{childList:true,subtree:true,characterData:true});
+        setTimeout(function(){if(observer)observer.disconnect();},30000);
+      }
+    }
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',placeMarketNotice,{once:true});
+  else placeMarketNotice();
+})();
+</script>
+
+</body>
 </html>

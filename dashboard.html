@@ -2762,8 +2762,12 @@ function handleTick(t){if(!t)return;const q=Number(t.quote);if(!Number.isFinite(
 // Public market catalogue connection: market discovery must not depend on the authenticated trading socket.
 let marketCatalogueWS=null, marketCatalogueTimer=null, marketCatalogueAttempts=0;
 const MARKET_WS_ENDPOINTS=[
-  'wss://ws.derivws.com/websockets/v3?app_id=1089',
-  'wss://frontend.binaryws.com/websockets/v3?app_id=1089'
+  // Primary official Deriv market-data endpoint.
+  'wss://ws.derivws.com/websockets/v3?app_id=1089&l=EN',
+  // Alternate legacy endpoint for networks that cannot reach the primary hostname.
+  'wss://frontend.binaryws.com/websockets/v3?app_id=1089&l=EN',
+  // Older Binary WS hostname retained as a last transport fallback.
+  'wss://ws.binaryws.com/websockets/v3?app_id=1089&l=EN'
 ];
 function loadPublicMarketCatalogue(){
   if(marketCatalogueWS && (marketCatalogueWS.readyState===WebSocket.OPEN || marketCatalogueWS.readyState===WebSocket.CONNECTING)) return;
@@ -2785,7 +2789,7 @@ function loadPublicMarketCatalogue(){
           console.warn('Deriv market endpoint timed out; trying alternate endpoint.');
           loadPublicMarketCatalogue();
         }else{
-          setMarketCatalogueError('Unable to reach Deriv market feed. Check network/WebSocket access.');
+          setMarketCatalogueError('Unable to reach Deriv market feed after 3 endpoints. Check browser Network → WS; a close code 1006 on every endpoint usually means the network, browser extension, firewall, or Deriv app access is blocking WebSockets.');
         }
       }
     },12000);
@@ -2851,7 +2855,7 @@ function loadPublicMarketCatalogue(){
     clearTimeout(marketCatalogueTimer);
     console.error('Market catalogue connection failed:',error);
     if(marketCatalogueAttempts<MARKET_WS_ENDPOINTS.length-1){marketCatalogueAttempts++;loadPublicMarketCatalogue()}
-    else setMarketCatalogueError('Could not connect to Deriv market feed.');
+    else setMarketCatalogueError('Could not connect to Deriv market feed after 3 endpoints. Check browser Network → WS, VPN/ad blocker, firewall, and Deriv app access.');
   }
 }
 function setMarketCatalogueError(message){

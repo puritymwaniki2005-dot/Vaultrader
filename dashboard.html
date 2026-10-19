@@ -2855,7 +2855,7 @@ function setMarketCatalogueError(message){
   ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;const current=el.options.length===1&&el.options[0].value==='';if(current){el.options[0].textContent=message}});
   console.warn(message);
 }
-function populateSymbols(symbols){const filtered=symbols.filter(s=>s.exchange_is_open!==0&&s.is_trading_suspended!==1);const ids=['manualSymbol','bulkMarket','signalMarket','analysisSymbol','speedSymbol','chartSymbol','digitSymbol','botMarket','quickMarket'];ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;const old=el.value;el.innerHTML='';filtered.slice(0,250).forEach(s=>{const value=s.underlying_symbol||s.symbol;if(!value)return;const o=document.createElement('option');o.value=value;o.textContent=s.underlying_symbol_name||s.display_name||value;el.appendChild(o)});if([...el.options].some(o=>o.value===old))el.value=old});const chosen=document.getElementById('digitSymbol')?.value || document.getElementById('chartSymbol')?.value;if(chosen && (!subscribedSymbol || subscribedSymbol!==chosen))subscribeTicks(chosen);updateDigitMarketUI();if(liveConnected){requestDigitContractsFor(chosen);requestDigitProposal();}}
+function populateSymbols(symbols){const filtered=symbols.filter(s=>s.exchange_is_open!==0&&s.is_trading_suspended!==1);const ids=['manualSymbol','bulkMarket','signalMarket','analysisSymbol','speedSymbol','chartSymbol','digitSymbol','botMarket','quickMarket'];ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;const old=el.value;el.innerHTML='';filtered.slice(0,250).forEach(s=>{const value=s.underlying_symbol||s.symbol;if(!value)return;const o=document.createElement('option');o.value=value;o.textContent=s.underlying_symbol_name||s.display_name||value;el.appendChild(o)});if([...el.options].some(o=>o.value===old))el.value=old});const chosen=document.getElementById('digitSymbol')?.value || document.getElementById('chartSymbol')?.value;if(chosen){subscribePublicTicks(chosen);if(liveConnected&&(!subscribedSymbol||subscribedSymbol!==chosen))subscribeTicks(chosen)}updateDigitMarketUI();if(liveConnected){requestDigitContractsFor(chosen);requestDigitProposal();}}
 function subscribeTicks(symbol){
   if(!symbol||!liveConnected||!derivWS||derivWS.readyState!==WebSocket.OPEN)return;
   symbol=String(symbol);
@@ -2877,6 +2877,42 @@ function subscribeTicks(symbol){
   }catch(e){console.warn('tick subscribe',e)}
 }
 
+// Public read-only tick stream: keep the market/tick displays working even before account auth.
+let publicTickWS=null, publicTickSymbol='', publicTickReconnect=null, publicTickReq=81000;
+function subscribePublicTicks(symbol){
+  symbol=String(symbol||'').trim();if(!symbol)return;
+  if(publicTickWS && publicTickWS.readyState===WebSocket.OPEN && publicTickSymbol===symbol)return;
+  clearTimeout(publicTickReconnect);
+  try{if(publicTickWS)publicTickWS.close()}catch{}
+  publicTickSymbol=symbol;
+  let ws;try{ws=new WebSocket('wss://ws.derivws.com/websockets/v3?app_id=1089');publicTickWS=ws}catch(e){console.warn('Public tick feed could not start:',e);return}
+  let opened=false;
+  ws.onopen=()=>{opened=true;try{ws.send(JSON.stringify({ticks_history:symbol,end:'latest',count:120,style:'ticks',req_id:++publicTickReq}));ws.send(JSON.stringify({ticks:symbol,subscribe:1,req_id:++publicTickReq}))}catch(e){console.warn('Public tick subscription failed:',e)}};
+  ws.onmessage=event=>{
+    let data;try{data=JSON.parse(event.data)}catch{return}
+    if(data.error){console.warn('Public tick feed error:',data.error.message||data.error.code);return}
+    if(data.msg_type==='history' && data.history){
+      const prices=(data.history.prices||[]).map(Number).filter(Number.isFinite);
+      const times=(data.history.times||[]).map(Number);
+      if(prices.length && publicTickSymbol===symbol){
+        digitPrices=prices.slice(-1000);
+        tickBuffer=prices.slice(-300).map((quote,i)=>({quote,epoch:Number(times[Math.max(0,times.length-prices.length+i)])||Date.now()/1000}));
+        const latest=prices[prices.length-1];
+        const tick={quote:latest,epoch:times[times.length-1]||Date.now()/1000,pip_size:Number(data.history.pip_size)||digitPipSize,symbol};
+        lastTick=tick;updateDigitFromTick(tick);tnxBulkRender?.();renderRealtimeChart();
+      }
+    }
+    if(data.msg_type==='tick'&&data.tick&&publicTickSymbol===symbol){
+      const t=data.tick,quote=Number(t.quote);if(!Number.isFinite(quote))return;
+      const tick={...t,symbol:symbol};lastTick=tick;tickBuffer.push({epoch:Number(t.epoch)||Date.now()/1000,quote});if(tickBuffer.length>300)tickBuffer.shift();
+      updateDigitFromTick(tick);tnxBulkRender?.();renderRealtimeChart();
+      const latest=document.getElementById('latestTickDisplay');if(latest)latest.textContent=quote.toFixed(Math.max(0,Number(t.pip_size??digitPipSize)));
+    }
+  };
+  ws.onerror=()=>console.warn('Public tick WebSocket error for',symbol);
+  ws.onclose=()=>{if(publicTickWS===ws){publicTickWS=null;if(publicTickSymbol===symbol)publicTickReconnect=setTimeout(()=>subscribePublicTicks(symbol),5000)}};
+}
+window.subscribePublicTicks=subscribePublicTicks;
 function requestDigitContractsFor(symbol){
   if(!liveConnected||!symbol)return;
   try{
@@ -3541,7 +3577,7 @@ function updateDigitConnectionUI(){
   updateDigitMarketUI();
 }
 
-function init(){loadPublicMarketCatalogue();updateUserIdentity();tnxAttachRiskUI();initDigitTerminal();const token=getAccessToken();if(!token){setConnection(false,'No Deriv session');showToast('⚠️ TradeNovaX needs an active Deriv OAuth session. Click Connect to sign in again.');return}connectDeriv();document.getElementById('chartSymbol')?.addEventListener('change',e=>subscribeTicks(e.target.value));}
+function init(){loadPublicMarketCatalogue();updateUserIdentity();tnxAttachRiskUI();initDigitTerminal();const initialMarket=document.getElementById('digitSymbol')?.value||document.getElementById('bulkMarket')?.value||'R_50';subscribePublicTicks(initialMarket);['digitSymbol','bulkMarket','chartSymbol'].forEach(id=>document.getElementById(id)?.addEventListener('change',e=>{if(e.target.value)subscribePublicTicks(e.target.value);if(liveConnected&&e.target.value)subscribeTicks(e.target.value)}));const token=getAccessToken();if(!token){setConnection(false,'No Deriv session');showToast('⚠️ TradeNovaX needs an active Deriv OAuth session. Click Connect to sign in again.');return}connectDeriv();}
 document.addEventListener('DOMContentLoaded',()=>{init();document.getElementById('menuToggle')?.addEventListener('click',()=>document.getElementById('sidebar')?.classList.toggle('open'));document.getElementById('sidebarOverlay')?.addEventListener('click',()=>document.getElementById('sidebar')?.classList.remove('open'))});
 console.log('%cTradeNovaX FINAL LIVE REAL DASHBOARD','font-size:20px;color:#D4AF37;font-weight:bold');
 

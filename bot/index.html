@@ -89,6 +89,23 @@
               });
               if (warning) hide(warning.closest('[role="alert"],.notice,.banner,.alert') || warning);
               applyWorkspace();
+              // Blockly computes its SVG dimensions at mount. Recalculate after the
+              // embedded navigation is removed so the toolbox, workspace and run panel
+              // no longer overlap or render off-canvas.
+              if (!window.__tnxBlocklyResizeQueued) {
+                window.__tnxBlocklyResizeQueued = true;
+                requestAnimationFrame(() => {
+                  window.__tnxBlocklyResizeQueued = false;
+                  window.dispatchEvent(new Event('resize'));
+                  const Blockly = window.Blockly;
+                  if (Blockly && typeof Blockly.svgResize === 'function') {
+                    document.querySelectorAll('.blocklySvg').forEach(svg => {
+                      const workspace = Blockly.getMainWorkspace && Blockly.getMainWorkspace();
+                      if (workspace) Blockly.svgResize(workspace);
+                    });
+                  }
+                });
+              }
             };
             let queued=false;
             const schedule=()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;cleanEmbeddedChrome();});};

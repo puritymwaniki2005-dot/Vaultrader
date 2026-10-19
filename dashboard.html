@@ -2887,13 +2887,17 @@ function subscribePublicTicks(symbol){
   publicTickSymbol=symbol;
   let ws;try{ws=new WebSocket('wss://ws.derivws.com/websockets/v3?app_id=1089');publicTickWS=ws}catch(e){console.warn('Public tick feed could not start:',e);return}
   let opened=false;
-  const historyReq=++publicTickReq,ticksReq=++publicTickReq;
-  ws.onopen=()=>{opened=true;try{ws.send(JSON.stringify({ticks_history:symbol,end:'latest',count:120,style:'ticks',req_id:historyReq}));ws.send(JSON.stringify({ticks:symbol,subscribe:1,req_id:ticksReq}))}catch(e){console.warn('Public tick subscription failed:',e);scheduleRetry()}};
+  const historyReq=++publicTickReq;
+  ws.onopen=()=>{opened=true;try{
+    // Deriv documents ticks_history + subscribe:1 as one history-and-live stream.
+    // This avoids racing a history request against a separate ticks subscription.
+    ws.send(JSON.stringify({ticks_history:symbol,end:'latest',count:120,style:'ticks',subscribe:1,req_id:historyReq}));
+  }catch(e){console.warn('Public tick subscription failed:',e);scheduleRetry()}};
   const scheduleRetry=()=>{if(publicTickWS===ws){try{ws.close()}catch{};publicTickReconnect=setTimeout(()=>subscribePublicTicks(symbol),3000)}};
   ws.onmessage=event=>{
     let data;try{data=JSON.parse(event.data)}catch{return}
-    if(data.error){console.warn('Public tick feed error:',symbol,data.error.message||data.error.code,data.error.code);if(data.req_id===historyReq||data.req_id===ticksReq)scheduleRetry();return}
-    if(data.msg_type==='history' && data.history && data.req_id===historyReq){
+    if(data.error){console.warn('Public tick feed error:',symbol,data.error.message||data.error.code,data.error.code);if(data.req_id===historyReq||data.echo_req?.req_id===historyReq)scheduleRetry();return}
+    if(data.msg_type==='history' && data.history && (data.req_id===historyReq||data.echo_req?.req_id===historyReq)){
       const rawPrices=data.history.prices||[],rawTimes=data.history.times||[];
       const prices=rawPrices.map(Number).filter(Number.isFinite),times=rawTimes.map(Number);
       if(prices.length && publicTickSymbol===symbol){

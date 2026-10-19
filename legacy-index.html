@@ -2,6 +2,16 @@
 <html lang="en" dir="ltr">
 <head>
     <script>
+    // This legacy file is retained only as the Deriv OAuth callback handler.
+    // Normal visits should use the single current TradeNovaX homepage.
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      if (!params.has("code") && !params.has("error")) {
+        window.location.replace("/");
+      }
+    })();
+    </script>
+    <script>
     // Keep one public login page. This legacy file is only the OAuth callback handler.
     (function () {
       var params = new URLSearchParams(window.location.search);

@@ -6,16 +6,6 @@
   "routes": [
     {
       "src": "/",
-      "has": [{ "type": "query", "key": "code" }],
-      "dest": "/legacy-index.html"
-    },
-    {
-      "src": "/",
-      "has": [{ "type": "query", "key": "error" }],
-      "dest": "/legacy-index.html"
-    },
-    {
-      "src": "/",
       "dest": "/index.html"
     },
     {

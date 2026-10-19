@@ -2761,35 +2761,91 @@ function handleBalance(b){if(!b)return;tnxUpdateSafetyUI();const amount=Number(b
 function handleTick(t){if(!t)return;const q=Number(t.quote);if(!Number.isFinite(q))return;if(subscribedSymbol&&t.symbol&&String(t.symbol)!==String(subscribedSymbol))return;lastTick=t;updateDigitFromTick(t);tickBuffer.push({epoch:Number(t.epoch)||Date.now()/1000,quote:q});if(tickBuffer.length>300)tickBuffer.shift();const e=document.getElementById('latestTickDisplay');if(e)e.textContent=q.toFixed(5);renderRealtimeChart();runAIScanner(true);tnxBulkRender?.();try{window.onTick?.()}catch(err){console.error('Bot tick evaluation error:',err)}}
 // Public market catalogue connection: market discovery must not depend on the authenticated trading socket.
 let marketCatalogueWS=null, marketCatalogueTimer=null, marketCatalogueAttempts=0;
+const MARKET_WS_ENDPOINTS=[
+  'wss://ws.derivws.com/websockets/v3?app_id=1089',
+  'wss://ws.binaryws.com/websockets/v3?app_id=1089'
+];
 function loadPublicMarketCatalogue(){
   if(marketCatalogueWS && (marketCatalogueWS.readyState===WebSocket.OPEN || marketCatalogueWS.readyState===WebSocket.CONNECTING)) return;
   clearTimeout(marketCatalogueTimer);
   const ids=['manualSymbol','bulkMarket','signalMarket','analysisSymbol','speedSymbol','chartSymbol','digitSymbol','botMarket','quickMarket'];
   ids.forEach(id=>{const el=document.getElementById(id);if(el && (!el.options.length || !el.value)){el.innerHTML='';const o=document.createElement('option');o.value='';o.textContent='Connecting to live markets…';el.appendChild(o)}});
+  const attempt=Math.min(marketCatalogueAttempts,MARKET_WS_ENDPOINTS.length-1);
+  const endpoint=MARKET_WS_ENDPOINTS[attempt];
+  let receivedCatalogue=false;
   try{
-    marketCatalogueWS=new WebSocket('wss://ws.derivws.com/websockets/v3?app_id=1089');
+    marketCatalogueWS=new WebSocket(endpoint);
+    const socket=marketCatalogueWS;
     marketCatalogueTimer=setTimeout(()=>{
-      if(!marketCatalogueWS || marketCatalogueWS.readyState!==WebSocket.OPEN){
-        try{marketCatalogueWS?.close()}catch{}
-        marketCatalogueWS=null;
-        setMarketCatalogueError('Market feed timed out. Check your connection and refresh.');
+      if(!receivedCatalogue){
+        try{socket.close()}catch{}
+        if(marketCatalogueWS===socket)marketCatalogueWS=null;
+        if(marketCatalogueAttempts<MARKET_WS_ENDPOINTS.length-1){
+          marketCatalogueAttempts++;
+          console.warn('Deriv market endpoint timed out; trying alternate endpoint.');
+          loadPublicMarketCatalogue();
+        }else{
+          setMarketCatalogueError('Unable to reach Deriv market feed. Check network/WebSocket access.');
+        }
       }
     },12000);
-    marketCatalogueWS.onopen=()=>{clearTimeout(marketCatalogueTimer);marketCatalogueAttempts=0;marketCatalogueWS.send(JSON.stringify({active_symbols:'full',product_type:'basic',req_id:7001}))};
-    marketCatalogueWS.onmessage=event=>{
+    socket.onopen=()=>{
+      if(marketCatalogueWS!==socket)return;
+      socket.send(JSON.stringify({active_symbols:'full',product_type:'basic',req_id:7001}));
+      // Keep a response timeout even when the socket opens but no catalogue arrives.
+      clearTimeout(marketCatalogueTimer);
+      marketCatalogueTimer=setTimeout(()=>{
+        if(receivedCatalogue)return;
+        try{socket.close()}catch{}
+        if(marketCatalogueWS===socket)marketCatalogueWS=null;
+        if(marketCatalogueAttempts<MARKET_WS_ENDPOINTS.length-1){
+          marketCatalogueAttempts++;
+          console.warn('Deriv market catalogue response timed out; trying alternate endpoint.');
+          loadPublicMarketCatalogue();
+        }else setMarketCatalogueError('Deriv connected but did not return live markets. Refresh and check network access.');
+      },10000);
+    };
+    socket.onmessage=event=>{
       let data;try{data=JSON.parse(event.data)}catch{return}
-      if(data.error){console.error('Public Deriv market catalogue error:',data.error);setMarketCatalogueError('Deriv market feed: '+(data.error.message||data.error.code||'request failed'));try{marketCatalogueWS.close()}catch{}return}
-      if(data.msg_type==='active_symbols' && Array.isArray(data.active_symbols) && data.active_symbols.length){
+      if(data.error){
+        console.error('Public Deriv market catalogue error:',data.error);
         clearTimeout(marketCatalogueTimer);
+        if(marketCatalogueAttempts<MARKET_WS_ENDPOINTS.length-1){
+          try{socket.close()}catch{}
+          if(marketCatalogueWS===socket)marketCatalogueWS=null;
+          marketCatalogueAttempts++;
+          loadPublicMarketCatalogue();
+        }else setMarketCatalogueError('Deriv market feed: '+(data.error.message||data.error.code||'request failed'));
+        return;
+      }
+      if(data.msg_type==='active_symbols' && Array.isArray(data.active_symbols) && data.active_symbols.length){
+        receivedCatalogue=true;
+        clearTimeout(marketCatalogueTimer);
+        marketCatalogueAttempts=0;
         populateSymbols(data.active_symbols);
         console.info('TradeNovaX loaded live market catalogue:',data.active_symbols.length);
-        try{marketCatalogueWS.close(1000,'market catalogue loaded')}catch{}
-        marketCatalogueWS=null;
+        try{socket.close(1000,'market catalogue loaded')}catch{}
+        if(marketCatalogueWS===socket)marketCatalogueWS=null;
       }
     };
-    marketCatalogueWS.onerror=()=>{clearTimeout(marketCatalogueTimer);setMarketCatalogueError('Unable to reach Deriv market feed. Check network/WebSocket access.')};
-    marketCatalogueWS.onclose=()=>{clearTimeout(marketCatalogueTimer);marketCatalogueWS=null};
-  }catch(error){clearTimeout(marketCatalogueTimer);console.error('Market catalogue connection failed:',error);setMarketCatalogueError('Could not connect to Deriv market feed.')}
+    socket.onerror=()=>{
+      clearTimeout(marketCatalogueTimer);
+      if(marketCatalogueWS===socket)marketCatalogueWS=null;
+      if(marketCatalogueAttempts<MARKET_WS_ENDPOINTS.length-1){
+        marketCatalogueAttempts++;
+        loadPublicMarketCatalogue();
+      }else setMarketCatalogueError('Unable to reach Deriv market feed. Check network/WebSocket access.');
+    };
+    socket.onclose=()=>{
+      clearTimeout(marketCatalogueTimer);
+      if(marketCatalogueWS===socket)marketCatalogueWS=null;
+    };
+  }catch(error){
+    clearTimeout(marketCatalogueTimer);
+    console.error('Market catalogue connection failed:',error);
+    if(marketCatalogueAttempts<MARKET_WS_ENDPOINTS.length-1){marketCatalogueAttempts++;loadPublicMarketCatalogue()}
+    else setMarketCatalogueError('Could not connect to Deriv market feed.');
+  }
 }
 function setMarketCatalogueError(message){
   const ids=['manualSymbol','bulkMarket','signalMarket','analysisSymbol','speedSymbol','chartSymbol','digitSymbol','botMarket','quickMarket'];

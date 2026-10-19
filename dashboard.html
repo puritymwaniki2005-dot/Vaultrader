@@ -2763,7 +2763,7 @@ function handleTick(t){if(!t)return;const q=Number(t.quote);if(!Number.isFinite(
 let marketCatalogueWS=null, marketCatalogueTimer=null, marketCatalogueAttempts=0;
 const MARKET_WS_ENDPOINTS=[
   'wss://ws.derivws.com/websockets/v3?app_id=1089',
-  'wss://ws.binaryws.com/websockets/v3?app_id=1089'
+  'wss://frontend.binaryws.com/websockets/v3?app_id=1089'
 ];
 function loadPublicMarketCatalogue(){
   if(marketCatalogueWS && (marketCatalogueWS.readyState===WebSocket.OPEN || marketCatalogueWS.readyState===WebSocket.CONNECTING)) return;
@@ -2829,17 +2829,23 @@ function loadPublicMarketCatalogue(){
         if(marketCatalogueWS===socket)marketCatalogueWS=null;
       }
     };
-    socket.onerror=()=>{
+    socket.onerror=(event)=>{
+      console.error('TradeNovaX market catalogue WebSocket error:',{endpoint,event,readyState:socket.readyState});
       clearTimeout(marketCatalogueTimer);
       if(marketCatalogueWS===socket)marketCatalogueWS=null;
       if(marketCatalogueAttempts<MARKET_WS_ENDPOINTS.length-1){
         marketCatalogueAttempts++;
         loadPublicMarketCatalogue();
-      }else setMarketCatalogueError('Unable to reach Deriv market feed. Check network/WebSocket access.');
+      }else setMarketCatalogueError('Unable to reach Deriv market feed. Check network/WebSocket access; see console for endpoint/close details.');
     };
-    socket.onclose=()=>{
+    socket.onclose=(event)=>{
       clearTimeout(marketCatalogueTimer);
+      console.warn('TradeNovaX market catalogue socket closed:',{endpoint,code:event?.code,reason:event?.reason,wasClean:event?.wasClean,receivedCatalogue});
       if(marketCatalogueWS===socket)marketCatalogueWS=null;
+      if(!receivedCatalogue && marketCatalogueAttempts<MARKET_WS_ENDPOINTS.length-1){
+        marketCatalogueAttempts++;
+        loadPublicMarketCatalogue();
+      }
     };
   }catch(error){
     clearTimeout(marketCatalogueTimer);

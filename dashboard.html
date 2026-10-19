@@ -2887,29 +2887,32 @@ function subscribePublicTicks(symbol){
   publicTickSymbol=symbol;
   let ws;try{ws=new WebSocket('wss://ws.derivws.com/websockets/v3?app_id=1089');publicTickWS=ws}catch(e){console.warn('Public tick feed could not start:',e);return}
   let opened=false;
-  ws.onopen=()=>{opened=true;try{ws.send(JSON.stringify({ticks_history:symbol,end:'latest',count:120,style:'ticks',req_id:++publicTickReq}));ws.send(JSON.stringify({ticks:symbol,subscribe:1,req_id:++publicTickReq}))}catch(e){console.warn('Public tick subscription failed:',e)}};
+  const historyReq=++publicTickReq,ticksReq=++publicTickReq;
+  ws.onopen=()=>{opened=true;try{ws.send(JSON.stringify({ticks_history:symbol,end:'latest',count:120,style:'ticks',req_id:historyReq}));ws.send(JSON.stringify({ticks:symbol,subscribe:1,req_id:ticksReq}))}catch(e){console.warn('Public tick subscription failed:',e);scheduleRetry()}};
+  const scheduleRetry=()=>{if(publicTickWS===ws){try{ws.close()}catch{};publicTickReconnect=setTimeout(()=>subscribePublicTicks(symbol),3000)}};
   ws.onmessage=event=>{
     let data;try{data=JSON.parse(event.data)}catch{return}
-    if(data.error){console.warn('Public tick feed error:',data.error.message||data.error.code);return}
-    if(data.msg_type==='history' && data.history){
-      const prices=(data.history.prices||[]).map(Number).filter(Number.isFinite);
-      const times=(data.history.times||[]).map(Number);
+    if(data.error){console.warn('Public tick feed error:',symbol,data.error.message||data.error.code,data.error.code);if(data.req_id===historyReq||data.req_id===ticksReq)scheduleRetry();return}
+    if(data.msg_type==='history' && data.history && data.req_id===historyReq){
+      const rawPrices=data.history.prices||[],rawTimes=data.history.times||[];
+      const prices=rawPrices.map(Number).filter(Number.isFinite),times=rawTimes.map(Number);
       if(prices.length && publicTickSymbol===symbol){
         digitPrices=prices.slice(-1000);
         tickBuffer=prices.slice(-300).map((quote,i)=>({quote,epoch:Number(times[Math.max(0,times.length-prices.length+i)])||Date.now()/1000}));
-        const latest=prices[prices.length-1];
-        const tick={quote:latest,epoch:times[times.length-1]||Date.now()/1000,pip_size:Number(data.history.pip_size)||digitPipSize,symbol};
-        lastTick=tick;updateDigitFromTick(tick);tnxBulkRender?.();renderRealtimeChart();
-      }
+        const latest=prices[prices.length-1],pip=Number(data.pip_size??data.history.pip_size??digitPipSize);
+        const tick={quote:latest,epoch:times[times.length-1]||Date.now()/1000,pip_size:pip,symbol};
+        lastTick=tick;digitPrices.pop();updateDigitFromTick(tick);tnxBulkRender();renderRealtimeChart();
+        console.info('TradeNovaX public tick history loaded', {symbol,count:prices.length,last:latest});
+      }else if(publicTickSymbol===symbol){console.warn('Deriv returned empty tick history for',symbol)}
     }
     if(data.msg_type==='tick'&&data.tick&&publicTickSymbol===symbol){
       const t=data.tick,quote=Number(t.quote);if(!Number.isFinite(quote))return;
       const tick={...t,symbol:symbol};lastTick=tick;tickBuffer.push({epoch:Number(t.epoch)||Date.now()/1000,quote});if(tickBuffer.length>300)tickBuffer.shift();
-      updateDigitFromTick(tick);tnxBulkRender?.();renderRealtimeChart();
+      updateDigitFromTick(tick);tnxBulkRender();renderRealtimeChart();
       const latest=document.getElementById('latestTickDisplay');if(latest)latest.textContent=quote.toFixed(Math.max(0,Number(t.pip_size??digitPipSize)));
     }
   };
-  ws.onerror=()=>console.warn('Public tick WebSocket error for',symbol);
+  ws.onerror=()=>{console.warn('Public tick WebSocket error for',symbol);scheduleRetry()};
   ws.onclose=()=>{if(publicTickWS===ws){publicTickWS=null;if(publicTickSymbol===symbol)publicTickReconnect=setTimeout(()=>subscribePublicTicks(symbol),5000)}};
 }
 window.subscribePublicTicks=subscribePublicTicks;
@@ -3577,7 +3580,7 @@ function updateDigitConnectionUI(){
   updateDigitMarketUI();
 }
 
-function init(){loadPublicMarketCatalogue();updateUserIdentity();tnxAttachRiskUI();initDigitTerminal();const initialMarket=document.getElementById('digitSymbol')?.value||document.getElementById('bulkMarket')?.value||'R_50';subscribePublicTicks(initialMarket);['digitSymbol','bulkMarket','chartSymbol'].forEach(id=>document.getElementById(id)?.addEventListener('change',e=>{if(e.target.value)subscribePublicTicks(e.target.value);if(liveConnected&&e.target.value)subscribeTicks(e.target.value)}));const token=getAccessToken();if(!token){setConnection(false,'No Deriv session');showToast('⚠️ TradeNovaX needs an active Deriv OAuth session. Click Connect to sign in again.');return}connectDeriv();}
+function init(){loadPublicMarketCatalogue();updateUserIdentity();tnxAttachRiskUI();initDigitTerminal();const initialMarket=document.getElementById('bulkMarket')?.value||document.getElementById('digitSymbol')?.value||document.getElementById('chartSymbol')?.value||'R_50';subscribePublicTicks(initialMarket);['digitSymbol','bulkMarket','chartSymbol'].forEach(id=>document.getElementById(id)?.addEventListener('change',e=>{if(!e.target.value)return;subscribePublicTicks(e.target.value);if(liveConnected)subscribeTicks(e.target.value)}));const token=getAccessToken();if(!token){setConnection(false,'No Deriv session');showToast('⚠️ TradeNovaX needs an active Deriv OAuth session. Click Connect to sign in again.');return}connectDeriv();}
 document.addEventListener('DOMContentLoaded',()=>{init();document.getElementById('menuToggle')?.addEventListener('click',()=>document.getElementById('sidebar')?.classList.toggle('open'));document.getElementById('sidebarOverlay')?.addEventListener('click',()=>document.getElementById('sidebar')?.classList.remove('open'))});
 console.log('%cTradeNovaX FINAL LIVE REAL DASHBOARD','font-size:20px;color:#D4AF37;font-weight:bold');
 

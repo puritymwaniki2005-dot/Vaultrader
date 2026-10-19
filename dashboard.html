@@ -2653,8 +2653,7 @@ The source XML is preserved exactly. Loading a definition does not place a trade
 <button disabled="" id="tnxPinnedBuyButton" type="button">BUY REAL CONTRACT</button>
 </div>
 <!-- ===== TOAST ===== -->
-<div class="toast" id="toast">
-<span class="toast-icon">✅</span>
+<div class="toast" id="toast" role="status" aria-live="polite">
 <span id="toastMessage">Success!</span>
 </div>
 <!-- ============================================================
@@ -2755,7 +2754,7 @@ let recentTransactions=[], activeContracts=new Map(), subscribedOpenContracts=ne
 let reconnectTimer=null, reconnectAttempts=0, digitDurationMin=1, digitDurationMax=10, digitDurationUnit='t', digitDefaultStake=10, digitContracts=[];
 const DIGIT_CONTRACT_TYPES=['DIGITMATCH','DIGITDIFF','DIGITOVER','DIGITUNDER','DIGITEVEN','DIGITODD'];
 
-function showToast(message){const toast=document.getElementById('toast'),msg=document.getElementById('toastMessage');if(!toast||!msg){console.log(message);return}msg.textContent=message;toast.classList.add('show');clearTimeout(toast._timer);toast._timer=setTimeout(()=>toast.classList.remove('show'),3500)}
+function showToast(message){const toast=document.getElementById('toast'),msg=document.getElementById('toastMessage');const clean=String(message??'').replace(/[\\p{Extended_Pictographic}\\uFE0F\\u200D]/gu,'').replace(/\\s{2,}/g,' ').trim();if(!toast||!msg){console.log(clean);return}msg.textContent=clean;toast.classList.remove('show');void toast.offsetWidth;toast.classList.add('show');clearTimeout(toast._timer);toast._timer=setTimeout(()=>toast.classList.remove('show'),4500)}
 window.showToast=showToast;
 function readTokenFromStore(store){try{const token=store.getItem('deriv_access_token');let raw=Number(store.getItem('deriv_token_expiry')||0);if(raw&&raw<100000000000)raw*=1000;if(token&&(!raw||Date.now()<raw))return token;}catch{}return null}
 function getAccessToken(){for(const store of [sessionStorage,localStorage]){const token=readTokenFromStore(store);if(token)return token;}try{const raw=localStorage.getItem('deriv_tokens_backup')||sessionStorage.getItem('deriv_tokens_backup');if(raw){const data=JSON.parse(raw);const exp=Number(data?.expires_at||data?.expiry||0);const expiresAt=exp?(exp<100000000000?exp*1000:exp):(data?.expires_in?Date.now()+Number(data.expires_in)*1000:0);if(data?.access_token&&(!expiresAt||expiresAt>Date.now()))return data.access_token;}}catch{}return null}
@@ -6082,6 +6081,28 @@ body.tnx-bot-active .sidebar,body.tnx-bot-active .sidebar-overlay{display:none!i
 @media(max-width:900px){
   .tnx-mkoreen-nav{display:none!important}
   .main-content>.topbar{margin-bottom:0!important}
+}
+</style>
+<style id="tnx-visible-clean-notifications">
+/* Consistent readable notifications on mobile and desktop */
+.toast{
+  position:fixed!important;left:auto!important;right:18px!important;bottom:22px!important;
+  z-index:100500!important;display:block!important;visibility:visible!important;
+  width:max-content!important;max-width:min(440px,calc(100vw - 28px))!important;
+  padding:15px 18px!important;background:#111827!important;color:#fff!important;
+  border:1px solid #d4af37!important;border-radius:12px!important;
+  font:600 15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif!important;
+  white-space:normal!important;overflow-wrap:anywhere!important;
+  box-shadow:0 12px 36px rgba(0,0,0,.4)!important;
+  opacity:0!important;transform:translateY(18px)!important;pointer-events:none!important;
+}
+.toast.show{opacity:1!important;transform:translateY(0)!important;visibility:visible!important}
+#toastMessage{display:block!important;color:#fff!important;opacity:1!important;visibility:visible!important}
+#tnxMarketFeedNotice{z-index:100400!important;max-width:min(440px,calc(100vw - 28px))!important}
+#tnxMarketFeedNotice button{font-size:13px!important}
+@media(max-width:900px){
+ .toast{left:14px!important;right:14px!important;bottom:calc(env(safe-area-inset-bottom,0px) + 76px)!important;width:auto!important;max-width:none!important;font-size:14px!important;padding:13px 15px!important}
+ #tnxMarketFeedNotice{right:14px!important;bottom:calc(env(safe-area-inset-bottom,0px) + 86px)!important}
 }
 </style>
 </body>

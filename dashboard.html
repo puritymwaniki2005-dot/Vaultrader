@@ -2887,16 +2887,16 @@ function subscribePublicTicks(symbol){
   publicTickSymbol=symbol;
   let ws;try{ws=new WebSocket('wss://ws.derivws.com/websockets/v3?app_id=1089');publicTickWS=ws}catch(e){console.warn('Public tick feed could not start:',e);return}
   let opened=false;
-  const historyReq=++publicTickReq;
-  ws.onopen=()=>{opened=true;const insight=document.getElementById('bulkLiveInsight');if(insight)insight.textContent=`WebSocket connected • requesting live ticks for ${symbol}…`;console.info('TradeNovaX public tick WebSocket opened',{symbol,historyReq});try{
-    // Deriv documents ticks_history + subscribe:1 as one history-and-live stream.
-    // This avoids racing a history request against a separate ticks subscription.
-    ws.send(JSON.stringify({ticks_history:symbol,end:'latest',count:120,style:'ticks',subscribe:1,req_id:historyReq}));
+  const historyReq=++publicTickReq, tickReq=++publicTickReq;
+  ws.onopen=()=>{opened=true;const insight=document.getElementById('bulkLiveInsight');if(insight)insight.textContent=`WebSocket connected • requesting history and live tick stream for ${symbol}…`;console.info('TradeNovaX public tick WebSocket opened',{symbol,historyReq,tickReq});try{
+    // Use the documented dedicated ticks stream for live updates, with history as a separate one-off request.
+    ws.send(JSON.stringify({ticks_history:symbol,end:'latest',count:120,style:'ticks',req_id:historyReq}));
+    ws.send(JSON.stringify({ticks:symbol,subscribe:1,req_id:tickReq}));
   }catch(e){console.warn('Public tick subscription failed:',e);scheduleRetry()}};
   const scheduleRetry=()=>{if(publicTickWS===ws){try{ws.close()}catch{};publicTickReconnect=setTimeout(()=>subscribePublicTicks(symbol),3000)}};
   ws.onmessage=event=>{
     let data;try{data=JSON.parse(event.data)}catch{return}
-    if(data.error){console.warn('Public tick feed error:',symbol,data.error.message||data.error.code,data.error.code,data);const insight=document.getElementById('bulkLiveInsight');if(insight&&publicTickSymbol===symbol)insight.textContent='Live feed error: '+(data.error.message||data.error.code||'Unknown Deriv error');if(data.req_id===historyReq||data.echo_req?.req_id===historyReq||data.echo_req?.ticks_history===symbol)scheduleRetry();return}
+    if(data.error){console.warn('Public tick feed error:',symbol,data.error.message||data.error.code,data.error.code,data);const insight=document.getElementById('bulkLiveInsight');if(insight&&publicTickSymbol===symbol)insight.textContent='Live feed error: '+(data.error.message||data.error.code||'Unknown Deriv error');if(data.req_id===historyReq||data.req_id===tickReq||data.echo_req?.req_id===historyReq||data.echo_req?.req_id===tickReq||data.echo_req?.ticks_history===symbol||data.echo_req?.ticks===symbol)scheduleRetry();return}
     if(data.msg_type==='history' && data.history && publicTickWS===ws && publicTickSymbol===symbol && (data.req_id===historyReq||data.echo_req?.req_id===historyReq||data.echo_req?.ticks_history===symbol||(!data.req_id&&!data.echo_req?.req_id))){
       const rawPrices=data.history.prices||[],rawTimes=data.history.times||[];
       const prices=rawPrices.map(Number).filter(Number.isFinite),times=rawTimes.map(Number);
@@ -2909,10 +2909,11 @@ function subscribePublicTicks(symbol){
         console.info('TradeNovaX public tick history loaded', {symbol,count:prices.length,last:latest});const insight=document.getElementById('bulkLiveInsight');if(insight)insight.textContent=`Live feed connected • ${prices.length} recent ticks • ${symbol}`;
       }else if(publicTickSymbol===symbol){console.warn('Deriv returned empty tick history for',symbol)}
     }
-    if(data.msg_type==='tick'&&data.tick&&publicTickWS===ws&&publicTickSymbol===symbol){
+    if(data.msg_type==='tick'&&data.tick&&publicTickWS===ws&&publicTickSymbol===symbol&&(data.req_id===tickReq||data.echo_req?.req_id===tickReq||data.echo_req?.ticks===symbol||data.tick.symbol===symbol||!data.req_id)){
       const t=data.tick,quote=Number(t.quote);if(!Number.isFinite(quote))return;
       const tick={...t,symbol:symbol};lastTick=tick;tickBuffer.push({epoch:Number(t.epoch)||Date.now()/1000,quote});if(tickBuffer.length>300)tickBuffer.shift();
       updateDigitFromTick(tick);tnxBulkRender();renderRealtimeChart();
+      const insight=document.getElementById('bulkLiveInsight');if(insight)insight.textContent=`Live tick stream active • ${symbol} • ${new Date((Number(t.epoch)||Date.now()/1000)*1000).toLocaleTimeString()}`;
       const latest=document.getElementById('latestTickDisplay');if(latest)latest.textContent=quote.toFixed(Math.max(0,Number(t.pip_size??digitPipSize)));
     }
   };

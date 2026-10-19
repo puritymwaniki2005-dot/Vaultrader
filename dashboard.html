@@ -3257,7 +3257,7 @@ function switchPage(page){
     }
     document.querySelectorAll('.page-content').forEach(p=>p.classList.remove('active'));
     target.classList.add('active');
-    document.querySelectorAll('.sidebar-nav a[data-page]').forEach(a=>a.classList.toggle('active',a.dataset.page==='bot'));
+    document.querySelectorAll('.sidebar-nav a[data-page], .tnx-mkoreen-nav a[data-page]').forEach(a=>a.classList.toggle('active',a.dataset.page==='bot'));
     const t=document.getElementById('pageTitle'),s=document.getElementById('pageSub');
     if(t)t.textContent=pageTitles[page]||page;
     if(s)s.textContent=pageSubs[page]||'';
@@ -3270,7 +3270,7 @@ function switchPage(page){
   if(!target){showToast('⚠️ Section unavailable: '+page);return false;}
   document.querySelectorAll('.page-content').forEach(p=>p.classList.remove('active'));
   target.classList.add('active');
-  document.querySelectorAll('.sidebar-nav a[data-page]').forEach(a=>a.classList.toggle('active',a.dataset.page===page));
+  document.querySelectorAll('.sidebar-nav a[data-page], .tnx-mkoreen-nav a[data-page]').forEach(a=>a.classList.toggle('active',a.dataset.page===page));
   const t=document.getElementById('pageTitle'),s=document.getElementById('pageSub');
   if(t)t.textContent=pageTitles[page]||page;
   if(s)s.textContent=pageSubs[page]||'';

@@ -2764,6 +2764,9 @@ let marketCatalogueWS=null, marketCatalogueTimer=null, marketCatalogueAttempts=0
 // Public market catalogue connection. Market discovery does not require a signed-in account.
 let marketCatalogueWS=null, marketCatalogueTimer=null, marketCatalogueAttempts=0, marketCatalogueFailed=false;
 const MARKET_WS_ENDPOINTS=[
+  // Current Deriv API public market-data WebSocket (no account OTP required).
+  'wss://api.derivws.com/trading/v1/options/ws/public',
+  // Legacy v3 endpoints retained only as fallback for older network/API setups.
   'wss://ws.derivws.com/websockets/v3?app_id=1089',
   'wss://ws.binaryws.com/websockets/v3?app_id=1089',
   'wss://frontend.binaryws.com/websockets/v3?app_id=1089'

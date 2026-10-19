@@ -1381,7 +1381,7 @@ body.tnx-bot-active #tnxOriginalBotFrame { display:block !important; width:100% 
 .topbar .account-btn{font-size:14px!important;font-weight:900!important;color:#34383c!important;border:1px solid transparent!important;padding:8px 12px!important;border-radius:5px!important}
 .topbar .account-btn.active-live{background:#e7f5f3!important;color:#218f8a!important;border-color:#b6dfda!important}
 .topbar .account-btn.active-demo{background:#f8edc9!important;color:#775b00!important;border-color:#ead58d!important}
-.topbar #tnxThemeToggle,.topbar #tnxLanguage{display:none!important}
+.topbar #tnxThemeToggle{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 34px!important;width:34px!important;min-width:34px!important;height:36px!important;padding:0!important;border:1px solid #d5d8da!important;border-radius:8px!important;background:#f2f3f4!important;color:#222!important;font-size:19px!important;line-height:1!important}.topbar #tnxLanguage{display:none!important}
 .topbar .deriv-status{display:none!important}
 .topbar #tnxReconnectDeriv{order:3!important;background:#f2f3f4!important;color:#333!important;border:1px solid #d5d8da!important;border-radius:6px!important;font-size:12px!important;white-space:nowrap}
 .topbar .btn-logout{order:5!important;padding:8px 10px!important}
@@ -6105,5 +6105,21 @@ body.tnx-bot-active .sidebar,body.tnx-bot-active .sidebar-overlay{display:none!i
  #tnxMarketFeedNotice{right:14px!important;bottom:calc(env(safe-area-inset-bottom,0px) + 86px)!important}
 }
 </style>
-</body>
+<style id="tnx-functional-theme-final">
+:root[data-tnx-theme="dark"]{
+ color-scheme:dark;--navy:#0b1020;--card:#151c2c;--text:#f2f5fa;--text-muted:#aab3c5;--border:#30394b;--bg:#0b1020;--green:#38d9a9;--red:#ff6b75
+}
+:root[data-tnx-theme="dark"] body,:root[data-tnx-theme="dark"] .main-content{background:#0b1020!important;color:#f2f5fa!important}
+:root[data-tnx-theme="dark"] .main-content .card,:root[data-tnx-theme="dark"] .main-content .panel,:root[data-tnx-theme="dark"] .main-content .tnx-dash-panel,:root[data-tnx-theme="dark"] .main-content .tnx-dash-hero,:root[data-tnx-theme="dark"] .main-content .tnx-dash-performance{background:#151c2c!important;color:#f2f5fa!important;border-color:#30394b!important}
+:root[data-tnx-theme="dark"] .main-content h1,:root[data-tnx-theme="dark"] .main-content h2,:root[data-tnx-theme="dark"] .main-content h3,:root[data-tnx-theme="dark"] .main-content p,:root[data-tnx-theme="dark"] .main-content label,:root[data-tnx-theme="dark"] .main-content .page-sub{color:inherit}
+:root[data-tnx-theme="dark"] .main-content input,:root[data-tnx-theme="dark"] .main-content select,:root[data-tnx-theme="dark"] .main-content textarea{background:#0e1525!important;color:#f2f5fa!important;border-color:#39445a!important}
+:root[data-tnx-theme="dark"] .main-content>.topbar{background:#101827!important;color:#f2f5fa!important;border-color:#30394b!important}
+:root[data-tnx-theme="dark"] .main-content>.topbar .topbar-left:after{color:#f2f5fa!important}
+:root[data-tnx-theme="dark"] .main-content>.topbar #tnxThemeToggle{background:#263247!important;color:#f5d76e!important;border-color:#48556b!important}
+:root[data-tnx-theme="dark"] .tnx-mkoreen-nav{background:#260005!important}
+:root[data-tnx-theme="light"] .main-content{background:#f1f2f4!important;color:#20242c!important}
+:root[data-tnx-theme="light"] .main-content .card,:root[data-tnx-theme="light"] .main-content .panel,:root[data-tnx-theme="light"] .main-content .tnx-dash-panel,:root[data-tnx-theme="light"] .main-content .tnx-dash-hero,:root[data-tnx-theme="light"] .main-content .tnx-dash-performance{background:#fff!important;color:#20242c!important;border-color:#e0e3e8!important}
+:root[data-tnx-theme="light"] .main-content input,:root[data-tnx-theme="light"] .main-content select,:root[data-tnx-theme="light"] .main-content textarea{background:#fff!important;color:#20242c!important;border-color:#d9dee7!important}
+@media(max-width:900px){:root[data-tnx-theme="dark"] .main-content>.topbar .topbar-left .menu-toggle{color:#f5d76e!important}}
+</style></body>
 </html>

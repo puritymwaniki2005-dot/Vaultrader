@@ -561,3 +561,23 @@ body.theme,body.theme--light,body.theme--dark{background:#f1f2f4!important;color
  .bot .blocklySvg{min-height:480px!important}
  .tnx-mkorean-horizontal-nav :is(a,button,[role="tab"]){padding:.8rem 1rem!important;font-size:1.15rem!important}
 }
+
+
+/* October layout repair: keep Blockly's SVG and side panels sized to the actual viewport. */
+#root,.bot,.bot__content,.tab__dashboard,.tab__dashboard__body,.blockly-container,.blocklyDiv,.bot .injectionDiv{
+ width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;
+}
+.bot .injectionDiv{position:relative!important;overflow:hidden!important}
+.bot .blocklySvg{display:block!important;width:100%!important;max-width:100%!important}
+.bot .blocklyMainBackground{fill:#fff!important}
+.bot .blocklyToolboxDiv{z-index:4!important;max-width:min(300px,24vw)!important}
+.bot .run-panel__container{min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+@media(min-width:1101px){
+ .bot .blocklyToolboxDiv{width:260px!important;min-width:230px!important}
+ .bot .run-panel__container{width:clamp(320px,26vw,460px)!important;flex:0 0 clamp(320px,26vw,460px)!important}
+ .bot .blocklyWorkspace{width:100%!important}
+}
+@media(max-width:1100px){
+ .bot .run-panel__container{width:100%!important;max-width:100%!important}
+ .bot .blocklyToolboxDiv{max-width:220px!important}
+}

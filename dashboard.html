@@ -6121,5 +6121,13 @@ body.tnx-bot-active .sidebar,body.tnx-bot-active .sidebar-overlay{display:none!i
 :root[data-tnx-theme="light"] .main-content .card,:root[data-tnx-theme="light"] .main-content .panel,:root[data-tnx-theme="light"] .main-content .tnx-dash-panel,:root[data-tnx-theme="light"] .main-content .tnx-dash-hero,:root[data-tnx-theme="light"] .main-content .tnx-dash-performance{background:#fff!important;color:#20242c!important;border-color:#e0e3e8!important}
 :root[data-tnx-theme="light"] .main-content input,:root[data-tnx-theme="light"] .main-content select,:root[data-tnx-theme="light"] .main-content textarea{background:#fff!important;color:#20242c!important;border-color:#d9dee7!important}
 @media(max-width:900px){:root[data-tnx-theme="dark"] .main-content>.topbar .topbar-left .menu-toggle{color:#f5d76e!important}}
+</style><style id="tnx-single-navigation-final">
+/* Keep exactly one navigation row: the Mkoreen-styled primary navigation. */
+.tnx-global-nav{display:none!important}
+.tnx-mkoreen-nav{display:flex!important}
+@media(max-width:900px){
+  .tnx-global-nav{display:none!important;visibility:hidden!important;height:0!important;min-height:0!important;overflow:hidden!important;margin:0!important;padding:0!important;border:0!important}
+  .tnx-mkoreen-nav{display:flex!important;visibility:visible!important;height:auto!important;min-height:0!important;overflow-x:auto!important}
+}
 </style></body>
 </html>

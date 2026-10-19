@@ -25,14 +25,10 @@
 </main>
 <footer class="wrap footer"><a class="brand" href="/"><span class="mark">TNX</span><span>TradeNovaX<small>STRUCTURED TRADING, BUILT FOR FOCUS</small></span></a><span>Trading involves risk. No strategy guarantees profit. Trade responsibly.</span><div class="footerlinks"><a href="#risk">Risk disclosure</a><a href="#workflow">How it works</a><a href="#login" data-auth-action="login">Log in</a></div></footer>
 <script>
-/* Handle Deriv OAuth on the canonical homepage. No second public landing page. */
+/* Deriv OAuth callback runs on the one canonical homepage, including browser page restores. */
 (function () {
-  const params = new URLSearchParams(window.location.search);
-  const code = params.get('code');
-  const oauthError = params.get('error');
-  if (!code && !oauthError) return;
-
-  function showCallbackMessage(message) {
+  let inFlight = false, completed = false;
+  function showStatus(message, isError) {
     let panel = document.getElementById('deriv-oauth-status');
     if (!panel) {
       panel = document.createElement('div');
@@ -41,63 +37,67 @@
       panel.style.cssText = 'position:fixed;z-index:99999;left:16px;right:16px;top:16px;max-width:560px;margin:auto;padding:18px 20px;border:1px solid #48e0b0;border-radius:14px;background:#101827;color:#f5f7fb;box-shadow:0 12px 40px #0008;font:600 15px/1.5 system-ui,sans-serif';
       document.body.appendChild(panel);
     }
+    panel.style.borderColor = isError ? '#ef4444' : '#48e0b0';
     panel.textContent = message;
   }
-
-  async function handleCallback() {
+  async function runOAuthCallback() {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code'), oauthError = params.get('error');
+    if ((!code && !oauthError) || inFlight || completed) return;
+    inFlight = true;
     if (oauthError) {
-      showCallbackMessage('Deriv sign-in was cancelled or rejected: ' + (params.get('error_description') || oauthError));
-      return;
+      showStatus('Deriv sign-in failed: ' + (params.get('error_description') || oauthError), true);
+      inFlight = false; return;
     }
     const expectedState = sessionStorage.getItem('oauth_state');
     const returnedState = params.get('state');
     const verifier = sessionStorage.getItem('pkce_code_verifier');
     if (!verifier) {
-      showCallbackMessage('Sign-in session expired because the browser did not retain its security verifier. Please return to this page and sign in again in the same browser.');
-      return;
+      showStatus('Sign-in session was not retained by this browser. Tap Get started and complete sign-in in the same browser tab.', true);
+      inFlight = false; return;
     }
     if (!expectedState || !returnedState || expectedState !== returnedState) {
-      showCallbackMessage('Sign-in security check failed. Please return to this page and try signing in again.');
-      return;
+      showStatus('Deriv security-state verification failed. Start sign-in again from this page.', true);
+      inFlight = false; return;
     }
-    showCallbackMessage('Completing secure Deriv sign-in…');
+    showStatus('Deriv returned successfully. Completing secure sign-in…', false);
     try {
       const response = await fetch('https://auth.deriv.com/oauth2/token', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: new URLSearchParams({
-          grant_type: 'authorization_code',
-          client_id: '34g3dK2hXuNSYEMsOUlvT',
-          code: code,
-          code_verifier: verifier,
-          redirect_uri: 'https://tradenovax.co.ke'
+          grant_type:'authorization_code',
+          client_id:'34g3dK2hXuNSYEMsOUlvT',
+          code:code,
+          code_verifier:verifier,
+          redirect_uri:'https://tradenovax.co.ke'
         })
       });
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
       if (!response.ok || !data.access_token) {
-        console.error('Deriv token exchange failed:', data);
-        showCallbackMessage('Deriv could not complete sign-in (' + (data.error_description || data.error || ('HTTP ' + response.status)) + '). Please try again.');
-        return;
+        console.error('TradeNovaX OAuth token exchange failed', {status:response.status,data});
+        showStatus('Deriv token exchange failed: ' + (data.error_description || data.error || ('HTTP ' + response.status)) + '. Please retry sign-in.', true);
+        inFlight = false; return;
       }
+      const expiry = Date.now() + Number(data.expires_in || 3600) * 1000;
       localStorage.setItem('deriv_access_token', data.access_token);
-      localStorage.setItem('deriv_token_expiry', String(Date.now() + Number(data.expires_in || 3600) * 1000));
-      localStorage.setItem('deriv_tokens_backup', JSON.stringify({
-        access_token: data.access_token,
-        expires_in: data.expires_in || 3600,
-        expires_at: Date.now() + Number(data.expires_in || 3600) * 1000
-      }));
+      localStorage.setItem('deriv_token_expiry', String(expiry));
+      localStorage.setItem('deriv_tokens_backup', JSON.stringify({access_token:data.access_token,expires_in:data.expires_in||3600,expires_at:expiry}));
       sessionStorage.removeItem('pkce_code_verifier');
       sessionStorage.removeItem('oauth_state');
       window.history.replaceState({}, document.title, window.location.pathname);
-      showCallbackMessage('Deriv connected. Opening your dashboard…');
+      completed = true;
+      showStatus('Deriv connected. Opening your dashboard…', false);
       window.location.replace('/dashboard.html');
     } catch (error) {
-      console.error('Deriv OAuth callback failed:', error);
-      showCallbackMessage('Unable to complete Deriv sign-in. Check your connection and try again.');
+      console.error('TradeNovaX OAuth callback error', error);
+      showStatus('Could not reach Deriv to finish sign-in. Check your internet connection and retry.', true);
+      inFlight = false;
     }
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', handleCallback, { once: true });
-  else handleCallback();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', runOAuthCallback, {once:true});
+  else runOAuthCallback();
+  window.addEventListener('pageshow', runOAuthCallback);
 })();
 </script>
 <script>

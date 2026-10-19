@@ -6076,5 +6076,13 @@ body.tnx-bot-active .sidebar,body.tnx-bot-active .sidebar-overlay{display:none!i
   .main-content>.topbar .balance{font-size:12px!important;padding:7px 4px!important}
 }
 </style>
+<style id="tnx-remove-duplicate-mobile-nav">
+/* The existing mobile sidebar navigation already renders horizontally.
+   Keep the Mkoreen desktop nav, but prevent two navigation bars on phones. */
+@media(max-width:900px){
+  .tnx-mkoreen-nav{display:none!important}
+  .main-content>.topbar{margin-bottom:0!important}
+}
+</style>
 </body>
 </html>

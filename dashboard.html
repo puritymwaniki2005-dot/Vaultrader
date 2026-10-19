@@ -5708,5 +5708,66 @@ function init(){
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
 </script>
+
+<style id="tnx-bot-layout-hotfix">
+/* Bot Builder layout correction: remove the oversized blank header area and keep all panels inside the viewport. */
+html,body{max-width:100%;overflow-x:hidden}
+body.tnx-bot-active .topbar{
+  position:fixed!important;top:0!important;left:0!important;right:0!important;
+  height:60px!important;min-height:60px!important;padding:0 14px!important;
+  margin:0!important;z-index:10020!important;box-sizing:border-box!important;
+}
+body.tnx-bot-active .main-content{
+  margin-left:0!important;width:100%!important;max-width:100%!important;
+  padding:60px 0 0!important;min-width:0!important;box-sizing:border-box!important;
+}
+body.tnx-bot-active .tnx-global-nav{
+  position:relative!important;top:auto!important;left:auto!important;right:auto!important;
+  width:100%!important;max-width:100%!important;margin:0!important;
+  min-height:52px!important;z-index:10010!important;
+}
+body.tnx-bot-active #page-bot{width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important;padding:0!important;overflow:hidden!important}
+body.tnx-bot-active #tnxOriginalBotFrame{
+  display:block!important;width:100%!important;max-width:100%!important;
+  height:calc(100dvh - 112px)!important;min-height:480px!important;
+  margin:0!important;padding:0!important;border:0!important;border-radius:0!important;
+  box-sizing:border-box!important;background:#f1f2f4!important;
+}
+body.tnx-bot-active .sidebar,body.tnx-bot-active .sidebar-overlay{display:none!important}
+.tnx-builder-reference{
+  display:grid!important;grid-template-columns:minmax(220px,278px) minmax(0,1fr) minmax(300px,370px)!important;
+  width:100%!important;max-width:100%!important;min-width:0!important;
+  height:calc(100dvh - 112px)!important;min-height:480px!important;
+  overflow:hidden!important;box-sizing:border-box!important;
+}
+.tnx-builder-sidebar,.tnx-builder-stage,.tnx-builder-summary{min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+.tnx-builder-stage{position:relative!important;overflow:hidden!important}
+.tnx-builder-toolbar-ref{left:12px!important;right:12px!important;width:auto!important;max-width:780px!important;box-sizing:border-box!important}
+.tnx-workspace-canvas,.tnx-blockly-workspace{max-width:100%!important;min-width:0!important}
+.tnx-flow-main{left:16px!important;width:calc(100% - 32px)!important;max-width:725px!important;transform:none!important}
+.tnx-block-sell,.tnx-block-restart{left:min(467px,calc(100% - 255px))!important}
+.tnx-builder-summary{overflow:auto!important}
+@media(max-width:1050px){
+ .tnx-builder-reference{grid-template-columns:minmax(190px,230px) minmax(0,1fr)!important}
+ .tnx-builder-summary{display:none!important}
+ .tnx-flow-main{left:12px!important;width:calc(100% - 24px)!important}
+ .tnx-block-sell,.tnx-block-restart{left:calc(100% - 255px)!important}
+}
+@media(max-width:700px){
+ body.tnx-bot-active .topbar{height:56px!important;min-height:56px!important;padding:0 8px!important}
+ body.tnx-bot-active .main-content{padding-top:56px!important}
+ body.tnx-bot-active .tnx-global-nav{min-height:48px!important}
+ body.tnx-bot-active #tnxOriginalBotFrame{height:calc(100dvh - 104px)!important;min-height:420px!important}
+ .tnx-builder-reference{display:flex!important;flex-direction:column!important;height:calc(100dvh - 104px)!important;min-height:420px!important}
+ .tnx-builder-sidebar{width:100%!important;flex:0 0 auto!important;max-height:180px!important;overflow:auto!important}
+ .tnx-builder-stage{flex:1 1 auto!important;min-height:240px!important;width:100%!important}
+ .tnx-builder-summary{display:none!important}
+ .tnx-builder-toolbar-ref{left:8px!important;right:8px!important;top:8px!important;width:auto!important;height:44px!important}
+ .tnx-flow-main{left:8px!important;top:68px!important;width:calc(100% - 16px)!important;transform:scale(.78)!important;transform-origin:top left!important}
+ .tnx-block-sell,.tnx-block-restart{left:calc(100% - 255px)!important}
+ .tnx-builder-bottom-ref{display:flex!important;height:48px!important}
+}
+</style>
+
 </body>
 </html>

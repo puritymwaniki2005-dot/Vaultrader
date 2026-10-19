@@ -2855,7 +2855,7 @@ function setMarketCatalogueError(message){
   ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;const current=el.options.length===1&&el.options[0].value==='';if(current){el.options[0].textContent=message}});
   console.warn(message);
 }
-function populateSymbols(symbols){const filtered=symbols.filter(s=>s.exchange_is_open!==0&&s.is_trading_suspended!==1);const ids=['manualSymbol','bulkMarket','signalMarket','analysisSymbol','speedSymbol','chartSymbol','digitSymbol','botMarket','quickMarket'];ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;const old=el.value;el.innerHTML='';filtered.slice(0,250).forEach(s=>{const value=s.underlying_symbol||s.symbol;if(!value)return;const o=document.createElement('option');o.value=value;o.textContent=s.underlying_symbol_name||s.display_name||value;el.appendChild(o)});if([...el.options].some(o=>o.value===old))el.value=old});const chosen=document.getElementById('digitSymbol')?.value || document.getElementById('chartSymbol')?.value;if(chosen){subscribePublicTicks(chosen);if(liveConnected&&(!subscribedSymbol||subscribedSymbol!==chosen))subscribeTicks(chosen)}updateDigitMarketUI();if(liveConnected){requestDigitContractsFor(chosen);requestDigitProposal();}}
+function populateSymbols(symbols){const filtered=symbols.filter(s=>s.exchange_is_open!==0&&s.is_trading_suspended!==1);const ids=['manualSymbol','bulkMarket','signalMarket','analysisSymbol','speedSymbol','chartSymbol','digitSymbol','botMarket','quickMarket'];ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;const old=el.value;el.innerHTML='';filtered.slice(0,250).forEach(s=>{const value=s.underlying_symbol||s.symbol;if(!value)return;const o=document.createElement('option');o.value=value;o.textContent=s.underlying_symbol_name||s.display_name||value;el.appendChild(o)});if([...el.options].some(o=>o.value===old))el.value=old});const chosen=document.getElementById('bulkMarket')?.value || document.getElementById('digitSymbol')?.value || document.getElementById('chartSymbol')?.value;if(chosen){subscribePublicTicks(chosen);if(liveConnected&&(!subscribedSymbol||subscribedSymbol!==chosen))subscribeTicks(chosen)}updateDigitMarketUI();if(liveConnected){requestDigitContractsFor(chosen);requestDigitProposal();}}
 function subscribeTicks(symbol){
   if(!symbol||!liveConnected||!derivWS||derivWS.readyState!==WebSocket.OPEN)return;
   symbol=String(symbol);
@@ -2878,14 +2878,14 @@ function subscribeTicks(symbol){
 }
 
 // Public read-only tick stream: keep the market/tick displays working even before account auth.
-let publicTickWS=null, publicTickSymbol='', publicTickReconnect=null, publicTickReq=81000;
+let publicTickWS=null, publicTickSymbol='', publicTickReconnect=null, publicTickReq=81000, publicTickEndpointIndex=0;
 function subscribePublicTicks(symbol){
   symbol=String(symbol||'').trim();if(!symbol)return;
   if(publicTickWS && publicTickWS.readyState===WebSocket.OPEN && publicTickSymbol===symbol)return;
   clearTimeout(publicTickReconnect);
   try{if(publicTickWS)publicTickWS.close()}catch{}
   publicTickSymbol=symbol;
-  let ws;try{ws=new WebSocket('wss://ws.derivws.com/websockets/v3?app_id=1089');publicTickWS=ws}catch(e){console.warn('Public tick feed could not start:',e);return}
+  let ws;const endpoint=MARKET_WS_ENDPOINTS[publicTickEndpointIndex%MARKET_WS_ENDPOINTS.length];try{ws=new WebSocket(endpoint);publicTickWS=ws;console.info('TradeNovaX public tick feed connecting:',{symbol,endpoint,attempt:publicTickEndpointIndex+1})}catch(e){console.warn('Public tick feed could not start:',e);publicTickEndpointIndex=(publicTickEndpointIndex+1)%MARKET_WS_ENDPOINTS.length;publicTickReconnect=setTimeout(()=>subscribePublicTicks(symbol),1500);return}
   let opened=false;
   const historyReq=++publicTickReq, tickReq=++publicTickReq;
   ws.onopen=()=>{opened=true;const insight=document.getElementById('bulkLiveInsight');if(insight)insight.textContent=`WebSocket connected • requesting history and live tick stream for ${symbol}…`;console.info('TradeNovaX public tick WebSocket opened',{symbol,historyReq,tickReq});try{
@@ -2918,7 +2918,7 @@ function subscribePublicTicks(symbol){
     }
   };
   ws.onerror=event=>{console.warn('Public tick WebSocket error for',symbol,event);const insight=document.getElementById('bulkLiveInsight');if(insight&&publicTickSymbol===symbol)insight.textContent=`WebSocket error while loading ${symbol}. Retrying live feed…`;scheduleRetry()};
-  ws.onclose=event=>{if(publicTickWS===ws){publicTickWS=null;if(publicTickSymbol===symbol){const insight=document.getElementById('bulkLiveInsight');if(insight)insight.textContent=`Live feed disconnected (${event.code||'no code'}). Reconnecting to ${symbol}…`;publicTickReconnect=setTimeout(()=>subscribePublicTicks(symbol),5000)}}};
+  ws.onclose=event=>{if(publicTickWS===ws){publicTickWS=null;if(publicTickSymbol===symbol){if(event.code!==1000){publicTickEndpointIndex=(publicTickEndpointIndex+1)%MARKET_WS_ENDPOINTS.length;}const insight=document.getElementById('bulkLiveInsight');if(insight)insight.textContent=`Live feed disconnected (${event.code||'no code'}). Trying ${symbol} on another Deriv endpoint…`;publicTickReconnect=setTimeout(()=>subscribePublicTicks(symbol),1500)}}};
 }
 window.subscribePublicTicks=subscribePublicTicks;
 function requestDigitContractsFor(symbol){

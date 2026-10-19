@@ -6274,11 +6274,11 @@ body.tnx-bot-active .sidebar,body.tnx-bot-active .sidebar-overlay{display:none!i
     if(notice){
       var msg=document.getElementById('tnxMarketFeedMessage');
       var dismiss=function(){var n=document.getElementById('tnxMarketFeedNotice');if(n)n.remove();};
-      if(msg && /Loaded \\d+ live market symbols/i.test(msg.textContent||'')){
+      if(msg && /Loaded [0-9]+ live market symbols/i.test(msg.textContent||'')){
         setTimeout(dismiss,7000);
       } else {
         var observer=new MutationObserver(function(){
-          if(msg && /Loaded \\d+ live market symbols/i.test(msg.textContent||'')){
+          if(msg && /Loaded [0-9]+ live market symbols/i.test(msg.textContent||'')){
             observer.disconnect();setTimeout(dismiss,7000);
           }
         });

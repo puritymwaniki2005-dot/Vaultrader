@@ -2084,7 +2084,7 @@ button{touch-action:manipulation}
 
 <section class="tnx-dash-metrics">
   <article class="tnx-metric-card tnx-metric-balance">
-    <div class="tnx-metric-icon">$</div><div><span id="dashBalanceLabel">BALANCE</span><strong id="dashBalance">—</strong><small id="balanceCurrencyDash">USD</small></div>
+    <div class="tnx-metric-icon">$</div><div><span id="dashBalanceLabel">BALANCE</span><strong id="dashBalance">Loading…</strong><small id="balanceCurrencyDash">USD</small></div>
   </article>
   <article class="tnx-metric-card">
     <div class="tnx-metric-icon">◈</div><div><span>OPEN POSITIONS</span><strong id="dashOpenPositions">0</strong><small>Live contracts</small></div>
@@ -5832,6 +5832,47 @@ body.tnx-bot-active .sidebar,body.tnx-bot-active .sidebar-overlay{display:none!i
  .tnx-flow-main{left:8px!important;top:68px!important;width:calc(100% - 16px)!important;transform:scale(.78)!important;transform-origin:top left!important}
  .tnx-block-sell,.tnx-block-restart{left:calc(100% - 255px)!important}
  .tnx-builder-bottom-ref{display:flex!important;height:48px!important}
+}
+
+/* TradeNovaX dashboard polish: readable account metrics and balanced responsive layout. */
+.tnx-dash-metrics{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important;margin:0 0 14px!important}
+.tnx-metric-card{display:flex!important;align-items:center!important;gap:12px!important;min-width:0!important;min-height:82px!important;padding:16px!important;border-radius:14px!important;overflow:hidden!important}
+.tnx-metric-card>div:last-child{min-width:0!important}
+.tnx-metric-card span{display:block!important;font-size:10px!important;letter-spacing:.09em!important;font-weight:800!important;line-height:1.35!important;overflow-wrap:anywhere!important}
+.tnx-metric-card strong{display:block!important;font-size:clamp(17px,2vw,23px)!important;line-height:1.25!important;margin:4px 0!important;overflow-wrap:anywhere!important;font-variant-numeric:tabular-nums!important}
+.tnx-metric-card small{display:block!important;font-size:11px!important;line-height:1.4!important;overflow-wrap:anywhere!important}
+.tnx-metric-icon{flex:0 0 40px!important;width:40px!important;height:40px!important;display:grid!important;place-items:center!important;border-radius:12px!important;background:#fff7df!important;color:#a3000a!important;font-size:22px!important}
+.tnx-dash-grid{grid-template-columns:minmax(0,1.5fr) minmax(260px,.85fr)!important}
+.tnx-dash-grid-bottom{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important}
+.tnx-dash-panel,.tnx-dash-hero,.tnx-dash-performance{min-width:0!important}
+.tnx-dash-hero{gap:18px!important}
+.tnx-dash-hero-actions{max-width:100%!important;flex-wrap:wrap!important}
+.tnx-panel-head{flex-wrap:wrap!important}
+.tnx-performance-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.tnx-dash-panel p,.tnx-dash-panel small,.tnx-metric-card small{overflow-wrap:anywhere!important}
+@media(max-width:900px){
+ .tnx-dash-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .tnx-dash-grid,.tnx-dash-grid-bottom{grid-template-columns:minmax(0,1fr)!important}
+ .tnx-dash-hero{align-items:flex-start!important;flex-direction:column!important}
+ .tnx-dash-hero-actions{justify-content:flex-start!important}
+ .tnx-dash-panel{padding:16px!important}
+}
+@media(max-width:480px){
+ .tnx-dash-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+ .tnx-metric-card{padding:11px!important;gap:8px!important;min-height:82px!important}
+ .tnx-metric-icon{flex-basis:32px!important;width:32px!important;height:32px!important;font-size:18px!important;border-radius:10px!important}
+ .tnx-metric-card span{font-size:9px!important;letter-spacing:.045em!important}
+ .tnx-metric-card strong{font-size:17px!important}
+ .tnx-metric-card small{font-size:10px!important}
+ .tnx-dash-hero{padding:16px!important}
+ .tnx-dash-hero h2{font-size:23px!important}
+ .tnx-dash-hero-actions button{flex:1 1 130px!important}
+ .tnx-dash-panel,.tnx-dash-performance{padding:13px!important}
+ .tnx-panel-head{gap:8px!important;margin-bottom:12px!important}
+ .tnx-performance-row{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+ .tnx-performance-row>div{padding:11px!important;min-width:0!important}
+ .tnx-performance-foot{gap:6px!important}
+ .tnx-dash-grid-bottom{gap:10px!important}
 }
 </style>
 

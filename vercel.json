@@ -1,7 +1,7 @@
 {
   "version": 2,
   "installCommand": "cd react-platform && npm install",
-  "buildCommand": "cd react-platform && node scripts/prepare-deploy.mjs && npm run build",
+  "buildCommand": "cd react-platform && npm run build && node scripts/prepare-deploy.mjs",
   "outputDirectory": "react-platform/dist",
   "routes": [
     {

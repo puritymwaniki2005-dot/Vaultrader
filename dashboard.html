@@ -2761,104 +2761,64 @@ function handleBalance(b){if(!b)return;tnxUpdateSafetyUI();const amount=Number(b
 function handleTick(t){if(!t)return;const q=Number(t.quote);if(!Number.isFinite(q))return;if(subscribedSymbol&&t.symbol&&String(t.symbol)!==String(subscribedSymbol))return;lastTick=t;updateDigitFromTick(t);tickBuffer.push({epoch:Number(t.epoch)||Date.now()/1000,quote:q});if(tickBuffer.length>300)tickBuffer.shift();const e=document.getElementById('latestTickDisplay');if(e)e.textContent=q.toFixed(5);renderRealtimeChart();runAIScanner(true);tnxBulkRender?.();try{window.onTick?.()}catch(err){console.error('Bot tick evaluation error:',err)}}
 // Public market catalogue connection: market discovery must not depend on the authenticated trading socket.
 let marketCatalogueWS=null, marketCatalogueTimer=null, marketCatalogueAttempts=0;
+// Public market catalogue connection. Market discovery does not require a signed-in account.
+let marketCatalogueWS=null, marketCatalogueTimer=null, marketCatalogueAttempts=0, marketCatalogueFailed=false;
 const MARKET_WS_ENDPOINTS=[
-  // Current official Deriv market-data endpoint using the app ID already used by the project.
   'wss://ws.derivws.com/websockets/v3?app_id=1089',
-  // Public market-data endpoints can also be used without an app ID.
-  'wss://ws.derivws.com/websockets/v3',
-  'wss://ws.binaryws.com/websockets/v3',
-  // Legacy hostname retained as the final fallback.
+  'wss://ws.binaryws.com/websockets/v3?app_id=1089',
   'wss://frontend.binaryws.com/websockets/v3?app_id=1089'
 ];
 function loadPublicMarketCatalogue(){
-  if(marketCatalogueWS && (marketCatalogueWS.readyState===WebSocket.OPEN || marketCatalogueWS.readyState===WebSocket.CONNECTING)) return;
+  if(marketCatalogueFailed)return;
+  if(marketCatalogueWS&&(marketCatalogueWS.readyState===WebSocket.OPEN||marketCatalogueWS.readyState===WebSocket.CONNECTING))return;
   clearTimeout(marketCatalogueTimer);
   const ids=['manualSymbol','bulkMarket','signalMarket','analysisSymbol','speedSymbol','chartSymbol','digitSymbol','botMarket','quickMarket'];
-  ids.forEach(id=>{const el=document.getElementById(id);if(el && (!el.options.length || !el.value)){el.innerHTML='';const o=document.createElement('option');o.value='';o.textContent='Connecting to live markets…';el.appendChild(o)}});
-  const attempt=Math.min(marketCatalogueAttempts,MARKET_WS_ENDPOINTS.length-1);
-  const endpoint=MARKET_WS_ENDPOINTS[attempt];
-  let receivedCatalogue=false;
+  ids.forEach(id=>{const el=document.getElementById(id);if(el&&(!el.options.length||!el.value)){el.innerHTML='';const o=document.createElement('option');o.value='';o.textContent='Connecting to live markets…';el.appendChild(o)}});
+  const endpoint=MARKET_WS_ENDPOINTS[marketCatalogueAttempts];
+  let received=false, finished=false;
+  const fail=(reason,event)=>{
+    if(finished)return;finished=true;clearTimeout(marketCatalogueTimer);
+    if(marketCatalogueWS===socket)marketCatalogueWS=null;
+    console.warn('Deriv public market feed attempt failed:',{endpoint,reason,closeCode:event?.code,closeReason:event?.reason,wasClean:event?.wasClean});
+    if(marketCatalogueAttempts<MARKET_WS_ENDPOINTS.length-1){
+      marketCatalogueAttempts++;
+      loadPublicMarketCatalogue();
+    }else{
+      marketCatalogueFailed=true;
+      setMarketCatalogueError('Live markets unavailable: all Deriv WebSocket endpoints failed. Check browser Network → WS, VPN/ad blocker/firewall, or try another network. Click Retry markets to try again.');
+      const retry=document.getElementById('tnxRetryMarkets');
+      if(retry)retry.hidden=false;
+    }
+  };
+  let socket;
   try{
-    marketCatalogueWS=new WebSocket(endpoint);
-    const socket=marketCatalogueWS;
-    marketCatalogueTimer=setTimeout(()=>{
-      if(!receivedCatalogue){
-        try{socket.close()}catch{}
-        if(marketCatalogueWS===socket)marketCatalogueWS=null;
-        if(marketCatalogueAttempts<MARKET_WS_ENDPOINTS.length-1){
-          marketCatalogueAttempts++;
-          console.warn('Deriv market endpoint timed out; trying alternate endpoint.');
-          loadPublicMarketCatalogue();
-        }else{
-          setMarketCatalogueError('Unable to reach Deriv market feed after 3 endpoints. Check browser Network → WS; a close code 1006 on every endpoint usually means the network, browser extension, firewall, or Deriv app access is blocking WebSockets.');
-        }
-      }
-    },12000);
+    socket=new WebSocket(endpoint);marketCatalogueWS=socket;
+    marketCatalogueTimer=setTimeout(()=>{if(!received)fail('Timed out waiting for market catalogue')},12000);
     socket.onopen=()=>{
-      if(marketCatalogueWS!==socket)return;
-      console.info('TradeNovaX market catalogue socket opened:',endpoint);
-      socket.send(JSON.stringify({active_symbols:'full',req_id:7001}));
-      // Keep a response timeout even when the socket opens but no catalogue arrives.
-      clearTimeout(marketCatalogueTimer);
-      marketCatalogueTimer=setTimeout(()=>{
-        if(receivedCatalogue)return;
-        try{socket.close()}catch{}
-        if(marketCatalogueWS===socket)marketCatalogueWS=null;
-        if(marketCatalogueAttempts<MARKET_WS_ENDPOINTS.length-1){
-          marketCatalogueAttempts++;
-          console.warn('Deriv market catalogue response timed out; trying alternate endpoint.');
-          loadPublicMarketCatalogue();
-        }else setMarketCatalogueError('Deriv connected but did not return live markets. Refresh and check network access.');
-      },10000);
+      console.info('Deriv market WebSocket opened:',endpoint);
+      try{socket.send(JSON.stringify({active_symbols:'full',req_id:7001}))}
+      catch(e){fail('Could not send active_symbols request: '+(e?.message||e))}
     };
     socket.onmessage=event=>{
-      let data;try{data=JSON.parse(event.data)}catch{return}
-      if(data.error){
-        console.error('Public Deriv market catalogue error:',data.error,'endpoint:',endpoint,'request:',{active_symbols:'full',req_id:7001});
-        clearTimeout(marketCatalogueTimer);
-        if(marketCatalogueAttempts<MARKET_WS_ENDPOINTS.length-1){
-          try{socket.close()}catch{}
-          if(marketCatalogueWS===socket)marketCatalogueWS=null;
-          marketCatalogueAttempts++;
-          loadPublicMarketCatalogue();
-        }else setMarketCatalogueError('Deriv market feed: '+(data.error.message||data.error.code||'request failed'));
-        return;
-      }
-      if(data.msg_type==='active_symbols' && Array.isArray(data.active_symbols) && data.active_symbols.length){
-        receivedCatalogue=true;
-        clearTimeout(marketCatalogueTimer);
-        marketCatalogueAttempts=0;
+      let data;try{data=JSON.parse(event.data)}catch(e){console.warn('Invalid Deriv market message',e);return}
+      if(data.error){fail('Deriv API error: '+(data.error.message||data.error.code));return}
+      if(data.msg_type==='active_symbols'&&Array.isArray(data.active_symbols)&&data.active_symbols.length){
+        received=true;finished=true;clearTimeout(marketCatalogueTimer);marketCatalogueAttempts=0;marketCatalogueFailed=false;
         populateSymbols(data.active_symbols);
-        console.info('TradeNovaX loaded live market catalogue:',data.active_symbols.length);
+        console.info('TradeNovaX loaded live market catalogue:',data.active_symbols.length,'symbols from',endpoint);
         try{socket.close(1000,'market catalogue loaded')}catch{}
         if(marketCatalogueWS===socket)marketCatalogueWS=null;
       }
     };
-    socket.onerror=(event)=>{
-      console.error('TradeNovaX market catalogue WebSocket error:',{endpoint,event,readyState:socket.readyState});
-      clearTimeout(marketCatalogueTimer);
-      if(marketCatalogueWS===socket)marketCatalogueWS=null;
-      if(marketCatalogueAttempts<MARKET_WS_ENDPOINTS.length-1){
-        marketCatalogueAttempts++;
-        loadPublicMarketCatalogue();
-      }else setMarketCatalogueError('Unable to reach Deriv market feed. Check network/WebSocket access; see console for endpoint/close details.');
-    };
-    socket.onclose=(event)=>{
-      clearTimeout(marketCatalogueTimer);
-      console.warn('TradeNovaX market catalogue socket closed:',{endpoint,code:event?.code,reason:event?.reason,wasClean:event?.wasClean,receivedCatalogue});
-      if(marketCatalogueWS===socket)marketCatalogueWS=null;
-      if(!receivedCatalogue && marketCatalogueAttempts<MARKET_WS_ENDPOINTS.length-1){
-        marketCatalogueAttempts++;
-        loadPublicMarketCatalogue();
-      }
-    };
-  }catch(error){
-    clearTimeout(marketCatalogueTimer);
-    console.error('Market catalogue connection failed:',error);
-    if(marketCatalogueAttempts<MARKET_WS_ENDPOINTS.length-1){marketCatalogueAttempts++;loadPublicMarketCatalogue()}
-    else setMarketCatalogueError('Could not connect to Deriv market feed after 3 endpoints. Check browser Network → WS, VPN/ad blocker, firewall, and Deriv app access.');
-  }
+    socket.onerror=()=>{fail('WebSocket error (browser hides the underlying cause)')};
+    socket.onclose=event=>{if(!received)fail('WebSocket closed before active_symbols arrived',event)};
+  }catch(e){fail('WebSocket constructor failed: '+(e?.message||e))}
 }
+window.tnxRetryMarkets=function(){
+  marketCatalogueFailed=false;marketCatalogueAttempts=0;
+  const retry=document.getElementById('tnxRetryMarkets');if(retry)retry.hidden=true;
+  loadPublicMarketCatalogue();
+};
 function setMarketCatalogueError(message){
   const ids=['manualSymbol','bulkMarket','signalMarket','analysisSymbol','speedSymbol','chartSymbol','digitSymbol','botMarket','quickMarket'];
   ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;const current=el.options.length===1&&el.options[0].value==='';if(current){el.options[0].textContent=message}});
@@ -5874,5 +5834,16 @@ body.tnx-bot-active .sidebar,body.tnx-bot-active .sidebar-overlay{display:none!i
 }
 </style>
 
+<div id="tnxMarketFeedNotice" style="position:fixed;bottom:16px;right:16px;z-index:99999;max-width:min(440px,calc(100vw - 32px));padding:12px 14px;background:#101827;border:1px solid #e7c47c66;border-radius:12px;color:#f5f7fb;font:13px/1.5 system-ui;box-shadow:0 8px 28px #0006"><strong style="color:#e7c47c">Live market feed</strong><div id="tnxMarketFeedMessage">Loading public Deriv markets…</div><button id="tnxRetryMarkets" hidden onclick="window.tnxRetryMarkets()" style="margin-top:8px;padding:7px 10px;border-radius:7px;background:#48e0b0;color:#08111f;font-weight:700;cursor:pointer">Retry markets</button><button onclick="document.getElementById('tnxMarketFeedNotice').remove()" style="margin-left:8px;padding:7px 10px;border:1px solid #ffffff30;border-radius:7px;color:#f5f7fb;cursor:pointer">Dismiss</button></div>
+<script>
+(function(){
+ const msg=document.getElementById('tnxMarketFeedMessage');
+ const original=window.populateSymbols;
+ if(typeof original==='function')window.populateSymbols=function(symbols){original(symbols);if(msg)msg.textContent='Loaded '+symbols.length+' live market symbols.';const retry=document.getElementById('tnxRetryMarkets');if(retry)retry.hidden=true;};
+ const originalError=window.setMarketCatalogueError;
+ if(typeof originalError==='function')window.setMarketCatalogueError=function(message){originalError(message);if(msg)msg.textContent=message;};
+ setTimeout(function(){if(msg&&msg.textContent==='Loading public Deriv markets…')msg.textContent='Connecting to Deriv WebSocket…';},3000);
+})();
+</script>
 </body>
 </html>

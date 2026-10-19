@@ -62,17 +62,5 @@
   });
 })();
 </script>
-<script>
-/* OAuth callback fallback: ensure Deriv's authorization code reaches the existing
-   PKCE exchange handler even if the hosting platform serves the homepage route. */
-(function () {
-  var params = new URLSearchParams(window.location.search);
-  if (!params.has("code") && !params.has("error")) return;
-  if (window.location.pathname === "/legacy-index.html") return;
-  var callback = new URL("/legacy-index.html", window.location.origin);
-  callback.search = window.location.search;
-  callback.hash = window.location.hash;
-  window.location.replace(callback.toString());
-})();
-</script>
+<!-- Deriv OAuth callbacks are internally routed by vercel.json to the callback handler. Keep the browser on the canonical root URL. -->
 </body></html>

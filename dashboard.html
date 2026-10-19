@@ -2762,12 +2762,13 @@ function handleTick(t){if(!t)return;const q=Number(t.quote);if(!Number.isFinite(
 // Public market catalogue connection: market discovery must not depend on the authenticated trading socket.
 let marketCatalogueWS=null, marketCatalogueTimer=null, marketCatalogueAttempts=0;
 const MARKET_WS_ENDPOINTS=[
-  // Primary official Deriv market-data endpoint.
-  'wss://ws.derivws.com/websockets/v3?app_id=1089&l=EN',
-  // Alternate legacy endpoint for networks that cannot reach the primary hostname.
-  'wss://frontend.binaryws.com/websockets/v3?app_id=1089&l=EN',
-  // Older Binary WS hostname retained as a last transport fallback.
-  'wss://ws.binaryws.com/websockets/v3?app_id=1089&l=EN'
+  // Current official Deriv market-data endpoint using the app ID already used by the project.
+  'wss://ws.derivws.com/websockets/v3?app_id=1089',
+  // Public market-data endpoints can also be used without an app ID.
+  'wss://ws.derivws.com/websockets/v3',
+  'wss://ws.binaryws.com/websockets/v3',
+  // Legacy hostname retained as the final fallback.
+  'wss://frontend.binaryws.com/websockets/v3?app_id=1089'
 ];
 function loadPublicMarketCatalogue(){
   if(marketCatalogueWS && (marketCatalogueWS.readyState===WebSocket.OPEN || marketCatalogueWS.readyState===WebSocket.CONNECTING)) return;

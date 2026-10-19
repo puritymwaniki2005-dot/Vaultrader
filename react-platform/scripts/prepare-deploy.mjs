@@ -13,6 +13,8 @@ for (const entry of await readdir(projectDir, { withFileTypes: true })) {
   const destination = path.join(outputDir, entry.name);
   await cp(source, destination, { recursive: true, force: true });
 }
-// Keep the original login/OAuth page available separately; the React build owns dist/index.html.
+// Publish one canonical homepage: the root index.html landing page. Keep the legacy page only
+// for handling Deriv OAuth callbacks; its guard redirects ordinary visits back to the homepage.
+await cp(path.join(projectDir, 'index.html'), path.join(outputDir, 'index.html'), { force: true });
 await cp(path.join(projectDir, 'legacy-index.html'), path.join(outputDir, 'legacy-index.html'), { force: true });
-console.log('Prepared production output: React homepage plus preserved legacy login/OAuth, dashboard, bot, and assets.');
+console.log('Prepared production output: single canonical landing page plus OAuth callback handler, dashboard, bot, and assets.');

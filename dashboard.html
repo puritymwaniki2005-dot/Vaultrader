@@ -2725,6 +2725,10 @@ function updateAccountUI(){
     el.classList.toggle('active-demo',isDemo&&t==='demo');
   });
   const statusBadge=document.getElementById('digitAccountMini'); if(statusBadge) statusBadge.title=`${mode} account ${accountId}`;
+  // Render any balance included in the authenticated account list immediately.
+  if(account && account.balance!==undefined && account.balance!==null && Number.isFinite(Number(account.balance))){
+    renderAccountBalance({balance:Number(account.balance),currency:account.currency||currency});
+  }
 }
 function updateUserIdentity(){const email=localStorage.getItem('deriv_user_email')||sessionStorage.getItem('deriv_user_email')||'';const name=localStorage.getItem('deriv_user_name')||sessionStorage.getItem('deriv_user_name')||'';const ee=document.getElementById('userEmail'),nn=document.getElementById('userName'),aa=document.getElementById('userAvatar');if(ee)ee.textContent=email||'Deriv account';if(nn)nn.textContent=name||'REAL Trader';if(aa)aa.textContent=(name||email||'D').trim().charAt(0).toUpperCase()}
 async function loadAccounts(){
@@ -2757,7 +2761,23 @@ function handleDerivMessage(d){if(d.error){const ctx=pending.get(d.req_id);const
   });
   return;
 }case'profit_table':return renderProfitTable(d.profit_table);case'sell':return handleSell(d)}}
-function handleBalance(b){if(!b)return;tnxUpdateSafetyUI();const amount=Number(b.balance??0),cur=b.currency||activeAccount?.currency||'USD';for(const id of ['balanceAmount','dashBalance']){const e=document.getElementById(id);if(e)e.textContent=amount.toFixed(2)}const c=document.getElementById('balanceCurrency');if(c)c.textContent=cur;const db=document.getElementById('dashBalance');if(db)db.textContent=`${amount.toFixed(2)} ${cur}`}
+function renderAccountBalance(b){
+  if(!b)return false;
+  const value=b.balance??b.data?.balance??b.data?.account?.balance;
+  if(value===undefined||value===null||value===''||!Number.isFinite(Number(value)))return false;
+  const amount=Number(value),cur=String(b.currency||b.data?.currency||activeAccount?.currency||'USD');
+  const formatted=amount.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+  const top=document.getElementById('balanceAmount');if(top)top.textContent=formatted;
+  const topCur=document.getElementById('balanceCurrency');if(topCur)topCur.textContent=cur;
+  const dash=document.getElementById('dashBalance');if(dash)dash.textContent=`${formatted} ${cur}`;
+  const dashCur=document.getElementById('balanceCurrencyDash');if(dashCur)dashCur.textContent=cur;
+  window.__tnxDashLastBalance=`${formatted} ${cur}`;
+  return true;
+}
+function handleBalance(b){
+  try{tnxUpdateSafetyUI()}catch(error){console.warn('Balance UI safety refresh failed:',error)}
+  if(!renderAccountBalance(b))console.warn('Deriv returned an unrecognized balance payload:',b);
+}
 function handleTick(t){if(!t)return;const q=Number(t.quote);if(!Number.isFinite(q))return;/* The authenticated Deriv stream is already scoped to the active subscription. Do not discard valid ticks solely because Deriv returns an aliased symbol name. */lastTick=t;updateDigitFromTick(t);tickBuffer.push({epoch:Number(t.epoch)||Date.now()/1000,quote:q});if(tickBuffer.length>300)tickBuffer.shift();const e=document.getElementById('latestTickDisplay');if(e)e.textContent=q.toFixed(Math.max(0,digitPipSize));const bulkStatus=document.getElementById('bulkTradeStatus');if(bulkStatus&&liveConnected)bulkStatus.textContent='✅ Deriv account connected • waiting for live trade selection';renderRealtimeChart();runAIScanner(true);tnxBulkRender?.();try{window.onTick?.()}catch(err){console.error('Bot tick evaluation error:',err)}}
 // Public market catalogue connection. Market discovery does not require a signed-in account.
 let marketCatalogueWS=null, marketCatalogueTimer=null, marketCatalogueAttempts=0, marketCatalogueFailed=false;

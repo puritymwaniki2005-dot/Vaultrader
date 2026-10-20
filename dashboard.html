@@ -2165,6 +2165,45 @@ button{touch-action:manipulation}
 }
 </style>
 
+
+<style id="tnx-auth-route-guard-style">
+html.tnx-auth-pending body{visibility:hidden!important}
+</style>
+<script id="tnx-auth-route-guard">
+(function(){
+  'use strict';
+  var path=String(location.pathname||'').replace(/\\/+$/,'')||'/';
+  var publicRoutes=['/','/index.html','/login','/login.html','/auth/callback','/callback'];
+  if(publicRoutes.indexOf(path)>=0)return;
+  function validToken(store){
+    try{
+      var token=store.getItem('deriv_access_token');
+      var expiry=Number(store.getItem('deriv_token_expiry')||0);
+      if(expiry&&expiry<100000000000)expiry*=1000;
+      return !!token&&(!expiry||Date.now()<expiry);
+    }catch(e){return false}
+  }
+  function hasSession(){
+    if(validToken(sessionStorage)||validToken(localStorage))return true;
+    try{
+      var raw=localStorage.getItem('deriv_tokens_backup')||sessionStorage.getItem('deriv_tokens_backup');
+      if(raw){
+        var data=JSON.parse(raw),token=data&&data.access_token,expiry=Number(data&&(data.expires_at||data.expiry)||0);
+        if(expiry&&expiry<100000000000)expiry*=1000;
+        if(token&&(!expiry||Date.now()<expiry))return true;
+      }
+    }catch(e){}
+    return false;
+  }
+  if(!hasSession()){
+    document.documentElement.classList.add('tnx-auth-pending');
+    var target='/';
+    try{sessionStorage.setItem('tnx_return_after_login',location.pathname+location.search+location.hash)}catch(e){}
+    location.replace(target);
+  }
+})();
+</script>
+
 </head>
 <body>
 <div class="tnx-mobile-header" id="tnxMobileHeader">

@@ -2072,6 +2072,99 @@ button{touch-action:manipulation}
 }
 </style>
 
+
+<style id="tnx-mkoreen-mobile-header-rebuild-20261020">
+/* Reference-matched mobile shell: one utility strip, then one horizontal navigation row. */
+@media (max-width: 900px) {
+  html, body { width:100%!important; min-width:0!important; max-width:100%!important; overflow-x:hidden!important; }
+  body { padding-top:0!important; margin:0!important; }
+  #tnx-live-guard { top:0!important; }
+  #tnxMobileHeader { display:none!important; }
+  .main-content { width:100%!important; max-width:100%!important; min-width:0!important; margin:0!important; padding:0 0 12px!important; }
+  .main-content > .topbar {
+    position:relative!important; inset:auto!important; display:flex!important;
+    flex-flow:row nowrap!important; align-items:center!important; justify-content:flex-start!important;
+    gap:8px!important; width:100%!important; height:74px!important; min-height:74px!important; max-height:74px!important;
+    margin:0!important; padding:8px 10px!important; overflow:hidden!important; box-sizing:border-box!important;
+    background:#fff!important; color:#20242b!important; border:0!important; border-bottom:1px solid #e4e6e9!important;
+    box-shadow:none!important; z-index:10040!important;
+  }
+  .main-content > .topbar .topbar-left {
+    display:flex!important; flex:0 0 auto!important; width:auto!important; min-width:0!important; height:100%!important;
+    align-items:center!important; justify-content:flex-start!important; gap:8px!important; padding:0!important; margin:0!important;
+  }
+  .main-content > .topbar .topbar-left > div,
+  .main-content > .topbar .topbar-left h1,
+  .main-content > .topbar .topbar-left .page-sub { display:none!important; }
+  .main-content > .topbar .topbar-left:before {
+    content:"TN"!important; order:2!important; display:flex!important; flex:0 0 42px!important; width:42px!important; height:42px!important;
+    align-items:center!important; justify-content:center!important; border-radius:50%!important;
+    background:#350006!important; color:#fff!important; box-shadow:inset 0 -3px #d4ad2b!important; font-size:16px!important; font-weight:900!important;
+  }
+  .main-content > .topbar .topbar-left:after { display:none!important; content:none!important; }
+  .main-content > .topbar .topbar-left .menu-toggle {
+    order:1!important; display:inline-flex!important; flex:0 0 34px!important; width:34px!important; min-width:34px!important; height:42px!important;
+    align-items:center!important; justify-content:center!important; margin:0!important; padding:0!important;
+    background:transparent!important; border:0!important; color:#333!important; font-size:25px!important;
+  }
+  .main-content > .topbar .topbar-right {
+    display:flex!important; flex:1 1 auto!important; width:auto!important; min-width:0!important; height:100%!important;
+    flex-flow:row nowrap!important; align-items:center!important; justify-content:flex-end!important; gap:5px!important;
+    margin:0!important; padding:0!important; overflow-x:auto!important; overflow-y:hidden!important; white-space:nowrap!important;
+    background:transparent!important; border:0!important; box-shadow:none!important; scrollbar-width:none!important;
+  }
+  .main-content > .topbar .topbar-right::-webkit-scrollbar { display:none!important; }
+  .main-content > .topbar #tnxThemeToggle,
+  .main-content > .topbar #tnxLanguage,
+  .main-content > .topbar .deriv-status,
+  .main-content > .topbar #tnxReconnectDeriv,
+  .main-content > .topbar .btn-logout { display:none!important; }
+  .main-content > .topbar .account-selector {
+    display:flex!important; flex:0 0 auto!important; width:auto!important; min-width:0!important; gap:3px!important;
+    margin:0!important; padding:3px!important; border:1px solid #e0e2e5!important; border-radius:10px!important; background:#fff!important;
+  }
+  .main-content > .topbar .account-selector label { display:none!important; }
+  .main-content > .topbar .account-btn {
+    display:inline-flex!important; align-items:center!important; justify-content:center!important; flex:0 0 auto!important;
+    min-width:54px!important; width:auto!important; height:38px!important; min-height:38px!important;
+    margin:0!important; padding:5px 8px!important; font-size:12px!important; font-weight:900!important;
+    border:1px solid #dedfe2!important; border-radius:7px!important; background:#fff!important; color:#333!important;
+  }
+  .main-content > .topbar .account-btn.active-live { background:#e9f7f2!important; color:#299b85!important; border-color:#55b9a4!important; }
+  .main-content > .topbar .balance { display:flex!important; flex:0 0 auto!important; align-items:center!important; gap:3px!important; margin:0!important; padding:0 2px!important; color:#55aaa9!important; font-size:12px!important; font-weight:900!important; }
+  .main-content > .topbar .balance .currency { color:#55aaa9!important; }
+  .tnx-mkoreen-nav {
+    position:relative!important; inset:auto!important; display:flex!important; visibility:visible!important;
+    width:100%!important; height:60px!important; min-height:60px!important; max-height:60px!important;
+    margin:0!important; padding:0!important; flex-flow:row nowrap!important; gap:0!important; align-items:stretch!important;
+    overflow-x:auto!important; overflow-y:hidden!important; white-space:nowrap!important; scrollbar-width:none!important;
+    background:#390000!important; border-bottom:4px solid #d4ad2b!important; z-index:10030!important;
+  }
+  .tnx-mkoreen-nav::-webkit-scrollbar { display:none!important; }
+  .tnx-mkoreen-nav > a {
+    display:flex!important; flex:0 0 auto!important; align-items:center!important; justify-content:center!important; gap:10px!important;
+    height:56px!important; min-height:56px!important; padding:0 18px!important; margin:0!important;
+    color:#fff!important; font-size:15px!important; font-weight:850!important; border-right:1px solid rgba(255,255,255,.1)!important;
+  }
+  .tnx-mkoreen-nav > a .tnx-nav-icon { color:#e4bd31!important; font-size:25px!important; }
+  .tnx-mkoreen-nav > a.active { background:#a50000!important; box-shadow:inset 0 -4px #d4ad2b!important; }
+  .tnx-mkoreen-nav .tnx-mkoreen-nav-icon { padding:0 15px!important; font-size:25px!important; }
+  .main-content > .topbar + .tnx-mkoreen-nav { margin-bottom:0!important; }
+  .main-content .page-content { width:100%!important; max-width:100%!important; min-width:0!important; }
+  #page-bot { width:100%!important; min-width:0!important; margin:0!important; padding:0!important; }
+  #tnxOriginalBotFrame { display:block!important; width:100%!important; max-width:100%!important; min-width:0!important; border:0!important; border-radius:0!important; }
+}
+@media (max-width: 420px) {
+  .main-content > .topbar { gap:5px!important; padding:7px!important; }
+  .main-content > .topbar .topbar-left { gap:5px!important; }
+  .main-content > .topbar .topbar-left:before { flex-basis:36px!important; width:36px!important; height:36px!important; font-size:14px!important; }
+  .main-content > .topbar .topbar-left .menu-toggle { flex-basis:28px!important; width:28px!important; font-size:22px!important; }
+  .main-content > .topbar .account-btn { min-width:46px!important; padding:4px 5px!important; font-size:11px!important; }
+  .main-content > .topbar .balance { font-size:11px!important; }
+  .tnx-mkoreen-nav > a { padding:0 14px!important; font-size:14px!important; }
+}
+</style>
+
 </head>
 <body>
 <div class="tnx-mobile-header" id="tnxMobileHeader">

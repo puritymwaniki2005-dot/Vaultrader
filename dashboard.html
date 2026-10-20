@@ -6695,5 +6695,39 @@ body.tnx-bot-active .sidebar,body.tnx-bot-active .sidebar-overlay{display:none!i
 }
 </style>
 
+
+<style id="tnx-toast-bottom-right-final-20261020">
+/* Notifications must appear at the lower-right, clear of the mobile Run bar. */
+#toast.toast{
+  position:fixed!important;
+  top:auto!important;left:auto!important;
+  right:18px!important;bottom:22px!important;
+  width:max-content!important;
+  max-width:min(380px,calc(100vw - 28px))!important;
+  z-index:100500!important;
+  margin:0!important;
+}
+#toast.toast.show{
+  top:auto!important;left:auto!important;
+  right:18px!important;bottom:22px!important;
+  opacity:1!important;visibility:visible!important;
+  transform:translateY(0)!important;pointer-events:auto!important;
+}
+@media(max-width:900px){
+  #toast.toast,#toast.toast.show{
+    top:auto!important;left:auto!important;
+    right:12px!important;bottom:88px!important;
+    width:max-content!important;max-width:calc(100vw - 24px)!important;
+  }
+}
+@media(max-width:420px){
+  #toast.toast,#toast.toast.show{
+    right:10px!important;bottom:84px!important;
+    max-width:calc(100vw - 20px)!important;
+    padding:10px 12px!important;font-size:13px!important;
+  }
+}
+</style>
+
 </body>
 </html>

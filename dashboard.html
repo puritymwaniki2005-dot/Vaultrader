@@ -6348,5 +6348,159 @@ body.tnx-bot-active .sidebar,body.tnx-bot-active .sidebar-overlay{display:none!i
   }
 }
 </style>
+
+<style id="tnx-mobile-header-layout-audit-fix">
+/*
+  Mobile header repair based on the actual dashboard DOM:
+  - .sidebar contains the old brand/menu strip.
+  - .topbar contains the real account controls and TradeNovaX brand.
+  - .tnx-mkoreen-nav is the intended primary horizontal menu.
+  The bot iframe may be present before body.tnx-bot-active is restored, so
+  :has(#tnxOriginalBotFrame) also activates the same layout for that state.
+*/
+@media (max-width:760px) {
+  body.tnx-bot-active,
+  body:has(#tnxOriginalBotFrame) {
+    padding-top:0!important;
+    overflow-x:hidden!important;
+  }
+  body.tnx-bot-active .tnx-mobile-header,
+  body:has(#tnxOriginalBotFrame) .tnx-mobile-header {
+    display:none!important;
+  }
+  body.tnx-bot-active #sidebar,
+  body:has(#tnxOriginalBotFrame) #sidebar,
+  body.tnx-bot-active aside.sidebar,
+  body:has(#tnxOriginalBotFrame) aside.sidebar {
+    display:none!important;
+    visibility:hidden!important;
+    width:0!important;height:0!important;min-height:0!important;max-height:0!important;
+    margin:0!important;padding:0!important;border:0!important;overflow:hidden!important;
+  }
+  body.tnx-bot-active .main-content,
+  body:has(#tnxOriginalBotFrame) .main-content {
+    width:100%!important;max-width:100%!important;min-width:0!important;
+    margin:0!important;padding:140px 0 0!important;overflow-x:hidden!important;
+    box-sizing:border-box!important;
+  }
+  body.tnx-bot-active .main-content>.topbar,
+  body:has(#tnxOriginalBotFrame) .main-content>.topbar {
+    display:flex!important;position:fixed!important;inset:0 0 auto 0!important;
+    width:100%!important;height:92px!important;min-height:92px!important;max-height:92px!important;
+    margin:0!important;padding:4px 10px!important;box-sizing:border-box!important;
+    flex-direction:column!important;flex-wrap:nowrap!important;align-items:stretch!important;
+    justify-content:center!important;gap:2px!important;overflow:hidden!important;
+    background:#fff!important;color:#20242b!important;border:0!important;
+    border-bottom:1px solid #d9dce1!important;box-shadow:0 2px 8px rgba(0,0,0,.08)!important;
+    z-index:10040!important;
+  }
+  body.tnx-bot-active .main-content>.topbar .topbar-left,
+  body:has(#tnxOriginalBotFrame) .main-content>.topbar .topbar-left {
+    display:flex!important;position:relative!important;order:0!important;
+    flex:0 0 40px!important;width:100%!important;min-width:0!important;height:40px!important;
+    align-items:center!important;justify-content:flex-start!important;gap:8px!important;
+    padding:0!important;margin:0!important;overflow:hidden!important;
+  }
+  body.tnx-bot-active .main-content>.topbar .topbar-left:before,
+  body:has(#tnxOriginalBotFrame) .main-content>.topbar .topbar-left:before {
+    content:"TN"!important;display:flex!important;flex:0 0 30px!important;
+    width:30px!important;height:30px!important;border-radius:50%!important;
+    align-items:center!important;justify-content:center!important;
+    background:#350006!important;color:#fff!important;
+    box-shadow:inset 0 -3px #e0bd39!important;font-size:13px!important;font-weight:900!important;
+  }
+  body.tnx-bot-active .main-content>.topbar .topbar-left:after,
+  body:has(#tnxOriginalBotFrame) .main-content>.topbar .topbar-left:after {
+    content:"TradeNovaX"!important;display:block!important;flex:0 1 auto!important;
+    min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;
+    white-space:nowrap!important;font-size:17px!important;font-weight:850!important;color:#22252b!important;
+  }
+  body.tnx-bot-active .main-content>.topbar .topbar-left .menu-toggle,
+  body:has(#tnxOriginalBotFrame) .main-content>.topbar .topbar-left .menu-toggle,
+  body.tnx-bot-active .main-content>.topbar .topbar-left h1,
+  body:has(#tnxOriginalBotFrame) .main-content>.topbar .topbar-left h1,
+  body.tnx-bot-active .main-content>.topbar .topbar-left .page-sub,
+  body:has(#tnxOriginalBotFrame) .main-content>.topbar .topbar-left .page-sub {
+    display:none!important;
+  }
+  body.tnx-bot-active .main-content>.topbar .topbar-right,
+  body:has(#tnxOriginalBotFrame) .main-content>.topbar .topbar-right {
+    display:flex!important;position:relative!important;order:1!important;
+    flex:0 0 42px!important;width:100%!important;min-width:0!important;height:42px!important;
+    flex-flow:row nowrap!important;align-items:center!important;justify-content:flex-start!important;
+    gap:6px!important;margin:0!important;padding:0 0 2px!important;
+    overflow-x:auto!important;overflow-y:hidden!important;white-space:nowrap!important;
+    background:transparent!important;border:0!important;border-radius:0!important;
+    box-shadow:none!important;-webkit-overflow-scrolling:touch!important;scrollbar-width:none!important;
+  }
+  body.tnx-bot-active .main-content>.topbar .topbar-right::-webkit-scrollbar,
+  body:has(#tnxOriginalBotFrame) .main-content>.topbar .topbar-right::-webkit-scrollbar {display:none!important}
+  body.tnx-bot-active .main-content>.topbar .topbar-right>*,
+  body:has(#tnxOriginalBotFrame) .main-content>.topbar .topbar-right>* {
+    flex:0 0 auto!important;min-width:max-content!important;max-width:none!important;
+    margin:0!important;box-sizing:border-box!important;
+  }
+  body.tnx-bot-active .main-content>.topbar .topbar-right #tnxThemeToggle,
+  body:has(#tnxOriginalBotFrame) .main-content>.topbar .topbar-right #tnxThemeToggle {
+    width:32px!important;min-width:32px!important;height:32px!important;min-height:32px!important;padding:3px!important;
+  }
+  body.tnx-bot-active .main-content>.topbar .topbar-right #tnxLanguage,
+  body:has(#tnxOriginalBotFrame) .main-content>.topbar .topbar-right #tnxLanguage {
+    width:48px!important;min-width:48px!important;height:32px!important;min-height:32px!important;padding:3px!important;
+  }
+  body.tnx-bot-active .main-content>.topbar .topbar-right .balance,
+  body:has(#tnxOriginalBotFrame) .main-content>.topbar .topbar-right .balance {
+    display:flex!important;min-width:max-content!important;padding:0 4px!important;font-size:12px!important;
+  }
+  body.tnx-bot-active .main-content>.topbar .topbar-right #accountSelector,
+  body:has(#tnxOriginalBotFrame) .main-content>.topbar .topbar-right #accountSelector {
+    display:flex!important;flex:0 0 auto!important;min-width:max-content!important;
+    gap:3px!important;padding:2px!important;margin:0!important;
+  }
+  body.tnx-bot-active .main-content>.topbar .topbar-right #accountSelector label,
+  body:has(#tnxOriginalBotFrame) .main-content>.topbar .topbar-right #accountSelector label {display:none!important}
+  body.tnx-bot-active .main-content>.topbar .topbar-right #accountSelector .account-btn,
+  body:has(#tnxOriginalBotFrame) .main-content>.topbar .topbar-right #accountSelector .account-btn {
+    min-width:48px!important;height:30px!important;padding:4px 7px!important;font-size:11px!important;
+  }
+  body.tnx-bot-active .main-content>.topbar .topbar-right #tnxReconnectDeriv,
+  body:has(#tnxOriginalBotFrame) .main-content>.topbar .topbar-right #tnxReconnectDeriv,
+  body.tnx-bot-active .main-content>.topbar .topbar-right .btn-logout,
+  body:has(#tnxOriginalBotFrame) .main-content>.topbar .topbar-right .btn-logout {
+    min-height:30px!important;padding:4px 9px!important;font-size:11px!important;
+  }
+  body.tnx-bot-active .tnx-mkoreen-nav,
+  body:has(#tnxOriginalBotFrame) .tnx-mkoreen-nav {
+    display:flex!important;visibility:visible!important;position:fixed!important;
+    top:92px!important;left:0!important;right:0!important;width:100%!important;
+    height:48px!important;min-height:48px!important;max-height:48px!important;
+    margin:0!important;padding:0 4px!important;box-sizing:border-box!important;
+    flex-flow:row nowrap!important;align-items:stretch!important;gap:2px!important;
+    overflow-x:auto!important;overflow-y:hidden!important;white-space:nowrap!important;
+    background:#390000!important;border-bottom:2px solid #d4ac22!important;
+    z-index:10030!important;-webkit-overflow-scrolling:touch!important;scrollbar-width:none!important;
+  }
+  body.tnx-bot-active .tnx-mkoreen-nav::-webkit-scrollbar,
+  body:has(#tnxOriginalBotFrame) .tnx-mkoreen-nav::-webkit-scrollbar {display:none!important}
+  body.tnx-bot-active .tnx-mkoreen-nav>a,
+  body:has(#tnxOriginalBotFrame) .tnx-mkoreen-nav>a {
+    display:inline-flex!important;flex:0 0 auto!important;min-width:max-content!important;
+    height:46px!important;min-height:46px!important;padding:0 13px!important;
+    align-items:center!important;justify-content:center!important;font-size:13px!important;
+  }
+  body.tnx-bot-active #page-bot,
+  body:has(#tnxOriginalBotFrame) #page-bot {
+    display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;
+    margin:0!important;padding:0!important;overflow:hidden!important;box-sizing:border-box!important;
+  }
+  body.tnx-bot-active #tnxOriginalBotFrame,
+  body:has(#tnxOriginalBotFrame) #tnxOriginalBotFrame {
+    display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;
+    height:calc(100dvh - 140px)!important;min-height:420px!important;
+    margin:0!important;padding:0!important;border:0!important;border-radius:0!important;
+    box-sizing:border-box!important;
+  }
+}
+</style>
 </body>
 </html>

@@ -6292,5 +6292,61 @@ body.tnx-bot-active .sidebar,body.tnx-bot-active .sidebar-overlay{display:none!i
 })();
 </script>
 
+
+<style id="tnx-github-mobile-bot-shell-fix">
+/* GitHub dashboard fix: when the embedded bot is active, keep one outer utility bar.
+   The sidebar's TN brand strip was duplicating the Bot app's own header on phones. */
+@media (max-width:760px) {
+  body.tnx-bot-active { padding-top:0!important; overflow-x:hidden!important; }
+  body.tnx-bot-active > .tnx-mobile-header { display:none!important; }
+  body.tnx-bot-active > #sidebar,
+  body.tnx-bot-active aside.sidebar#sidebar {
+    display:none!important; visibility:hidden!important; width:0!important;
+    height:0!important; max-height:0!important; min-height:0!important;
+    overflow:hidden!important; border:0!important; padding:0!important; margin:0!important;
+  }
+  body.tnx-bot-active .main-content {
+    width:100%!important; max-width:100%!important; min-width:0!important;
+    margin:0!important; padding:108px 0 0!important; overflow-x:hidden!important;
+  }
+  body.tnx-bot-active .topbar {
+    display:flex!important; position:fixed!important; inset:0 0 auto 0!important;
+    width:100%!important; height:60px!important; min-height:60px!important;
+    margin:0!important; padding:0 8px!important; z-index:10030!important;
+    box-sizing:border-box!important; overflow:visible!important;
+  }
+  body.tnx-bot-active .topbar-left { display:none!important; }
+  body.tnx-bot-active .topbar-right {
+    display:flex!important; flex-flow:row nowrap!important; align-items:center!important;
+    justify-content:flex-end!important; width:100%!important; min-width:0!important;
+    gap:5px!important; padding:4px!important; margin:0!important;
+    background:#fff!important; border:0!important; box-shadow:none!important;
+  }
+  body.tnx-bot-active .topbar-right > * { min-width:0!important; max-width:100%!important; }
+  body.tnx-bot-active .topbar-right .balance { display:none!important; }
+  body.tnx-bot-active .tnx-mkoreen-nav {
+    display:flex!important; position:fixed!important; top:60px!important; left:0!important; right:0!important;
+    width:100%!important; height:48px!important; min-height:48px!important; max-width:100%!important;
+    margin:0!important; padding:0 4px!important; z-index:10020!important;
+    overflow-x:auto!important; overflow-y:hidden!important; flex-flow:row nowrap!important;
+    -webkit-overflow-scrolling:touch!important; scrollbar-width:none!important;
+  }
+  body.tnx-bot-active .tnx-mkoreen-nav::-webkit-scrollbar { display:none!important; }
+  body.tnx-bot-active .tnx-mkoreen-nav a {
+    display:flex!important; flex:0 0 auto!important; min-width:max-content!important;
+    min-height:48px!important; padding:10px 13px!important; font-size:13px!important;
+  }
+  body.tnx-bot-active #page-bot {
+    display:block!important; width:100%!important; max-width:100%!important; min-width:0!important;
+    margin:0!important; padding:0!important; overflow:hidden!important;
+  }
+  body.tnx-bot-active #tnxOriginalBotFrame {
+    display:block!important; width:100%!important; max-width:100%!important; min-width:0!important;
+    height:calc(100dvh - 108px)!important; min-height:420px!important;
+    margin:0!important; padding:0!important; border:0!important; border-radius:0!important;
+    box-sizing:border-box!important;
+  }
+}
+</style>
 </body>
 </html>
